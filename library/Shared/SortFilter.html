@@ -1,0 +1,56 @@
+<div class="relative" @mouseleave='showMenu = false'>
+    <div class="relative" @click="showMenu = !showMenu">
+        <div class="relative block px-3 border-filterBorderColor border appearance-none h-9 w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none hover:bg-filterHighlightColor hover:text-filterFontHighlightColor primaryFilterRadius">
+            <button type="button" class="relative px-4 py-2 inline-flex w-full focus:z-10 focus:outline-none primaryFilterRadius">
+                <div class="flex">
+                    <div class="input-placeholder">
+                        {{ sorted.label || "Sort by" }}
+                    </div>
+                    <!---->
+                </div>
+            </button>
+            <div class="pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+    <div
+        class="absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto"
+        v-if="showMenu"
+        @mouseleave="showMenu = false"
+    >
+        <button
+            type="button"
+            class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+            v-for="item in menu"
+            :key="item.key"
+            @click='sortItem(item)'
+        >
+            <div class="menu-label">
+                <i v-if='item.icon' :class='item.icon' class="fas mr-3"></i>
+                {{ item.label }}
+            </div>
+            <!---->
+        </button>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    name: 'SortBox',
+    data: () => ({
+        showMenu: false,
+        menu: [
+            { key: 'administrator', label: 'Name' },
+            { key: 'editor', label: 'Date' },
+        ],
+        sorted: { key: '', label: '' },
+    }),
+    methods: {
+        sortItem(item) {
+            this.sorted = item;
+            this.showMenu = false;
+        }
+    }
+}
+</script>

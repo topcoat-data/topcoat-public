@@ -1,0 +1,98 @@
+<div :id="uid" :style="{ 'margin': '0 auto', }"></div>
+
+<script type='visualization/javascript'>
+export default {
+    data() {
+        return {
+            uid: 'sparkline' + this.$options.name + '_' + this._uid
+        }
+    },
+    props: {
+        array: Array
+    },
+    mounted() {
+        this.plotlyRender();
+    },
+    updated() {
+        this.plotlyRender();
+    },
+    methods: {
+        plotlyRender: function () {
+
+            var config = { displaylogo : false,
+                scrollZoom: false,
+                displayModeBar: false,
+                modeBarButtonsToRemove: [
+                    'sendDataToCloud',
+                    'toImage',
+                    'lasso2d',
+                    'select2d',
+                    'pan2d',
+                    'zoomIn2d',
+                    'zoomOut2d',
+                    'autoScale2d',
+                    'hoverCompareCartesian',
+                    'hoverClosestCartesian',        
+                    'toggleSpikelines',
+                    'toggleHover',
+                    'hoverClosestPie',
+                    'hoverClosestGeo',
+                    'zoom3d', 
+                    'pan3d', 
+                    'orbitRotation', 
+                    'tableRotation', 
+                    'handleDrag3d', 
+                    'resetCameraDefault3d', 
+                    'resetCameraLastSave3d', 
+                    'hoverClosest3d'        
+                ]
+            }
+            
+            const layout = {
+                "showlegend": false,
+                "plot_bgcolor" : "transparent",
+                "paper_bgcolor" : "transparent",
+                "xaxis" : {
+                    "autorange": true,
+                    "visible": false,
+                    "showticklabels": false,
+                    "showgrid": false,
+                    "fixedrange": true
+                },
+                "margin": {
+                  "t": 0,
+                  "b": 0,
+                  "l": 0,
+                  "r": 0,
+                  "pad": 10
+                },
+                "height": 25,
+                "width": 60,
+                "yaxis" : {
+                    "autorange": true,
+                    "showgrid": false,
+                    "visible": false,
+                    "showticklabels": false,
+                    "fixedrange": true
+                }
+            };
+            if (Array.isArray(this.array)) {
+                var data = [{
+                    "type": "scatter",
+                    "fill": "tozeroy",
+                    "mode" : "lines",
+                    "line" : {
+                        color: "rgb(37, 42, 102)",
+                        width: 1
+                    },
+                    "fillcolor": "rgb(204, 224, 255)",
+                    "x": Array.from({length: this.array.length-1 }, (_, index) => index + 1),
+                    "y": this.array,
+                    "hoverinfo": "none"
+                }];
+                Plotly.react(this.uid, data, layout, config);
+            }
+        }
+    }
+}
+</script>

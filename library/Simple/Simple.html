@@ -1,0 +1,43 @@
+<div>
+    <div class="px-5 pt-24 mx-auto">
+        <div class="flex flex-col text-center w-full mb-2">
+            <h2 class="text-xs text-indigo-500 tracking-widest font-medium title-font mb-1">EXECUTIVE SUMMARY</h2>
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Twitter Metrics Insights</h1>
+            <p class="lg:w-2/3 mx-auto leading-relaxed text-base">This is an example dashboard built with TopCoat. You can customize almost snything in this layout and it's built for data analysts. Enjoy building your app on top of the modern data stack.</p>
+        </div>
+         <div class="self-center text-6xl font-sans font-semibold rounded-lg text-center content-center h-16">
+            <div class="mt-1.5 text-base h-auto"><slot name="filters-top"></slot></div>
+        </div>
+          <div class="grid grid-cols-1 justify-items-center h-10 font-sans">
+        <div class="bg-indigo-400 self-center h-10 rounded-lg pl-10 pr-10 w-auto">
+            <SimpleNav />
+        </div>
+    </div>
+</div>
+
+  
+
+
+    <div class="bg-white-100 font-sans w-full" style="height: 100%;">
+        <div class="container mx-auto h-full min-h-screen w-full p-4">
+            <div class="w-full">
+
+            <!-- Pin to top right corner -->
+
+                    <div class="relative h-auto w-auto">
+                        <div class="absolute top-0 right-0"><slot name="filters"></slot></div>
+                    </div>
+                
+            </div>
+            
+            <div class="grid grid-cols-4 gap-4 justify-center">
+                    <div class="col-span-4">
+                        <slot></slot>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+</div>

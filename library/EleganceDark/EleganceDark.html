@@ -1,0 +1,116 @@
+<div id="newdesigntwo">
+    <EleganceDarkHeader></EleganceDarkHeader>
+    <div class="overflow-hidden px-10 mx-auto">
+        <CacheControls
+            iconClass='fa fa-redo transform -rotate-45'
+            position='float-right relative my-5'
+            textColor='text-primaryFontColor'
+            buttonColors='text-primaryFontColor bg-primaryButtonColor'
+            minimal />
+    </div>
+    <div class="pr-10 pl-10 mx-auto secondary-fonts">
+        <div class="bg-pageSectionColor p-4 rounded">
+            <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+                <slot name="filters"></slot>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <!-- <div class="grid md:grid-cols-1 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
+                <slot name='stats'></slot>
+            </div> -->
+
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
+                <slot></slot>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+:root {
+    --primary-color: #0F172A;
+    --primary-highlight-color: #6B7280;
+    --primary-border-color: #F4F4F5;
+    --primary-font-color: var(--primary-border-color);
+
+    --secondary-color: #1E293B;
+    --secondary-highlight-color: #ecb280;
+    --secondary-border-color: #6B7280;
+    --secondary-font-color: var(--secondary-border-color);
+
+    --grayscale-one-color: #F3F4F6;
+    --grayscale-two-color: #4B5563;
+    --grayscale-three-color: #9CA3AF;
+    --grayscale-hover-color: #1F2937;
+
+    --filter-background-color: var(--page-section-color);
+    --filter-menu-color: var(--page-section-color);
+    --filter-highlight-color: var(--grayscale-hover-color);
+    --filter-font-highlight-color: var(--secondary-highlight-color);
+    --filter-font-color: var(--primary-font-color);
+    --filter-border-color: var(--grayscale-two-color);
+
+    --page-section-color: var(--secondary-color);
+    --page-background-color: #0F172A;
+
+    --primary-button-color: #3b82f6;
+    --secondary-button-color: transparent;
+
+    --tile-border-color: var(--filter-background-color);
+    --tile-background-color: var(--page-section-color);
+}
+/* Fonts */
+.primary-fonts {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.secondary-fonts {
+    font-family: 'Nunito', sans-serif;
+}
+/* Fonts */
+
+.primaryFilterRadius {
+    @apply rounded;
+}
+
+.secondaryFilterRadius {
+    @apply rounded-3xl;
+}
+
+body {
+    @apply bg-primaryColor;
+}
+
+.tileElement {
+    @apply border-tileBorderColor bg-tileBackgroundColor rounded;
+}
+
+</style>
+
+<script type='visualization/javascript'>
+    export default {
+        data: () => ({
+            filters: false,
+        }),
+        created() {
+            this.checkFilters();
+        },
+        methods: {
+            checkFilters() {
+                this.$nextTick(() => {
+                    const filters = this.$refs.filters;
+                    const childNodes = filters ? filters.childNodes : false;
+
+                    if (childNodes) {
+                        return this.filters = childNodes && childNodes.length > 0;
+                    }
+                }); 
+                return this.filters = true;
+            }
+        }
+    }
+</script>

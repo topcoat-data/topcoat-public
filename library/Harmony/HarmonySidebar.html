@@ -1,0 +1,29 @@
+<nav class="bg-primaryColor md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden shadow-xl flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 md:px-6 px-8">
+    <div class="md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
+        <label
+            @click='showMenu = !showMenu'
+            class="text-secondaryFontColor border-primaryBorderColor block lg:hidden md:hidden cursor-pointer flex items-center px-3 py-2 border rounded text-normal"
+            for="menu-toggle"
+        >
+            <i class="fas fa-bars"></i>
+        </label>
+
+        <div class="w-full block flex-grow lg:hidden mb-4" id="menu" v-if='showMenu'>
+            <HarmonyMenuMobile />
+        </div>
+        <img class="sidebarimage" :width="project.logo.width" :src="project.logo.url" >
+        <div class="md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none shadow absolute top-0 left-0 right-0 z-40 overflow-y-auto overflow-x-hidden h-auto items-center flex-1 rounded hidden"
+            id="example-collapse-sidebar">
+            <HarmonyMenu />
+        </div>
+    </div>
+</nav>
+
+<script type='visualization/javascript'>
+    export default {
+        name: "HarmonySidebar",
+        data: () => ({
+            showMenu: false,
+        })
+    }
+</script>

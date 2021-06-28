@@ -1,0 +1,26 @@
+<div class="flex flex-wrap py-2">
+  <div class="w-full">
+    <nav class="relative flex flex-wrap items-center justify-between navbar-expand-lg rounded">
+      <div class="container justify-items-center mx-auto flex flex-wrap items-center justify-between">
+        
+        <div class="flex lg:flex-grow items-center justify-items-center" id="example-navbar-info">
+          <ul class="flex flex-col lg:flex-row list-none items-center justify-items-center justify-between">
+           
+         <!--  <a v-for="page in project.nav" :class="navSelected(page.url, 'bg-gray-800 text-white px-3 py-2 rounded-md no-underline',
+            'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md no-underline')" :href="'/' + page.url">
+             {{ page.title }}</a>  -->
+           
+            <li v-for="page in project.nav" :class="nav-item">
+              <a :class="navSelected(page.url, 'underline px-3 py-1 flex items-center text-s uppercase leading-snug text-white hover:opacity-75', 'px-3 py-1 flex items-center text-s uppercase leading-snug text-white hover:opacity-75')" :href="'/' + page.url">
+                {{ page.title }}
+              </a>
+            </li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>

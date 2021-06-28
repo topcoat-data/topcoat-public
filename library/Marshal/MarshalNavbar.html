@@ -1,0 +1,38 @@
+<nav class="bg-grayscaleThreeColor shadow-xl top-0 primary-fonts" @mouseleave="showMobileMenu = false">
+    <div class="flex items-center justify-between flex-wrap p-6 max-w-screen-2xl mx-auto sm:px-6 lg:px-8">
+        <img :width="project.logo.width" :src="project.logo.url" >
+        <div class="block md:hidden">
+            <button class="flex items-center px-3 py-2 border rounded text-secondaryFontColor" @click='showMobileMenu = !showMobileMenu'>
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div :class="{ 'hidden': !showMobileMenu }" class="w-full text-center flex-grow md:flex md:items-center lg:w-auto md:flex">
+            <div class="text-sm md:flex-grow w-full">
+                <a
+                v-for="(page, index) in project.nav"
+                :key='index'
+                :href="page.url"
+                class="no-underline bg-secondaryButtonColor block mt-4 md:inline-block md:mt-0 hover:text-primaryHighlightColor lg:mx-5 overflow-auto"
+                :class="navSelected(page.url, 'text-primaryHighlightColor', 'text-secondaryFontColor')">
+                <i :class="page.icon_class" class="fas ml-1"></i> {{ page.title }}
+                </a>
+            </div>
+            <div class="log-btn mt-4 md:mt-0">
+                <a
+                    href='/logout'
+                    class="border-none bg-secondaryButtonColor no-underline flex text-sm px-4 rounded-3xl leading-none border text-primaryFontColor hover:text-primaryHighlightColor mt-4 sm:mt-0 sm:mb-1 focus:outline-none">
+                    <span>Logout</span> <i class="fas fa-sign-out-alt ml-1"></i> 
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script type='visualization/javascript'>
+    export default {
+        name: "MarshalNavbar",
+        data: () => ({
+            showMobileMenu: false,
+        }),
+    }
+</script>

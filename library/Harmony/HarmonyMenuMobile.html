@@ -1,0 +1,13 @@
+<div class="text-sm lg:flex-grow sidebarmenu">
+    <a
+        class="block mt-2 py-4 lg:inline-block lg:mt-0  mr-4 text-secondaryFontColor"
+        v-for='page in project.nav'
+        :href="'/' + page.url"
+    >
+        <i :class='page.icon_class' class="opacity-75 mr-2 text-sm fas"></i>{{ page.title }}
+    </a>
+    <a href='/logout' class="block mt-2 py-4 lg:inline-block lg:mt-0 mr-4 text-secondaryFontColor bg-primaryButtonColor">
+        <i class="fas fa-power-off mr-1"></i>
+        Log out
+    </a>
+</div>

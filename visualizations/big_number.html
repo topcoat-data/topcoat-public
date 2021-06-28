@@ -1,0 +1,86 @@
+<Tile :hideBackground='metadata.no_background'>
+    <div class='relative p-4'>
+        <div class="text-sm text-primaryFontColor font-bold mb-3">
+            {{ metadata.title }}
+        </div>
+        <div class="font-light lg:text-4xl md:text-3xl text-2xl my-4 text-primaryFontColor">
+            {{ value || '-' }}
+        </div>
+        <div class="relative flex" v-if='previous'>
+            <div class="text-xl text-primaryFontColor font-bold w-full" v-if='change'>
+                <span class="border border-secondaryBorderColor text-primaryFontColor text-xs mr-1 py-1 px-3 rounded-full">
+                    <i
+                        class="fas"
+                        :class='iconClass'
+                        :style='{color: greenPositive ? "#6EE7B7" : "#F87171"}'
+                    ></i>
+                </span>
+                <span v-if='value !== previous' class="opacity-70">
+                    {{ increased ? '+' : '-' }}{{ change }}
+                </span>
+            </div>
+            <div class="text-xl font-normal text-primaryFontColor opacity-70">
+                {{ previous || '-' }}
+            </div>
+        </div>
+    </div>
+</Tile>
+<script type='visualization/javascript'>
+    export default {
+        name: 'BigNumber',
+        props: {
+            total: Number,
+            user: Number,
+            label: String,
+            borderLess: Boolean,
+            hideTile: Boolean,
+        },
+        data: () => ({
+            auto_height: true,
+            increased: false,
+            iconClass: 'fa-minus',
+            greenPositive: false,
+        }),
+        computed: {
+            value() {
+                return this.fetchColumn('value');
+            },
+            previous() {
+                return this.fetchColumn('previous');
+            },
+            change() {
+                return this.fetchColumn('change');
+            }
+        },
+        methods: {
+            fetchColumn(name) {
+                try {
+                    const columnValue = this.getColumn(name);
+                    return columnValue[0];
+                } catch (e) { console.log(e) }
+                return null; // If null then column does not exist.
+            },
+            getNumbersPerformance() {
+                const rows = this.rows;
+                if (rows && rows.length) {
+                    const previous = rows[0]['previous'];
+                    const value = rows[0]['value'];
+                    if (previous && value) {
+                        const valueNumber = value.value;
+                        const previousNumber = previous.value;
+                        this.increased = valueNumber > previousNumber;
+                        this.greenPositive = this.metadata.green_positive;
+                        if (valueNumber !== previousNumber) {
+                            this.iconClass = valueNumber > previousNumber ? 'fa-chevron-up' : 'fa-chevron-down';
+                        }
+                    }
+                }
+            }
+        },
+        watch: {
+            rows() {
+                this.getNumbersPerformance();
+            },
+        }
+    }
+</script>

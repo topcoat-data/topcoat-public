@@ -1,0 +1,68 @@
+<div class="bg-primaryColor primary-fonts">
+  <div class="text-secondaryFontColor md:items-center px-2 md:px-40">        
+      <div class="flex justify-between items-center h-20">
+        <div class="flex-shrink-0">
+          <img :width="project.logo.width" :src="project.logo.url" >
+        </div>
+        <div>
+          <p class="text-xl text-secondaryFontColor">{{ page.title }}</p>
+        </div>
+        <div class="hidden md:block">
+          <a href="/logout" class="hover:text-secondaryFontColor">
+            <i class="fa fa-user mr-2"></i>
+            <span>Log Out</span>
+          </a>
+        </div>
+        <div class="text-secondaryFontColor block md:hidden p-2" @click="barToggle">
+          <i class="fa fa-bars text-lg justify-end float-right border border-borderPrimaryColor cursor-pointer px-2"></i>
+        </div>
+      </div>
+  </div>
+  <div class="bg-secondaryColor text-secondaryFontColor px-5 md:grid" :class='isVisible ? "block" : "hidden"'>
+    <div
+      class="md:min-h-14 relative left-0 right-0 m-auto w-max items-center grid sm:grid-cols-3 md:grid-cols-4 gap-1"
+      :class="gridRange"
+    >
+      <a
+        v-for="page in project.nav"
+        :class="navSelected(page.url, 'bg-secondaryHighlightColor', 'bg-secondaryButtonColor')"
+        :href="'/' + page.url"
+        class="hover:text-secondaryFontColor px-2 py-4 h-full flex items-center justify-center hover:bg-secondaryHighlightColor">
+
+        <i :class="'icon fas text-secondaryFontColor text-base ' + page.icon_class" />
+        <span class="fonst-small pl-2">{{ page.title }} </span>
+      </a>
+      <a href="/logout" class="hover:text-secondaryFontColor px-2 py-4 h-full flex items-center justify-center bg-secondaryButtonColor hover:bg-secondaryHighlightColor md:hidden">
+        <i class="fa fa-user"></i>
+        <span class="pl-2">Log Out</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type='visualization/javascript'>
+  export default {
+    data: () => ({
+      isVisible: false,
+      gridRange: 'lg:grid-cols-8',
+    }),
+    mounted() {
+      this.getNavbarGrids();
+    },
+    methods: {
+      barToggle() {
+        this.isVisible = !this.isVisible
+      },
+      getNavbarGrids() {
+        const navItems = this.project.nav;
+        if (navItems && navItems.length) {
+          const range = navItems.length < 10 ? navItems.length : 8;
+          this.gridRange = `lg:grid-cols-${range}`;
+          console.log(this.gridRange);
+          return;
+        }
+        this.gridRange = 'lg:grid-cols-8';
+      }
+    }
+  }
+</script>

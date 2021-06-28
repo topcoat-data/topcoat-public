@@ -1,0 +1,21 @@
+<form class='flex relative h-9 secondaryFilterRadius'>
+    <span class="z-10 font-normal text-center text-filterFontColor absolute right-6 top-1 rounded text-base items-center justify-center">
+        <i class='text-sm' :class="searchIcon ? searchIcon : 'fas fa-search'"></i>
+    </span>
+    <input
+        type="text"
+        placeholder="Search..."
+        class="secondaryFilterRadius w-full text-filterFontColor bg-filterBackgroundColor border border-filterBorderColor flex justify-around items-center pl-4 focus:outline-none hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+        v-model='query'
+    />
+</form>
+
+<script type='visualization/javascript'>
+    export default {
+        name: "SearchFilter",
+        data: () => ({
+            query: '',
+        }),
+        props: ['searchIcon'],
+    }
+</script>

@@ -1,0 +1,194 @@
+<!-------------------------- begin search filter ---------------------->
+
+<!--------- for harmony --------->
+<form>
+    <span class="icon-search">
+        <i class="fas fa-search text-sm"></i>
+    </span>
+    <input type="text" placeholder="Search..." class="primary-input-control"/>
+</form>
+
+<!--------- for marshal --------->
+<form>
+    <span class="icon-search">
+        <i class="fas fa-search text-sm"></i>
+    </span>
+    <input type="text" placeholder="Search..." class="secondary-input-control"/>
+</form>
+<!-------------------------- begin select filter ---------------------->
+<!--------- for marshal --------->
+<div class="relative">
+    <div class="relative mb-1">
+        <div class="secondary-select">
+            <button type="button" class="secondary-select-option">
+                <div class="flex">
+                    <div class="input-placeholder">
+                        Select...
+                    </div>
+                    <!---->
+                </div>
+            </button>
+            <div class="select-arrow">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </div>
+    <div class="primary-select-menu">
+        <button type="button" class="primary-select-menu-item">
+            <div class="menu-label">
+                <i class="fas fa-user-cog mr-3"></i>Administrator
+            </div>
+            <!---->
+        </button>
+        <button type="button" class="primary-select-menu-item">
+            <div class="menu-label">
+                <i class="fas fa-user-edit mr-3"></i> Editor
+            </div>
+            <!---->
+        </button>
+    </div>
+</div>
+
+<!-- begin multiselect -->
+<div class="relative" @mouseleave='showMenu = false'>
+    <div class="secondary-ms" @click='showMenu = true'>
+        <button type="button" class="secondary-ms-option">
+            <div class="multi-select-items">
+                <span v-if='!selectedItems || !selectedItems.length'>
+                    Select...
+                </span>
+                <div
+                    class="multi-menu-items"
+                    v-for="item in selectedItems"
+                    :key="item.key"
+                    @click="removeItem(item)"
+                >
+                    {{ item.label }}
+                    <i class="fas fa-times ml-1"></i>
+            </div>
+            </div>
+        </button>
+        <div class="select-arrow">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    <div
+        class="primary-select-menu"
+        v-if="showMenu"
+    >
+        <button
+            type="button"
+            class="primary-select-menu-item"
+            v-for="item in menu"
+            :key="item.key"
+            @click='selectItem(item)'
+        >
+            <div class="menu-label">
+                {{ item.label }}
+            </div>
+            <!---->
+        </button>
+    </div>
+</div>
+<!-- end multiselect -->
+
+
+<!-- begin toggle -->
+<div class="flex justify-center mt-2">
+    <p class="mr-1">
+        {{ getText() }}
+    </p>
+    <div class="secondary-toggle"
+        :class="[toggle ? 'bg-green-400' : 'bg-gray-400']"
+    >
+        <label for="toggle" class="secondary-toggle-label"
+            :class="[toggle ? 'translate-x-full border-green-400' : 'translate-x-0 border-gray-400']"></label>
+        <input type="checkbox" id="toggle" name="toggle" class="secondary-toggle-input" @click="toggle = !toggle">
+    </div>
+</div>
+<!-- end toggle -->
+
+<style>
+/* ---- gradient button ---- */
+.btn-gradient {
+    @apply bg-gradient-to-r from-green-400 to-blue-500 px-4 py-2 rounded my-2 font-normal text-white hover:from-blue-500 hover:to-green-400 focus:outline-none;
+}
+/* ---- primary-search ---- */
+.primary-input-control {
+    @apply pr-3 py-1 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm h-11 outline-none w-full pl-10;
+}
+.secondary-input-control {
+    @apply px-3 py-1 placeholder-gray-400 text-gray-700 relative bg-white rounded-3xl text-sm h-11  outline-none focus:outline-none w-full pl-10;
+}
+.icon-search {
+    @apply z-10 font-normal text-center text-gray-400 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3;
+}
+/* ---- primary-select ---- */
+.primary-select {
+    @apply relative block appearance-none h-11 w-full bg-white text-gray-700 rounded leading-tight focus:outline-none focus:bg-gray-100 focus:border-gray-500;
+}
+.primary-select-option {
+    @apply relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 rounded-b-none;
+}
+.primary-multi-option {
+    @apply relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 rounded-b-none;
+}
+.input-placeholder {
+    @apply text-sm text-gray-600;
+}
+.primary-select-menu {
+    @apply absolute w-full z-50 block appearance-none bg-gray-200 text-gray-600 leading-tight focus:outline-none focus:bg-gray-100 focus:border-gray-500;
+}
+.primary-select-menu-item {
+    @apply relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none focus:bg-gray-800 focus:text-white border-b border-gray-100 hover:bg-gray-500 hover:text-white;
+}
+.multi-select-items {
+    @apply flex overflow-x-auto w-72 px-2 overflow-y-hidden;
+}
+.multi-menu-items {
+    @apply text-xs rounded-3xl bg-gray-800 text-white px-2 py-1 mr-1 min-w-max;
+}
+.select-arrow {
+    @apply pointer-events-none absolute top-4 right-3 flex text-sm px-2 text-gray-500;
+}
+.menu-label {
+    @apply text-sm;
+}
+.secondary-select {
+    @apply relative block h-11 w-full appearance-none bg-white text-gray-700 leading-tight py-2 rounded-3xl focus:outline-none focus:bg-gray-100 focus:border-gray-500;
+}
+.secondary-select-option {
+    @apply relative px-4 py-1 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 rounded-b-none;
+}
+.secondary-select-menu {
+    @apply absolute w-full z-10 block appearance-none bg-gray-200 text-gray-600 leading-tight focus:outline-none focus:bg-gray-100 focus:border-gray-500;
+}
+.secondary-select-menu-item {
+    @apply relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none focus:bg-gray-800 border-b-2 border-gray-100 focus:text-green-400 hover:bg-gray-800 hover:text-white;
+}
+.secondary-ms {
+    @apply relative block appearance-none h-11 w-full bg-white text-gray-700 rounded-3xl leading-tight focus:outline-none focus:bg-gray-100 focus:border-gray-500;
+}
+.secondary-ms-option {
+    @apply relative px-2 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-blue-300 rounded-b-none;
+}
+
+.primary-toggle {
+    @apply relative rounded-full w-12 h-6 transition duration-200 ease-linear;
+}
+.primary-toggle-label {
+    @apply absolute left-0 bg-white border-2 mb-2 w-6 h-6 rounded-full transition transform duration-100 ease-linear cursor-pointer;
+}
+.primary-toggle-input {
+    @apply appearance-none w-full h-full focus:outline-none;
+}
+.secondary-toggle {
+    @apply relative rounded-full w-40 h-11 transition duration-200 ease-linear;
+}
+.secondary-toggle-label {
+    @apply absolute left-0 bg-gray-100 border-4 ml-1 mt-1 w-9 h-9 rounded-full transition transform duration-100 ease-linear cursor-pointer translate-x-0 border-gray-400 translate-x-0 border-gray-400;
+}
+.secondary-toggle-input {
+    @apply appearance-none w-full h-full focus:outline-none;
+}
+</style> 

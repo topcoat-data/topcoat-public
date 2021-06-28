@@ -1,0 +1,61 @@
+<plotly />
+
+<script type='visualization/figure'>
+{
+    "data": [
+        {
+            "type": "pie",
+            "marker" : {
+                {% set colors = var('series_colors') %}
+                {% if colors and colors|length %}
+                "colors" : {{ colors | tojson }}
+                {% endif %}
+            },
+            "labels": {{ column_data(dimensions[0]) }},
+            "values": {{ column_data(measures[0]) }}
+        }   
+    ],
+    "layout" : {
+        "hovermode": "x unified",
+        "plot_bgcolor" : "rgba(0,0,0,0)",
+        "paper_bgcolor" : "rgba(0,0,0,0)",
+        "font" : {
+            "family": "Open Sans",
+            "color" : "161F3D",
+            "size": 8
+        },
+        "xaxis" : {
+            "tickfont" : {
+                "size" : 9
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "yaxis" : {
+            "tickfont" : {
+                "size" : 11
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "yaxis" : {
+            "tickfont" : {
+                "size" : 11
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "autosize": true,
+        "automargin": true,
+        "hovermode": "x unified",
+        "legend" : {
+            "x": 0.01,
+            "y": 1.1
+        },
+        "margin" : {
+          "l" : 40,
+          "r" : 40,
+          "t":40,
+          "b":40,
+          "pad": 0
+       }
+    }
+}
+</script>

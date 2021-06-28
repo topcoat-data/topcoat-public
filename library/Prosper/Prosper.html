@@ -1,0 +1,105 @@
+{{ config(
+        vars = {
+            "line_colors": [ "lightgray", "lightgray", "lightgray" ],
+            "bar_colors": [ "#fdba74", "#818cf8" ],
+            "fill_colors": [ "#fdba74", "#818cf8" ]
+        }
+   )
+}}
+
+<div class="flex bg-pageBackgroundColor" > 
+    <ProsperSideBar></ProsperSideBar>
+    
+    <div class="w-full ml-10 md:ml-auto">
+        <ProsperNavBar></ProsperNavBar>
+
+        <div class="overflow-hidden h-80 bg-secondaryColor pr-10 pl-10 mx-auto">
+            <CacheControls
+                iconClass='fa fa-redo transform -rotate-45'
+                position='float-right relative top-10'
+                textColor='text-secondaryFontColor'
+                buttonColors='text-secondaryFontColor bg-primaryButtonColor'
+                minimal />
+        </div>     
+
+        <div class="pr-10 pl-10 mx-auto -mt-60 container mx-auto h-full ">
+            <div class="mb-2 text-sm text-secondaryFontColor">Filters</div>
+            <div class="bg-pageSectionColor p-4 rounded">
+                <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+                    <slot name="filters"></slot>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
+                    <slot name='stats'></slot>
+                </div> -->
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
+                    <slot></slot>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+:root {
+    --primary-color: #FFFFFF; 
+    --primary-highlight-color: #EFF6FF; 
+    --primary-border-color: var(--grayscale-one-color); 
+    --primary-font-color: #3F3F46; 
+
+    --secondary-color: #0F766E; 
+    --secondary-highlight-color: var(--secondary-color); 
+    --secondary-border-color: var(--grayscale-two-color); 
+    --secondary-font-color: var(--primary-color); 
+
+    --grayscale-one-color: #E4E4E7; 
+    --grayscale-two-color: #71717A;
+    --grayscale-three-color: #27272A; 
+    --grayscale-hover-color: #F4F4F5; 
+
+    --filter-background-color: #FFFFFF;
+    --filter-menu-color: var(--filter-background-color);
+    --filter-highlight-color: var(--primary-highlight-color);
+    --filter-font-highlight-color: #00bfa5;
+    --filter-font-color: var(--primary-font-color); 
+    --filter-border-color: var(--primary-border-color); 
+
+    --page-section-color: var(--primary-color);
+    --page-background-color: #F4F4F5;
+
+    --primary-button-color: #3b82f6;
+    --secondary-button-color: transparent;
+
+    --tile-border-color: var(--primary-border-color);
+    --tile-background-color: var(--primary-color);
+}
+
+.primaryFilterRadius {
+    @apply rounded;
+}
+
+.secondaryFilterRadius {
+    @apply rounded-3xl;
+}
+
+/* Fonts */
+.primary-fonts {
+    font-family: 'Poppins', sans-serif;
+}
+
+.secondary-fonts {
+    font-family: 'Nunito', sans-serif;
+}
+/* Fonts */
+
+.tileElement {
+    @apply border-tileBorderColor bg-tileBackgroundColor rounded;
+}
+
+
+</style>

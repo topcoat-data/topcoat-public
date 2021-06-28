@@ -1,0 +1,6 @@
+layers/*
+pages/*
+project/*
+static/*
+dbt_gen/*
+*.yml

@@ -1,0 +1,130 @@
+<div class="primaryFilterRadius flex flex-col md:w-56 w-full">
+    <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+    <div class="h-5" v-else></div>
+    <div class="h-9 relative">
+        <span class="z-10 font-normal text-center text-filterFontColor absolute right-6 top-1 rounded text-base items-center justify-center">
+            <i class='text-sm fas fa-search' v-if='!loading'></i>
+            <a-icon type="loading" v-else />
+        </span>
+        <input
+            type="text"
+            :placeholder="metadata.placeholder || 'Search'"
+            class="table-search-input h-full primaryFilterRadius w-full text-filterFontColor bg-filterBackgroundColor border border-filterBorderColor flex justify-around items-center pl-4 focus:outline-none"
+            v-model='tableQuery'
+            @input='search'
+            @keyup='ifEscapePressed'
+        />
+    </div>
+    <!-- @mouseleave='tableRows = []' -->
+    <div 
+        @mouseleave='tableRows = []'
+        v-if='tableRows && tableRows.length'
+        class="overflow-auto search-table shadow-xl bg-filterBackgroundColor border-filterBorderColor border text-filterFontColor mt-2 rounded p-4 absolute left-0 top-12 z-50 max-h-48 w-max overflow-auto">
+        <div
+            class="hover:bg-filterHighlightColor hover:text-filterFontHighlightColor p-1 cursor-pointer rounded flex justify-between w-max"
+            v-for='(row, index) in tableRows'
+            @click='select(row)'
+        >
+            <div
+                v-for='(column, colIndex) in columns'
+                class="mx-3 w-36"
+                :key='colIndex'
+                :id='column+"-"+index'
+            >
+                {{ highlightText(row[column].rendered, column+"-"+index) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    data: () => ({
+        text: '',
+        text_internal: null,
+        tableRows: [],
+        tableQuery: '',
+        is_filter: true,
+        names: '',
+        locations: '',
+    }),
+    computed: {
+        selected: {
+            get() {
+                return this.text_internal;
+            },
+            set(value) {
+                this.text_internal = encodeURI(value);
+                this.setFilterValue("selected", this.text_internal, true);
+            }
+        },
+    },
+    methods: {
+        search() {
+            const text = this.tableQuery ? this.tableQuery.toLowerCase() : '';
+            const rows = this.rows;
+            this.tableRows = rows.filter(r => {
+                for (let column of this.columns) {
+                    let value = r[column];
+                    if (value) {
+                        value = value.rendered.toLowerCase();
+                        if (value.includes(text)) {
+                            return true;
+                        }
+                    }
+                }
+            })
+            // this.adjustElement();
+        },
+        adjustElement() {
+            const element = document.querySelector('.search-table');
+            const input = document.querySelector('.table-search-input');
+            if (element) {  
+                const bounds = element.getBoundingClientRect();
+                const inputBound = input.getBoundingClientRect();
+                if (bounds.right > (window.innerWidth || document.documentElement.clientWidth)) {
+                    const leftMargin = inputBound.right;
+                    const width = element.offsetWidth;
+                    if (leftMargin && width) {
+                        element.style.left = `${leftMargin - width}px`;
+                        element.style.top = inputBound.top + 'px';
+                        element.style.position = 'fixed';
+                    }
+                }
+            }
+        },
+        highlightText(text, id) {
+            const element = document.querySelector(`#${id}`);
+            if (element) {
+                const tableQuery = this.tableQuery.toLowerCase();
+                if (tableQuery) {
+                    const highlighted = text.toLowerCase().replace(tableQuery, `<mark>${tableQuery}</mark>`)
+                    return element.innerHTML = highlighted;
+                }
+            }
+            return text;
+        },
+        onVisualizationInit() {
+            const initial_value = this.getFilterValue("selected");
+            this.text_internal = initial_value || '';
+            this.setFilterValue("selected", encodeURI(this.text_internal), true);
+            return this.text_internal;
+        },
+        select(row) {
+            const selected = this.selected;
+            const columns = this.columns;
+            if (columns && columns.length) {
+                this.selected = row[this.metadata.url_column].rendered;
+            }
+            this.tableRows = [];
+            this.tableQuery = '';
+        },
+        ifEscapePressed(e) {    
+            if (e.keyCode === 27) {
+                this.tableRows = [];
+                this.tableQuery = '';
+            }
+        }
+    },
+}
+</script>

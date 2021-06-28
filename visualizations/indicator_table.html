@@ -1,0 +1,20 @@
+<div style="padding: 20px;">
+    <div style="font-weight: 700; font-size: 16px;">{{ metadata.title }}</div>
+    <a-divider style="margin-top: 13px; margin-bottom: 13px; height: 2px;" />
+        <div :style="{ height: height- 108 + 'px', overflowY: 'scroll' }">
+            <table style="font-size: 13px; width: 100%">
+                <tr v-for="row in rows">
+                    <td style="text-transform: capitalize; padding-bottom: 12px;">{{ row[ dimensions[0]].rendered }}</td>
+                    <td style="padding-bottom: 12px;" align="right">{{ row[measures[0]].rendered }}</td>
+                    <td align="right" style="opacity: 0.4; padding-bottom: 12px;">{{ row[ measures[1]].rendered }}</td>
+                    <td v-if="row[measures[2] ].value > 0" align="right" :style="{'color': row.invert_color ? '#BD3939' : '#6DBB5C', 'paddingBottom': '12px'}"><a-icon type="up-square" theme="filled" style="padding-left: .6rem;" /></td>
+                    <td v-if="row[measures[2] ].value < 0" align="right" :style="{'color': row.invert_color ? '#6DBB5C': '#BD3939', 'paddingBottom': '12px'}"><a-icon type="down-square" style="padding-left: .6rem;" theme="filled"/></td>
+                    <td v-if="row[measures[2] ].value == 0" align="right" style="padding-bottom: 12px;"></td>
+                    <td v-if="row[measures[2] ].value > 0" align="right" :style="{'color': row.invert_color ? '#BD3939' : '#6DBB5C', 'paddingBottom': '12px'}">{{ row[measures[2]].value }}%</td>
+                    <td v-if="row[measures[2] ].value < 0" align="right" :style="{'color': row.invert_color ? '#6DBB5C': '#BD3939', 'paddingBottom': '12px'}">{{ row[measures[2]].value }}%</td>
+                    <td v-if="row[measures[2] ].value == 0" align="right" style="padding-bottom: 12px;">{{ row[ measures[2]].value }}%</td>
+                </tr>
+            </table>
+        </div>
+    <a-divider style="margin-top: 13px; margin-bottom: 0px; height: 2px;" />
+</div>

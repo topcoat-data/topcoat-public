@@ -1,0 +1,106 @@
+<plotly />
+
+<script type='visualization/figure'>
+{
+    {% set line_colors = var('line_colors') %}
+    {% set fill_colors = var('fill_colors') %}
+    "data": [
+        {% for measure in measures %}
+        {
+            "type": "scatter",
+            "mode": "lines",
+            "line": {
+                {% if line_colors %}
+                "color": "{{ line_colors[loop.index-1] }}",
+                {% else %}
+                "color" : "rgba(29, 34, 96,1)",
+                {% endif %}
+                "shape": "spline",
+                "smoothing": 1.3,
+                "width": 1
+            },
+            "fill" : "tozeroy",
+            {% if fill_colors %}
+            "fillcolor": "{{ fill_colors[loop.index-1] }}",
+            {% else %}
+            "fillcolor": "rgb(236, 238, 245)",
+            {% endif %}
+            {% if column_tag(measure, 'yaxis_right') %}
+            "yaxis": "y2",
+            {% else %}
+            "yaxis": "y1",
+            {% endif %}
+            "xaxis": "x2",
+            "marker" : {
+                {% if line_colors %}
+                "color" : "{{ line_colors[loop.index-1] }}",
+                {% else %}
+                "color" : "rgba(29, 34, 96,1)",
+                {% endif %}
+                "size": 3
+            },
+            "line_shape": "spline",
+            "name": "{{ column_metadata(measure,'label') }}",
+            "x": {{ column_data(dimensions[0]) }},
+            "y": {{ column_data(measure) }}
+        }{% if not loop.last %},{%endif%}
+        {% endfor %}   
+    ],
+    "layout" : {
+        "hovermode": "x unified",
+        "plot_bgcolor" : "rgba(0,0,0,0)",
+        "paper_bgcolor" : "rgba(0,0,0,0)",
+        "font" : {
+            "family": "Open Sans",
+            {% if var('label_color') %}
+            "color" : "{{ var('label_color') }}",
+            {% else %}
+            "color" : "161F3D",
+            {% endif %}
+            "size": 8
+        },
+        "xaxis" : {
+            "tickfont" : {
+                "size" : 9
+            }
+        },
+        "yaxis" : {
+            "overlaying": "y2",
+            "tickfont" : {
+                "size" : 9
+            },
+            "side": "left",
+            {% if var('grid_color') %}
+            "gridcolor" : "{{ var('grid_color') }}"
+            {% else %}
+            "gridcolor": "rgba(220, 220, 220,0.3)"
+            {% endif %}
+        },
+        "yaxis2" : {
+            "showgrid": false,
+            "side": "right",
+            "tickfont" : {
+                "size" : 9
+            },
+            {% if var('grid_color') %}
+            "gridcolor" : "{{ var('grid_color') }}"
+            {% else %}
+            "gridcolor": "rgba(220, 220, 220,0.3)"
+            {% endif %}
+        },
+        "autosize": true,
+        "automargin": true,
+        "legend" : {
+            "x": 0.01,
+            "y": 1.1
+        },
+        "margin" : {
+          "l" : 40,
+          "r" : 40,
+          "t":40,
+          "b":40,
+          "pad": 10
+       }
+    }
+}
+</script>

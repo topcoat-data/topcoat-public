@@ -1,0 +1,93 @@
+<!----------------------- begin big number ----------------------->
+<div class="big-number">
+    $3000
+</div>
+
+<div class="big-number-hyt-borderless">
+    $3000
+</div>
+
+<div class="big-number-mlt-borderless">
+    $3000
+</div>
+
+<!------------------------- begin label ------------------->
+<div class="primary-tile-label">
+    Bonus Overview
+</div>
+
+<div class="secondary-tile-label">
+    Bonus Overview
+</div>
+
+<!------------------------- begin primary optional fields -------------------> 
+<div class="optional-fields">
+    <div class="primary-percentage">
+        <span class="primary-cent-icon">
+            <i class="fas fa-chevron-down"></i>
+        </span>
+        -2%
+    </div>
+    <div class="primary-prev-value">
+        $2800
+    </div>
+</div>
+
+<!------------------------- begin secondary optional fields -------------------> 
+<div class="optional-fields">
+    <div class="secondary-percentage">
+        <span class="secondary-cent-icon">
+            <i class="fas fa-chevron-down"></i>
+        </span>
+        -2%
+    </div>
+    <div class="secondary-prev-value">
+        $2800
+    </div>
+</div>
+
+
+
+<style>
+    .big-number {
+        @apply font-light text-gray-200 lg:text-4xl md:text-3xl text-2xl my-4;
+    }
+    .big-number-hyt-borderless {
+        @apply font-light text-blue-700 lg:text-4xl md:text-3xl text-2xl my-4;
+    }
+    .big-number-mlt-borderless {
+        @apply font-light text-green-500 lg:text-4xl md:text-3xl text-2xl my-4;
+    }
+
+    /* ---------------- label ---------------- */
+    .primary-tile-label {
+        @apply text-sm text-gray-200 font-bold mb-3;
+    }
+    .secondary-tile-label {
+        @apply text-sm text-gray-800 font-bold mb-3;
+    }
+
+    /* ---------------- primary optional fields -------- */
+    .optional-fields {
+        @apply relative flex;
+    }
+    .primary-percentage {
+        @apply text-xl text-gray-200 font-bold w-full;
+    }
+    .primary-cent-icon {
+        @apply bg-gray-200 text-gray-800 text-xs mr-1 py-1 px-3 rounded-full hover:bg-white;
+    }
+    .primary-prev-value {
+        @apply text-xl font-normal text-gray-200;
+    }
+    /* ---------------- secondary optional fields -------- */
+    .secondary-percentage {
+        @apply text-xl text-gray-800 font-bold w-full;
+    }
+    .secondary-cent-icon {
+        @apply bg-gray-700 text-gray-200 text-xs mr-1 py-1 px-3 rounded-full hover:bg-gray-800;
+    }
+    .secondary-prev-value {
+        @apply text-xl font-normal text-gray-800;
+    }
+</style>

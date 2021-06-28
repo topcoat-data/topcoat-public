@@ -1,0 +1,21 @@
+<a-icon class='spinner-loader' type="loading" :style='{position: position || "absolute"}' style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 90; font-size: 24px;" spin />
+
+<style>
+    .spinner-loader svg,
+    .anticon svg {
+        fill: var(--primary-font-color) !important;
+    }
+    .anticon-info-circle {
+        @apply relative bottom-3;
+    }
+
+    .anticon-loading {
+        
+    }
+</style>
+
+<script type='visualization/javascript'>
+export default {
+    props: ['position'],
+}
+</script>

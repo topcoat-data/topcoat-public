@@ -1,0 +1,107 @@
+<div class="relative md:w-56 w-full" @mouseleave='showMenu = false'>
+    <div class="relative" @click="showMenu = !showMenu">
+        <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+        <div class="h-5" v-else></div>
+        <div class="relative block px-3 border-filterBorderColor border appearance-none h-9 w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none primaryFilterRadius overflow-hidden">
+            <button type="button" class="relative text-left py-2 inline-flex w-full focus:z-10 focus:outline-none primaryFilterRadius">
+                <div class="flex">
+                    <div class="input-placeholder">
+                        {{ selected || "Select..." }}
+                    </div>
+                </div>
+            </button>
+            <div class="pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
+                <i class="fas fa-chevron-down" v-if='!loading'></i>
+                <a-icon type="loading" v-else />
+            </div>
+        </div>
+    </div>
+    <div
+        class="shadow-xl absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto max-h-56 overflow-auto"
+        v-if="showMenu"
+        @mouseleave="showMenu = false"
+    >
+        <button
+            type="button"
+            class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+            v-for="item, index in options"
+            :key="index"
+            @click='selectItem(index)'
+        >
+            <div class="menu-label">
+                <!--i v-if='item.icon' :class='item.icon' class="fas mr-3"></i-->
+                {{ labels[index] }}
+            </div>
+        </button>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    data() {
+      return {
+          showMenu: false,
+          selected_internal: null,
+          is_filter: true,
+          selected: '',
+      }
+    },
+    computed: {
+      selectedUrlParam: {
+        get() {
+          return this.selected_internal;
+        },
+        set(value) {
+          this.selected_internal = value;
+          this.setFilterValue("dropdown", this.selected_internal, true);
+          this.showMenu = false;
+        }
+      },
+      options() {
+          const column_name = this.findColumnByTag('options');
+          if (column_name) return this.getColumn(column_name);
+      },
+      labels() {
+          const column_name = this.findColumnByTag('labels');
+          if (column_name) return this.getColumn(column_name);
+      }
+    },
+    methods: {
+      selectItem(index) {
+        this.selected = this.labels[index];
+        this.selectedUrlParam = this.options[index];
+      },
+      onVisualizationInit() {
+          // See if the page was loaded with a url param value
+          const initial_value = this.getFilterValue("dropdown");
+          const option_column = this.findColumnByTag('options');
+          const label_column = this.findColumnByTag('labels');
+
+          if (initial_value) {
+            if (this.rows) {
+              const selectedValue = this.rows.filter(op => {
+                return op[option_column].value == initial_value;
+              });
+              this.selected = selectedValue.length ? selectedValue[0][label_column].rendered : this.labels[0];
+              this.selected_internal = initial_value;
+              this.setFilterValue("dropdown", this.selected_internal, true);
+            }
+          } else if (this.options.length) {
+            this.selected_internal = this.options[0];
+            this.setFilterValue("dropdown", this.selected_internal, true);
+            return this.selected_internal;
+          } else {
+            return null;
+          }
+      }
+    },
+    watch: {
+      rows: {
+        handler() {
+          this.onVisualizationInit();
+        },
+        deep: true,
+      }
+    }
+}
+</script>

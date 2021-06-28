@@ -1,0 +1,140 @@
+<div class="relative md:w-56 w-full" :class='expanded ? "h-14" : ""' @mouseleave='close'>
+    <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+    <div class="h-5" v-else></div>
+    <div
+        class="block border-filterBorderColor border appearance-none w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none primaryFilterRadius overflow-hidden"
+        @click='showMenu = true'
+        :class='expanded ? "absolute h-max z-50" : "relative h-9"'
+        ref='container'
+    >
+        <button
+            type="button"
+            class="relative left-0 right-0 w-full pl-2 py-2 inline-flex rounded-lg focus:z-10 focus:outline-none rounded-b-none overflow-hidden"
+            @mouseenter='expanded = true'
+        >
+            <div class="flex relative overflow-hidden h-full flex-wrap">
+                <div v-if='!selectedItems || !selectedItems.length' class="text-left w-auto">
+                    Select Multiple...
+                </div>
+                <div
+                    class="text-xs rounded-3xl bg-filterHighlightColor text-filterFontHighlightColor px-2 my-1 min-w-max h-full"
+                    v-for="(item, index) in selectedItems"
+                    :key="index"
+                    @click="removeItem(item, index)"
+                >
+                    {{ item.name }}
+                    <i class="fas fa-times ml-1"></i>
+                </div>
+            </div>
+        </button>
+        <div class="w-1/12 pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
+            <i class="fas fa-chevron-down" v-if='!loading'></i>
+            <a-icon type="loading" v-else />
+        </div>
+    </div>
+    <div
+        class="shadow-xl absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto"
+        v-if="showMenu"
+        :style='{"margin-top": menuMargin}'
+    >
+        <button
+            type="button"
+            class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+            v-for="(item, index) in menu"
+            :key="index"
+            @click='selectItem(item, index)'
+            v-if='!selectedItems.includes(item)'
+        >
+            <div class="text-sm h-max" >
+                {{ item.name }}
+            </div>
+            <!---->
+        </button>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+    export default {
+        name: "MultiSelect",
+        data: () => ({
+            showMenu: false,
+            selected_internal: '',
+            menu: [],
+            expanded: false,
+            menuMargin: '0px',
+            is_filter: true,
+        }),
+        methods: {
+            selectItem(item, index) {
+                const selectedItems = this.selectedItems || [];
+                const { id, name } = item;
+                selectedItems.push({ id, name });
+                this.selectedItems = selectedItems;
+            },
+            removeItem(selectedItem, index) {
+                let selectedItems = this.selectedItems || [];
+                selectedItems = this.selectedItems.filter(item => item.id !== selectedItem.id);
+                this.selectedItems = selectedItems;
+            },
+            onVisualizationInit() {
+                const initial_value = this.getFilterValue("selected_items");
+                this.selected_internal = initial_value || '';
+                this.setFilterValue("selected_items", this.selected_internal, true);
+                return this.selected_internal;
+            },
+            getMenuMargin() {
+                this.$nextTick(() => {
+                    const container = this.$refs.container;
+                    if (container) {
+                        const height = container.clientHeight;
+                        return this.menuMargin = `${height}px`;
+                    }
+                    return this.menuMargin = 0;
+                })
+            },
+            close() {
+                this.showMenu = false;
+                this.expanded = false;
+            }
+        },
+        computed: {
+            selectedItems: {
+                get() {
+                    const ids = this.selected_internal ? this.selected_internal.split('|') : [];
+                    return this.menu.filter(item => ids.includes(item.id));
+                },
+                set(value) {
+                    this.selected_internal = value.map(item => item.id).join('|');
+                    this.setFilterValue("selected_items", this.selected_internal, true);
+                }
+            },
+            names() {
+                const column_name = this.findColumnByTag('names');
+                if (column_name) return this.getColumn(column_name);
+            },
+            ids() {
+                const column_name = this.findColumnByTag('ids');
+                if (column_name) return this.getColumn(column_name);
+            },
+        },
+        watch: {
+            names(data) {
+                this.menu = [];
+                for (let index in data) {
+                    const id = this.ids[index];
+                    const name = data[index];
+                    this.menu.push({ id, name });
+                }
+            },
+            showMenu() {
+                this.getMenuMargin();
+            },
+            selectedItems() {
+                this.getMenuMargin();
+            },
+            expanded() {
+                this.getMenuMargin();
+            }
+        }
+    }
+</script>

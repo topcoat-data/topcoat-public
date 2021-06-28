@@ -1,0 +1,49 @@
+<div class="flex-col md:justify-start justify-center items-start text-filterFontColor relative w-full md:w-28">
+    <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+    <div class="h-5" v-else></div>
+    <div class="relative top-1 rounded-full w-12 h-6 transition duration-200 ease-linear"
+        :class="[checked_internal ? 'bg-grayscaleThreeColor right-0' : 'bg-grayscaleTwoColor']"
+    >
+        <label v-if='!loading' for="toggle" class="absolute bg-grayscaleOneColor border-2 w-6 h-6 rounded-full transition transform duration-100 ease-linear cursor-pointer border-grayscaleThreeColor border"
+            :class="[checked_internal ? 'bg-grayscaleOneColor right-0' : 'bg-grayscaleOneColor left-0']"></label>
+        <a-icon type="loading" v-else class="pl-5 pb-4" />
+        <input type="checkbox" id="toggle" name="toggle" class="appearance-none w-full h-full focus:outline-none" v-model='checked'>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    data() {
+      return {
+          checked_internal: false,
+          is_filter: true,
+      }
+    },
+    computed: {
+      checked: {
+        get() {
+          return this.checked_internal;
+        },
+        set(value) {
+          this.checked_internal = value;
+          this.setFilterValue("checkbox", this.checked_internal, true);
+        }
+      }
+    },
+    methods: {
+      onVisualizationInit() {
+          // See if the page was loaded with a url param value
+          const initial_value = this.getFilterValue("checkbox");
+          
+          if (initial_value) {
+            this.checked_internal = (initial_value === 'true');
+            this.setFilterValue("checkbox", this.checked_internal, true);
+          } else {
+            this.checked_internal = false;
+            this.setFilterValue("checkbox", false, true);
+          } 
+      }
+    }
+}
+</script>
+

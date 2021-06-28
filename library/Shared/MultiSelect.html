@@ -1,0 +1,87 @@
+<div class="relative" @mouseleave='showMenu = false'>
+    <div class="relative block px-3 border-filterBorderColor border appearance-none h-9 w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none hover:bg-filterHighlightColor hover:text-filterFontHighlightColor primaryFilterRadius" @click='showMenu = true'>
+        <button type="button" class="relative p-2 inline-flex w-full rounded-lg focus:z-10 focus:outline-none rounded-b-none">
+            <div class="flex overflow-x-auto w-72 px-2 overflow-y-hidden">
+                <span v-if='!selectedItems || !selectedItems.length'>
+                    Select Multiple...
+                </span>
+                <div
+                    class="text-xs rounded-3xl bg-secondaryColor text-secondaryFontColor px-2 min-w-max"
+                    v-for="item in selectedItems"
+                    :key="item.key"
+                    @click="removeItem(item)"
+                >
+                    {{ item.label }}
+                    <i class="fas fa-times ml-1"></i>
+                </div>
+            </div>
+        </button>
+        <div class="pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    <div
+        class="absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto"
+        v-if="showMenu"
+    >
+        <button
+            type="button"
+            class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+            v-for="item in menu"
+            :key="item.key"
+            @click='selectItem(item)'
+        >
+            <div class="text-sm">
+                {{ item.label }}
+            </div>
+            <!---->
+        </button>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+    export default {
+        name: "MultiSelect",
+        data: () => ({
+            menu: [
+                { key: 'administrator', label: 'Administrator' },
+                { key: 'editor', label: 'Editor' },
+                { key: 'team', label: 'Team' },
+                { key: 'manager', label: 'Manager' },
+                { key: 'it_manager', label: 'It Manager' },
+                { key: 'project_manager', label: 'Project Manager' },
+                { key: 'business_manager', label: 'Business Manager' },
+            ],
+            showMenu: false,
+            selectedItems: [],
+        }),
+        mounted() {
+            
+        },
+        methods: {
+            selectItem(item) {
+                this.selectedItems.push(item);
+            },
+            removeItem(selectedItem) {
+                this.selectedItems = this.selectedItems.filter(item => item.key != selectedItem.key);
+                this.menu.push(selectedItem);
+                this.sortMenuItems();
+            },
+            sortMenuItems() {
+                this.menu = this.menu.sort((a,b) => {
+                    if(a.label < b.label) { return -1; }
+                    if(a.label > b.label) { return 1; }
+                    return 0;
+                });
+            }
+        },
+        watch: {
+            selectedItems(list) {
+                const selectedKeys = this.selectedItems.map((item) => item.key);
+                this.menu = this.menu.filter(item => {
+                    return !selectedKeys.includes(item.key);
+                });
+            }
+        }
+    }
+</script>

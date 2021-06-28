@@ -1,0 +1,67 @@
+<plotly />
+
+<script type='visualization/figure'>
+{
+    "data": [
+        {% for measure in measures %}
+        {
+            "type": "bar",
+            "marker" : {
+                {% set colors = var('bar_colors') %}
+                {% if colors and colors|length %}
+                "color" : "{{ colors[loop.index-1] }}"
+                {% else %}
+                "color" : "rgba(29, 34, 96,1)"
+                {% endif %}
+            },
+            "name": "{{ column_metadata(measure,'label') }}",
+            "x": {{ column_data(dimensions[0]) }},
+            "y": {{ column_data(measure) }}
+        }{% if not loop.last %},{%endif%}
+        {% endfor %}   
+    ],
+    "layout" : {
+        "hovermode": "x unified",
+        "plot_bgcolor" : "rgba(0,0,0,0)",
+        "paper_bgcolor" : "rgba(0,0,0,0)",
+        "font" : {
+            "family": "Open Sans",
+            "color" : "161F3D",
+            "size": 8
+        },
+        "xaxis" : {
+            "tickfont" : {
+                "size" : 9
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "yaxis" : {
+            "tickfont" : {
+                "size" : 11
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "yaxis" : {
+            "tickfont" : {
+                "size" : 11
+            },
+            "color" : "rgba(0, 0, 0, 0.65)"
+        },
+        "barmode" : "stack",
+        "autosize": true,
+        "automargin": true,
+        "hovermode": "x unified",
+        "legend" : {
+            "x": 0.01,
+            "y": 1.1
+        },
+        "margin" : {
+          "l" : 40,
+          "r" : 40,
+          "t":40,
+          "b":40,
+          "pad": 0
+       }
+    }
+}
+</script>

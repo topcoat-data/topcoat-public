@@ -1,0 +1,254 @@
+<div class="inline-flex">
+    <div class="inline-block">
+      <a-dropdown class="flex-1 wld-date-presets-button" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
+          <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
+              <a-menu-item key="yesterday">Yesterday</a-menu-item>
+              <a-menu-item key="last7days">Last 7 Days</a-menu-item>
+              <a-menu-item key="lastmonth">Last Month</a-menu-item>
+              <a-menu-item key="last30days">Last 30 Days</a-menu-item>
+              <a-menu-item key="last90days">Last 90 Days</a-menu-item>
+              <a-menu-item key="mtd">Month to Date</a-menu-item>
+              <a-menu-item key="ytd">Year to Date</a-menu-item>
+              <a-menu-item key="custom">Custom Range</a-menu-item>
+          </a-menu>
+          <a-button type="primary" @click="onClose"> {{ presetValue }} <a-icon v-if="datePreset" type="down" /> </a-button>
+      </a-dropdown>
+    </div>
+    <div class="inline-block" >
+        <a-range-picker :allowClear="false" dropdownClassName="wld-date-picker" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="'MM/DD/YYYY'" :value="[ startDate, endDate ]">
+            <a-icon slot="suffixIcon" type="calendar" />
+            <template slot="renderExtraFooter">
+                <div style="padding: 2.0rem; padding-right: 1.0rem;">
+                <span style="padding-right: 2.0rem;">Compare to previous</span>
+                <a-radio-group v-model="previousMode" button-style="solid">
+                  <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period">
+                    Period
+                  </a-radio-button>
+                  <a-radio-button value="year">
+                    Year
+                  </a-radio-button>
+                </a-radio-group>
+                <a-button class="wld-date-picker-apply-button" type="primary" @click="clickApply">
+                    Apply
+                  </a-button>
+                </div>
+            </template>
+        </a-range-picker>
+    </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    data() {
+      return {
+          startDate: null,
+          endDate: null,
+          pickerOpened: false,
+          forceClosed: false,
+          datePreset: null,
+          refStart: null,
+          refEnd: null,
+          prevDatePreset: null,
+          previousMode: null
+      }
+    },
+    computed: {
+      presetValue() {
+            if (this.datePreset == 'yesterday') {
+                return "Yesterday";
+              } else if (this.datePreset == 'last7days') {
+                return "Last 7 Days";
+              } else if (this.datePreset == 'lastmonth') {
+                return "Last Month";
+              } else if (this.datePreset == 'last30days') {
+                return "Last 30 Days";
+              } else if (this.datePreset == 'last90days') {
+                return "Last 90 Days";
+              } else if (this.datePreset == 'mtd') {
+                return "Month to Date";
+              } else if (this.datePreset == 'ytd') {
+                return "Year to Date";
+              } else if (this.datePreset == 'custom') {
+                return "Custom Range";
+              } 
+        },
+        datePresetModel: {
+          get() {
+            if (this.datePreset) return [ this.datePreset ];
+            else return null;
+          },
+          set(value) {
+            this.datePreset = value[0];
+          }
+        }
+    },
+    methods: {
+        onOpen(value) {
+            // If not force close
+            if (!this.forceClosed) {
+              this.pickerOpened = true;
+            }
+        },
+        onClose(event) {
+            if (this.pickerOpened) {
+              this.forceClosed = true;
+              this.pickerOpened = false;
+
+              // Reset values
+              this.previousMode = this.getFilterValue("previous_mode");
+              
+              if (this.prevDatePreset) this.datePreset = this.prevDatePreset;
+              this.startDate = Moment(this.getFilterValue('start_date'));
+              this.endDate = Moment(this.getFilterValue('end_date'));
+
+              if (this.previousMode == 'period') {
+                var diff = this.endDate.diff(this.startDate, 'days') + 1;
+                this.refStart = this.startDate.clone().subtract(diff, 'days');
+                this.refEnd = this.endDate.clone().subtract(diff, 'days');
+
+              } else {
+                this.refStart = this.startDate.clone().subtract(1, 'years');
+                this.refEnd = this.endDate.clone().subtract(1, 'years');
+              }
+
+            } else {
+              this.forceClosed = false;
+            }
+        },
+        clickApply() {
+            this.pickerOpened = false;
+
+            this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
+            this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
+
+            var start = this.startDate.clone();
+            var end = this.endDate.clone();
+
+            if (this.previousMode == 'year') {
+              this.refStart = start.subtract(1, 'years');
+              this.refEnd = end.subtract(1, 'years');
+            } else {
+              if (this.datePreset == 'yesterday') {
+                this.refStart = start.subtract(1, 'days');
+                this.refEnd = end.subtract(1, 'days');
+              } else if (this.datePreset == 'last7days') {
+                this.refStart = start.subtract(7, 'days');
+                this.refEnd = end.subtract(7, 'days');
+              } else if (this.datePreset == 'lastmonth') {
+                this.refStart = start.subtract(1, 'months').startOf('month');
+                this.refEnd = end.subtract(1, 'months').endOf('month');
+              } else if (this.datePreset == 'last30days') {
+                this.refStart = start.subtract(30, 'days')
+                this.refEnd = end.subtract(30, 'days')
+              } else if (this.datePreset == 'last90days') {
+                this.refStart = start.subtract(90, 'days')
+                this.refEnd = end.subtract(90, 'days')
+              } else if (this.datePreset == 'custom') {
+                var diff = end.diff(start, 'days') + 1;
+                this.refStart = start.subtract(diff, 'days');
+                this.refEnd = end.subtract(diff, 'days');
+              }
+            }
+
+            this.setFilterValue("date_preset", this.datePreset, false);
+            this.setFilterValue("previous_mode", this.previousMode, false);
+            this.setFilterValue("prev_start_date", this.refStart.format('YYYY-MM-DD'), false);
+            this.setFilterValue("prev_end_date", this.refEnd.format('YYYY-MM-DD'), true);
+            console.log("Set values");
+        },
+        presetChange(event, first) {
+            // Remember previous
+            if (this.datePreset) this.prevDatePreset = this.datePreset;
+
+            this.datePreset = event.key;
+
+            if (event.key == 'yesterday') {
+              this.startDate = Moment().subtract(1, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last7days') {
+              this.startDate = Moment().subtract(7, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'lastmonth') {
+              this.startDate = Moment().subtract(1, 'months').startOf('month');
+              this.endDate = Moment().subtract(1, 'months').endOf('month');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last30days') {
+              this.startDate = Moment().subtract(30, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last90days') {
+              this.startDate = Moment().subtract(90, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'mtd') {
+              this.startDate = Moment().startOf('month');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'year';
+            } else if (event.key == 'ytd') {
+              this.startDate = Moment().startOf('year');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'year';
+            }
+        },
+        onDateChange(event) {
+            console.log("onDateChange")
+            console.log(event);
+            this.startDate = event[0];
+            this.endDate = event[1];
+            this.datePreset = "custom";
+        },
+        onVisualizationInit() {
+
+            var start_date = this.getFilterValue('start_date')
+            var end_date = this.getFilterValue('end_date')
+            
+            var date_preset = this.getFilterValue('date_preset')
+            if (date_preset == null) {
+              this.datePreset = 'last90days';
+              this.setFilterValue("date_preset", this.datePreset, false);
+            } else {
+              this.datePreset = date_preset;
+            }
+
+            var previous_mode = this.getFilterValue('previous_mode')
+            if (previous_mode == null) {
+              if (this.datePreset == 'mtd' || this.datePreset == 'ytd') this.previousMode = 'year'
+              else this.previousMode = 'period';
+              this.setFilterValue("previous_mode", this.previousMode, false);
+            } else {
+              this.previousMode = previous_mode;
+            }
+
+            if (this.datePreset != 'custom') {
+              var tmp_event = {
+                key: this.datePreset
+              }
+              this.presetChange(tmp_event, true);
+              this.clickApply();
+
+            } else {
+
+              this.startDate = Moment(start_date);
+              this.endDate = Moment(end_date);
+
+              if (this.previousMode == 'period') {
+                var diff = this.endDate.diff(this.startDate, 'days') + 1;
+                this.refStart = this.startDate.clone().subtract(diff, 'days');
+                this.refEnd = this.endDate.clone().subtract(diff, 'days');
+
+              } else {
+                this.refStart = this.startDate.clone().subtract(1, 'years');
+                this.refEnd = this.endDate.clone().subtract(1, 'years');
+              }
+
+              this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
+              this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
+              this.setFilterValue("prev_start_date", this.refStart.format('YYYY-MM-DD'), false);
+              this.setFilterValue("prev_end_date", this.refEnd.format('YYYY-MM-DD'), true);
+            }
+        }
+    }
+}
+</script>

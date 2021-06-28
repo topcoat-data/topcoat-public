@@ -1,0 +1,369 @@
+<div class="date-filter-container w-full">
+      <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+      <div class="h-5" v-else></div>
+      <div class=" w-full h-9 inline-flex">
+        <div class="inline-block w-max h-full">
+          <a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
+              <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
+                  <a-menu-item key="yesterday">Yesterday</a-menu-item>
+                  <a-menu-item key="last7days">Last 7 Days</a-menu-item>
+                  <a-menu-item key="lastmonth">Last Month</a-menu-item>
+                  <a-menu-item key="last30days">Last 30 Days</a-menu-item>
+                  <a-menu-item key="last90days">Last 90 Days</a-menu-item>
+                  <a-menu-item key="mtd">Month to Date</a-menu-item>
+                  <a-menu-item key="ytd">Year to Date</a-menu-item>
+                  <a-menu-item key="custom">Custom Range</a-menu-item>
+              </a-menu>
+              <button class="px-4 rounded-l h-full bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor outline-none rounded-r-none" @click="onClose">
+                {{ presetValue }}
+                <span v-if='!loading'>
+                  <a-icon v-if="datePreset && !pickerOpened" type="down" />
+                  <a-icon v-if="datePreset && pickerOpened" type="up" />
+                </span>
+                <a-icon type="loading" v-else />
+              </button>
+          </a-dropdown>
+        </div>
+        <div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9">
+            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="'MM/DD/YYYY'" :value="[ startDate, endDate ]">
+                <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
+                <template slot="renderExtraFooter">
+                    <div style="padding: 2.0rem; padding-right: 1.0rem;">
+                    <span style="padding-right: 2.0rem;" v-if='metadata.include_previous'>Compare to previous</span>
+                    <a-radio-group v-model="previousMode" button-style="solid" v-if='metadata.include_previous'>
+                      <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period" class="bg-filterHighlightColor text-filterFontHighlightColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor">
+                        Period
+                      </a-radio-button>
+                      <a-radio-button value="year">
+                        Year
+                      </a-radio-button>
+                    </a-radio-group>
+                    <a-button :class='{"mb-8": !metadata.include_previous}' class="wld-date-picker-apply-button border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor" @click="clickApply">
+                        Apply
+                      </a-button>
+                    </div>
+                </template>
+            </a-range-picker>
+        </div>
+        <div class="inline-block flex px-3 text-primaryFontColor" v-if='metadata.include_previous'>
+            <div v-if="refStart && refEnd" class="self-center">ref. {{ refStart.format('MM/DD/YYYY') }} - {{ refEnd.format('MM/DD/YYYY') }}</div>
+        </div>
+      </div>
+</div>
+
+<script type='visualization/javascript'>
+export default {
+    data() {
+      return {
+          startDate: null,
+          endDate: null,
+          pickerOpened: false,
+          forceClosed: false,
+          datePreset: null,
+          refStart: null,
+          refEnd: null,
+          prevDatePreset: null,
+          previousMode: null,
+          show: false,
+          is_filter: true,
+          showPreviousMode: false,
+      }
+    },
+    mounted() {
+      const ref = this;
+      window.addEventListener('resize', function(event) {
+        ref.addColSpan();
+      }, true);
+    },
+    computed: {
+      presetValue() {
+            if (this.datePreset == 'yesterday') {
+                return "Yesterday";
+              } else if (this.datePreset == 'last7days') {
+                return "Last 7 Days";
+              } else if (this.datePreset == 'lastmonth') {
+                return "Last Month";
+              } else if (this.datePreset == 'last30days') {
+                return "Last 30 Days";
+              } else if (this.datePreset == 'last90days') {
+                return "Last 90 Days";
+              } else if (this.datePreset == 'mtd') {
+                return "Month to Date";
+              } else if (this.datePreset == 'ytd') {
+                return "Year to Date";
+              } else if (this.datePreset == 'custom') {
+                return "Custom Range";
+              } 
+        },
+        datePresetModel: {
+          get() {
+            if (this.datePreset) return [ this.datePreset ];
+            else return null;
+          },
+          set(value) {
+            this.datePreset = value[0];
+          }
+        }
+    },
+    methods: {
+        addColSpan() {
+          this.$nextTick(() => {
+            const screenWidth = window.innerWidth;
+            let col = !this.previousMode ? 'col-span-2' : 'col-span-3';
+            if (screenWidth < 1024) col = 'col-span-1';
+
+            const dateFiler = document.querySelector('.date-filter-container');
+            const steps = 6; // Steps to reach parent
+            let parent = dateFiler ? dateFiler.parentNode : null;
+            if (parent) {
+              for (let index = 1; index < steps; index ++) {
+                parent = parent.parentNode;
+              }
+              parent.classList.add(col);
+              parent.classList.add('w-full');
+            }
+            this.show = true;
+          });
+        },
+        onOpen(value) {
+            // If not force close
+            if (!this.forceClosed) {
+              this.pickerOpened = true;
+            } else {
+              this.pickerOpened = false;
+            }
+        },
+        onClose(event) {
+            if (this.pickerOpened) {
+              this.forceClosed = true;
+              this.pickerOpened = false;
+
+              // Reset values
+              this.previousMode = this.getFilterValue("previous_mode");
+              
+              if (this.prevDatePreset) this.datePreset = this.prevDatePreset;
+              this.startDate = Moment(this.getFilterValue('start_date'));
+              this.endDate = Moment(this.getFilterValue('end_date'));
+
+              if (this.previousMode == 'period') {
+                var diff = this.endDate.diff(this.startDate, 'days') + 1;
+                this.refStart = this.startDate.clone().subtract(diff, 'days');
+                this.refEnd = this.endDate.clone().subtract(diff, 'days');
+
+              } else {
+                this.refStart = this.startDate.clone().subtract(1, 'years');
+                this.refEnd = this.endDate.clone().subtract(1, 'years');
+              }
+
+            } else {
+              this.forceClosed = false;
+            }
+        },
+        clickApply() {
+            this.pickerOpened = false;
+
+            this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
+            this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
+
+            var start = this.startDate.clone();
+            var end = this.endDate.clone();
+
+            if (this.previousMode == 'year') {
+              this.refStart = start.subtract(1, 'years');
+              this.refEnd = end.subtract(1, 'years');
+            } else {
+              if (this.datePreset == 'yesterday') {
+                this.refStart = start.subtract(1, 'days');
+                this.refEnd = end.subtract(1, 'days');
+              } else if (this.datePreset == 'last7days') {
+                this.refStart = start.subtract(7, 'days');
+                this.refEnd = end.subtract(7, 'days');
+              } else if (this.datePreset == 'lastmonth') {
+                this.refStart = start.subtract(1, 'months').startOf('month');
+                this.refEnd = end.subtract(1, 'months').endOf('month');
+              } else if (this.datePreset == 'last30days') {
+                this.refStart = start.subtract(30, 'days')
+                this.refEnd = end.subtract(30, 'days')
+              } else if (this.datePreset == 'last90days') {
+                this.refStart = start.subtract(90, 'days')
+                this.refEnd = end.subtract(90, 'days')
+              } else if (this.datePreset == 'custom') {
+                var diff = end.diff(start, 'days') + 1;
+                this.refStart = start.subtract(diff, 'days');
+                this.refEnd = end.subtract(diff, 'days');
+              }
+            }
+
+            this.setFilterValue("date_preset", this.datePreset, false);
+
+            const includePrevious = this.metadata.include_previous;
+            const prevMode = includePrevious ? this.previousMode : false;
+            const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
+            const prevEndDate = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
+            this.setFilterValue("previous_mode", prevMode, false);
+            this.setFilterValue("prev_start_date", prevStartDate, false);
+            this.setFilterValue("prev_end_date", prevEndDate, true);
+
+        },
+        presetChange(event, first) {
+            // Remember previous
+            if (this.datePreset) this.prevDatePreset = this.datePreset;
+
+            this.datePreset = event.key;
+
+            if (event.key == 'yesterday') {
+              this.startDate = Moment().subtract(1, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last7days') {
+              this.startDate = Moment().subtract(7, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'lastmonth') {
+              this.startDate = Moment().subtract(1, 'months').startOf('month');
+              this.endDate = Moment().subtract(1, 'months').endOf('month');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last30days') {
+              this.startDate = Moment().subtract(30, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'last90days') {
+              this.startDate = Moment().subtract(90, 'days');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'period';
+            } else if (event.key == 'mtd') {
+              this.startDate = Moment().startOf('month');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'year';
+            } else if (event.key == 'ytd') {
+              this.startDate = Moment().startOf('year');
+              this.endDate = Moment().subtract(1, 'days');
+              if (!first) this.previousMode = 'year';
+            }
+        },
+        onDateChange(event) {
+            console.log("onDateChange")
+            console.log(event);
+            this.startDate = event[0];
+            this.endDate = event[1];
+            this.datePreset = "custom";
+        },
+        onVisualizationInit() {
+
+            var start_date = this.getFilterValue('start_date')
+            var end_date = this.getFilterValue('end_date')
+            const includePrevious = this.metadata.include_previous;
+            this.showPreviousMode = includePrevious;
+
+            var date_preset = this.getFilterValue('date_preset')
+            if (date_preset == null) {
+              this.datePreset = 'last90days';
+              this.setFilterValue("date_preset", this.datePreset, false);
+            } else {
+              this.datePreset = date_preset;
+            }
+
+            var previous_mode = this.getFilterValue('previous_mode')
+            if (previous_mode == null) {
+              if (this.datePreset == 'mtd' || this.datePreset == 'ytd') this.previousMode = 'year'
+              else this.previousMode = 'period';
+              const prevMode = includePrevious ? this.previousMode : '';
+              this.setFilterValue("previous_mode", this.previousMode, false);
+            } else {
+              this.previousMode = previous_mode;
+            }
+
+            if (this.datePreset != 'custom') {
+              var tmp_event = {
+                key: this.datePreset
+              }
+              this.presetChange(tmp_event, true);
+              this.clickApply();
+
+            } else {
+
+              this.startDate = Moment(start_date);
+              this.endDate = Moment(end_date);
+
+              if (this.previousMode == 'period') {
+                var diff = this.endDate.diff(this.startDate, 'days') + 1;
+                this.refStart = this.startDate.clone().subtract(diff, 'days');
+                this.refEnd = this.endDate.clone().subtract(diff, 'days');
+
+              } else {
+                this.refStart = this.startDate.clone().subtract(1, 'years');
+                this.refEnd = this.endDate.clone().subtract(1, 'years');
+              }
+
+              this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
+              this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
+              const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
+              const prevEndDate   = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
+              this.setFilterValue("prev_start_date", prevStartDate, false);
+              this.setFilterValue("prev_end_date", prevEndDate, true);
+            }
+        }
+    }
+}
+</script>
+
+
+<style>
+
+.wld-date-picker .ant-calendar-selected-day .ant-calendar-date,
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
+.ant-calendar-cell .ant-calendar-date:hover,
+.wld-date-picker .ant-calendar-selected-day .ant-calendar-date:hover,
+.ant-radio-button-wrapper-checked,
+.ant-radio-button-wrapper-checked:active,
+.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.ant-dropdown-menu-item-selected,
+.ant-radio-group-solid:active {
+  @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor !important;
+}
+
+.wld-date-picker .ant-calendar-range .ant-calendar-in-range-cell::before {
+  @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor opacity-80 !important;
+}
+
+.ant-calendar-date {
+  @apply text-filterFontColor !important;
+}
+
+.ant-calendar-picker-input.ant-input {
+  @apply bg-filterBackgroundColor text-filterFontColor h-full border border-filterBorderColor text-sm;
+}
+
+.ant-dropdown-menu {
+  @apply p-0 bottom-1;
+}
+
+.ant-dropdown-menu,
+.ant-calendar {
+  @apply border-filterBorderColor border bg-filterBackgroundColor text-filterFontColor;
+}
+
+.ant-dropdown-menu-item,
+.ant-calendar-header .ant-calendar-month-select,
+.ant-calendar-header .ant-calendar-year-select {
+  @apply text-filterFontColor;
+}
+
+.ant-dropdown-menu-item:hover {
+  @apply bg-primaryButtonColor text-grayscaleOneColor opacity-80 !important;
+}
+
+.ant-calendar-last-month-cell {
+  @apply text-filterFontColor opacity-70; 
+}
+
+.ant-calendar-in-range-cell .ant-calendar-date {
+  @apply text-grayscaleOneColor !important;
+}
+
+.ant-dropdown-trigger:active,
+.ant-dropdown-trigger:focus {
+  outline: none !important;
+}
+</style>

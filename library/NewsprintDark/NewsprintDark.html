@@ -1,0 +1,111 @@
+{{ config(
+        vars = {
+            "label_color" : "white",
+            "line_colors": [ "lightgray", "lightgray", "lightgray" ],
+            "bar_colors": [ "#fdba74", "#818cf8" ],
+            "fill_colors": [ "#fdba74", "#818cf8" ]
+        }
+   )
+}}
+
+<div id="dashboard">
+    <NewsprintDarkHeader></NewsprintDarkHeader>
+    <div class="container-width relative left-0 right-0 m-auto">
+        <div class="mt-20 py-5 px-10 bg-pageSectionColor">
+            <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
+                <slot name="filters"></slot>
+            </div>
+        </div>
+    </div>
+    <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-3">
+        <div class="text-center text-6xl font-bold text-primaryFontColor secondary-fonts">{{ page.title }}</div>
+        <div class="text-secondaryFontColor text-center pt-5 font-semibold primary-fonts">Last updated {{ lastRefresh }}.</div>
+    </div>
+    <!-- <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-2 secondary-fonts">
+        <div class="grid grid-cols-2">
+            <slot name='stats'></slot>
+        </div>
+    </div> -->
+    <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts container-width relative left-0 right-0 m-auto">
+        <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
+        <div class="grid grid-cols-1">
+            <slot></slot>
+        </div>
+    </div>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Raleway&display=swap');
+:root {
+    --primary-color: #0f172a;
+    --primary-highlight-color: rgba(229, 231, 235, 0.200);
+    --primary-border-color: var(--grayscale-two-color);
+    --primary-font-color: var(--grayscale-one-color);
+
+    --secondary-color: #164e63;
+    --secondary-highlight-color: #f87171;
+    --secondary-border-color: var(--grayscale-three-color);
+    --secondary-font-color: var(--secondary-highlight-color);
+
+    --grayscale-one-color: #f4f4f5;
+    --grayscale-two-color: #d1d5db;
+    --grayscale-three-color: #6b7280;
+    --grayscale-hover-color: var(--grayscale-three-color);
+
+    --filter-background-color: #1e293b;
+    --filter-menu-color: #1e293b;
+    --filter-highlight-color: var(--page-section-color);
+    --filter-font-highlight-color: var(--secondary-highlight-color);
+    --filter-font-color: var(--grayscale-two-color);
+    --filter-border-color: var(--grayscale-three-color);
+
+    --page-section-color: #1e293b;
+    --page-background-color: var(--primary-color);
+
+    --primary-button-color: #3b82f6;
+    --secondary-button-color: transparent;
+
+    --tile-border-color: transparent;
+    --tile-background-color: transparent;
+}
+
+.primaryFilterRadius {
+    @apply rounded;
+}
+
+.secondaryFilterRadius {
+    @apply rounded;
+}
+
+/* Fonts */
+.primary-fonts {
+    font-family: 'Raleway', sans-serif;
+}
+
+.secondary-fonts {
+    font-family: 'Merriweather', serif;
+}
+/* Fonts */
+
+svg, path {
+    @apply fill-current text-primaryFontColor;
+}
+body {
+    @apply bg-pageBackgroundColor;
+}
+
+.tileElement {
+    @apply border-tileBorderColor bg-tileBackgroundColor rounded my-3;
+}
+
+.container-width {
+    width: 900px;
+}
+
+@media (max-width: 900px) {
+    .container-width {
+        width: 100%;
+    }
+}
+
+</style>

@@ -1,0 +1,57 @@
+<plotly />
+
+<script type='visualization/figure'>
+{
+    "data": [
+        {% set fill_colors = var('fill_colors') %}
+        {
+            "type": "choropleth",
+            "locationmode": "USA-states",
+            "showscale": false,
+            "autocolorscale": false,
+            {% if fill_colors %}
+            "colorscale" : [ [ 0, "{{ fill_colors[0] }}" ], [ 1, "{{ fill_colors[1] }}" ] ],
+            {% else %}
+            "colorscale" : [ [ 0, "rgb(236, 238, 245)" ], [ 1, "rgb(236, 245, 239)" ] ],
+            {% endif %}
+            "name": "{{ column_metadata(measures[0],'label') }}",
+            "locations": {{ column_data(dimensions[0]) }},
+            {% if dimensions|length > 1 %}
+            "text": {{ column_data(dimensions[1]) }},
+            {% endif %}
+            "z": {{ column_data(measures[0]) }}
+        }
+    ],
+    "layout" : {
+        "showlegend": false,
+        "plot_bgcolor" : "rgba(0,0,0,0)",
+        "paper_bgcolor" : "rgba(0,0,0,0)",
+        "font" : {
+            "family": "Open Sans",
+            "color" : "161F3D",
+            "size": 8
+        },
+        "geo" : {
+           "bgcolor" : "transparent",
+           "scope" : "usa",
+           "projection" : {
+              "type" : "albers usa"
+            },
+           "showlakes" : false,
+           "lakecolor" : "rgb(0,0,0,0)"
+        },
+        "autosize": true,
+        "legend" : {
+            "x": 0.01,
+            "y": 1.1
+        },
+        "margin" : {
+          "l" : 0,
+          "r" : 0,
+          "t":0,
+          "b":0,
+          "pad": 0
+       }
+    }
+}
+</script>

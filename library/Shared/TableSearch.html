@@ -1,0 +1,45 @@
+<form class="flex relative h-9 secondaryFilterRadius">
+    <span class="z-10 font-normal text-center text-filterFontColor absolute right-6 top-1 rounded text-base items-center justify-center">
+        <i class='text-sm fas fa-search'></i>
+    </span>
+    <input
+        type="text"
+        placeholder="Search..."
+        class="secondaryFilterRadius w-full text-filterFontColor bg-filterBackgroundColor border border-filterBorderColor flex justify-around items-center pl-4 focus:outline-none hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+        v-model='text'
+        @input='search'
+    />
+    <div v-if='tableRows && tableRows.length && text' class="shadow-xl bg-pageSectionColor border-filterBorderColor border bg-filterFontColor mt-2 rounded p-4 absolute left-0 top-12 z-50 w-full h-max">
+        <div
+            class="flex justify-between hover:bg-filterHighlightColor p-1 cursor-pointer rounded"
+            v-for='(row, index) in tableRows'
+        >
+            <div class="m-2">{{ row.name }}</div>
+            <div class="m-2">{{ row.location }}</div>
+        </div>
+    </div>
+</form>
+
+<script type='visualization/javascript'>
+export default {
+    data: () => ({
+        showMenu: false,
+        text: '',
+        sampleTable: [
+            { id: 1, name: 'John Doe', location: 'Italy' },
+            { id: 2, name: 'Mike Smith', location: 'USA' },
+            { id: 3, name: 'Ryan Reynolds', location: 'Canada' },
+        ],
+        tableRows: [],
+    }),
+    methods: {
+        search() {
+            const text = this.text;
+            this.tableRows = this.sampleTable.filter(column => {
+                return column.name.toLowerCase().includes(text.toLowerCase()) ||
+                    column.location.toLowerCase().includes(text.toLowerCase())
+            })
+        }
+    }
+}
+</script>
