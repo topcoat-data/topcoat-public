@@ -1,20 +1,38 @@
-<plotly />
+ <plotly />
 
 <script type='visualization/figure'>
 {
+    {% set colors = var('series_colors') %}
+    {% set font_family = var('font_family') %}
+    {% set font_color = var('font_color') %}
+    {% set font_size = var('font_size') %}
+    {% set tickfont_family = var('tickfont_family') %}
+    {% set tickfont_color = var('tickfont_color') %}
+    {% set tickfont_size = var('tickfont_size') %}
+    {% set hover_label_bg = var('hover_label_bg') %}
     "data": [
         {% for measure in measures %}
         {
             "type": "scatter",
             "mode": "markers",
             "marker" : {
-                {% set colors = var('series_colors') %}
                 {% if colors and colors|length %}
                 "color" : "{{ colors[loop.index] }}",
                 {% else %}
                 "color" : "rgba(29, 34, 96,1)",
                 {% endif %}
+
+                {% if config.marker_size %}
+                "size": "{{ config.marker_size }}"
+                {% else %}
                 "size": 12
+                {% endif %},
+
+                {% if config.marker_symbol %}
+                "symbol": "{{ config.marker_symbol }}"
+                {% else %}
+                "symbol": "circle"
+                {% endif %}
             },
             "name": "{{ column_metadata(measure,'label') }}",
             "x": {{ column_data(dimensions[0]) }},
@@ -27,42 +45,187 @@
         "plot_bgcolor" : "rgba(0,0,0,0)",
         "paper_bgcolor" : "rgba(0,0,0,0)",
         "font" : {
-            "family": "Open Sans",
-            "color" : "161F3D",
-            "size": 8
+            {% if font_family %}
+             "family" : "{{ font_family }}"
+            {% else %}
+            "family": "Open Sans"
+            {% endif %},
+
+            {% if font_color %}
+             "color" : "{{ font_color }}"
+            {% else %}
+            "color" : "#161F3D"
+            {% endif %},
+            
+            {% if font_size %}
+             "size" : "{{ font_size }}"
+            {% else %}
+            "size": 10
+            {% endif %}
         },
         "xaxis" : {
             "tickfont" : {
-                "size" : 9
+                {% if tickfont_family %}
+                "family" : "{{ tickfont_family }}"
+                {% else %}
+                "family": "Open Sans"
+                {% endif %},
+
+                {% if tickfont_color %}
+                "color" : "{{ tickfont_color }}"
+                {% else %}
+                "color" : "#161F3D"
+                {% endif %},
+            
+                {% if tickfont_size %}
+                "size" : "{{ tickfont_size }}"
+                {% else %}
+                "size": 11
+                {% endif %}
             },
-            "color" : "rgba(0, 0, 0, 0.65)"
+            {% if config.x_grid=='show' %}
+            "showgrid": true
+            {% elif config.x_grid=='hide' %}
+            "showgrid": false
+            {% else %}
+            "showgrid": false
+            {% endif %},
+
+            {% if config.x_labels=='hide' %}
+            "showticklabels": false
+            {% elif config.x_labels=='show' %}
+            "showticklabels": true
+            {% else %}
+            "showticklabels": true
+            {% endif %},
+
+            {% if config.x_axis=='hide' %}
+            "zeroline" : false
+            {% elif config.x_axis=='show' %}
+            "zeroline" : true
+            {% else %}
+            "zeroline" : true
+            {% endif %},
+
+            "showline" : true,
+            "linewidth" : 1,
+            "linecolor" : "rgba(0, 0, 0, 0)",
+
+            "color" : "rgba(0, 0, 0, 0.65)",
+
+            "title" : {
+                {% if config.x_title %}
+                "text": "{{ config.x_title }}"
+                {% else %}
+                "text" : ""
+                {% endif %}
+            }
         },
         "yaxis" : {
             "tickfont" : {
-                "size" : 11
+                {% if tickfont_family %}
+                "family" : "{{ tickfont_family }}"
+                {% else %}
+                "family": "Open Sans"
+                {% endif %},
+
+                {% if tickfont_color %}
+                "color" : "{{ tickfont_color }}"
+                {% else %}
+                "color" : "#161F3D"
+                {% endif %},
+            
+                {% if tickfont_size %}
+                "size" : "{{ tickfont_size }}"
+                {% else %}
+                "size": 11
+                {% endif %}
             },
-            "color" : "rgba(0, 0, 0, 0.65)"
-        },
-        "yaxis" : {
-            "tickfont" : {
-                "size" : 11
-            },
-            "color" : "rgba(0, 0, 0, 0.65)"
+            {% if config.y_grid=='show' %}
+            "showgrid": true
+            {% elif config.y_grid=='hide'%}
+            "showgrid": false
+            {% else %}
+            "showgrid": true
+            {% endif %},
+
+            {% if config.y_labels=='hide' %}
+            "showticklabels": false
+            {% elif config.y_labels=='show' %}
+            "showticklabels": true
+            {% else %}
+            "showticklabels": true
+            {% endif %},
+
+            {% if config.y_axis=='hide' %}
+            "zeroline" : false
+            {% elif config.y_axis=='show' %}
+            "zeroline" : true
+            {% else %}
+            "zeroline" : true
+            {% endif %},
+
+            "showline" : true,
+            "linewidth" : 7,
+            "linecolor" : "rgba(0, 0, 0,0)",
+            "color" : "rgba(0, 0, 0, 0.65)",
+            "zerolinecolor" : "#eee",
+            "gridcolor" : "#eee",
+           
+            "title" : {
+                {% if config.y_title %}
+                "text": "{{ config.y_title }}"
+                {% else %}
+                "text" : ""
+                {% endif %}
+            }
         },
         "autosize": true,
         "automargin": true,
-        "hovermode": "x unified",
+        "hoverlabel": {
+            {% if hover_label_bg %}
+            "bgcolor" : "{{ hover_label_bg }}"
+            {% else %}
+            "bgcolor" : "rgba(232,230,230,0.7)"
+            {% endif %},
+
+            {% if hover_label_bg %}
+            "bordercolor" : "{{ hover_label_bg }}"
+            {% else %}
+            "bordercolor" : "rgba(232,230,230,0.7)"
+            {% endif %} 
+        },
+        {% if config.legend=='show' %}
+        "showlegend": true
+        {% elif config.legend=='hide' %}
+        "showlegend": false
+        {% else %}
+        "showlegend":false
+        {% endif %},
+
         "legend" : {
-            "x": 0.01,
+            "orientation": "v",
+             "x": 0.01,
             "y": 1.1
         },
+        
+        {% if config.margin =='small' %}
         "margin" : {
-          "l" : 40,
-          "r" : 40,
-          "t":40,
-          "b":40,
+          "l" : 10,
+          "r" : 10,
+          "t":10,
+          "b":10,
           "pad": 0
        }
+       {% else %}
+       "margin" : {
+          "l" : 70,
+          "r" : 30,
+          "t":30,
+          "b":60,
+          "pad": 0
+       }
+       {% endif %}
     }
 }
 </script>
