@@ -86,6 +86,9 @@ export default {
               this.selected_internal = initial_value;
               this.setFilterValue("dropdown", this.selected_internal, true);
             }
+          } else if (this.config.default_value) {
+            this.selected_internal = this.config.default_value;
+            this.setFilterValue("dropdown", this.selected_internal, true);
           } else if (this.options.length) {
             this.selected_internal = this.options[0];
             this.setFilterValue("dropdown", this.selected_internal, true);
