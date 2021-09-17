@@ -98,7 +98,17 @@ export default {
         datePresetModel: {
           get() {
             if (this.datePreset) return [ this.datePreset ];
-            else return null;
+            else {
+              date_preset = this.getFilterValue('date_preset')
+              if (!date_preset && !this.config.default_preset) {
+                this.setFilterValue("date_preset", 'last90days', false);
+                return 'last90days';
+              } else if (!date_preset && this.config.default_preset) {
+                this.datePreset = this.config.default_preset;
+                this.setFilterValue("date_preset", this.datePreset, false);
+                return this.datePreset;
+              }
+            }
           },
           set(value) {
             this.datePreset = value[0];
@@ -242,25 +252,28 @@ export default {
             }
         },
         onDateChange(event) {
-            console.log("onDateChange")
-            console.log(event);
             this.startDate = event[0];
             this.endDate = event[1];
             this.datePreset = "custom";
         },
         onVisualizationInit() {
-
             var start_date = this.getFilterValue('start_date')
             var end_date = this.getFilterValue('end_date')
             const includePrevious = this.metadata.include_previous;
             this.showPreviousMode = includePrevious;
 
             var date_preset = this.getFilterValue('date_preset')
-            if (date_preset == null) {
-              this.datePreset = 'last90days';
-              this.setFilterValue("date_preset", this.datePreset, false);
-            } else {
+            if (date_preset) {
               this.datePreset = date_preset;
+            } else {
+              if (!this.config.default_preset) {
+                return 'last90days';
+                this.setFilterValue("date_preset", this.datePreset, false);
+              } else if (!date_preset && this.config.default_preset) {
+                this.datePreset = this.config.default_preset;
+                this.setFilterValue("date_preset", this.datePreset, false);
+                return this.datePreset;
+              }
             }
 
             var previous_mode = this.getFilterValue('previous_mode')
