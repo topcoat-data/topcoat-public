@@ -34,15 +34,21 @@
                     this.text_internal = value;
                     this.setFilterValue("query", this.text_internal, true);
                 }
-            }
+            },
         },
         methods: {
             onVisualizationInit() {
-
                 const initial_value = this.getFilterValue("query");
-                this.text_internal = initial_value || '';
+                
+                if (initial_value) {
+                    this.text_internal = initial_value;
+                } else if (this.config.default_value) {
+                    this.text_internal = this.config.default_value;
+                } else {
+                    return;
+                }
+                this.queryText = this.text_internal;
                 this.setFilterValue("query", this.text_internal, true);
-                return this.text_internal;
             },
             onEnter(e) {
                 if (e.keyCode === 13) {

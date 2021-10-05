@@ -12,7 +12,7 @@
                     <i
                         class="fas"
                         :class='iconClass'
-                        :style='{color: greenPositive ? "#6EE7B7" : "#F87171"}'
+                        :style='{color: arrowColor}'
                     ></i>
                 </span>
                 <span v-if='value !== previous' class="opacity-70">
@@ -37,9 +37,6 @@
         },
         data: () => ({
             auto_height: true,
-            increased: false,
-            iconClass: 'fa-minus',
-            greenPositive: false,
         }),
         computed: {
             value() {
@@ -50,6 +47,41 @@
             },
             change() {
                 return this.fetchColumn('change');
+            },
+            greenPositive() {
+                return this.metadata.green_positive || false;
+            },
+            previous() {
+                if (this.rows && this.rows.length && this.rows[0]['previous']) {
+                    return this.rows[0]['previous'].value;
+                }
+                return null;
+            },
+            value() {
+                if (this.rows && this.rows.length && this.rows[0]['value']) {
+                    return this.rows[0]['value'].value;
+                }
+                return null;
+            },
+            increased() {
+                return this.value > this.previous;
+            },
+            iconClass() {
+                if (this.value > this.previous) {
+                    return 'fa-chevron-up';
+                } else if (this.value < this.previous) {
+                    return 'fa-chevron-down';
+                } else {
+                    return 'fa-minus';
+                }
+            },
+            arrowColor() {
+                if (this.greenPositive && this.increased) {
+                    return "#6EE7B7";
+                } else if (!this.greenPositive && !this.increased) {
+                    return "#6EE7B7";
+                }
+                return "#F87171";
             }
         },
         methods: {
@@ -60,27 +92,6 @@
                 } catch (e) { console.log(e) }
                 return null; // If null then column does not exist.
             },
-            getNumbersPerformance() {
-                const rows = this.rows;
-                if (rows && rows.length) {
-                    const previous = rows[0]['previous'];
-                    const value = rows[0]['value'];
-                    if (previous && value) {
-                        const valueNumber = value.value;
-                        const previousNumber = previous.value;
-                        this.increased = valueNumber > previousNumber;
-                        this.greenPositive = this.metadata.green_positive;
-                        if (valueNumber !== previousNumber) {
-                            this.iconClass = valueNumber > previousNumber ? 'fa-chevron-up' : 'fa-chevron-down';
-                        }
-                    }
-                }
-            }
         },
-        watch: {
-            rows() {
-                this.getNumbersPerformance();
-            },
-        }
     }
 </script>
