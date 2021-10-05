@@ -76,6 +76,11 @@
                 }
             },
             arrowColor() {
+
+                if (this.value === this.previous) {
+					return '#d1d5db';
+				}
+
                 if (this.greenPositive && this.increased) {
                     return "#6EE7B7";
                 } else if (!this.greenPositive && !this.increased) {
