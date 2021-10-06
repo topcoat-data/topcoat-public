@@ -1,16 +1,16 @@
-<div class="relative md:w-56 w-full" :class='expanded ? "h-14" : ""' @mouseleave='close'>
+<div class="relative md:w-56 w-full" :class='{"h-14": expanded}' @mouseleave='close'>
     <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
     <div class="h-5" v-else></div>
     <div
         class="block border-filterBorderColor border appearance-none w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none primaryFilterRadius overflow-hidden"
-        @click='showMenu = true'
+        @click='open'
         :class='expanded ? "absolute h-max z-50" : "relative h-9"'
         ref='container'
     >
         <button
             type="button"
             class="relative left-0 right-0 w-full pl-2 py-2 inline-flex rounded-lg focus:z-10 focus:outline-none rounded-b-none overflow-hidden"
-            @mouseenter='expanded = true'
+            @mouseenter='expandSelectButton'
         >
             <div class="flex relative overflow-hidden h-full flex-wrap">
                 <div v-if='!selectedItems || !selectedItems.length' class="text-left w-auto">
@@ -48,7 +48,6 @@
             <div class="text-sm h-max" >
                 {{ item.name }}
             </div>
-            <!---->
         </button>
     </div>
 </div>
@@ -59,10 +58,8 @@
         data: () => ({
             showMenu: false,
             selected_internal: '',
-            menu: [],
             expanded: false,
             menuMargin: '0px',
-            is_filter: true,
         }),
         methods: {
             selectItem(item, index) {
@@ -78,11 +75,20 @@
             },
             onVisualizationInit() {
                 const initial_value = this.getFilterValue("selected_items");
-                this.selected_internal = initial_value || '';
+
+                if (initial_value) {
+                    this.selected_internal = initial_value;
+                } else if (this.config.default_value) {
+                    this.selected_internal = this.config.default_value;
+                } else if (this.menu.length) {
+                    this.selected_internal = this.menu[0].id;
+                } else {
+                    return;
+                }
+
                 this.setFilterValue("selected_items", this.selected_internal, true);
-                return this.selected_internal;
             },
-            getMenuMargin() {
+            handleMenuMargin() {
                 this.$nextTick(() => {
                     const container = this.$refs.container;
                     if (container) {
@@ -95,6 +101,15 @@
             close() {
                 this.showMenu = false;
                 this.expanded = false;
+                this.handleMenuMargin();
+            },
+            open() {
+                this.showMenu = true;
+                this.handleMenuMargin();
+            },
+            expandSelectButton() {
+                this.expanded = true;
+                this.handleMenuMargin();
             }
         },
         computed: {
@@ -104,6 +119,7 @@
                     return this.menu.filter(item => ids.includes(item.id));
                 },
                 set(value) {
+                    this.handleMenuMargin();
                     this.selected_internal = value.map(item => item.id).join('|');
                     this.setFilterValue("selected_items", this.selected_internal, true);
                 }
@@ -116,25 +132,15 @@
                 const column_name = this.findColumnByTag('ids');
                 if (column_name) return this.getColumn(column_name);
             },
-        },
-        watch: {
-            names(data) {
-                this.menu = [];
-                for (let index in data) {
+            menu() {
+                let menu = [];
+                for (let index in this.names) {
                     const id = this.ids[index];
-                    const name = data[index];
-                    this.menu.push({ id, name });
+                    const name = this.names[index];
+                    menu.push({ id, name });
                 }
-            },
-            showMenu() {
-                this.getMenuMargin();
-            },
-            selectedItems() {
-                this.getMenuMargin();
-            },
-            expanded() {
-                this.getMenuMargin();
+                return menu;
             }
-        }
+        },
     }
 </script>
