@@ -30,7 +30,7 @@
                 "shape": "spline"
                 {% endif %},
                 
-                "smoothing": 0.79,
+                "smoothing": 0.45,
                 "width": 1.45
             },
             "connectgaps": true,
@@ -154,7 +154,24 @@
                 "text": "{{ config.x_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             }
 
         },
@@ -210,7 +227,24 @@
                 "text": "{{ config.x_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             }
         },
         "yaxis" : {
@@ -270,7 +304,24 @@
                 "text": "{{ config.y_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             },
             "side": "left"
         },
@@ -331,7 +382,24 @@
                 "text": "{{ config.y_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             }
         },
         "hoverlabel": {

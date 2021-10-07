@@ -22,8 +22,19 @@
                 {% endif %}
             },
             "name": "{{ column_metadata(measure,'label') }}",
+            {% if config.bar_orientation=='horizontal' %}
+            "x": {{ column_data(measure) }},
+            "y": {{ column_data(dimensions[0]) }},
+            "orientation": "h"
+            {% elif config.bar_orientation=='vertical' %}
             "x": {{ column_data(dimensions[0]) }},
-            "y": {{ column_data(measure) }}
+            "y": {{ column_data(measure) }},
+            "orientation": "v"
+            {% else %}
+            "x": {{ column_data(dimensions[0]) }},
+            "y": {{ column_data(measure) }},
+            "orientation": "v"
+            {% endif %}
         }{% if not loop.last %},{%endif%}
         {% endfor %}   
     ],
@@ -107,7 +118,24 @@
                 "text": "{{ config.x_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             }
 
         },
@@ -168,7 +196,24 @@
                 "text": "{{ config.y_title }}"
                 {% else %}
                 "text" : ""
-                {% endif %}
+                {% endif %},
+                "font": {
+                    {% if font_family %}
+                    "family" : "{{ font_family }}"
+                    {% else %}
+                    "family": "Open Sans"
+                    {% endif %},
+                    {% if font_color %}
+                    "color" : "{{ font_color }}"
+                    {% else %}
+                    "color" : "#161F3D"
+                    {% endif %},
+                    {% if font_size %}
+                    "size" : "{{ font_size }}"
+                    {% else %}
+                    "size": 11
+                    {% endif %}
+                }
             }
         },
         
