@@ -60,6 +60,7 @@
             selected_internal: '',
             expanded: false,
             menuMargin: '0px',
+            is_filter: true,
         }),
         methods: {
             selectItem(item, index) {
@@ -75,18 +76,14 @@
             },
             onVisualizationInit() {
                 const initial_value = this.getFilterValue("selected_items");
-
                 if (initial_value) {
                     this.selected_internal = initial_value;
                 } else if (this.config.default_value) {
                     this.selected_internal = this.config.default_value;
-                } else if (this.menu.length) {
-                    this.selected_internal = this.menu[0].id;
                 } else {
-                    return;
+                    return this.unsetFilterValue('selected_items', true);
                 }
-
-                this.setFilterValue("selected_items", this.selected_internal, true);
+                return this.setFilterValue("selected_items", this.selected_internal, true);
             },
             handleMenuMargin() {
                 this.$nextTick(() => {
@@ -120,8 +117,12 @@
                 },
                 set(value) {
                     this.handleMenuMargin();
-                    this.selected_internal = value.map(item => item.id).join('|');
-                    this.setFilterValue("selected_items", this.selected_internal, true);
+                    const selected = value.map(item => item.id).join('|');
+                    this.selected_internal = selected;
+                    this.setFilterValue("selected_items", selected, true);
+                    if (!value || !value.length) {
+                        this.unsetFilterValue('selected_items', true);
+                    }
                 }
             },
             names() {
