@@ -15,7 +15,7 @@
                         :style='{color: arrowColor}'
                     ></i>
                 </span>
-                <span v-if='value !== previous' class="opacity-70">
+                <span class="opacity-70">
                     {{ increased ? '+' : '-' }}{{ change }}
                 </span>
             </div>
@@ -40,44 +40,83 @@
         }),
         computed: {
             value() {
-                return this.fetchColumn('value');
+                // Find by tags
+                const column = this.findColumnByTag('value');
+                if (column) {
+                    return this.fetchColumn(column);
+                }
+
+                // Find by default column name.
+                var value = this.fetchColumn('value');
+                return value;
             },
             previous() {
-                return this.fetchColumn('previous');
+                // Find by tags
+                const column = this.findColumnByTag('previous');
+                if (column) {
+                    return this.fetchColumn(column);
+                }
+
+                // Find by default column name.
+                var prev = this.fetchColumn('previous');
+                return prev;
             },
             change() {
-                return this.fetchColumn('change');
+                // Hide change if show_change = false.
+                if (Object.keys(this.metadata).indexOf('show_change') > -1) {
+                    if (!this.metadata.show_change || this.metadata.show_change === 'false') {
+                        return '';
+                    }
+                }
+
+                // Find by tags.
+                const column = this.findColumnByTag('change');
+                if (column) {
+                    return this.fetchColumn(column);
+                }
+
+                // Find by default column name.
+                var change = this.fetchColumn('change');
+                if (!change) {
+                    // Display the difference between value and previous if no change column is present
+                    return Math.abs(this.valueRaw - this.prevRaw);
+                }
+                return change;
+            },
+            valueRaw() {
+                // This vis always expects one row.
+                const column = this.findColumnByTag('value') || 'value';
+                const row = this.rows[0];
+                return row[column] ? row[column].value : 0;
+            },
+            prevRaw() {
+                // This vis always expects one row.
+                const column = this.findColumnByTag('previous') || 'previous';
+                const row = this.rows[0];
+                return row[column] ? row[column].value : 0;
             },
             greenPositive() {
-                return this.metadata.green_positive || false;
-            },
-            previous() {
-                if (this.rows && this.rows.length && this.rows[0]['previous']) {
-                    return this.rows[0]['previous'].value;
+                // Check if green_positive is present in metadata first.
+                if (Object.keys(this.metadata).indexOf('green_positive') > -1) {
+                    return this.metadata.green_positive || this.metadata.green_positive === 'true';
                 }
-                return null;
-            },
-            value() {
-                if (this.rows && this.rows.length && this.rows[0]['value']) {
-                    return this.rows[0]['value'].value;
-                }
-                return null;
+                return true;
             },
             increased() {
-                return this.value > this.previous;
+                return this.valueRaw > this.prevRaw;
             },
             iconClass() {
-                if (this.value > this.previous) {
+                if (this.valueRaw > this.prevRaw) {
                     return 'fa-chevron-up';
-                } else if (this.value < this.previous) {
+                } else if (this.valueRaw < this.prevRaw) {
                     return 'fa-chevron-down';
-                } else {
-                    return 'fa-minus';
                 }
+
+                return 'fa-minus';
             },
             arrowColor() {
 
-                if (this.value === this.previous) {
+                if (this.valueRaw === this.prevRaw) {
 					return '#d1d5db';
 				}
 
