@@ -12,12 +12,12 @@
             class="relative left-0 right-0 w-full pl-2 py-2 inline-flex rounded-lg focus:z-10 focus:outline-none rounded-b-none overflow-hidden"
             @mouseenter='expandSelectButton'
         >
-            <div class="flex relative overflow-hidden h-full flex-wrap">
+            <div class="flex relative overflow-hidden w-10/12 h-full gap-1" :class="{'flex-wrap': expanded }">
                 <div v-if='!selectedItems || !selectedItems.length' class="text-left w-auto">
                     Select Multiple...
                 </div>
                 <div
-                    class="text-xs rounded-3xl bg-filterHighlightColor text-filterFontHighlightColor px-2 my-1 min-w-max h-full"
+                    class="text-xs rounded-3xl bg-filterHighlightColor text-filterFontHighlightColor px-2 min-w-max h-full"
                     v-for="(item, index) in selectedItems"
                     :key="index"
                     @click="removeItem(item, index)"
@@ -28,7 +28,8 @@
             </div>
         </button>
         <div class="w-1/12 pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
-            <i class="fas fa-chevron-down" v-if='!loading'></i>
+            <span class="relative bottom-1" v-if='selectedItems && selectedItems.length && selectedItemsCount'>{{selectedItems.length}}</span>
+            <i class="fas fa-chevron-down" v-else-if='!loading'></i>
             <a-icon type="loading" v-else />
         </div>
     </div>
@@ -61,6 +62,7 @@
             expanded: false,
             menuMargin: '0px',
             is_filter: true,
+            selectedItemsCount: true,
         }),
         methods: {
             selectItem(item, index) {
@@ -99,6 +101,7 @@
                 this.showMenu = false;
                 this.expanded = false;
                 this.handleMenuMargin();
+                this.selectedItemsCount = true;
             },
             open() {
                 this.showMenu = true;
@@ -107,6 +110,7 @@
             expandSelectButton() {
                 this.expanded = true;
                 this.handleMenuMargin();
+                this.selectedItemsCount = false;
             }
         },
         computed: {
