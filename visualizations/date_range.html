@@ -121,7 +121,7 @@ computed: {
       const preset = presets[presetType].filter(p => p.key === datePreset)[0];
       if (preset) return preset.label;
     }
-    return 'Custom Range';
+    return '';
   },
   datePresetModel: {
     get() {
