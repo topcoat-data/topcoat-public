@@ -22,7 +22,7 @@
         <div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9" :class='{"full-picker": !config.hide_presets}'>
 
             <!-- Range Picker -->
-            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="'MM/DD/YYYY'" :value="[ startDate, endDate ]"
+            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]"
                 v-if='pickerMode == "range"'>
                 <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
                 <template slot="renderExtraFooter">
@@ -49,7 +49,7 @@
             </a-range-picker>
 
             <!-- Date Picker -->
-            <a-date-picker :showToday='false' class="h-9 ant-calendar-filter date-picker" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" :format="'MM/DD/YYYY'" :separator="'-'" @change="onDateChange" :open="pickerOpened" @openChange="onOpen"
+            <a-date-picker :showToday='false' class="h-9 ant-calendar-filter date-picker" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" :format="dateFormat" :separator="'-'" @change="onDateChange" :open="pickerOpened" @openChange="onOpen"
                 v-model='date' v-else-if="pickerMode == 'single'">
                 <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
                 <template slot="renderExtraFooter">
@@ -170,6 +170,9 @@
           case 'single':
               return 'today';
       }
+    },
+    dateFormat() {
+      return this.config.date_format || 'MM/DD/YYYY';
     }
   },
   methods: {
