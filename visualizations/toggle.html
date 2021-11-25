@@ -1,4 +1,5 @@
-<div class="flex-col md:justify-start justify-center items-start text-filterFontColor relative w-full md:w-28">
+<template>
+  <div class="flex-col md:justify-start justify-center items-start text-filterFontColor relative w-full md:w-28">
     <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
     <div class="h-5" v-else></div>
     <div class="relative top-1 rounded-full w-12 h-6 transition duration-200 ease-linear"
@@ -9,9 +10,10 @@
         <a-icon type="loading" v-else class="pl-5 pb-4" />
         <input type="checkbox" id="toggle" name="toggle" class="appearance-none w-full h-full focus:outline-none" v-model='checked'>
     </div>
-</div>
+  </div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
 export default {
     data() {
       return {

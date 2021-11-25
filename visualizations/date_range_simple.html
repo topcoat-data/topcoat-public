@@ -1,43 +1,45 @@
-<div class="inline-flex">
-    <div class="inline-block">
-      <a-dropdown class="flex-1 wld-date-presets-button" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
-          <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
-              <a-menu-item key="yesterday">Yesterday</a-menu-item>
-              <a-menu-item key="last7days">Last 7 Days</a-menu-item>
-              <a-menu-item key="lastmonth">Last Month</a-menu-item>
-              <a-menu-item key="last30days">Last 30 Days</a-menu-item>
-              <a-menu-item key="last90days">Last 90 Days</a-menu-item>
-              <a-menu-item key="mtd">Month to Date</a-menu-item>
-              <a-menu-item key="ytd">Year to Date</a-menu-item>
-              <a-menu-item key="custom">Custom Range</a-menu-item>
-          </a-menu>
-          <a-button type="primary" @click="onClose"> {{ presetValue }} <a-icon v-if="datePreset" type="down" /> </a-button>
-      </a-dropdown>
-    </div>
-    <div class="inline-block" >
-        <a-range-picker :allowClear="false" dropdownClassName="wld-date-picker" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="'MM/DD/YYYY'" :value="[ startDate, endDate ]">
-            <a-icon slot="suffixIcon" type="calendar" />
-            <template slot="renderExtraFooter">
-                <div style="padding: 2.0rem; padding-right: 1.0rem;">
-                <span style="padding-right: 2.0rem;">Compare to previous</span>
-                <a-radio-group v-model="previousMode" button-style="solid">
-                  <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period">
-                    Period
-                  </a-radio-button>
-                  <a-radio-button value="year">
-                    Year
-                  </a-radio-button>
-                </a-radio-group>
-                <a-button class="wld-date-picker-apply-button" type="primary" @click="clickApply">
-                    Apply
-                  </a-button>
-                </div>
-            </template>
-        </a-range-picker>
-    </div>
-</div>
+<template>
+  <div class="inline-flex">
+      <div class="inline-block">
+        <a-dropdown class="flex-1 wld-date-presets-button" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
+            <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
+                <a-menu-item key="yesterday">Yesterday</a-menu-item>
+                <a-menu-item key="last7days">Last 7 Days</a-menu-item>
+                <a-menu-item key="lastmonth">Last Month</a-menu-item>
+                <a-menu-item key="last30days">Last 30 Days</a-menu-item>
+                <a-menu-item key="last90days">Last 90 Days</a-menu-item>
+                <a-menu-item key="mtd">Month to Date</a-menu-item>
+                <a-menu-item key="ytd">Year to Date</a-menu-item>
+                <a-menu-item key="custom">Custom Range</a-menu-item>
+            </a-menu>
+            <a-button type="primary" @click="onClose"> {{ presetValue }} <a-icon v-if="datePreset" type="down" /> </a-button>
+        </a-dropdown>
+      </div>
+      <div class="inline-block" >
+          <a-range-picker :allowClear="false" dropdownClassName="wld-date-picker" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="'MM/DD/YYYY'" :value="[ startDate, endDate ]">
+              <a-icon slot="suffixIcon" type="calendar" />
+              <template slot="renderExtraFooter">
+                  <div style="padding: 2.0rem; padding-right: 1.0rem;">
+                  <span style="padding-right: 2.0rem;">Compare to previous</span>
+                  <a-radio-group v-model="previousMode" button-style="solid">
+                    <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period">
+                      Period
+                    </a-radio-button>
+                    <a-radio-button value="year">
+                      Year
+                    </a-radio-button>
+                  </a-radio-group>
+                  <a-button class="wld-date-picker-apply-button" type="primary" @click="clickApply">
+                      Apply
+                    </a-button>
+                  </div>
+              </template>
+          </a-range-picker>
+      </div>
+  </div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
 export default {
     data() {
       return {

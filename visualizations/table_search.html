@@ -1,4 +1,5 @@
-<div class="primaryFilterRadius flex flex-col md:w-56 w-full">
+<template>
+    <div class="primaryFilterRadius flex flex-col md:w-56 w-full">
     <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
     <div class="h-5" v-else></div>
     <div class="h-9 relative">
@@ -35,9 +36,10 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
 export default {
     data: () => ({
         text: '',

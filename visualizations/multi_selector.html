@@ -1,59 +1,61 @@
-<div class="relative md:w-56 w-full" :class='{"h-14": expanded}' @mouseleave='close'>
-    <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
-    <div class="h-5" v-else></div>
-    <div
-        class="block border-filterBorderColor border appearance-none w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none primaryFilterRadius overflow-hidden"
-        @click='open'
-        :class='expanded ? "absolute h-max z-50" : "relative h-9"'
-        ref='container'
-    >
-        <button
-            type="button"
-            class="relative left-0 right-0 w-full pl-2 py-2 inline-flex rounded-lg focus:z-10 focus:outline-none rounded-b-none overflow-hidden"
-            @mouseenter='expandSelectButton'
+<template>
+    <div class="relative md:w-56 w-full" :class='{"h-14": expanded}' @mouseleave='close'>
+        <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+        <div class="h-5" v-else></div>
+        <div
+            class="block border-filterBorderColor border appearance-none w-full bg-filterBackgroundColor text-filterFontColor rounded leading-tight focus:outline-none primaryFilterRadius overflow-hidden"
+            @click='open'
+            :class='expanded ? "absolute h-max z-50" : "relative h-9"'
+            ref='container'
         >
-            <div class="flex relative overflow-hidden w-10/12 h-full gap-1" :class="{'flex-wrap': expanded }">
-                <div v-if='!selectedItems || !selectedItems.length' class="text-left w-auto">
-                    Select Multiple...
+            <button
+                type="button"
+                class="relative left-0 right-0 w-full pl-2 py-2 inline-flex rounded-lg focus:z-10 focus:outline-none rounded-b-none overflow-hidden"
+                @mouseenter='expandSelectButton'
+            >
+                <div class="flex relative overflow-hidden w-10/12 h-full gap-1" :class="{'flex-wrap': expanded }">
+                    <div v-if='!selectedItems || !selectedItems.length' class="text-left w-auto">
+                        Select Multiple...
+                    </div>
+                    <div
+                        class="text-xs rounded-3xl bg-filterHighlightColor text-filterFontHighlightColor px-2 min-w-max h-full"
+                        v-for="(item, index) in selectedItems"
+                        :key="index"
+                        @click="removeItem(item, index)"
+                    >
+                        {{ item.name }}
+                        <i class="fas fa-times ml-1"></i>
+                    </div>
                 </div>
-                <div
-                    class="text-xs rounded-3xl bg-filterHighlightColor text-filterFontHighlightColor px-2 min-w-max h-full"
-                    v-for="(item, index) in selectedItems"
-                    :key="index"
-                    @click="removeItem(item, index)"
-                >
-                    {{ item.name }}
-                    <i class="fas fa-times ml-1"></i>
-                </div>
+            </button>
+            <div class="w-1/12 pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
+                <span class="relative bottom-1" v-if='selectedItems && selectedItems.length && selectedItemsCount'>{{selectedItems.length}}</span>
+                <i class="fas fa-chevron-down" v-else-if='!loading'></i>
+                <a-icon type="loading" v-else />
             </div>
-        </button>
-        <div class="w-1/12 pointer-events-none absolute top-3 right-3 flex text-sm px-2 text-filterFontColor hover:text-filterFontHighlightColor">
-            <span class="relative bottom-1" v-if='selectedItems && selectedItems.length && selectedItemsCount'>{{selectedItems.length}}</span>
-            <i class="fas fa-chevron-down" v-else-if='!loading'></i>
-            <a-icon type="loading" v-else />
+        </div>
+        <div
+            class="shadow-xl absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto"
+            v-if="showMenu"
+            :style='{"margin-top": menuMargin}'
+        >
+            <button
+                type="button"
+                class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
+                v-for="(item, index) in menu"
+                :key="index"
+                @click='selectItem(item, index)'
+                v-if='!selectedItems.includes(item)'
+            >
+                <div class="text-sm h-max" >
+                    {{ item.name }}
+                </div>
+            </button>
         </div>
     </div>
-    <div
-        class="shadow-xl absolute border-filterBorderColor border w-full rounded z-50 block appearance-none bg-filterMenuColor text-filterFontColor leading-tight focus:outline-none max-h-56 overflow-auto"
-        v-if="showMenu"
-        :style='{"margin-top": menuMargin}'
-    >
-        <button
-            type="button"
-            class="relative px-4 py-3 inline-flex w-full focus:z-10 focus:outline-none border-b-2 border-filterBorderColor focus:text-grayscaleOneColor hover:text-grayscaleOneColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor"
-            v-for="(item, index) in menu"
-            :key="index"
-            @click='selectItem(item, index)'
-            v-if='!selectedItems.includes(item)'
-        >
-            <div class="text-sm h-max" >
-                {{ item.name }}
-            </div>
-        </button>
-    </div>
-</div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
     export default {
         name: "MultiSelect",
         data: () => ({

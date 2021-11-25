@@ -1,6 +1,8 @@
-<plotly />
+<template>
+    <plotly />
+</template>
 
-<script type='visualization/figure'>
+<figure>
 {
     {% set line_colors = var('line_colors') %}
     {% set fill_colors = var('fill_colors') %}
@@ -449,4 +451,4 @@
        {% endif %}
     }
 }
-</script>
+</figure>
