@@ -1,35 +1,37 @@
-<div class="md:relative absolute z-50 shadow-2xl md:shadow-none">
-  <div class="overflow-auto ease-in-out transition-all duration-100 md:flex flex-col bg-primaryColor md:flex-col min-h-full h-screen w-16 primary-fonts" :class='isVisible ? "w-56" : "w-16"' >
-    <div
-        class="flex flex-col w-full w-16 lg:w-full text-primaryFontColor flex-shrink-0"
-    >
+<template>
+  <div class="md:relative absolute z-50 shadow-2xl md:shadow-none">
+    <div class="overflow-auto ease-in-out transition-all duration-100 md:flex flex-col bg-primaryColor md:flex-col min-h-full h-screen w-16 primary-fonts" :class='isVisible ? "w-56" : "w-16"' >
+      <div
+          class="flex flex-col w-full w-16 lg:w-full text-primaryFontColor flex-shrink-0"
+      >
 
-    <div class="w-full mx-auto">
-      <nav class="px-0" :class="{'lg:px-3.5': isVisible}">
-        <div class="mx-auto pt-4 flex justify-center items-center" :class="{'lg:justify-between': isVisible, }">
-          <div class="flex-shrink-0 hidden mr-2" :class="{'lg:block': isVisible}">
-            <img :width="project.logo.width" :src="project.logo.url" >
+      <div class="w-full mx-auto">
+        <nav class="px-0" :class="{'lg:px-3.5': isVisible}">
+          <div class="mx-auto pt-4 flex justify-center items-center" :class="{'lg:justify-between': isVisible, }">
+            <div class="flex-shrink-0 hidden mr-2" :class="{'lg:block': isVisible}">
+              <img :width="project.logo.width" :src="project.logo.url" >
+            </div>
+            <i class="fa fa-bars text-lg cursor-pointer" @click="barToggle"></i>
           </div>
-          <i class="fa fa-bars text-lg cursor-pointer" @click="barToggle"></i>
-        </div>
 
-        <div class="pt-6">
-          <ul class="flex flex-col">
-            <a
-              v-for="page in project.nav"
-              class="bg-secondaryButtonColor items-center px-5 md:px-2 py-4 h-14 flex justify-start hover:text-primaryFontColor hover:border-grayscaleTwoColor justify-start lg:w-full text-center hover:bg-primaryHighlightColor border-l-2 border-primaryColor text-primaryFontColor opacity-70 hover:opacity-100"
-              :class="navSelected(page.url, 'bg-primaryHighlightColor border-grayscaleTwoColor text-primaryFontColor opacity-100')" :href="'/' + page.url"><i :class="'icon fas text-base ' + page.icon_class  + (isVisible ? '' : ' md:ml-4 ')" /> <span class="pl-2 text-center" :class="isVisible ? 'block' : 'hidden'">{{ page.title }} </span> </a>
-          </ul>
-        </div>
-      </nav>
+          <div class="pt-6">
+            <ul class="flex flex-col">
+              <a
+                v-for="page in project.nav"
+                class="bg-secondaryButtonColor items-center px-5 md:px-2 py-4 h-14 flex justify-start hover:text-primaryFontColor hover:border-grayscaleTwoColor justify-start lg:w-full text-center hover:bg-primaryHighlightColor border-l-2 border-primaryColor text-primaryFontColor opacity-70 hover:opacity-100"
+                :class="navSelected(page.url, 'bg-primaryHighlightColor border-grayscaleTwoColor text-primaryFontColor opacity-100')" :href="'/' + page.url"><i :class="'icon fas text-base ' + page.icon_class  + (isVisible ? '' : ' md:ml-4 ')" /> <span class="pl-2 text-center" :class="isVisible ? 'block' : 'hidden'">{{ page.title }} </span> </a>
+            </ul>
+          </div>
+        </nav>
 
-    </div>
+      </div>
+      </div>
     </div>
   </div>
-</div>
+</template>
 
 
-<script type='visualization/javascript'>
+<script>
 export default {
   name: 'sideBar',
   data: () => ({

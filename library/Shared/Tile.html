@@ -1,19 +1,20 @@
 <!----------------------- begin global tiles ----------------------->
-
-<div class="rounded p-0 text-primaryFontColor relative" :class='{"tileElement": !hideBackground}'>
-    <div v-if="loading && !nospinner">
-        <div :style="{ height: (height - 2) + 'px' }">
-            <Spinner />
+<template>
+    <div class="rounded p-0 text-primaryFontColor relative" :class='{"tileElement": !hideBackground}'>
+        <div v-if="loading && !nospinner">
+            <div :style="{ height: (height - 2) + 'px' }">
+                <Spinner />
+            </div>
+        </div>
+        <div v-else>
+            <div :style="{ height: is_iframe ? 'inherit' : (height - 2) + 'px' }">
+                <slot></slot>
+            </div>
         </div>
     </div>
-    <div v-else>
-        <div :style="{ height: is_iframe ? 'inherit' : (height - 2) + 'px' }">
-            <slot></slot>
-        </div>
-    </div>
-</div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
     export default {
         props: ['hideBackground']
     }

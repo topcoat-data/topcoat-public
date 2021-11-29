@@ -1,32 +1,34 @@
-<div class="w-full mx-auto flex flex-wrap md:px-10 lg:px-10 px-8" v-if='!minimal'>
-    <div class="md:flex flex-row flex-wrap items-center ml-auto">
-        <div class="py-3 px-5 rounded-full" :class='position + " " + backgroundColor' v-if="cache_init_time">
-            <div class="flex items-center relative">
-                <button :class='buttonColors' @click="refreshCache()" class="border-solid border-4 py-2 px-3 shadow-2xl rounded-full focus:outline-none z-50">
-                    <i :class="iconClass ? iconClass : 'fas fa-redo-alt'"></i>
-                </button>
-                <div class="ml-2 text-xs" :class='textColor' v-if='!noText'>
-                    <div>Last Updated &nbsp;</div>
-                    <div>{{ lastRefresh }}</div>
+<template>
+    <div class="w-full mx-auto flex flex-wrap md:px-10 lg:px-10 px-8" v-if='!minimal'>
+        <div class="md:flex flex-row flex-wrap items-center ml-auto">
+            <div class="py-3 px-5 rounded-full" :class='position + " " + backgroundColor' v-if="cache_init_time">
+                <div class="flex items-center relative">
+                    <button :class='buttonColors' @click="refreshCache()" class="border-solid border-4 py-2 px-3 shadow-2xl rounded-full focus:outline-none z-50">
+                        <i :class="iconClass ? iconClass : 'fas fa-redo-alt'"></i>
+                    </button>
+                    <div class="ml-2 text-xs" :class='textColor' v-if='!noText'>
+                        <div>Last Updated &nbsp;</div>
+                        <div>{{ lastRefresh }}</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div v-else>
-    <div class="minimal-cache-container w-max" :class='textColor + " " + position'>
-        <div class="flex">
-            <div class="mt-1">
-                <div> Last Updated {{ lastRefresh }}.</div>
+    <div v-else>
+        <div class="minimal-cache-container w-max" :class='textColor + " " + position'>
+            <div class="flex">
+                <div class="mt-1">
+                    <div> Last Updated {{ lastRefresh }}.</div>
+                </div>
+                <button @click="refreshCache()" class="rounded w-8 h-8 flex justify-center items-center ml-3" :class='buttonColors'>
+                    <i :class="iconClass ? iconClass : 'fas fa-redo-alt'"></i>
+                </button>
             </div>
-            <button @click="refreshCache()" class="rounded w-8 h-8 flex justify-center items-center ml-3" :class='buttonColors'>
-                <i :class="iconClass ? iconClass : 'fas fa-redo-alt'"></i>
-            </button>
         </div>
     </div>
-</div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
     export default {
         name: 'CacheControls',
         props: {

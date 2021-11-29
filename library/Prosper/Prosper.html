@@ -6,43 +6,44 @@
         }
    )
 }}
+<template>
+    <div class="flex bg-pageBackgroundColor" > 
+        <ProsperSideBar></ProsperSideBar>
+        
+        <div class="w-full ml-10 md:ml-auto">
+            <ProsperNavBar></ProsperNavBar>
 
-<div class="flex bg-pageBackgroundColor" > 
-    <ProsperSideBar></ProsperSideBar>
-    
-    <div class="w-full ml-10 md:ml-auto">
-        <ProsperNavBar></ProsperNavBar>
+            <div class="overflow-hidden h-80 bg-secondaryColor pr-10 pl-10 mx-auto">
+                <CacheControls
+                    iconClass='fa fa-redo transform -rotate-45'
+                    position='float-right relative top-10'
+                    textColor='text-secondaryFontColor'
+                    buttonColors='text-secondaryFontColor bg-primaryButtonColor'
+                    minimal />
+            </div>     
 
-        <div class="overflow-hidden h-80 bg-secondaryColor pr-10 pl-10 mx-auto">
-            <CacheControls
-                iconClass='fa fa-redo transform -rotate-45'
-                position='float-right relative top-10'
-                textColor='text-secondaryFontColor'
-                buttonColors='text-secondaryFontColor bg-primaryButtonColor'
-                minimal />
-        </div>     
-
-        <div class="pr-10 pl-10 mx-auto -mt-60 container mx-auto h-full ">
-            <div class="mb-2 text-sm text-secondaryFontColor">Filters</div>
-            <div class="bg-pageSectionColor p-4 rounded">
-                <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                    <slot name="filters"></slot>
+            <div class="pr-10 pl-10 mx-auto -mt-60 container mx-auto h-full ">
+                <div class="mb-2 text-sm text-secondaryFontColor">Filters</div>
+                <div class="bg-pageSectionColor p-4 rounded">
+                    <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+                        <slot name="filters"></slot>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mt-5">
-                <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
-                    <slot name='stats'></slot>
-                </div> -->
+                <div class="mt-5">
+                    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
+                        <slot name='stats'></slot>
+                    </div> -->
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
-                    <slot></slot>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
+                        <slot></slot>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-</div>
+</template>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');

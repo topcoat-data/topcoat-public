@@ -1,32 +1,33 @@
-<div id="elegance" class="bg-pageBackgroundColor">
-    <EleganceHeader></EleganceHeader>
-    <div class="overflow-hidden px-10 mx-auto">
-        <CacheControls
-            iconClass='fa fa-redo transform -rotate-45'
-            position='float-right relative my-5'
-            textColor='text-primaryFontColor'
-            buttonColors='text-secondaryFontColor bg-primaryButtonColor'
-            minimal />
-    </div>
-    <div class="pr-10 pl-10 mx-auto secondary-fonts">
-        <div class="bg-pageSectionColor p-4 rounded">
-            <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                <slot name="filters"></slot>
+<template>
+    <div id="elegance" class="bg-pageBackgroundColor">
+        <EleganceHeader></EleganceHeader>
+        <div class="overflow-hidden px-10 mx-auto">
+            <CacheControls
+                iconClass='fa fa-redo transform -rotate-45'
+                position='float-right relative my-5'
+                textColor='text-primaryFontColor'
+                buttonColors='text-secondaryFontColor bg-primaryButtonColor'
+                minimal />
+        </div>
+        <div class="pr-10 pl-10 mx-auto secondary-fonts">
+            <div class="bg-pageSectionColor p-4 rounded">
+                <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+                    <slot name="filters"></slot>
+                </div>
+            </div>
+
+            <div class="mt-5 secondary-fonts">
+                <!-- <div class="grid md:grid-cols-1 lg:grid-cols-3 py-3 gap-4">
+                    <slot name='stats'></slot>
+                </div> -->
+
+                <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
+                    <slot></slot>
+                </div>
             </div>
         </div>
-
-        <div class="mt-5 secondary-fonts">
-            <!-- <div class="grid md:grid-cols-1 lg:grid-cols-3 py-3 gap-4">
-                <slot name='stats'></slot>
-            </div> -->
-
-            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
-                <slot></slot>
-            </div>
-        </div>
     </div>
-</div>
-
+</template>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');

@@ -1,39 +1,41 @@
-<div id="ch-theme">
+<template>
+    <div id="ch-theme">
 
-    <HarmonySidebar />
+        <HarmonySidebar />
 
-    <div class="relative md:ml-64">
-        <HarmonyHeader />
+        <div class="relative md:ml-64">
+            <HarmonyHeader />
 
-        <div class="container mx-auto h-full px-10 pt-10 pb-1">
-            <div class="bg-pageSectionColor p-4">
-                <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                    <slot name="filters"></slot>
+            <div class="container mx-auto h-full px-10 pt-10 pb-1">
+                <div class="bg-pageSectionColor p-4">
+                    <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+                        <slot name="filters"></slot>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- <div class="container mx-auto h-full px-10 pt-10 pb-1">
-            <div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
-                <slot name="stats"></slot>
+            <!-- <div class="container mx-auto h-full px-10 pt-10 pb-1">
+                <div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
+                    <slot name="stats"></slot>
+                </div>
+            </div> -->
+
+            <div class="container mx-auto h-full min-h-screen p-10">
+                <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts pb-5">
+                    <slot></slot>
+                </div>
             </div>
-        </div> -->
 
-        <div class="container mx-auto h-full min-h-screen p-10">
-            <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts pb-5">
-                <slot></slot>
-            </div>
+            <CacheControls
+                position='fixed right-3 bottom-3 z-50'
+                buttonColors='bg-primaryColor text-secondaryFontColor border-primaryBorderColor'
+                backgroundColor='bg-secondaryColor text-secondaryFontColor'
+                textColor='text-secondaryFontColor'
+            />
+            <!-- Footer can be used here -->
         </div>
-
-        <CacheControls
-            position='fixed right-3 bottom-3 z-50'
-            buttonColors='bg-primaryColor text-secondaryFontColor border-primaryBorderColor'
-            backgroundColor='bg-secondaryColor text-secondaryFontColor'
-            textColor='text-secondaryFontColor'
-        />
-        <!-- Footer can be used here -->
     </div>
-</div>
+</template>
 
 <style>
 :root {
