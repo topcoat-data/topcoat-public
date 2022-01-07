@@ -37,6 +37,8 @@
             },
             "connectgaps": true,
 
+            {% if not config.stacked %}
+
             {% if config.fill_type=='no fill' %}
             "fill" : "none"
             {% elif config.fill_type=='x fill' %}
@@ -50,6 +52,10 @@
             {% else %}
             "fill" : "tozeroy"
             {% endif %},
+
+            {% else %}
+            "stackgroup": "one",
+            {% endif %}
 
             {% if fill_colors %}
             "fillcolor": "{{ fill_colors[loop.index-1] }}",
