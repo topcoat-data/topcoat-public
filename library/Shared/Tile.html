@@ -1,6 +1,6 @@
 <!----------------------- begin global tiles ----------------------->
 <template>
-    <div class="rounded p-0 text-primaryFontColor relative" :class='{"tileElement": !hideBackground}'>
+    <div class="relative p-0 rounded text-primaryFontColor" :class='{"tileElement": !hideBackground}'>
         <div v-if="loading && !nospinner">
             <div :style="{ height: (height - 2) + 'px' }">
                 <Spinner />
@@ -16,6 +16,13 @@
 
 <script>
     export default {
-        props: ['hideBackground']
+        props: ['hideBackground', 'slotLoaded'],
+        mounted() {
+            setTimeout(() => {
+                if (this.slotLoaded) {
+                    this.slotLoaded();
+                }
+            }, 1500)
+        }
     }
 </script>
