@@ -16,13 +16,6 @@
 
 <script>
     export default {
-        props: ['hideBackground', 'slotLoaded'],
-        mounted() {
-            setTimeout(() => {
-                if (this.slotLoaded) {
-                    this.slotLoaded();
-                }
-            }, 1500)
-        }
+        props: ['hideBackground'],
     }
 </script>
