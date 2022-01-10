@@ -1,22 +1,24 @@
-<div class='relative primaryFilterRadius w-full md:w-56'>
-    <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
-    <div class="h-5" v-else></div>
-    <div class="relative">
-        <span class="z-10 font-normal text-center text-filterFontColor absolute right-6 top-1 rounded text-base items-center justify-center">
-            <i class='text-sm' :class="searchIcon ? searchIcon : 'fas fa-search'" v-if='!loading'></i>
-            <a-icon type="loading" v-else />
-        </span>
-        <input
-            type="text"
-            :placeholder="metadata.placeholder || 'Search'"
-            class="h-9 primaryFilterRadius w-full text-filterFontColor bg-filterBackgroundColor border border-filterBorderColor flex justify-around items-center pl-4 focus:outline-none"
-            v-model='queryText'
-            @keyup='onEnter'
-        />
+<template>
+    <div class='relative primaryFilterRadius w-full md:w-56'>
+        <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+        <div class="h-5" v-else></div>
+        <div class="relative">
+            <span class="z-10 font-normal text-center text-filterFontColor absolute right-6 top-1 rounded text-base items-center justify-center">
+                <i class='text-sm' :class="searchIcon ? searchIcon : 'fas fa-search'" v-if='!loading'></i>
+                <a-icon type="loading" v-else />
+            </span>
+            <input
+                type="text"
+                :placeholder="metadata.placeholder || 'Search'"
+                class="h-9 primaryFilterRadius w-full text-filterFontColor bg-filterBackgroundColor border border-filterBorderColor flex justify-around items-center pl-4 focus:outline-none"
+                v-model='queryText'
+                @keyup='onEnter'
+            />
+        </div>
     </div>
-</div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
     export default {
         name: "SearchFilter",
         data: () => ({

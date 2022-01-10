@@ -1,28 +1,31 @@
-<div id="dashboard">
-    <NewsprintHeader></NewsprintHeader>
-    <div class="container-width relative left-0 right-0 m-auto">
-        <div class="mt-20 py-5 px-10 bg-pageSectionColor">
-            <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
-                <slot name="filters"></slot>
+<template>
+    <div id="dashboard">
+        <NewsprintHeader></NewsprintHeader>
+        <div class="container-width relative left-0 right-0 m-auto">
+            <div class="mt-20 py-5 px-10 bg-pageSectionColor">
+                <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
+                    <slot name="filters"></slot>
+                </div>
+            </div>
+        </div>
+        <div class="mt-14 relative left-0 right-0 m-auto container py-3">
+            <div class="text-center text-6xl font-bold text-primaryFontColor secondary-fonts">{{ page.title }}</div>
+            <div class="text-secondaryFontColor text-center pt-5 font-semibold primary-fonts">Last updated {{ lastRefresh }}.</div>
+        </div>
+        <!-- <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-2 secondary-fonts">
+            <div class="grid grid-cols-2">
+                <slot name='stats'></slot>
+            </div>
+        </div> -->
+        <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts container-width relative left-0 right-0 m-auto">
+            <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
+            <div class="grid grid-cols-1">
+                <slot></slot>
             </div>
         </div>
     </div>
-    <div class="mt-14 relative left-0 right-0 m-auto container py-3">
-        <div class="text-center text-6xl font-bold text-primaryFontColor secondary-fonts">{{ page.title }}</div>
-        <div class="text-secondaryFontColor text-center pt-5 font-semibold primary-fonts">Last updated {{ lastRefresh }}.</div>
-    </div>
-    <!-- <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-2 secondary-fonts">
-        <div class="grid grid-cols-2">
-            <slot name='stats'></slot>
-        </div>
-    </div> -->
-    <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts container-width relative left-0 right-0 m-auto">
-        <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
-        <div class="grid grid-cols-1">
-            <slot></slot>
-        </div>
-    </div>
-</div>
+</template>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Raleway&display=swap');
 :root {

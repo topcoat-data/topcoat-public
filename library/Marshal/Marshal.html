@@ -6,40 +6,41 @@
         }
    )
 }}
+<template>
+    <section>
 
-<section>
+        <!-- Layout -->
+        <MarshalNavbar />
+        <MarshalHeader />
 
-    <!-- Layout -->
-    <MarshalNavbar />
-    <MarshalHeader />
+        <div class="relative">
 
-    <div class="relative">
+            <!-- Filters -->
+            <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1" v-if='!noFilters'>
+                <div class="bg-secondaryColor p-4 rounded">
+                    <div class="flex flex-wrap md:flex-row flex-col gap-6 primary-fonts">
+                        <slot name='filters' />
+                    </div>
+                </div>
+            </div>
 
-        <!-- Filters -->
-        <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1" v-if='!noFilters'>
-            <div class="bg-secondaryColor p-4 rounded">
-                <div class="flex flex-wrap md:flex-row flex-col gap-6 primary-fonts">
-                    <slot name='filters' />
+            <!-- <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1">
+                <div class="mt-9 rounded">
+                    <div class="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
+                        <slot name='stats' />
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Body -->
+            <div class="container mx-auto h-full max-w-screen-2xl min-h-screen p-9">
+                <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
+                    <slot></slot>
                 </div>
             </div>
         </div>
-
-        <!-- <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1">
-            <div class="mt-9 rounded">
-                <div class="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
-                    <slot name='stats' />
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Body -->
-        <div class="container mx-auto h-full max-w-screen-2xl min-h-screen p-9">
-            <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
-                <slot></slot>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
+</template>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
@@ -102,7 +103,7 @@
 
 </style>
 
-<script type='visualization/javascript'>
+<script>
     export default {
         name: "Marshal",
         props: {

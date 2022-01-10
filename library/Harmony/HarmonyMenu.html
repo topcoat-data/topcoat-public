@@ -1,15 +1,17 @@
-<ul class="md:flex-col md:min-w-full flex flex-col list-none mb-0">
-    <li
-        class="items-center pl-3 mb-3 rounded hover:bg-secondaryHighlightColor text-secondaryFontColor"
-        v-for="page in project.nav"
-        :class="navSelected(page.url, 'bg-secondaryHighlightColor', 'bg-primaryButtonColor')"
-    >
-        <a
-            class="decoration-none primary-fonts text-xs uppercase py-3 font-medium block hover:text-secondaryFontColor primary-fonts"
-            :href="page.url"
-            >
-            <i :class="page.icon_class" class="mr-2 text-sm fas"></i>
-            {{ page.title }}
-        </a>
-    </li>
-</ul>
+<template>
+    <ul class="md:flex-col md:min-w-full flex flex-col list-none mb-0">
+        <li
+            class="items-center pl-3 mb-3 rounded hover:bg-secondaryHighlightColor text-secondaryFontColor"
+            v-for="page in project.nav"
+            :class="navSelected(page.url, 'bg-secondaryHighlightColor', 'bg-primaryButtonColor')"
+        >
+            <a
+                class="decoration-none primary-fonts text-xs uppercase py-3 font-medium block hover:text-secondaryFontColor primary-fonts"
+                :href="page.url"
+                >
+                <i :class="page.icon_class" class="mr-2 text-sm fas"></i>
+                {{ page.title }}
+            </a>
+        </li>
+    </ul>
+</template>

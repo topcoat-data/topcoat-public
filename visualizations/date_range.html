@@ -1,57 +1,59 @@
-<div class="date-filter-container w-full">
-      <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
-      <div class="h-5" v-else></div>
-      <div class=" w-full h-9 inline-flex">
-        <div class="inline-block w-max h-full">
-          <a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
-              <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
-                  <a-menu-item key="yesterday">Yesterday</a-menu-item>
-                  <a-menu-item key="last7days">Last 7 Days</a-menu-item>
-                  <a-menu-item key="lastmonth">Last Month</a-menu-item>
-                  <a-menu-item key="last30days">Last 30 Days</a-menu-item>
-                  <a-menu-item key="last90days">Last 90 Days</a-menu-item>
-                  <a-menu-item key="mtd">Month to Date</a-menu-item>
-                  <a-menu-item key="ytd">Year to Date</a-menu-item>
-                  <a-menu-item key="custom">Custom Range</a-menu-item>
-              </a-menu>
-              <button class="px-4 rounded-l h-full bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor outline-none rounded-r-none" @click="onClose">
-                {{ presetValue }}
-                <span v-if='!loading'>
-                  <a-icon v-if="datePreset && !pickerOpened" type="down" />
-                  <a-icon v-if="datePreset && pickerOpened" type="up" />
-                </span>
-                <a-icon type="loading" v-else />
-              </button>
-          </a-dropdown>
+<template>
+  <div class="date-filter-container w-full">
+        <div class="text-primaryFontColor text-xs font-semibold pb-1" v-if='metadata.title'>{{ metadata.title }}</div>
+        <div class="h-5" v-else></div>
+        <div class=" w-full h-9 inline-flex">
+          <div class="inline-block w-max h-full">
+            <a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen">
+                <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: '371px'}" slot="overlay">
+                    <a-menu-item key="yesterday">Yesterday</a-menu-item>
+                    <a-menu-item key="last7days">Last 7 Days</a-menu-item>
+                    <a-menu-item key="lastmonth">Last Month</a-menu-item>
+                    <a-menu-item key="last30days">Last 30 Days</a-menu-item>
+                    <a-menu-item key="last90days">Last 90 Days</a-menu-item>
+                    <a-menu-item key="mtd">Month to Date</a-menu-item>
+                    <a-menu-item key="ytd">Year to Date</a-menu-item>
+                    <a-menu-item key="custom">Custom Range</a-menu-item>
+                </a-menu>
+                <button class="px-4 rounded-l h-full bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor outline-none rounded-r-none" @click="onClose">
+                  {{ presetValue }}
+                  <span v-if='!loading'>
+                    <a-icon v-if="datePreset && !pickerOpened" type="down" />
+                    <a-icon v-if="datePreset && pickerOpened" type="up" />
+                  </span>
+                  <a-icon type="loading" v-else />
+                </button>
+            </a-dropdown>
+          </div>
+          <div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9">
+              <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]">
+                  <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
+                  <template slot="renderExtraFooter">
+                      <div style="padding: 2.0rem; padding-right: 1.0rem;">
+                      <span style="padding-right: 2.0rem;" v-if='metadata.include_previous'>Compare to previous</span>
+                      <a-radio-group v-model="previousMode" button-style="solid" v-if='metadata.include_previous'>
+                        <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period" class="bg-filterHighlightColor text-filterFontHighlightColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor">
+                          Period
+                        </a-radio-button>
+                        <a-radio-button value="year">
+                          Year
+                        </a-radio-button>
+                      </a-radio-group>
+                      <a-button :class='{"mb-8": !metadata.include_previous}' class="wld-date-picker-apply-button border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor" @click="clickApply">
+                          Apply
+                        </a-button>
+                      </div>
+                  </template>
+              </a-range-picker>
+          </div>
+          <div class="inline-block flex px-3 text-primaryFontColor" v-if='metadata.include_previous'>
+              <div v-if="refStart && refEnd" class="self-center">ref. {{ refStart.format('MM/DD/YYYY') }} - {{ refEnd.format('MM/DD/YYYY') }}</div>
+          </div>
         </div>
-        <div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9">
-            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]">
-                <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
-                <template slot="renderExtraFooter">
-                    <div style="padding: 2.0rem; padding-right: 1.0rem;">
-                    <span style="padding-right: 2.0rem;" v-if='metadata.include_previous'>Compare to previous</span>
-                    <a-radio-group v-model="previousMode" button-style="solid" v-if='metadata.include_previous'>
-                      <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period" class="bg-filterHighlightColor text-filterFontHighlightColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor">
-                        Period
-                      </a-radio-button>
-                      <a-radio-button value="year">
-                        Year
-                      </a-radio-button>
-                    </a-radio-group>
-                    <a-button :class='{"mb-8": !metadata.include_previous}' class="wld-date-picker-apply-button border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor" @click="clickApply">
-                        Apply
-                      </a-button>
-                    </div>
-                </template>
-            </a-range-picker>
-        </div>
-        <div class="inline-block flex px-3 text-primaryFontColor" v-if='metadata.include_previous'>
-            <div v-if="refStart && refEnd" class="self-center">ref. {{ refStart.format('MM/DD/YYYY') }} - {{ refEnd.format('MM/DD/YYYY') }}</div>
-        </div>
-      </div>
-</div>
+  </div>
+</template>
 
-<script type='visualization/javascript'>
+<script>
 export default {
     data() {
       return {

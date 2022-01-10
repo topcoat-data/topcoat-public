@@ -1,31 +1,33 @@
-<Tile :hideBackground='metadata.no_background'>
-    <div class='relative p-4'>
-        <div class="text-sm text-primaryFontColor font-bold mb-3">
-            {{ metadata.title }}
-        </div>
-        <div class="font-light lg:text-4xl md:text-3xl text-2xl my-4 text-primaryFontColor">
-            {{ value || '-' }}
-        </div>
-        <div class="relative flex" v-if='previous'>
-            <div class="text-xl text-primaryFontColor font-bold w-full" v-if='change'>
-                <span class="border border-secondaryBorderColor text-primaryFontColor text-xs mr-1 py-1 px-3 rounded-full">
-                    <i
-                        class="fas"
-                        :class='iconClass'
-                        :style='{color: arrowColor}'
-                    ></i>
-                </span>
-                <span class="opacity-70">
-                    {{ increased ? '+' : '-' }}{{ change }}
-                </span>
+<template>
+    <Tile :hideBackground='metadata.no_background'>
+        <div class='relative p-4'>
+            <div class="text-sm text-primaryFontColor font-bold mb-3">
+                {{ metadata.title }}
             </div>
-            <div class="text-xl font-normal text-primaryFontColor opacity-70">
-                {{ previous || '-' }}
+            <div class="font-light lg:text-4xl md:text-3xl text-2xl my-4 text-primaryFontColor">
+                {{ value || '-' }}
+            </div>
+            <div class="relative flex" v-if='previous'>
+                <div class="text-xl text-primaryFontColor font-bold w-full" v-if='change'>
+                    <span class="border border-secondaryBorderColor text-primaryFontColor text-xs mr-1 py-1 px-3 rounded-full">
+                        <i
+                            class="fas"
+                            :class='iconClass'
+                            :style='{color: arrowColor}'
+                        ></i>
+                    </span>
+                    <span class="opacity-70">
+                        {{ increased ? '+' : '-' }}{{ change }}
+                    </span>
+                </div>
+                <div class="text-xl font-normal text-primaryFontColor opacity-70">
+                    {{ previous || '-' }}
+                </div>
             </div>
         </div>
-    </div>
-</Tile>
-<script type='visualization/javascript'>
+    </Tile>
+</template>
+<script>
     export default {
         name: 'BigNumber',
         props: {

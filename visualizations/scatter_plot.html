@@ -1,6 +1,8 @@
- <plotly />
+<template>
+    <plotly />
+</template>
 
-<script type='visualization/figure'>
+<figure>
 {
     {% set colors = var('series_colors') %}
     {% set font_family = var('font_family') %}
@@ -228,4 +230,4 @@
        {% endif %}
     }
 }
-</script>
+</figure>
