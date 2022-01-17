@@ -4,13 +4,13 @@
     <div class="h-5" v-else></div>
     <div class=" w-full h-9 inline-flex">
         <div class="inline-block w-max h-full" v-if='!config.hide_presets'>
-            <a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onOpen" v-if='pickerMode'>
+            <a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onAutoStatusChange" v-if='pickerMode'>
                 <a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: presetMenuHeight }" slot="overlay">
                     <a-menu-item v-for='preset in presets[pickerMode]' :key="preset.key">
                         {{ preset.label }}
                     </a-menu-item>
                 </a-menu>
-                <button class="px-4 rounded-l h-full bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor outline-none rounded-r-none" @click="onClose">
+                <button class="px-4 rounded-l h-full bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor outline-none rounded-r-none" @click="toggleStatus">
               {{ presetValue }}
               <span v-if='!loading'>
                 <a-icon v-if="datePreset && !pickerOpened" type="down" />
@@ -23,11 +23,11 @@
         <div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9" :class='{"full-picker": !config.hide_presets}'>
 
             <!-- Range Picker -->
-            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onOpen" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]"
+            <a-range-picker class="h-9 ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onAutoStatusChange" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]"
                 v-if='pickerMode == "range"'>
                 <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
                 <template slot="renderExtraFooter">
-                  <div class="flex px-1 py-4 justify-between content-center">
+                  <div class="flex px-1 justify-between content-center">
                     <span class="pr-1" v-if='config.include_previous'>Compare to previous</span>
                     <a-radio-group v-model="previousMode" button-style="solid" v-if='config.include_previous'>
                       <a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period" class="bg-filterHighlightColor text-filterFontHighlightColor hover:bg-filterHighlightColor hover:text-filterFontHighlightColor">
@@ -37,11 +37,11 @@
                         Year
                       </a-radio-button>
                     </a-radio-group>
-                    <div class="flex gap-1 justify-end content-center" :class='{"w-full": !config.include_previous}'>
-                      <a-button class="cancel-button" @click="pickerOpened = false">
+                    <div class="flex gap-1 ml-1 h-full justify-end content-center" :class='{"w-full": !config.include_previous}'>
+                      <a-button class="cancel-button h-full" @click="close">
                         Cancel
                       </a-button>
-                      <a-button :class='{"mb-8": !config.include_previous}' class="apply-button" @click="clickApply">
+                      <a-button class="apply-button h-full" @click="apply">
                         Apply
                       </a-button>
                     </div>
@@ -50,15 +50,15 @@
             </a-range-picker>
 
             <!-- Date Picker -->
-            <a-date-picker :showToday='false' class="h-9 ant-calendar-filter date-picker" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" :format="dateFormat" :separator="'-'" @change="onDateChange" :open="pickerOpened" @openChange="onOpen"
+            <a-date-picker :showToday='false' class="h-9 ant-calendar-filter date-picker" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" :format="dateFormat" :separator="'-'" @change="onDateChange" :open="pickerOpened" @openChange="onAutoStatusChange"
                 v-model='date' v-else-if="pickerMode == 'single'">
                 <a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
                 <template slot="renderExtraFooter">
-              <div class="pr-1 pb-2 flex gap-1 justify-end content-center">
-                <a-button class="cancel-button" @click="pickerOpened = false">
+              <div class="pr-1 ml-1 flex gap-1 h-full justify-end content-center">
+                <a-button class="cancel-button h-full" @click="close">
                   Cancel
                 </a-button>
-                <a-button class="apply-button" @click="clickApply">
+                <a-button class="apply-button h-full" @click="apply">
                   Apply
                 </a-button>
               </div>
@@ -197,7 +197,7 @@ methods: {
       this.show = true;
     });
   },
-  onOpen(value) {
+  onAutoStatusChange(value) {
       // If not force close
       if (!this.forceClosed) {
         this.pickerOpened = true;
@@ -205,35 +205,38 @@ methods: {
         this.pickerOpened = false;
       }
   },
-  onClose(event) {
+  toggleStatus(event) {
       if (this.pickerOpened) {
-        this.forceClosed = true;
-        this.pickerOpened = false;
-
-        // Reset values
-        this.previousMode = this.getFilterValue("previous_mode");
-        
-        if (this.prevDatePreset) this.datePreset = this.prevDatePreset;
-        this.startDate = Moment(this.getFilterValue('start_date'));
-        this.endDate = Moment(this.getFilterValue('end_date'));
-        this.date = Moment(this.getFilterValue('date'));
-
-        if (this.previousMode == 'period') {
-          var diff = this.endDate.diff(this.startDate, 'days') + 1;
-          this.refStart = this.startDate.clone().subtract(diff, 'days');
-          this.refEnd = this.endDate.clone().subtract(diff, 'days');
-
-        } else {
-          this.refStart = this.startDate.clone().subtract(1, 'years');
-          this.refEnd = this.endDate.clone().subtract(1, 'years');
-        }
-
+        this.close();
       } else {
         this.forceClosed = false;
       }
     },
-    clickApply() {
+    close() {
+      this.forceClosed = true;
       this.pickerOpened = false;
+
+      // Reset values
+      this.previousMode = this.getFilterValue("previous_mode");
+      
+      if (this.prevDatePreset) this.datePreset = this.prevDatePreset;
+      this.startDate = Moment(this.getFilterValue('start_date'));
+      this.endDate = Moment(this.getFilterValue('end_date'));
+      this.date = Moment(this.getFilterValue('date'));
+
+      if (this.previousMode == 'period') {
+        var diff = this.endDate.diff(this.startDate, 'days') + 1;
+        this.refStart = this.startDate.clone().subtract(diff, 'days');
+        this.refEnd = this.endDate.clone().subtract(diff, 'days');
+
+      } else {
+        this.refStart = this.startDate.clone().subtract(1, 'years');
+        this.refEnd = this.endDate.clone().subtract(1, 'years');
+      }
+    },
+    apply() {
+      this.pickerOpened = false;
+      this.forceClosed = true;
       
       if (this.pickerMode == 'single') {
         this.setFilterValue("date", this.date.format('YYYY-MM-DD'), false);
@@ -386,7 +389,7 @@ methods: {
             key: this.datePreset
           }
           this.presetChange(tmp_event, true);
-          this.clickApply();
+          this.apply();
 
         } else {
 
