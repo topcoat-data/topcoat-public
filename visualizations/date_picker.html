@@ -1,74 +1,154 @@
 <template>
-	<div class="date-filter-container w-max">
-		<div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='config.title'>{{ config.title }}</div>
-		<div class="h-5" v-else></div>
-		<div class="inline-flex w-full h-9">
-				<div v-if='!config.hide_presets'>
-						<a-dropdown class="flex-1 w-40" :trigger="[ 'click' ]" v-model="pickerOpened" @visibleChange="onAutoStatusChange" v-if='pickerMode'>
-								<a-menu v-model="datePresetModel" @click="presetChange($event, false)" :style="{ minHeight: presetMenuHeight }" slot="overlay">
-										<a-menu-item v-for='preset in presets[pickerMode]' :key="preset.key">
-												{{ preset.label }}
-										</a-menu-item>
-								</a-menu>
-								<button class="h-full px-4 rounded-l rounded-r-none outline-none bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor" @click="toggleStatus">
-							{{ presetValue }}
-							<span v-if='!loading'>
-								<a-icon v-if="datePreset && !pickerOpened" type="down" />
-								<a-icon v-if="datePreset && pickerOpened" type="up" />
-							</span>
-							<a-icon type="loading" v-else />
-						</button>
-						</a-dropdown>
-				</div>
-				<div class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9" :class='{"full-picker": !config.hide_presets}'>
+  <div class="date-filter-container w-max">
+    <div
+      class="pb-1 text-xs font-semibold text-primaryFontColor"
+      v-if="config.title"
+    >
+      {{ config.title }}
+    </div>
+    <div class="h-5" v-else></div>
+    <div class="inline-flex w-full h-9">
+      <div v-if="!config.hide_presets">
+        <a-dropdown
+          class="flex-1 w-40"
+          :trigger="[ 'click' ]"
+          v-model="pickerOpened"
+          @visibleChange="onAutoStatusChange"
+          v-if="pickerMode"
+        >
+          <a-menu
+            v-model="datePresetModel"
+            @click="presetChange($event, false)"
+            :style="{ minHeight: presetMenuHeight }"
+            slot="overlay"
+          >
+            <a-menu-item
+              v-for="preset in presets[pickerMode]"
+              :key="preset.key"
+            >
+              {{ preset.label }}
+            </a-menu-item>
+          </a-menu>
+          <button
+            class="h-full px-4 rounded-l rounded-r-none outline-none  bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor"
+            @click="toggleStatus"
+          >
+            {{ presetValue }}
+            <span v-if="!loading">
+              <a-icon v-if="datePreset && !pickerOpened" type="down" />
+              <a-icon v-if="datePreset && pickerOpened" type="up" />
+            </span>
+            <a-icon type="loading" v-else />
+          </button>
+        </a-dropdown>
+      </div>
+      <div
+        class="inline-block  text-filterFontHighlightColor primaryFilterRadius h-9"
+        :class='{"full-picker": !config.hide_presets}'
+      >
+        <!-- Range Picker -->
+        <div v-if='pickerMode == "range"' class="flex items-center h-full">
+          <a-range-picker
+            class="h-full ant-calendar-filter"
+            :allowClear="false"
+            dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20"
+            @change="onDateChange"
+            :open="pickerOpened"
+            @openChange="onAutoStatusChange"
+            :separator="'-'"
+            :format="dateFormat"
+            :value="[ startDate, endDate ]"
+          >
+            <a-icon
+              slot="suffixIcon"
+              type="calendar"
+              class="text-filterFontColor"
+            />
+          </a-range-picker>
+          <div
+            class="flex content-center justify-between h-full px-1  text-primaryFontColor"
+          >
+            <span class="flex self-center pr-1" v-if="config.include_previous"
+              >Compare to previous</span
+            >
+            <a-radio-group
+              class="flex"
+              v-model="previousMode"
+              button-style="solid"
+              v-if="config.include_previous"
+            >
+              <a-radio-button
+                :disabled="datePreset == 'mtd' || datePreset == 'ytd'"
+                value="period"
+                class="flex items-center h-full primary-button"
+              >
+                Period
+              </a-radio-button>
+              <a-radio-button
+                value="year"
+                class="flex items-center h-full primary-button"
+              >
+                Year
+              </a-radio-button>
+            </a-radio-group>
+            <div
+              class="flex content-center justify-end h-full gap-1 ml-1"
+              :class='{"w-full": !config.include_previous}'
+            >
+              <a-button class="h-full secondary-button" @click="close">
+                Cancel
+              </a-button>
+              <a-button class="h-full primary-button" @click="apply">
+                Apply
+              </a-button>
+            </div>
+          </div>
+        </div>
 
-					<!-- Range Picker -->
-					<div v-if='pickerMode == "range"' class="flex items-center h-full">
-						<a-range-picker class="h-full ant-calendar-filter" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" @change="onDateChange" :open="pickerOpened" @openChange="onAutoStatusChange" :separator="'-'" :format="dateFormat" :value="[ startDate, endDate ]">
-								<a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
-						</a-range-picker>
-						<div class="flex content-center justify-between h-full px-1 text-primaryFontColor">
-							<span class="flex self-center pr-1" v-if='config.include_previous'>Compare to previous</span>
-							<a-radio-group class="flex" v-model="previousMode" button-style="solid" v-if='config.include_previous'>
-								<a-radio-button :disabled="datePreset == 'mtd' || datePreset == 'ytd'" value="period" class="flex items-center h-full primary-button">
-									Period
-								</a-radio-button>
-								<a-radio-button value="year" class="flex items-center h-full primary-button">
-									Year
-								</a-radio-button>
-							</a-radio-group>
-							<div class="flex content-center justify-end h-full gap-1 ml-1" :class='{"w-full": !config.include_previous}'>
-								<a-button class="h-full secondary-button" @click="close">
-									Cancel
-								</a-button>
-								<a-button class="h-full primary-button" @click="apply">
-									Apply
-								</a-button>
-							</div>
-						</div>
-					</div>
-
-					<!-- Date Picker -->
-					<div v-else-if="pickerMode == 'single'" class="flex items-center h-full">
-						<a-date-picker :showToday='false' class="h-full ant-calendar-filter date-picker" :allowClear="false" dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20" :format="dateFormat" :separator="'-'" @change="onDateChange" :open="pickerOpened" @openChange="onAutoStatusChange"
-								v-model='date'>
-								<a-icon slot="suffixIcon" type="calendar" class="text-filterFontColor" />
-						</a-date-picker>
-						<div class="flex content-center justify-end h-full gap-1 pr-1 ml-1">
-							<a-button class="h-full secondary-button" @click="close">
-								Cancel
-							</a-button>
-							<a-button class="h-full primary-button" @click="apply">
-								Apply
-							</a-button>
-						</div>
-					</div>
-				</div>
-				<div class="flex inline-block px-3 text-primaryFontColor" v-if='config.include_previous && pickerMode == "range"'>
-					<div v-if="refStart && refEnd" class="self-center">ref. {{ refStart.format('MM/DD/YYYY ') }} - {{ refEnd.format('MM/DD/YYYY ') }}</div>
-			</div>
-		</div>
-	</div>
+        <!-- Date Picker -->
+        <div
+          v-else-if="pickerMode == 'single'"
+          class="flex items-center h-full"
+        >
+          <a-date-picker
+            :showToday="false"
+            class="h-full ant-calendar-filter date-picker"
+            :allowClear="false"
+            dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20"
+            :format="dateFormat"
+            :separator="'-'"
+            @change="onDateChange"
+            :open="pickerOpened"
+            @openChange="onAutoStatusChange"
+            v-model="date"
+          >
+            <a-icon
+              slot="suffixIcon"
+              type="calendar"
+              class="text-filterFontColor"
+            />
+          </a-date-picker>
+          <div class="flex content-center justify-end h-full gap-1 pr-1 ml-1">
+            <a-button class="h-full secondary-button" @click="close">
+              Cancel
+            </a-button>
+            <a-button class="h-full primary-button" @click="apply">
+              Apply
+            </a-button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex inline-block px-3 text-primaryFontColor"
+        v-if='config.include_previous && pickerMode == "range"'
+      >
+        <div v-if="refStart && refEnd" class="self-center">
+          ref. {{ refStart.format('MM/DD/YYYY ') }} -
+          {{ refEnd.format('MM/DD/YYYY ') }}
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -79,7 +159,6 @@ data() {
 		endDate: null,
 		date: null,
 		pickerOpened: false,
-		forceClosed: false,
 		datePreset: null,
 		refStart: null,
 		refEnd: null,
@@ -197,28 +276,20 @@ methods: {
 			this.show = true;
 		});
 	},
-	onAutoStatusChange(value) {
-			// If not force close
-			if (!this.forceClosed) {
-				this.pickerOpened = true;
-			} else {
-				this.pickerOpened = false;
-			}
+	onAutoStatusChange() {
+		this.pickerOpened = true;
 	},
 	toggleStatus(event) {
 			if (this.pickerOpened) {
 				this.close();
-			} else {
-				this.forceClosed = false;
 			}
 		},
 		close() {
-			this.forceClosed = true;
 			this.pickerOpened = false;
 
 			// Reset values
 			this.previousMode = this.getFilterValue("previous_mode");
-			
+
 			this.datePreset = this.getFilterValue('date_preset');
 			this.startDate = Moment(this.getFilterValue('start_date'));
 			this.endDate = Moment(this.getFilterValue('end_date'));
@@ -236,8 +307,7 @@ methods: {
 		},
 		apply() {
 			this.pickerOpened = false;
-			this.forceClosed = true;
-			
+
 			if (this.pickerMode == 'single') {
 				this.setFilterValue("date", this.date.format('YYYY-MM-DD'), false);
 			} else {
@@ -418,92 +488,90 @@ methods: {
 }
 }
 </script>
-	
-	
-	<style>
-	
-	.wld-date-picker .ant-calendar-selected-day .ant-calendar-date,
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
-	.ant-calendar-cell .ant-calendar-date:hover,
-	.wld-date-picker .ant-calendar-selected-day .ant-calendar-date:hover,
-	.ant-radio-button-wrapper-checked,
-	.ant-radio-button-wrapper-checked:active,
-	.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
-	.ant-dropdown-menu-item-selected,
-	.ant-radio-group-solid:active {
-	@apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor !important;
-	}
-	
-	.wld-date-picker .ant-calendar-range .ant-calendar-in-range-cell::before {
-	@apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor opacity-80 !important;
-	}
-	
-	.ant-calendar-date {
-	@apply text-filterFontColor !important;
-	}
-	
-	.ant-calendar-picker-input.ant-input,
-	.ant-calendar-picker-input.ant-input {
-	@apply bg-filterBackgroundColor text-filterFontColor h-full border border-filterBorderColor text-sm;
-	}
-	
-	.ant-dropdown-menu {
-	@apply p-0 bottom-1;
-	}
-	
-	.ant-dropdown-menu,
-	.ant-calendar {
-	@apply border-filterBorderColor border bg-filterBackgroundColor text-filterFontColor;
-	}
-	
-	.ant-dropdown-menu-item,
-	.ant-calendar-header .ant-calendar-month-select,
-	.ant-calendar-header .ant-calendar-year-select {
-	@apply text-filterFontColor;
-	}
-	
-	.ant-dropdown-menu-item:hover {
-	@apply bg-primaryButtonColor text-grayscaleOneColor opacity-80 !important;
-	}
-	
-	.ant-calendar-last-month-cell {
-	@apply text-filterFontColor opacity-70; 
-	}
-	
-	.ant-calendar-in-range-cell .ant-calendar-date {
-	@apply text-grayscaleOneColor !important;
-	}
-	
-	.ant-dropdown-trigger:active,
-	.ant-dropdown-trigger:focus {
-		@apply outline-none;
-	}
-	
-	.date-picker div:first-child {
-	@apply h-full;
-	}
-	
-	.wld-date-picker .ant-calendar-range,
-	.wld-date-picker .ant-calendar-picker-container-content {
-	top: 39px !important;
-	position: absolute;
-	}
-	
-	.secondary-button {
-		@apply bg-transparent text-primaryButtonColor border-transparent hover:bg-transparent active:bg-transparent active:border-transparent !important;
-	}
-	
-	.primary-button {
-		@apply border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
-	}
-	
-	.date-filter-container input {
-		@apply outline-none !important;
-	}
-	
-	.full-picker .ant-calendar-filter .ant-calendar-picker-input {
-		@apply rounded-l-none !important;
-	}
-	
+
+<style>
+.wld-date-picker .ant-calendar-selected-day .ant-calendar-date,
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
+.ant-calendar-cell .ant-calendar-date:hover,
+.wld-date-picker .ant-calendar-selected-day .ant-calendar-date:hover,
+.ant-radio-button-wrapper-checked,
+.ant-radio-button-wrapper-checked:active,
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+.ant-dropdown-menu-item-selected,
+.ant-radio-group-solid:active {
+  @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor !important;
+}
+
+.wld-date-picker .ant-calendar-range .ant-calendar-in-range-cell::before {
+  @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor opacity-80 !important;
+}
+
+.ant-calendar-date {
+  @apply text-filterFontColor !important;
+}
+
+.ant-calendar-picker-input.ant-input,
+.ant-calendar-picker-input.ant-input {
+  @apply bg-filterBackgroundColor text-filterFontColor h-full border border-filterBorderColor text-sm;
+}
+
+.ant-dropdown-menu {
+  @apply p-0 bottom-1;
+}
+
+.ant-dropdown-menu,
+.ant-calendar {
+  @apply border-filterBorderColor border bg-filterBackgroundColor text-filterFontColor;
+}
+
+.ant-dropdown-menu-item,
+.ant-calendar-header .ant-calendar-month-select,
+.ant-calendar-header .ant-calendar-year-select {
+  @apply text-filterFontColor;
+}
+
+.ant-dropdown-menu-item:hover {
+  @apply bg-primaryButtonColor text-grayscaleOneColor opacity-80 !important;
+}
+
+.ant-calendar-last-month-cell {
+  @apply text-filterFontColor opacity-70;
+}
+
+.ant-calendar-in-range-cell .ant-calendar-date {
+  @apply text-grayscaleOneColor !important;
+}
+
+.ant-dropdown-trigger:active,
+.ant-dropdown-trigger:focus {
+  @apply outline-none;
+}
+
+.date-picker div:first-child {
+  @apply h-full;
+}
+
+.wld-date-picker .ant-calendar-range,
+.wld-date-picker .ant-calendar-picker-container-content {
+  top: 39px !important;
+  position: absolute;
+}
+
+.secondary-button {
+  @apply bg-transparent text-primaryButtonColor border-transparent hover:bg-transparent active:bg-transparent active:border-transparent !important;
+}
+
+.primary-button {
+  @apply border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
+}
+
+.date-filter-container input {
+  @apply outline-none !important;
+}
+
+.full-picker .ant-calendar-filter .ant-calendar-picker-input {
+  @apply rounded-l-none !important;
+}
 </style>
