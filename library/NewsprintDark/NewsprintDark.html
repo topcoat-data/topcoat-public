@@ -11,7 +11,7 @@
 <template>
     <div id="dashboard">
     <NewsprintDarkHeader></NewsprintDarkHeader>
-    <div class="container-width relative left-0 right-0 m-auto">
+    <div class="np-container-width relative left-0 right-0 m-auto">
         <div class="mt-20 py-5 px-10 bg-pageSectionColor">
             <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
                 <slot name="filters"></slot>
@@ -27,7 +27,7 @@
             <slot name='stats'></slot>
         </div>
     </div> -->
-    <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts container-width relative left-0 right-0 m-auto">
+    <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts np-container-width relative left-0 right-0 m-auto">
         <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
         <div class="grid grid-cols-1">
             <slot></slot>
@@ -100,12 +100,12 @@ body {
     @apply border-tileBorderColor bg-tileBackgroundColor rounded my-3;
 }
 
-.container-width {
+.np-container-width {
     width: 900px;
 }
 
 @media (max-width: 900px) {
-    .container-width {
+    .np-container-width {
         width: 100%;
     }
 }
