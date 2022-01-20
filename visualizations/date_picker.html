@@ -63,45 +63,44 @@
 				  type="calendar"
 				  class="text-filterFontColor"
 				/>
+				<template slot="renderExtraFooter">
+					<div style="padding: 2.0rem; padding-right: 1.0rem;">
+					<span class="flex self-center pr-1" v-if="config.include_previous"
+						>Compare to previous</span
+					>
+					<a-radio-group
+						class="flex"
+						v-model="previousMode"
+						button-style="solid"
+						v-if="config.include_previous"
+					>
+						<a-radio-button
+							:disabled="datePreset == 'mtd' || datePreset == 'ytd'"
+							value="period"
+							class="flex items-center h-full primary-button"
+						>
+							Period
+						</a-radio-button>
+						<a-radio-button
+							value="year"
+							class="flex items-center h-full primary-button"
+						>
+							Year
+						</a-radio-button>
+					</a-radio-group>
+					<div
+						class="flex content-center justify-end h-full gap-1 ml-1"
+						:class='{"w-full": !config.include_previous}'
+					>
+						<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
+							Cancel
+						</a-button>
+						<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
+							Apply
+						</a-button>
+					</div>
+				</template>
 			  </a-range-picker>
-			</div>
-			<div
-			  class="flex content-center justify-between h-full px-1 text-primaryFontColor"
-			>
-			  <span class="flex self-center pr-1" v-if="config.include_previous"
-				>Compare to previous</span
-			  >
-			  <a-radio-group
-				class="flex"
-				v-model="previousMode"
-				button-style="solid"
-				v-if="config.include_previous"
-			  >
-				<a-radio-button
-				  :disabled="datePreset == 'mtd' || datePreset == 'ytd'"
-				  value="period"
-				  class="flex items-center h-full primary-button"
-				>
-				  Period
-				</a-radio-button>
-				<a-radio-button
-				  value="year"
-				  class="flex items-center h-full primary-button"
-				>
-				  Year
-				</a-radio-button>
-			  </a-radio-group>
-			  <div
-				class="flex content-center justify-end h-full gap-1 ml-1"
-				:class='{"w-full": !config.include_previous}'
-			  >
-				<a-button class="h-full secondary-button" @click="close">
-				  Cancel
-				</a-button>
-				<a-button class="h-full primary-button" @click="apply">
-				  Apply
-				</a-button>
-			  </div>
 			</div>
 		  </div>
   
@@ -127,15 +126,17 @@
 				  type="calendar"
 				  class="text-filterFontColor"
 				/>
+				<template slot="renderExtraFooter">
+					<div class="flex content-center justify-end h-full gap-1 pb-2 pr-1 ml-1">
+						<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
+							Cancel
+						</a-button>
+						<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
+							Apply
+						</a-button>
+					</div>
+				</template>
 			  </a-date-picker>
-			</div>
-			<div class="flex content-center justify-end h-full gap-1 pr-1 ml-1">
-			  <a-button class="h-full secondary-button" @click="close">
-				Cancel
-			  </a-button>
-			  <a-button class="h-full primary-button" @click="apply">
-				Apply
-			  </a-button>
 			</div>
 		  </div>
 		</div>
