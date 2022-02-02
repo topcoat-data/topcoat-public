@@ -1,6 +1,6 @@
 from pandas.core.frame import DataFrame
 
-from common.plugin.visualization import BooleanOption, InputOption, SelectOption, VisualizationConfig
+from common.plugin.visualization import BooleanOption, InputOption, SelectOption, VisualizationConfig, register
 
 
 def render(source: DataFrame, config: VisualizationConfig):

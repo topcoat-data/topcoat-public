@@ -1,6 +1,6 @@
 from pandas.core.frame import DataFrame
 import plotly.graph_objects as go
-from common.plugin.visualization import BooleanOption, SelectOption, ColorOption, VisualizationConfig
+from common.plugin.visualization import BooleanOption, SelectOption, ColorOption, VisualizationConfig, register
 
 
 def render(source: DataFrame, config: VisualizationConfig):

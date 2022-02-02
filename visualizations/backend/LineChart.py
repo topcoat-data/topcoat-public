@@ -1,5 +1,5 @@
 from pandas.core.frame import DataFrame
-from common.plugin.visualization import BooleanOption, SelectOption, InputOption, NumericOption, ColorOption, ColorPaletteOption, VisualizationConfig
+from common.plugin.visualization import BooleanOption, SelectOption, InputOption, NumericOption, ColorOption, ColorPaletteOption, VisualizationConfig, register
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
