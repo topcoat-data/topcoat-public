@@ -1,4 +1,3 @@
-from turtle import color
 from pandas.core.frame import DataFrame
 import altair as alt
 
