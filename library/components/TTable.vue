@@ -2,17 +2,17 @@
   <div>
     <!-- The TColumnConfig that ends up in the slot is an unrecognized component, the back end must be adding them based on what is used in the page
     so add this here just to tell the back end that this component uses the TColumnConfig component -->
-    <TColumnConfig :columnConfig="['test']"></TColumnConfig>
+    <TColumnConfig :column-config="['test']"></TColumnConfig>
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
-      v-if="can_search"
+      v-if="canSearch"
       ref="easySearch"
-      @updateSearchTerm="updateSearchTerm"
       :highlight-query-selector="
         enableSearchHighlight ? '#tableContainer' : null
       "
       :highlight-options="highlightOptions"
+      @updateSearchTerm="updateSearchTerm"
     ></TSearch>
 
     <div
@@ -21,18 +21,18 @@
       ref="tableContainer"
       :style="columnWidthsStyle"
     >
-      <!-- Title -->
+      <!-- Search input/ Title -->
       <div v-if="title !== null" id="title" class="spanAllColumns center_cell">
         {{ title }}
       </div>
 
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
-      <div v-if="can_collapse_detail_rows"></div>
+      <div v-if="canCollapseDetailRows"></div>
       <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
-      <div v-if="show_radio_buttons"></div>
+      <div v-if="showRadioButtons"></div>
       <!-- Toggle all of the check boxes  -->
       <input
-        v-if="show_checkboxes"
+        v-if="showCheckboxes"
         ref="checkAll"
         v-model="allChecked"
         type="checkbox"
@@ -78,7 +78,7 @@
         class="spanAllColumns center_cell"
       >
         <div><i class="fa-solid fa-inbox"></i></div>
-        <div>{{ no_data_message }}</div>
+        <div>{{ noDataMessage }}</div>
       </div>
 
       <!-- Data Rows -->
@@ -108,22 +108,24 @@
             class="makeGridIgnoreDiv row"
           >
             <!-- Expand/Collapse controls for the details row -->
-            <div v-if="can_collapse_detail_rows">
+            <div v-if="canCollapseDetailRows">
               <div v-if="row.detailRowOpen" @click="collapseRow(row)">
                 <slot name="expandedDetailRowIcon">
                   <div class="icon move_up">-</div>
+                  <!-- <font-awesome-icon :ref="'angleDown_' + rindex" icon="angle-down" /> -->
                 </slot>
               </div>
               <div v-else @click="expandRow(row)">
                 <slot name="collapsedDetailRowIcon">
                   <div class="icon move_up">+</div>
+                  <!-- <font-awesome-icon :ref="'angleRight_' + rindex" icon="angle-right" /> -->
                 </slot>
               </div>
             </div>
 
             <!-- Radio buttons -->
             <input
-              v-if="show_radio_buttons"
+              v-if="showRadioButtons"
               :id="rindex"
               :ref="'radio_' + rindex"
               v-model="internalSelectedItem"
@@ -133,7 +135,7 @@
 
             <!-- Check boxes -->
             <input
-              v-if="show_checkboxes"
+              v-if="showCheckboxes"
               :id="rindex"
               :ref="'check_' + rindex"
               v-model="internalSelectedItems"
@@ -160,7 +162,7 @@
 
             <!-- Detail row -->
             <div
-              v-if="!can_collapse_detail_rows || row.detailRowOpen"
+              v-if="!canCollapseDetailRows || row.detailRowOpen"
               :key="'detailRow' + rindex"
               class="spanAllColumns"
             >
@@ -173,13 +175,15 @@
 
     <div style="margin: 0px auto">
       <TPager
-        v-if="can_page"
+        v-if="canPage"
         id="pagingControls"
+        :start-index="startIndex"
+        :end-index="endIndex"
         class="pagingControls"
-        :number-ofitems="totalRows"
-        :items-per-page="rows_per_page"
-        :start-index.sync="startIndex"
-        :end-index.sync="endIndex"
+        :number-of-items="totalRows"
+        :items-per-page="rowsPerPage"
+        @updateStartIndex="updateStartIndex"
+        @updateEndIndex="updateEndIndex"
       ></TPager>
     </div>
   </div>
@@ -187,25 +191,25 @@
 
 <script>
 export default {
-  name: "tTable",
+  name: "TTable",
   props: {
     title: {
       type: String,
       default: null,
     },
-    is_header_fixed: {
+    isHeaderFixed: {
       type: Boolean,
       default: false,
     },
-    no_data_message: {
+    noDataMessage: {
       type: String,
       default: "No Data",
     },
-    no_data_icon: {
+    noDataIcon: {
       type: String,
       default: "No Data",
     },
-    show_radio_buttons: {
+    showRadioButtons: {
       type: Boolean,
       defaut: false,
     },
@@ -213,7 +217,7 @@ export default {
       type: Object,
       default: null,
     },
-    show_checkboxes: {
+    showCheckboxes: {
       type: Boolean,
       defaut: false,
     },
@@ -221,7 +225,7 @@ export default {
       type: Array,
       default: null,
     },
-    can_collapse_detail_rows: {
+    canCollapseDetailRows: {
       type: Boolean,
       default: false,
     },
@@ -229,27 +233,27 @@ export default {
       type: Boolean,
       default: false,
     },
-    can_page: {
+    canPage: {
       type: Boolean,
       default: true,
     },
-    rows_per_page: {
+    rowsPerPage: {
       type: Number,
       default: 10,
     },
-    group_by_column: {
+    groupByColumn: {
       type: String,
       default: null,
     },
-    can_search: {
+    canSearch: {
       type: Boolean,
       default: true,
     },
-    can_sort: {
+    canSort: {
       type: Boolean,
       default: true,
     },
-    sort_direction: {
+    sortDirection: {
       type: String,
       default: "asc",
     },
@@ -295,13 +299,13 @@ export default {
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
-        if (this.show_radio_buttons) {
+        if (this.showRadioButtons) {
           columnsWidths += " 2em";
         }
-        if (this.show_checkboxes) {
+        if (this.showCheckboxes) {
           columnsWidths += " 2em";
         }
-        if (this.can_collapse_detail_rows) {
+        if (this.canCollapseDetailRows) {
           columnsWidths += " 2em";
         }
 
@@ -369,9 +373,10 @@ export default {
     },
     internalColumns() {
       let cols = this.columns;
+      if (typeof this.columns === "function") cols = [];
 
-      if (this.columns.length === 0 && this.rows) {
-        cols = Object.keys(this.rows[0]);
+      if (cols.length === 0 && this.layerRows && this.layerRows.length > 0) {
+        cols = Object.keys(this.layerRows[0]);
       }
       cols = cols.map((columnString) => {
         return {
@@ -381,8 +386,8 @@ export default {
       });
 
       // exclude the grouping column
-      if (this.group_by_column) {
-        cols = cols.filter((col) => col.property !== this.group_by_column);
+      if (this.groupByColumn) {
+        cols = cols.filter((col) => col.property !== this.groupByColumn);
       }
 
       if (this.columnConfigs) {
@@ -409,7 +414,7 @@ export default {
           }
         });
       }
-      if (this.can_sort) {
+      if (this.canSort) {
         // Note: the "+" in "+col.sort.priority" converts strings to numbers
         const sortPriorities = cols
           .map((col) => (col.sort ? +col.sort.priority : null))
@@ -423,7 +428,7 @@ export default {
           if (!col.sort) {
             maxSortPriority += 1;
             col.sort = {
-              direction: this.sort_direction,
+              direction: this.sortDirection,
               priority: maxSortPriority,
             };
           }
@@ -432,7 +437,7 @@ export default {
 
       // remove sorting on calculated columns for now.
       // TODO: figure out if there is a way to get the computed value in each cell slot so that dynamic columns can be sorted
-      const baseColumns = Object.keys(this.rows[0]);
+      const baseColumns = Object.keys(this.layerRows[0]);
       cols.forEach((col) => {
         if (!baseColumns.includes(col.property)) {
           col.sort = null;
@@ -442,6 +447,8 @@ export default {
       return cols;
     },
     layerRows() {
+      if (typeof this.rows === "function")
+        return this.rows(this.$attrs?.["t-layer"]);
       if (this.rows) return this.rows;
       return [];
     },
@@ -462,6 +469,9 @@ export default {
       },
     },
   },
+  mounted() {
+    this.init();
+  },
   methods: {
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
@@ -469,7 +479,9 @@ export default {
     setColumnConfig(columnConfig) {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
       this.init();
-      this.isDataAvailable = true;
+    },
+    onVisualizationInit() {
+      console.log("onVisualizationInit", this.rows);
     },
     init() {
       // Error checking
@@ -501,22 +513,22 @@ export default {
 
       // Handle internal rows setup
       let groupedRows;
-      if (this.group_by_column) {
+      if (this.groupByColumn) {
         const groupNames = _.uniq(
-          this.rows.map((r) => r[this.group_by_column].rendered)
+          this.layerRows.map((r) => r[this.groupByColumn].rendered)
         );
         if (groupNames) {
           this.groups = groupNames.map((gn) => {
             return {
               header: gn,
               filter: (row) => {
-                return row[this.group_by_column].rendered === gn;
+                return row[this.groupByColumn].rendered === gn;
               },
             };
           });
         }
       }
-      groupedRows = this.groupRows(this.rows);
+      groupedRows = this.groupRows(this.layerRows);
 
       // The detail rows with accordian controls get really hinky
       // given that 1) the *original* object needs to be preserved
@@ -533,7 +545,7 @@ export default {
       this.internalRows = groupedRows.map((row) => {
         return {
           originalRow: row,
-          detailRowOpen: !this.can_collapse_detail_rows,
+          detailRowOpen: !this.canCollapseDetailRows,
         };
       });
 
@@ -558,6 +570,8 @@ export default {
       }
 
       this.warningPropValidations();
+
+      this.isDataAvailable = true;
     },
     groupRows(rows) {
       this.internalGroups = [];
@@ -665,7 +679,7 @@ export default {
       return rows;
     },
     pageRows(rows) {
-      if (this.can_page) {
+      if (this.canPage) {
         return rows.slice(this.startIndex, this.endIndex);
       }
       return rows;
@@ -707,7 +721,7 @@ export default {
       return group.displayHeader && anyRowsInRange && hasRows;
     },
     indexInPagedRows(index) {
-      if (!this.rows_per_page) return true;
+      if (!this.rowsPerPage) return true;
       return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
@@ -716,11 +730,7 @@ export default {
         column.property,
         column.default_value
       );
-      if (
-        cellValue &&
-        typeof cellValue === "object" &&
-        Object.keys(cellValue).includes("rendered")
-      ) {
+      if (cellValue && typeof cellValue === "object" && cellValue.rendered) {
         cellValue = cellValue.rendered;
       }
       return cellValue;
@@ -736,7 +746,7 @@ export default {
       classes += " cellPadding ";
       classes += " " + _.camelCase("header " + header);
       classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
-      if (this.is_header_fixed) classes += " is_header_fixed";
+      if (this.isHeaderFixed) classes += " isHeaderFixed";
       return classes;
     },
     generateSlotName(prefix, value) {
@@ -748,13 +758,16 @@ export default {
         console.error("columns is required");
         return false;
       }
-      if (!Array.isArray(this.columns)) {
-        console.error("'columns' must be an array, not", typeof this.columns);
+      if (!Array.isArray(this.columns) && typeof this.columns !== "function") {
+        console.error(
+          "'columns' must be an array or function, not",
+          typeof this.columns
+        );
         return false;
       }
 
       // rows and groups
-      if (!this.rows) {
+      if (!this.layerRows) {
         if (!this.groups) {
           console.error(
             "The rows prop or groups with rows properties are required"
@@ -814,30 +827,30 @@ export default {
       }
 
       // Rows Per Page
-      if (this.rows_per_page < 1) {
-        console.error("The 'rows_per_page' prop must be greater than 0");
+      if (this.rowsPerPage < 1) {
+        console.error("The 'rowsPerPage' prop must be greater than 0");
         return false;
       }
       return true;
     },
     warningPropValidations() {
       // radio buttons
-      if (this.selectedItem && !this.show_radio_buttons) {
+      if (this.selectedItem && !this.showRadioButtons) {
         console.warn(
-          "The 'selectedItem' prop is only valid when the 'show_radio_buttons' prop is true"
+          "The 'selectedItem' prop is only valid when the 'showRadioButtons' prop is true"
         );
       }
 
-      if (this.selectedItems && !this.show_checkboxes) {
+      if (this.selectedItems && !this.showCheckboxes) {
         console.warn(
-          "The 'selectedItems' prop is only valid when the 'show_checkboxes' prop is true"
+          "The 'selectedItems' prop is only valid when the 'showCheckboxes' prop is true"
         );
       }
 
-      // can_collapse_detail_rows
-      if (this.onlyShowOneDetailRow && !this.can_collapse_detail_rows) {
+      // canCollapseDetailRows
+      if (this.onlyShowOneDetailRow && !this.canCollapseDetailRows) {
         console.warn(
-          "The 'onlyShowOneDetailRow' prop is only valid when the 'can_collapse_detail_rows' is true"
+          "The 'onlyShowOneDetailRow' prop is only valid when the 'canCollapseDetailRows' is true"
         );
       }
 
@@ -857,7 +870,7 @@ export default {
 
       // searching
       if (
-        this.can_search &&
+        this.canSearch &&
         !this.enableSearchFilter &&
         !this.enableSearchHighlight
       ) {
@@ -928,6 +941,16 @@ export default {
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
       return classes;
     },
+    // These should be changed to use the 'v-model:start-index="startIndex' syntax
+    // when we switch to vue 3, since the .sync and v-model and incompatible and
+    // I am trying to keep this working in both expandable-modules and in topcoat
+    // this will have to do for now.
+    updateStartIndex(newStartIndex) {
+      this.startIndex = newStartIndex;
+    },
+    updateEndIndex(newEndIndex) {
+      this.endIndex = newEndIndex;
+    },
   },
 };
 </script>
@@ -973,7 +996,7 @@ export default {
   grid-column: 1/-1;
 }
 
-.is_header_fixed {
+.isHeaderFixed {
   position: sticky;
   top: 0;
   background-color: white;

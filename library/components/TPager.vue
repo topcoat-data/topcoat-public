@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="numberOfitems > itemsPerPage" class="center">
+    <div v-if="numberOfItems > itemsPerPage" class="center">
       <span
         ref="AngleDoubleLeft"
         class="pagingIcon"
@@ -42,26 +42,12 @@
   </div>
 </template>
 
-<style scoped>
-.pagingIcon {
-  margin: 0 5px 0 5px;
-}
-
-.pageInput {
-  width: 40px;
-}
-
-.disabled {
-  color: darkgray;
-}
-</style>
-
 <script>
 export default {
   name: "TPager",
   // TODO: Prop validation
   props: {
-    numberOfitems: { type: Number, required: true },
+    numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
   },
   data() {
@@ -71,7 +57,7 @@ export default {
   },
   computed: {
     lastPage() {
-      return Math.ceil(this.numberOfitems / this.itemsPerPage);
+      return Math.ceil(this.numberOfItems / this.itemsPerPage);
     },
     startIndex() {
       const startIndex = (this.page - 1) * this.itemsPerPage;
@@ -79,7 +65,7 @@ export default {
     },
     endIndex() {
       let endIndex = this.startIndex + this.itemsPerPage;
-      if (endIndex > this.numberOfitems) endIndex = this.numberOfitems;
+      if (endIndex > this.numberOfItems) endIndex = this.numberOfItems;
       return endIndex;
     },
     isValidPage() {
@@ -91,14 +77,14 @@ export default {
     },
   },
   watch: {
-    numberOfitems() {
+    numberOfItems() {
       this.page = 1;
     },
     startIndex() {
-      if (this.isValidPage) this.$emit("update:startIndex", this.startIndex);
+      if (this.isValidPage) this.$emit("updateStartIndex", this.startIndex);
     },
     endIndex() {
-      if (this.isValidPage) this.$emit("update:endIndex", this.endIndex);
+      if (this.isValidPage) this.$emit("updateEndIndex", this.endIndex);
     },
     page(newval, oldval) {
       if (newval === "") return;
@@ -110,8 +96,8 @@ export default {
     },
   },
   created() {
-    this.$emit("update:startIndex", this.startIndex);
-    this.$emit("update:endIndex", this.endIndex);
+    this.$emit("updateStartIndex", this.startIndex);
+    this.$emit("updateEndIndex", this.endIndex);
   },
 };
 </script>
@@ -119,5 +105,16 @@ export default {
 <style scoped>
 .center {
   text-align: center;
+}
+.pagingIcon {
+  margin: 0 5px 0 5px;
+}
+
+.pageInput {
+  width: 40px;
+}
+
+.disabled {
+  color: darkgray;
 }
 </style>

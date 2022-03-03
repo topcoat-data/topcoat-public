@@ -5,11 +5,12 @@ export default {
     columnConfig: {
       type: Array,
       default() {
-        return {};
+        return [];
       },
     },
     setColumnConfig: {
       type: Function,
+      default: null,
     },
   },
   created() {

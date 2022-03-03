@@ -13,34 +13,6 @@
   </div>
 </template>
 
-<style scoped>
-.searchContainer {
-  display: flex;
-  border: 1px solid grey;
-  border-radius: 3px;
-  padding: 4px;
-  width: 188px;
-  background-color: transparent;
-  margin: 10px 0;
-}
-
-.searchIcon {
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-.easySearch {
-  display: block;
-  border: none;
-  background-color: transparent;
-}
-
-.easySearch:focus {
-  outline: none;
-  background-color: transparent;
-}
-</style>
-
 <script>
 export default {
   name: "TSearch",
@@ -56,6 +28,7 @@ export default {
       },
     },
   },
+  emits: ["updateSearchTerm"],
   data() {
     return {
       searchTerm: "",
@@ -117,3 +90,31 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.searchContainer {
+  display: flex;
+  border: 1px solid grey;
+  border-radius: 3px;
+  padding: 4px;
+  width: 188px;
+  background-color: transparent;
+  margin: 10px 0;
+}
+
+.searchIcon {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.easySearch {
+  display: block;
+  border: none;
+  background-color: transparent;
+}
+
+.easySearch:focus {
+  outline: none;
+  background-color: transparent;
+}
+</style>
