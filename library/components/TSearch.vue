@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <div id="searchContainer" class="searchContainer">
-      <div id="searchIcon" ref="searchIcon" class="searchIcon">&#128269;</div>
-      <input
-        id="easySearch"
-        ref="easySearch"
-        v-model="tableSearch"
-        placeholder="Search"
-        class="easySearch"
-      />
-    </div>
+  <div id="searchContainer" class="searchContainer">
+    <div id="search-icon" ref="searchIcon" class="searchIcon">&#128269;</div>
+    <input
+      id="easySearch"
+      ref="easySearch"
+      v-model="tableSearch"
+      placeholder="Search"
+      class="easySearch"
+    />
   </div>
 </template>
 
@@ -17,35 +15,25 @@
 export default {
   name: "TSearch",
   props: {
-    highlightQuerySelector: {
-      type: String,
-      required: true,
-    },
     highlightOptions: {
       type: Object,
       default() {
         return {};
       },
     },
+    highlightQuerySelector: {
+      type: String,
+      required: true,
+    },
   },
   emits: ["updateSearchTerm"],
   data() {
     return {
-      searchTerm: "",
       ignoreDomUpdates: false,
+      searchTerm: "",
     };
   },
   computed: {
-    tableSearch: {
-      get() {
-        return this.searchTerm;
-      },
-      set(newSearchTerm) {
-        this.searchTerm = newSearchTerm;
-        this.$emit("updateSearchTerm", newSearchTerm);
-        this.updateHighlighting();
-      },
-    },
     markJSInstance() {
       if (this.highlightQuerySelector) {
         const element = document.querySelector(this.highlightQuerySelector);
@@ -72,6 +60,16 @@ export default {
         }
       }
       return null;
+    },
+    tableSearch: {
+      get() {
+        return this.searchTerm;
+      },
+      set(newSearchTerm) {
+        this.searchTerm = newSearchTerm;
+        this.$emit("updateSearchTerm", newSearchTerm);
+        this.updateHighlighting();
+      },
     },
   },
   methods: {

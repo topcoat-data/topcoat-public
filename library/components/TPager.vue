@@ -5,6 +5,7 @@
         ref="AngleDoubleLeft"
         class="pagingIcon"
         :class="page === 1 ? 'disabled' : 'enabled'"
+        :disabled="page === 1"
         @click="page = 1"
       >
         &#171;
@@ -15,17 +16,24 @@
         class="pagingIcon"
         :class="page === 1 ? 'disabled' : 'enabled'"
         @click="page === 1 ? 1 : page--"
+        :disabled="page === 1"
       >
         &#8249;
       </span>
 
-      <input id="pageInput" ref="pageInput" v-model="page" class="pageInput" />
+      <input
+        id="pageInput"
+        ref="pageInput"
+        v-model.number="page"
+        class="pageInput"
+      />
 
       <span
         ref="AngleRight"
         class="pagingIcon"
         :class="page === lastPage ? 'disabled' : 'enabled'"
         @click="page === lastPage ? lastPage : page++"
+        :disabled="page === lastPage"
       >
         &#8250;
       </span>
@@ -35,6 +43,7 @@
         class="pagingIcon"
         :class="page === lastPage ? 'disabled' : 'enabled'"
         @click="page = lastPage"
+        :disabled="page === lastPage"
       >
         &#187;
       </span>
@@ -50,6 +59,7 @@ export default {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
   },
+  emits: ["updateEndIndex", "updateStartIndex"],
   data() {
     return {
       page: 1,
@@ -60,8 +70,7 @@ export default {
       return Math.ceil(this.numberOfItems / this.itemsPerPage);
     },
     startIndex() {
-      const startIndex = (this.page - 1) * this.itemsPerPage;
-      return startIndex;
+      return (this.page - 1) * this.itemsPerPage;
     },
     endIndex() {
       let endIndex = this.startIndex + this.itemsPerPage;
@@ -69,11 +78,7 @@ export default {
       return endIndex;
     },
     isValidPage() {
-      if (!this.page) return false;
-      if (isNaN(this.page)) return false;
-      if (this.page <= 0) return false;
-      if (this.page > this.lastPage) return false;
-      return true;
+      return this.validatePage(this.page);
     },
   },
   watch: {
@@ -87,17 +92,24 @@ export default {
       if (this.isValidPage) this.$emit("updateEndIndex", this.endIndex);
     },
     page(newval, oldval) {
+      // allow users to clear out page input
       if (newval === "") return;
-      if (!Number.isInteger(newval)) this.page = Math.floor(newval);
 
-      if (isNaN(this.page)) this.page = oldval;
-      else if (this.page < 1) this.page = oldval;
-      else if (this.page > this.lastPage) this.page = oldval;
+      if (this.validatePage(newval)) this.page = newval;
+      else this.page = oldval;
     },
   },
   created() {
     this.$emit("updateStartIndex", this.startIndex);
     this.$emit("updateEndIndex", this.endIndex);
+  },
+  methods: {
+    validatePage(page) {
+      if (!_.isFinite(page)) return false;
+      if (page < 1) return false;
+      if (page > this.lastPage) return false;
+      return true;
+    },
   },
 };
 </script>

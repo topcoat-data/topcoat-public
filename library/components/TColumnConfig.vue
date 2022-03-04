@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "TColumnConfig",
+  name: "t-column-config",
   props: {
     columnConfig: {
       type: Array,

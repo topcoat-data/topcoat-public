@@ -22,7 +22,7 @@
       :style="columnWidthsStyle"
     >
       <!-- Search input/ Title -->
-      <div v-if="title !== null" id="title" class="spanAllColumns center_cell">
+      <div v-if="title" id="title" class="spanAllColumns center_cell">
         {{ title }}
       </div>
 
@@ -77,7 +77,7 @@
         "
         class="spanAllColumns center_cell"
       >
-        <div><i class="fa-solid fa-inbox"></i></div>
+        <div><i class="i-fa-solid i-fa-inbox"></i></div>
         <div>{{ noDataMessage }}</div>
       </div>
 
@@ -146,9 +146,9 @@
             <!-- Columns for the row -->
             <div
               v-for="(column, cindex) in internalColumns"
-              :key="column.property + cindex"
+              :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-              :class="generateCellClasses(column, cindex, rindex)"
+              :class="generateCellClasses({ column, cindex, rindex })"
             >
               <slot
                 :name="column.property"
@@ -195,7 +195,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: null,
+      default: "",
     },
     isHeaderFixed: {
       type: Boolean,
@@ -223,7 +223,7 @@ export default {
     },
     selectedItems: {
       type: Array,
-      default: null,
+      default: () => [],
     },
     canCollapseDetailRows: {
       type: Boolean,
@@ -354,8 +354,8 @@ export default {
     },
     someChecked() {
       return (
-        this.internalSelectedItems.length > 0 &&
-        this.internalSelectedItems.length < this.uniqueOriginalRows.length
+        this.internalSelectedItems?.length < this.uniqueOriginalRows.length &&
+        this.internalSelectedItems?.length > 0
       );
     },
     displayRows() {
@@ -371,6 +371,19 @@ export default {
     uniqueOriginalRows() {
       return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
+    // internal columns takes any column configurations from the TColumnConfig
+    // component and creates default column configurations based on the fields
+    // of the first row of data. That way users don't have to manually specify
+    // all of the columns- it is assmumed that if the layer is providing a column
+    // then the data should be shown. So if the first row object is {foo: 2, bar: 2222}
+    // and there is a column config for a calculated column {header: 'baz', property:'baz'}
+    // the final columns will end up being:
+    // [
+    //   {header: 'foo', property:'foo'},
+    //   {header: 'bar', property:'bar'},
+    //   {header: 'baz', property:'baz'}
+    // ]
+    //  plus configurations for sorting etc.
     internalColumns() {
       let cols = this.columns;
       if (typeof this.columns === "function") cols = [];
@@ -401,11 +414,7 @@ export default {
             if (!columnConfig.header) {
               columnConfig.header = defaultConfig.header;
             }
-            if (
-              columnConfig &&
-              columnConfig.sort &&
-              columnConfig.sort.priority
-            ) {
+            if (columnConfig?.sort?.priority) {
               columnConfig.sort.priority = Number(columnConfig.sort.priority);
             }
             cols.splice(defaultConfigIndex, 1, columnConfig);
@@ -462,11 +471,8 @@ export default {
       this.$emit("update:selectedItems", this.internalSelectedItems);
       this.$emit("selectedItemsChanged", this.internalSelectedItems);
     },
-    layerRows: {
-      deep: true,
-      handler() {
-        this.init();
-      },
+    layerRows() {
+      this.init();
     },
   },
   mounted() {
@@ -687,12 +693,8 @@ export default {
     stringifyRow(row) {
       return this.internalColumns
         .map((column) => this.getCellValue(row, column))
-        .reduce((accumulator, curVal) => {
-          if (curVal !== undefined) {
-            accumulator += " " + curVal;
-          }
-          return accumulator;
-        });
+        .filter((cell) => !_.isNil(cell))
+        .join(" ");
     },
     reverseSort(columnProperty) {
       const sortObject = this.getSortByProperty(columnProperty);
@@ -933,7 +935,7 @@ export default {
       const index = this.internalRows.indexOf(row);
       this.$set(this.internalRows, index, row);
     },
-    generateCellClasses(column, cindex, rindex) {
+    generateCellClasses({ column, cindex, rindex }) {
       let classes = "row ";
       classes += " cellPadding ";
       classes += _.camelCase(column.property);
@@ -1003,7 +1005,7 @@ export default {
 }
 
 .headerCell {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 1.2em;
 }
 
@@ -1035,7 +1037,7 @@ highlighting a row on hover etc. */
 }
 
 #title {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 2em;
 }
 </style>
