@@ -65,39 +65,40 @@
 				/>
 				<template slot="renderExtraFooter">
 					<div style="padding: 2.0rem; padding-right: 1.0rem;">
-					<span class="flex self-center pr-1" v-if="config.include_previous"
-						>Compare to previous</span
-					>
-					<a-radio-group
-						class="flex"
-						v-model="previousMode"
-						button-style="solid"
-						v-if="config.include_previous"
-					>
-						<a-radio-button
-							:disabled="datePreset == 'mtd' || datePreset == 'ytd'"
-							value="period"
-							class="flex items-center h-full primary-button"
+						<span class="flex self-center pr-1" v-if="config.include_previous"
+							>Compare to previous</span
 						>
-							Period
-						</a-radio-button>
-						<a-radio-button
-							value="year"
-							class="flex items-center h-full primary-button"
+						<a-radio-group
+							class="flex"
+							v-model="previousMode"
+							button-style="solid"
+							v-if="config.include_previous"
 						>
-							Year
-						</a-radio-button>
-					</a-radio-group>
-					<div
-						class="flex content-center justify-end h-full gap-1 ml-1"
-						:class='{"w-full": !config.include_previous}'
-					>
-						<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
-							Cancel
-						</a-button>
-						<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
-							Apply
-						</a-button>
+							<a-radio-button
+								:disabled="datePreset == 'mtd' || datePreset == 'ytd'"
+								value="period"
+								class="flex items-center h-full primary-button"
+							>
+								Period
+							</a-radio-button>
+							<a-radio-button
+								value="year"
+								class="flex items-center h-full primary-button"
+							>
+								Year
+							</a-radio-button>
+						</a-radio-group>
+						<div
+							class="flex content-center justify-end h-full gap-1 ml-1"
+							:class='{"w-full": !config.include_previous}'
+						>
+							<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
+								Cancel
+							</a-button>
+							<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
+								Apply
+							</a-button>
+						</div>
 					</div>
 				</template>
 			  </a-range-picker>
