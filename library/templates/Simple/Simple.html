@@ -10,11 +10,13 @@
                 <div class="mt-1.5 text-base h-auto"><slot name="filters-top"></slot></div>
             </div>
             <div class="grid grid-cols-1 justify-items-center h-10 font-sans">
-                <div class="bg-indigo-400 self-center h-10 rounded-lg pl-10 pr-10 w-auto">
-                    <SimpleNav />
-                </div>
+            <div class="bg-indigo-400 self-center h-10 rounded-lg pl-10 pr-10 w-auto">
+                <SimpleNav />
             </div>
         </div>
+    </div>
+
+    
 
 
         <div class="bg-white-100 font-sans w-full" style="height: 100%;">
@@ -26,15 +28,17 @@
                         <div class="relative h-auto w-auto">
                             <div class="absolute top-0 right-0"><slot name="filters"></slot></div>
                         </div>
-
+                    
                 </div>
-
+                
                 <div class="grid grid-cols-4 gap-4 justify-center">
                         <div class="col-span-4">
                             <slot></slot>
                         </div>
                 </div>
             </div>
+        </div>
+
         </div>
 
     </div>
