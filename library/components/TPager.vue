@@ -2,7 +2,7 @@
   <div>
     <div v-if="numberOfItems > itemsPerPage" class="center">
       <span
-        ref="AngleDoubleLeft"
+        ref="angleDoubleLeft"
         class="pagingIcon"
         :class="page === 1 ? 'disabled' : 'enabled'"
         :disabled="page === 1"
@@ -12,7 +12,7 @@
       </span>
 
       <span
-        ref="AngleLeft"
+        ref="angleLeft"
         class="pagingIcon"
         :class="page === 1 ? 'disabled' : 'enabled'"
         @click="page === 1 ? 1 : page--"
@@ -29,7 +29,7 @@
       />
 
       <span
-        ref="AngleRight"
+        ref="angleRight"
         class="pagingIcon"
         :class="page === lastPage ? 'disabled' : 'enabled'"
         @click="page === lastPage ? lastPage : page++"
@@ -39,7 +39,7 @@
       </span>
 
       <span
-        ref="AngleDoubleRight"
+        ref="angleDoubleRight"
         class="pagingIcon"
         :class="page === lastPage ? 'disabled' : 'enabled'"
         @click="page = lastPage"
