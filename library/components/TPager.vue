@@ -15,25 +15,20 @@
         ref="angleLeft"
         class="pagingIcon"
         :class="internalPage === 1 ? 'disabled' : 'enabled'"
-        @click="internalPage === 1 ? 1 : internalPage--"
         :disabled="internalPage === 1"
+        @click="internalPage === 1 ? 1 : internalPage--"
       >
         &#8249;
       </span>
 
-      <input
-        id="pageInput"
-        ref="pageInput"
-        v-model.number="internalPage"
-        class="pageInput"
-      />
+      <input id="pageInput" ref="pageInput" v-model.number="internalPage" class="pageInput" />
 
       <span
         ref="angleRight"
         class="pagingIcon"
         :class="internalPage === lastPage ? 'disabled' : 'enabled'"
-        @click="internalPage === lastPage ? lastPage : internalPage++"
         :disabled="internalPage === lastPage"
+        @click="internalPage === lastPage ? lastPage : internalPage++"
       >
         &#8250;
       </span>
@@ -42,8 +37,8 @@
         ref="angleDoubleRight"
         class="pagingIcon"
         :class="internalPage === lastPage ? 'disabled' : 'enabled'"
-        @click="internalPage = lastPage"
         :disabled="internalPage === lastPage"
+        @click="internalPage = lastPage"
       >
         &#187;
       </span>
@@ -53,65 +48,65 @@
 
 <script>
 export default {
-  name: "TPager",
+  name: 'TPager',
   // TODO: Prop validation
   props: {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
   },
-  emits: ["updateStartIndex", "updateEndIndex"],
+  emits: ['updateStartIndex', 'updateEndIndex'],
   data() {
     return {
       internalPage: 1,
-    };
+    }
   },
   computed: {
     lastPage() {
-      return Math.ceil(this.numberOfItems / this.itemsPerPage);
+      return Math.ceil(this.numberOfItems / this.itemsPerPage)
     },
     startIndex() {
-      return (this.internalPage - 1) * this.itemsPerPage;
+      return (this.internalPage - 1) * this.itemsPerPage
     },
     endIndex() {
-      let endIndex = this.startIndex + this.itemsPerPage;
-      if (endIndex > this.numberOfItems) endIndex = this.numberOfItems;
-      return endIndex;
+      let endIndex = this.startIndex + this.itemsPerPage
+      if (endIndex > this.numberOfItems) endIndex = this.numberOfItems
+      return endIndex
     },
     isValidPage() {
-      return this.validatePage(this.internalPage);
+      return this.validatePage(this.internalPage)
     },
   },
   watch: {
     numberOfItems() {
-      this.internalPage = 1;
+      this.internalPage = 1
     },
     startIndex() {
-      if (this.isValidPage) this.$emit("updateStartIndex", this.startIndex);
+      if (this.isValidPage) this.$emit('updateStartIndex', this.startIndex)
     },
     endIndex() {
-      if (this.isValidPage) this.$emit("updateEndIndex", this.endIndex);
+      if (this.isValidPage) this.$emit('updateEndIndex', this.endIndex)
     },
     internalPage(newval, oldval) {
       // allow users to clear out internalPage input
-      if (newval === "") return;
+      if (newval === '') return
 
-      if (this.validatePage(newval)) this.internalPage = newval;
-      else this.internalPage = oldval;
+      if (this.validatePage(newval)) this.internalPage = newval
+      else this.internalPage = oldval
     },
   },
   created() {
-    this.$emit("updateStartIndex", this.startIndex);
-    this.$emit("updateEndIndex", this.endIndex);
+    this.$emit('updateStartIndex', this.startIndex)
+    this.$emit('updateEndIndex', this.endIndex)
   },
   methods: {
     validatePage(internalPage) {
-      if (!_.isFinite(internalPage)) return false;
-      if (internalPage < 1) return false;
-      if (internalPage > this.lastPage) return false;
-      return true;
+      if (!_.isFinite(internalPage)) return false
+      if (internalPage < 1) return false
+      if (internalPage > this.lastPage) return false
+      return true
     },
   },
-};
+}
 </script>
 
 <style scoped>

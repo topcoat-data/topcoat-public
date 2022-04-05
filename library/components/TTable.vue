@@ -941,4 +941,3 @@ highlighting a row on hover etc. */
   font-size: 2em;
 }
 </style>
-''
