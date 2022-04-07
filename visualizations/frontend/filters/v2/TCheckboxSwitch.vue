@@ -1,0 +1,32 @@
+<template>
+    <base-checkbox-switch
+        v-bind="props"
+        v-model="value"
+        @toggled="toggled"
+    />
+</template>
+
+<script>
+    export default {
+        computed: {
+            props() {
+                return this.$attrs;
+            },
+        },
+        data: () => ({
+            is_filter: true,
+            value: false,
+        }),
+        methods: {
+            onVisualizationInit() {
+                const initial_value = this.getFilterValue("checkbox");
+                this.value = (initial_value === 'true');
+                this.setFilterValue("checkbox", this.value, true);
+            },
+            toggled(value) {
+                this.value = value;
+                this.setFilterValue("checkbox", this.value, true);
+            }
+        }
+    }
+</script>
