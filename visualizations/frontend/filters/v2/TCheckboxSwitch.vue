@@ -1,9 +1,13 @@
 <template>
-    <base-checkbox-switch
-        v-bind="props"
-        v-model="value"
-        @toggled="toggled"
-    />
+    <div class="relative w-max">
+        <base-loading-spinner v-if="loading" />
+        <base-checkbox-switch
+            v-else
+            v-bind="props"
+            v-model="value"
+            @toggled="toggled"
+        />
+    </div>
 </template>
 
 <script>

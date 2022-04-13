@@ -2,6 +2,7 @@
     <base-multiple-value-input
         class="!min-w-[200px]"
         :data="data"
+        :loading="loading"
         v-bind="props"
         v-model="values"
         display-key="name"
