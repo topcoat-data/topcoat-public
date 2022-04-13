@@ -2,9 +2,12 @@
     <base-multiple-value-input
         class="!min-w-[200px]"
         :data="data"
-        selection-only
         v-bind="props"
         v-model="values"
+        display-key="name"
+        value-key="id"
+        @update="update"
+        selection-only
     />
 </template>
 
@@ -56,6 +59,22 @@
                 }
                 this.data = data;
             },
+            findItems(urlParam) {
+                const ids = urlParam.split('|');
+                const values = [];
+                if (ids.length && this.data.length) {
+                    for (let item of this.data) {
+                        if (ids.indexOf(item.id) > -1) {
+                            values.push(item.id);
+                        }
+                    }
+                }
+                this.values = values;
+            },
+            update(item) {
+                this.setFilterValue('selected_items', item.join('|'), true)
+                console.log(this.values)
+            }
         },
     }
 </script>

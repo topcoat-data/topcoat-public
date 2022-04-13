@@ -4,3 +4,4 @@ project/*
 static/*
 dbt_gen/*
 *.yml
+.dccache
