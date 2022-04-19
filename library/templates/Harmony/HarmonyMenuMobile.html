@@ -1,14 +1,16 @@
 <template>
     <div class="text-sm lg:flex-grow sidebarmenu">
         <a
-            class="block mt-2 py-4 lg:inline-block lg:mt-0  mr-4 text-secondaryFontColor"
+            class="block py-4 mt-2 mr-4 lg:inline-block lg:mt-0 text-secondaryFontColor"
             v-for='page in project.nav'
             :href="'/' + page.url"
         >
-            <i :class='page.icon_class' class="opacity-75 mr-2 text-sm fas"></i>{{ page.title }}
+            <i :class='page.icon_class' class="mr-2 text-sm opacity-75 fas"></i>{{ page.title }}
         </a>
-        <a href='/logout' class="block mt-2 py-4 lg:inline-block lg:mt-0 mr-4 text-secondaryFontColor bg-primaryButtonColor">
-            <i class="fas fa-power-off mr-1"></i>
+        <a href='/logout' class="relative flex py-4 mt-2 mr-4 right-1 lg:inline-block lg:mt-0 text-secondaryFontColor bg-primaryButtonColor">
+            <div class="mr-1">
+                <power-icon :size="22" />
+            </div>
             Log out
         </a>
     </div>

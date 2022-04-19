@@ -3,7 +3,7 @@
     <div class="relative p-0 rounded text-primaryFontColor" :class='{"tileElement": !hideBackground}'>
         <div v-if="loading && !nospinner">
             <div :style="{ height: (height - 2) + 'px' }">
-                <Spinner />
+                <t-loading-spinner />
             </div>
         </div>
         <div v-else>
