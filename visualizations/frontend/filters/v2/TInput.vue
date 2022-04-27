@@ -2,6 +2,7 @@
     <base-input
         v-bind="props"
         v-model="value" 
+        @change="() => { props.type && props.type === 'date' && updateUrlParam() }"
         @keyup.enter="updateUrlParam"
     />
 </template>

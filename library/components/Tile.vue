@@ -1,6 +1,6 @@
 <!----------------------- begin global tiles ----------------------->
 <template>
-    <div class="relative p-0 rounded text-primaryFontColor" :class='{"tileElement": !hideBackground}'>
+    <base-card>
         <div v-if="loading && !nospinner">
             <div :style="{ height: (height - 2) + 'px' }">
                 <t-loading-spinner />
@@ -11,7 +11,7 @@
                 <slot></slot>
             </div>
         </div>
-    </div>
+    </base-card>
 </template>
 
 <script>
