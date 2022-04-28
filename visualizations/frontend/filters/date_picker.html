@@ -8,38 +8,40 @@
 	  </div>
 	  <div class="h-5" v-else></div>
 	  <div class="inline-flex w-full h-9">
-		<div v-if="!config.hide_presets">
-		  <a-dropdown
-			class="flex-1 w-40"
-			:trigger="[ 'contextMenu' ]"
-			v-model="pickerOpened"
-			v-if="pickerMode"
-		  >
-			<a-menu
-			  v-model="datePresetModel"
-			  @click="presetChange($event, false)"
-			  :style="{ minHeight: presetMenuHeight }"
-			  slot="overlay"
+		<div v-if="!config.hide_presets" class="relative">
+			<base-button
+				class="primary-button"
+				style="height: 36px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"
+                :style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
+				slot="handle"
+				@click="openPicker"
 			>
-			  <a-menu-item
-				v-for="preset in presets[pickerMode]"
-				:key="preset.key"
-			  >
-				{{ preset.label }}
-			  </a-menu-item>
-			</a-menu>
-			<button
-			  class="h-full px-4 rounded-l rounded-r-none outline-none bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor"
-			  @click="pickerOpened = !pickerOpened"
-			>
-			  {{ presetValue }}
-			  <span v-if="!loading">
-				<a-icon v-if="datePreset && !pickerOpened" type="down" />
-				<a-icon v-if="datePreset && pickerOpened" type="up" />
-			  </span>
-			  <a-icon type="loading" v-else />
-			</button>
-		  </a-dropdown>
+				<div class="flex items-center gap-1">
+					{{ presetValue }}
+					<t-loading-spinner v-if="loading" />
+					<span v-else class="mt-2">
+						<chevron-up-icon v-if="pickerOpened" />
+						<chevron-down-icon v-else />
+					</span>
+				</div>
+			</base-button>
+			<div class="absolute top-[36px] w-max z-[99999]" v-if="pickerOpened">
+				<base-card :condensed="true" :style="{height: pickerMode === 'range' ? '371px' : '313.5px'}" class="!bg-filterBackgroundColor">
+					<div
+						:class="preset.key === datePreset && 'bg-primaryButtonColor'"
+						class="hover:bg-primaryButtonColor"
+						v-for="preset in presets[pickerMode]"
+						:key="preset.key"
+					>
+						<base-dropdown-menu-item
+							:value="preset.label"
+							@click="presetChange(preset, false)"
+							class="!hover:text-grayscaleOneColor"
+							:class="preset.key === datePreset ? '!text-grayscaleOneColor' : '!text-primaryFontColor'"
+						/>
+					</div>
+				</base-card>
+			</div>
 		</div>
 		<div
 		  class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9"
@@ -58,46 +60,42 @@
 				:value="[ startDate, endDate ]"
 				@change="onDateChange"
 			  >
-				<a-icon
-				  slot="suffixIcon"
-				  type="calendar"
-				  class="text-filterFontColor"
-				/>
 				<template slot="renderExtraFooter">
-					<div style="padding: 2.0rem; padding-right: 1.0rem;">
-						<span class="flex self-center pr-1" v-if="config.include_previous"
-							>Compare to previous</span
-						>
-						<a-radio-group
-							class="flex"
-							v-model="previousMode"
-							button-style="solid"
-							v-if="config.include_previous"
-						>
-							<a-radio-button
-								:disabled="datePreset == 'mtd' || datePreset == 'ytd'"
-								value="period"
-								class="flex items-center h-full primary-button"
-							>
-								Period
-							</a-radio-button>
-							<a-radio-button
-								value="year"
-								class="flex items-center h-full primary-button"
-							>
-								Year
-							</a-radio-button>
-						</a-radio-group>
+					<div style="padding: 2.0rem; padding-right: 1.0rem;" class="flex items-center justify-between">
+                        <div class="flex" v-if="config.include_previous">
+                            <span class="flex self-center pr-1">
+                                Compare to previous
+                            </span>
+                            <div class="flex items-center">
+                                <base-button
+                                    :ghost="previousMode !== 'period'"
+                                    :style="{ borderColor: previousMode !== 'period' && 'transparent', margin: '0px' }"
+                                    :class="previousMode === 'period' ? 'primary-button' : 'secondary-button'"
+                                    :disabled="datePreset == 'mtd' || datePreset == 'ytd'"
+                                    @click="previousMode = 'period'"
+                                >
+                                    Period
+                                </base-button>
+                                <base-button
+                                    :ghost="previousMode !== 'year'"
+                                    :style="{ borderColor: previousMode !== 'year' && 'transparent', margin: '0px' }"
+                                    :class="previousMode === 'year' ? 'primary-button' : 'secondary-button'"
+                                    @click="previousMode = 'year'"
+                                >
+                                    Year
+                                </base-button>
+                            </div>
+                        </div>
 						<div
 							class="flex content-center justify-end h-full gap-1 ml-1"
 							:class='{"w-full": !config.include_previous}'
 						>
-							<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
+							<base-button style="float:right;" ghost class="h-full py-1 secondary-button" @click="close">
 								Cancel
-							</a-button>
-							<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
+							</base-button>
+							<base-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
 								Apply
-							</a-button>
+							</base-button>
 						</div>
 					</div>
 				</template>
@@ -122,19 +120,14 @@
 				v-model="date"
 				@change="onDateChange"
 			  >
-				<a-icon
-				  slot="suffixIcon"
-				  type="calendar"
-				  class="text-filterFontColor"
-				/>
 				<template slot="renderExtraFooter">
 					<div class="flex content-center justify-end h-full gap-1 pb-2 pr-1 ml-1">
-						<a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
-							Cancel
-						</a-button>
-						<a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
-							Apply
-						</a-button>
+                        <base-button style="float:right;" ghost class="h-full py-1 secondary-button" @click="close">
+                            Cancel
+                        </base-button>
+                        <base-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
+                            Apply
+                        </base-button>
 					</div>
 				</template>
 			  </a-date-picker>
@@ -478,6 +471,10 @@
 					  this.setFilterValue("prev_start_date", prevStartDate, false);
 					  this.setFilterValue("prev_end_date", prevEndDate, true);
 				  }
+		  },
+		  openPicker() {
+			  if (this.loading) return;
+			  this.pickerOpened = !this.pickerOpened
 		  }
   }
   }
@@ -558,7 +555,7 @@
   }
   
   .primary-button {
-	@apply border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
+	@apply border-primaryButtonColor !bg-primaryButtonColor !text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
   }
   
   .date-filter-container input {
