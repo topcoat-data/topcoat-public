@@ -74,7 +74,6 @@
             },
             update(item) {
                 this.setFilterValue('selected_items', item.join('|'), true)
-                console.log(this.values)
             }
         },
     }

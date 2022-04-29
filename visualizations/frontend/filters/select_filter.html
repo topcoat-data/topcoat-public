@@ -3,18 +3,16 @@
       <div class="relative" @click="showMenu = !showMenu">
           <div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='metadata.title'>{{ metadata.title }}</div>
           <div class="h-5" v-else></div>
-          <div class="relative block w-full px-3 overflow-hidden leading-tight border rounded appearance-none border-filterBorderColor h-9 bg-filterBackgroundColor text-filterFontColor focus:outline-none primaryFilterRadius">
-              <button type="button" class="relative inline-flex w-full py-2 text-left bg-transparent focus:z-10 focus:outline-none primaryFilterRadius">
-                  <div class="flex">
-                      <div class="input-placeholder">
-                          {{ selected_label || "Select..." }}
-                      </div>
-                  </div>
-              </button>
-              <div class="absolute flex px-2 text-sm pointer-events-none top-3 right-3 text-filterFontColor hover:text-filterFontHighlightColor">
-                  <i class="fas fa-chevron-down" v-if='!loading'></i>
-                  <a-icon type="loading" v-else />
-              </div>
+          <div class="relative flex items-center w-full px-3 overflow-hidden leading-tight border rounded appearance-none border-filterBorderColor h-9 bg-filterBackgroundColor text-filterFontColor focus:outline-none primaryFilterRadius">
+                <button type="button" class="relative inline-flex w-full py-2 text-left bg-transparent focus:z-10 focus:outline-none primaryFilterRadius">
+                    <div class="flex">
+                        <div class="input-placeholder">
+                            {{ selected_label || "Select..." }}
+                        </div>
+                    </div>
+                </button>
+                <t-loading-spinner position="relative" v-if='loading' />
+                <chevron-down-icon v-else />
           </div>
       </div>
       <div
@@ -30,7 +28,6 @@
               @click='selectItem(index)'
           >
               <div class="menu-label">
-                  <!--i v-if='item.icon' :class='item.icon' class="mr-3 fas"></i-->
                   {{ labels[index] }}
               </div>
           </button>
