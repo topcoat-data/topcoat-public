@@ -1,6 +1,6 @@
 <!----------------------- begin global tiles ----------------------->
 <template>
-    <base-card>
+    <base-card legacy>
         <div v-if="loading && !nospinner">
             <div :style="{ height: (height - 2) + 'px' }">
                 <t-loading-spinner />
