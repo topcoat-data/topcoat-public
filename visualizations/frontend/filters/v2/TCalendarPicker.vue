@@ -379,7 +379,7 @@
 			const includePrevious = this.includePrevious;
 			this.showPreviousMode = includePrevious;
 
-			var defaultPreset = this.default_preset;
+			var defaultPreset = this.defaultPreset;
 			if (!defaultPreset) {
 				if (this.isSinglePicker) {
 					defaultPreset = this.presets.single[0].key;
