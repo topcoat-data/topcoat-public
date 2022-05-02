@@ -55,7 +55,7 @@
 							:allowClear="false"
 							dropdownClassName="wld-date-picker w-20"
 							:open="pickerOpened"
-							:separator="'-'"
+							:separator="separator"
 							:format="dateFormat"
 							:value="[ startDate, endDate ]"
 							@change="onDateChange"
@@ -113,7 +113,7 @@
 						:allowClear="false"
 						dropdownClassName="wld-date-picker w-20"
 						:format="dateFormat"
-						:separator="'-'"
+						:separator="separator"
 						:open="pickerOpened"
 						v-model="date"
 						@change="onDateChange"
@@ -156,7 +156,11 @@
 			label: String,
 			hidePresets: Boolean,
 			includePrevious: Boolean,
-			isSinglePicker: Boolean,
+            singlePicker: Boolean,
+			separator: {
+				type: String,
+				default: '-',
+			}
 	  	},
   	data() {
 	  	return {
@@ -211,7 +215,7 @@
 			return '';
 		},
 		pickerMode() {
-			return this.isSinglePicker ? 'single' : 'range';
+			return this.singlePicker ? 'single' : 'range';
 		},
 		
 	},
@@ -381,7 +385,7 @@
 
 			var defaultPreset = this.defaultPreset;
 			if (!defaultPreset) {
-				if (this.isSinglePicker) {
+				if (this.singlePicker) {
 					defaultPreset = this.presets.single[0].key;
 				} else {
 					defaultPreset = this.presets.range[0].key;
@@ -487,5 +491,9 @@
 
 	.ant-calendar {
 		box-shadow: inset 0 0 0 1px #e5e8ed;
+	}
+
+    .ant-calendar-range-picker-separator {
+		color: black;
 	}
 </style>
