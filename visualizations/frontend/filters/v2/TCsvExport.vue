@@ -69,7 +69,7 @@
         }
 
         if (this.isNonAjax) {
-          return window.open(baseurl + params);
+          return window.open(baseurl + params, "_self");
         }
         window.axios.get(baseurl + params)
           .then(response => {
