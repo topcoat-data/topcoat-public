@@ -1,39 +1,44 @@
 <template>
-  <base-dropdown-menu>
-      <template #handle>
-          <base-button
-            class="!bg-[#145DEB] !border-[#145DEB] !text-white"
-            :disabled="is_loading"
-          >
-            <t-grids
-              gap="2"
-              column-count="2"
-            >
-              {{ title }}
-              <t-loading-spinner
-                v-if="is_loading"
-                position="relative"
-              />
-              <chevron-down-icon
-                v-else
-                class="pt-[2px]"
-              />
-            </t-grids>
-          </base-button>
-      </template>
-      <base-dropdown-menu-item
-        value="Export CSV"
-        @click="download"
-      />
-  </base-dropdown-menu>
+    <div>
+        <label class="pb-1 text-sm font-medium" v-if="label">
+          {{ label }}
+        </label>
+        <base-dropdown-menu class="mt-[5px]">
+            <template #handle>
+                <base-button
+                    class="!bg-[#145DEB] !border-[#145DEB] !text-white"
+                    :disabled="is_loading"
+                >
+                    <t-grids
+                    gap="2"
+                    column-count="2"
+                    >
+                    Export
+                    <t-loading-spinner
+                        v-if="is_loading"
+                        position="relative"
+                    />
+                    <chevron-down-icon
+                        v-else
+                        class="pt-[2px]"
+                    />
+                    </t-grids>
+                </base-button>
+            </template>
+            <base-dropdown-menu-item
+                value="Export CSV"
+                @click="download"
+            />
+        </base-dropdown-menu>
+    </div>
 </template>
 
 <script>
   export default {
     props: {
-      title: {
+      label: {
         type: String,
-        default: 'Export',
+        default: '',
       },
       isNonAjax: {
         type: Boolean,
@@ -64,7 +69,7 @@
         }
 
         if (this.isNonAjax) {
-          return window.location.href = baseurl + params;
+          return window.open(baseurl + params, "_self");
         }
         window.axios.get(baseurl + params)
           .then(response => {
