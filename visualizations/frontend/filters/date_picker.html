@@ -263,7 +263,6 @@
 			},
 			apply() {
 				this.pickerOpened = false;
-		
 				if (this.pickerMode == 'single') {
 					this.setFilterValue("date", this.date.format('YYYY-MM-DD'), false);
 				} else {
@@ -302,10 +301,17 @@
 					const prevMode = includePrevious ? this.previousMode : false;
 					const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
 					const prevEndDate = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
-					this.setFilterValue("previous_mode", prevMode, false);
-					this.setFilterValue("prev_start_date", prevStartDate, false);
-					this.setFilterValue("prev_end_date", prevEndDate, true);
+					if (this.prevMode) {
+						this.setFilterValue("previous_mode", prevMode, false);
+					}
+					if (this.prevStartDate) {
+						this.setFilterValue("prev_start_date", prevStartDate, false);
+					}
+					if (this.prevEndDate) {
+						this.setFilterValue("prev_end_date", prevEndDate, true);
+					}
 				}
+				console.log(this.datePreset)
 				this.setFilterValue("date_preset", this.datePreset, false);
 			},
 			presetChange(event, first) {
@@ -381,25 +387,29 @@
 				var start_date = this.getFilterValue('start_date');
 				var end_date = this.getFilterValue('end_date');
 				var date = this.getFilterValue('date');
+				var date_preset = this.getFilterValue('date_preset');
+				var default_preset = date_preset;
 
 				const includePrevious = this.includePrevious || this.config.include_previous;
 				this.showPreviousMode = includePrevious;
 
-				var defaultPreset = this.defaultPreset || this.config.default_preset;
-				if (!defaultPreset) {
-					if (this.singlePicker && !date) {
-						defaultPreset = this.presets.single[0].key;
-					} else if (!this.singlePicker && (!start_date || !end_date)) {
-						defaultPreset = this.presets.range[0].key;
+				if (!default_preset) {
+					defaultPreset = this.defaultPreset || this.config.default_preset;
+					if (!defaultPreset) {
+						if (this.singlePicker && !date) {
+							defaultPreset = this.presets.single[0].key;
+						} else if (!this.singlePicker && (!start_date || !end_date)) {
+							defaultPreset = this.presets.range[0].key;
+						}
 					}
 				}
-				var date_preset = this.getFilterValue('date_preset');
+
 				if (date_preset) {
 					this.datePreset = date_preset;
 				} else {
 					if (!date_preset && defaultPreset) {
 						this.datePreset = defaultPreset;
-						this.setFilterValue("date_preset", this.datePreset, false);
+						this.setFilterValue("date_preset", defaultPreset, false);
 					}
 				}
 
