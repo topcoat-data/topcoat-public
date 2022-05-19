@@ -387,9 +387,9 @@
 
 				var defaultPreset = this.defaultPreset || this.config.default_preset;
 				if (!defaultPreset) {
-					if (this.singlePicker) {
+					if (this.singlePicker && !date) {
 						defaultPreset = this.presets.single[0].key;
-					} else {
+					} else if (!this.singlePicker && (!start_date || !end_date)) {
 						defaultPreset = this.presets.range[0].key;
 					}
 				}
