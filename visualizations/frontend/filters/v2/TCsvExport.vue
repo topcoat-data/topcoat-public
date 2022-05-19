@@ -1,11 +1,30 @@
 <template>
-  <base-dropdown-menu v-bind="$props">
+  <base-dropdown-menu>
       <template #handle>
-          <div class="cursor-pointer border bg-[#145DEB] border-[#145DEB] !hover:bg-[#0f47c6] hover:border-[#0f47c6] px-2 py-1 rounded text-white gap-2 flex items-center">
-            {{ title }} <chevron-down-icon />
-          </div>
+          <base-button
+            class="!bg-[#145DEB] !border-[#145DEB] !text-white"
+            :disabled="is_loading"
+          >
+            <t-grids
+              gap="2"
+              column-count="2"
+            >
+              {{ title }}
+              <t-loading-spinner
+                v-if="is_loading"
+                position="relative"
+              />
+              <chevron-down-icon
+                v-else
+                class="pt-[2px]"
+              />
+            </t-grids>
+          </base-button>
       </template>
-      <base-dropdown-menu-item value="Export CSV" @click="download" />
+      <base-dropdown-menu-item
+        value="Export CSV"
+        @click="download"
+      />
   </base-dropdown-menu>
 </template>
 
@@ -15,17 +34,23 @@
       title: {
         type: String,
         default: 'Export',
+      },
+      isNonAjax: {
+        type: Boolean,
+        default: false,
       }
     },
     data: () => ({
       is_filter: true,
+      is_loading: false,
     }),
-    layer() {
-      const layers = this.config.layers;
-      return layers && layers.length ? layers[0] : null;
-    },
     methods: {
       download() {
+
+        if (!this.isNonAjax) {
+          if (this.is_loading) return;
+          this.is_loading = true;
+        }
         const baseurl = `/downloadCsv/${this.layer}`
         const urlParams = new URLSearchParams(location.search);
 
@@ -37,8 +62,23 @@
             params += `${filter.name}=${value}&`;
           }
         }
-        window.location.href = baseurl + params;
+
+        if (this.isNonAjax) {
+          return window.location.href = baseurl + params;
+        }
+        window.axios.get(baseurl + params)
+          .then(response => {
+            this.is_loading = false;
+            const aTag = document.createElement('a');
+            aTag.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(response.data);
+            aTag.target = '_blank';
+            aTag.download = response.headers['content-disposition'].split("=")[1];
+            return aTag.click();
+          }).catch(error => {
+            this.is_loading = false;
+            console.error(error);
+          })
       },
-    }
+    },
   }
 </script>
