@@ -1,10 +1,10 @@
 <template>
-	<div class="date-filter-container w-max">
-		<label class="pb-1 text-sm font-medium" v-if="label || config.title">
-			{{ label || config.title }}
+	<div class="flex flex-col date-filter-container w-max">
+		<label class="pb-[7px] text-sm font-medium" v-if="label">
+			{{ label }}
 		</label>
-	  	<div class="inline-flex w-full mt-[5px]">
-			<div v-if="!hidePresets && !config.hide_presets" class="relative">
+	  	<div class="inline-flex w-max">
+			<div v-if="!hidePresets" class="relative">
 				<base-button
 					style="height: 44px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"
 					:style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
@@ -37,7 +37,7 @@
 							<base-dropdown-menu-item
 								:value="preset.label"
 								:style="{ color: preset.key === datePreset ? '#157575' : 'black' }"
-								@click="presetChange(preset, false)"
+								@click="presetChange(preset)"
 							/>
 						</div>
 					</base-card>
@@ -45,7 +45,7 @@
 			</div>
 			<div
 				class="inline-block h-9"
-				:class='{"full-picker": !hidePresets && !config.hide_presets}'
+				:class='{"full-picker": !hidePresets}'
 			>
 				<!-- Range Picker -->
 				<div v-if='pickerMode == "range"' class="flex items-center h-full">
@@ -56,38 +56,13 @@
 							dropdownClassName="wld-date-picker w-20"
 							:open="pickerOpened"
 							:separator="separator"
-							:format="dateFormat || config.date_format"
+							:format="dateFormat"
 							:value="[ startDate, endDate ]"
 							@change="onDateChange"
 						>
 							<template slot="renderExtraFooter">
-								<div style="padding: 2.0rem; padding-right: 1.0rem;" class="flex items-center justify-between">
-									<div class="flex" v-if="includePrevious || config.include_previous">
-										<span class="flex self-center pr-1">
-											Compare to previous
-										</span>
-										<div class="flex items-center">
-											<base-button
-												:ghost="previousMode !== 'period'"
-												:style="{ borderColor: previousMode !== 'period' && 'transparent', margin: '0px' }"
-												:disabled="datePreset == 'mtd' || datePreset == 'ytd'"
-												@click="previousMode = 'period'"
-											>
-												Period
-											</base-button>
-											<base-button
-												:ghost="previousMode !== 'year'"
-												:style="{ borderColor: previousMode !== 'year' && 'transparent', margin: '0px' }"
-												@click="previousMode = 'year'"
-											>
-												Year
-											</base-button>
-										</div>
-									</div>
-									<div
-										class="flex content-center justify-end h-full gap-1 ml-1"
-										:class='{"w-full": !includePrevious && !config.include_previous}'
-									>
+								<div style="padding: 2.0rem; padding-right: 1.0rem;" class="flex items-center justify-end">
+									<div class="flex content-center justify-end h-full gap-1 ml-1">
 										<base-button style="float:right;" ghost class="h-full py-1" @click="close">
 											Cancel
 										</base-button>
@@ -132,15 +107,6 @@
 					</div>
 				</div>
 			</div>
-			<div
-				class="flex items-center px-3"
-				v-if='(includePrevious || config.include_previous) && pickerMode == "range"'
-			>
-				<div v-if="refStart && refEnd" class="self-center">
-					ref. {{ refStart.format('MM/DD/YYYY ') }} -
-					{{ refEnd.format('MM/DD/YYYY ') }}
-				</div>
-			</div>
 	  	</div>
 	</div>
   </template>
@@ -152,11 +118,12 @@
 			  	type: String,
 			  	default: 'MM/DD/YYYY',
 		  	},
-			defaultPreset: String,
 			label: String,
 			hidePresets: Boolean,
-			includePrevious: Boolean,
-            singlePicker: Boolean,
+            pickerMode: {
+				type: String,
+				default: 'single',
+			},
 			separator: {
 				type: String,
 				default: '-',
@@ -169,12 +136,7 @@
 				date: null,
 				pickerOpened: false,
 				datePreset: null,
-				refStart: null,
-				refEnd: null,
-				prevDatePreset: null,
-				previousMode: null,
 				is_filter: true,
-				showPreviousMode: false,
 				presets: {
 					range: [
 						{ key: 'yesterday', label: 'Yesterday' },
@@ -198,12 +160,6 @@
 				}
 			}
 		},
-		mounted() {
-			const ref = this;
-			window.addEventListener('resize', function(event) {
-				ref.addColSpan();
-			}, true);
-		},
 		computed: {
 			presetValue() {
 				const { presets, pickerMode, datePreset } = this;
@@ -213,53 +169,18 @@
 				}
 				return '';
 			},
-			pickerMode() {
-				if (this.config.picker_mode) {
-					return this.config.picker_mode;
-				}
-				return this.singlePicker ? 'single' : 'range';
-			},
 			
 		},
 		methods: {
-			addColSpan() {
-				this.$nextTick(() => {
-					const screenWidth = window.innerWidth;
-					let col = !this.previousMode ? 'col-span-2' : 'col-span-3';
-					if (screenWidth < 1024) col = 'col-span-1';
-		
-					const dateFiler = document.querySelector('.date-filter-container');
-					const steps = 6; // Steps to reach parent
-					let parent = dateFiler ? dateFiler.parentNode : null;
-					if (parent) {
-						for (let index = 1; index < steps; index ++) {
-							parent = parent.parentNode;
-						}
-						parent.classList.add(col);
-						parent.classList.add('w-full');
-					}
-				});
-			},
 			close() {
 				this.pickerOpened = false;
 		
 				// Reset values
-				this.previousMode = this.getFilterValue("previous_mode");
-		
 				this.datePreset = this.getFilterValue('date_preset');
 				this.startDate = Moment(this.getFilterValue('start_date'));
 				this.endDate = Moment(this.getFilterValue('end_date'));
 				this.date = Moment(this.getFilterValue('date'));
 		
-				if (this.previousMode == 'period') {
-					var diff = this.endDate.diff(this.startDate, 'days') + 1;
-					this.refStart = this.startDate.clone().subtract(diff, 'days');
-					this.refEnd = this.endDate.clone().subtract(diff, 'days');
-		
-				} else {
-					this.refStart = this.startDate.clone().subtract(1, 'years');
-					this.refEnd = this.endDate.clone().subtract(1, 'years');
-				}
 			},
 			apply() {
 				this.pickerOpened = false;
@@ -271,58 +192,15 @@
 		
 					var start = this.startDate.clone();
 					var end = this.endDate.clone();
-		
-					if (this.previousMode == 'year') {
-						this.refStart = start.subtract(1, 'years');
-						this.refEnd = end.subtract(1, 'years');
-					} else {
-						if (this.datePreset == 'yesterday') {
-							this.refStart = start.subtract(1, 'days');
-							this.refEnd = end.subtract(1, 'days');
-						} else if (this.datePreset == 'last7days') {
-							this.refStart = start.subtract(7, 'days');
-							this.refEnd = end.subtract(7, 'days');
-						} else if (this.datePreset == 'lastmonth') {
-							this.refStart = start.subtract(1, 'months').startOf('month');
-							this.refEnd = end.subtract(1, 'months').endOf('month');
-						} else if (this.datePreset == 'last30days') {
-							this.refStart = start.subtract(30, 'days')
-							this.refEnd = end.subtract(30, 'days')
-						} else if (this.datePreset == 'last90days') {
-							this.refStart = start.subtract(90, 'days')
-							this.refEnd = end.subtract(90, 'days')
-						} else if (this.datePreset == 'custom') {
-							var diff = end.diff(start, 'days') + 1;
-							this.refStart = start.subtract(diff, 'days');
-							this.refEnd = end.subtract(diff, 'days');
-						}
-					}
-					const includePrevious = this.includePrevious || this.config.include_previous;
-					const prevMode = includePrevious ? this.previousMode : false;
-					const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
-					const prevEndDate = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
-					if (this.prevMode) {
-						this.setFilterValue("previous_mode", prevMode, false);
-					}
-					if (this.prevStartDate) {
-						this.setFilterValue("prev_start_date", prevStartDate, false);
-					}
-					if (this.prevEndDate) {
-						this.setFilterValue("prev_end_date", prevEndDate, true);
-					}
 				}
-				console.log(this.datePreset)
 				this.setFilterValue("date_preset", this.datePreset, false);
 			},
-			presetChange(event, first) {
-				// Remember previous
-				if (this.datePreset) this.prevDatePreset = this.datePreset;
-		
+			presetChange(event) {
 				this.datePreset = event.key;
 				if (this.pickerMode == 'single') {
 					this.handleSingleDates();
 				} else {
-					this.handleRangeDates(first);
+					this.handleRangeDates();
 				}
 			},
 			handleSingleDates() {
@@ -341,36 +219,29 @@
 					this.date = Moment().subtract(1, 'year');
 				}
 			},
-			handleRangeDates(first) {
+			handleRangeDates() {
 				const key = this.datePreset;
 				if (key == 'yesterday') {
 					this.startDate = Moment().subtract(1, 'days');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'period';
 				} else if (key == 'last7days') {
 					this.startDate = Moment().subtract(7, 'days');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'period';
 				} else if (key == 'lastmonth') {
 					this.startDate = Moment().subtract(1, 'months').startOf('month');
 					this.endDate = Moment().subtract(1, 'months').endOf('month');
-					if (!first) this.previousMode = 'period';
 				} else if (key == 'last30days') {
 					this.startDate = Moment().subtract(30, 'days');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'period';
 				} else if (key == 'last90days') {
 					this.startDate = Moment().subtract(90, 'days');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'period';
 				} else if (key == 'mtd') {
 					this.startDate = Moment().startOf('month');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'year';
 				} else if (key == 'ytd') {
 					this.startDate = Moment().startOf('year');
 					this.endDate = Moment().subtract(1, 'days');
-					if (!first) this.previousMode = 'year';
 				}
 			},
 			onDateChange(event) {
@@ -384,79 +255,49 @@
 			},
 			onVisualizationInit() {
 
-				var start_date = this.getFilterValue('start_date');
-				var end_date = this.getFilterValue('end_date');
-				var date = this.getFilterValue('date');
-				var date_preset = this.getFilterValue('date_preset');
-				var default_preset = date_preset;
+				if (this.pickerMode === 'single') {
 
-				const includePrevious = this.includePrevious || this.config.include_previous;
-				this.showPreviousMode = includePrevious;
+					// Unset any range filter
+					this.unsetFilterValue('start_date', false);
+					this.unsetFilterValue('end_date', false);
 
-				if (!default_preset) {
-					defaultPreset = this.defaultPreset || this.config.default_preset;
-					if (!defaultPreset) {
-						if (this.singlePicker && !date) {
-							defaultPreset = this.presets.single[0].key;
-						} else if (!this.singlePicker && (!start_date || !end_date)) {
-							defaultPreset = this.presets.range[0].key;
-						}
-					}
+					// Set variables
+					this.date = this.getFilterValue('date') ? Moment(this.getFilterValue('date')) : Moment();
+					this.handleUrlPreset('single');
+
+					// Set url filters
+					this.setFilterValue('date', this.date.format('YYYY-MM-DD'), false);
+					this.setFilterValue('date_preset', this.datePreset, true);
+				} else if (this.pickerMode === 'range') {
+					
+					// Unset single filter
+					this.unsetFilterValue('date', false);
+
+					// Set variables
+					this.startDate = (this.getFilterValue('start_date') ? Moment(this.getFilterValue('start_date')) : Moment().subtract(1, 'days'));
+					this.endDate = (this.getFilterValue('end_date') ? Moment(this.getFilterValue('end_date')) : Moment().subtract(1, 'days'));
+					this.datePreset = this.getFilterValue('date_preset');
+					this.handleUrlPreset('range');
+
+					// Set url filters
+					this.setFilterValue('start_date', this.startDate.format('YYYY-MM-DD'), false);
+					this.setFilterValue('end_date', this.endDate.format('YYYY-MM-DD'), false);
+					this.setFilterValue('date_preset', this.datePreset, true);
 				}
-
-				if (date_preset) {
-					this.datePreset = date_preset;
-				} else {
-					if (!date_preset && defaultPreset) {
-						this.datePreset = defaultPreset;
-						this.setFilterValue("date_preset", defaultPreset, false);
-					}
-				}
-
-				var previous_mode = this.getFilterValue('previous_mode')
-				if (previous_mode == null) {
-					if (this.datePreset == 'mtd' || this.datePreset == 'ytd') this.previousMode = 'year'
-					else this.previousMode = 'period';
-					const prevMode = includePrevious ? this.previousMode : '';
-					this.setFilterValue("previous_mode", this.previousMode, false);
-				} else {
-					this.previousMode = previous_mode;
-				}
-
-				if (this.datePreset != 'custom') {
-					var tmp_event = {
-						key: this.datePreset
-					}
-					this.presetChange(tmp_event, true);
-					this.apply();
-
-				} else {
-					this.startDate = Moment(start_date);
-					this.endDate = Moment(end_date);
-					this.date = Moment(date);
-
-					if (this.previousMode == 'period') {
-						var diff = this.endDate.diff(this.startDate, 'days') + 1;
-						this.refStart = this.startDate.clone().subtract(diff, 'days');
-						this.refEnd = this.endDate.clone().subtract(diff, 'days');
-
-					} else {
-						this.refStart = this.startDate.clone().subtract(1, 'years');
-						this.refEnd = this.endDate.clone().subtract(1, 'years');
-					}
-
-					this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
-					this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
-					this.setFilterValue("date", this.date.format('YYYY-MM-DD'), false);
-					const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
-					const prevEndDate   = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
-					this.setFilterValue("prev_start_date", prevStartDate, false);
-					this.setFilterValue("prev_end_date", prevEndDate, true);
-				}
+				
 			},
 			openPicker() {
 				if (this.loading) return;
 				this.pickerOpened = !this.pickerOpened
+			},
+			handleUrlPreset(type) {
+				let urlPreset = this.datePreset;
+				if (urlPreset) {
+					// If url preset matches with pickerMode.
+					urlPreset = this.presets[type].filter(preset => preset.key === this.datePreset)[0];
+					urlPreset = urlPreset ? urlPreset.key : null;
+				}
+				this.datePreset = urlPreset || this.presets[type][0].key
 			}
   		}
   	}
