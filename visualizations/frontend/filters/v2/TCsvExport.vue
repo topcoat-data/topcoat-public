@@ -51,23 +51,19 @@
     }),
     methods: {
       download() {
-
         if (!this.isNonAjax) {
           if (this.is_loading) return;
           this.is_loading = true;
         }
         const baseurl = `/downloadCsv/${this.layer}`
         const urlParams = new URLSearchParams(location.search);
-
         let params = '?';
-
         for (let filter of this.config.filters.input) {
           const value = urlParams.get(filter.name);
           if (value) {
             params += `${filter.name}=${value}&`;
           }
         }
-
         if (this.isNonAjax) {
           return window.open(baseurl + params, "_self");
         }

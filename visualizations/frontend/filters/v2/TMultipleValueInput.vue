@@ -25,23 +25,17 @@
             values: [],
         }),
         methods: {
-            onVisualizationInit() {
-                const initial_value = this.getFilterValue('selected_items')
-                let urlParams = ''
-                this.getItems()
-
-                if (initial_value) {
-                    // Url has selected value (url param is id).
-                    this.findItems(initial_value)
-                    urlParams = initial_value
-                } else if (this.config.default_value) {
-                    this.findItems(this.config.default_value)
-                    urlParams = this.config.default_value
-                } else {
-                    // Found nothing, keep url empty.
-                    return this.unsetFilterValue('selected_items', true)
+            findItems(urlParam) {
+                const ids = urlParam.split('|');
+                const values = [];
+                if (ids.length && this.data.length) {
+                    for (let item of this.data) {
+                        if (ids.indexOf(item.id) > -1) {
+                            values.push(item.id);
+                        }
+                    }
                 }
-                this.setFilterValue('selected_items', urlParams, true)
+                this.values = values;
             },
             getItems() {
                 const idColumn = this.findColumnByTag('ids');
@@ -60,17 +54,26 @@
                 }
                 this.data = data;
             },
-            findItems(urlParam) {
-                const ids = urlParam.split('|');
-                const values = [];
-                if (ids.length && this.data.length) {
-                    for (let item of this.data) {
-                        if (ids.indexOf(item.id) > -1) {
-                            values.push(item.id);
-                        }
-                    }
+            onVisualizationInit() {
+                this.handleInit();
+            },
+            onVisualizationUpdated() {
+                this.handleInit();
+            },
+            handleInit() {
+                const initial_value = this.getFilterValue('selected_items')
+                let urlParams = ''
+                this.getItems()
+
+                if (initial_value) {
+                    // Url has selected value (url param is id).
+                    this.findItems(initial_value)
+                    urlParams = initial_value.split('|').filter(id => this.values.indexOf(id) > -1).join('|');
+                } else if (this.config.default_value) {
+                    this.findItems(this.config.default_value)
+                    urlParams = this.config.default_value.split('|').filter(id => this.values.indexOf(id) > -1).join('|');
                 }
-                this.values = values;
+                this.setFilterValue('selected_items', urlParams, true)
             },
             update(item) {
                 this.setFilterValue('selected_items', item.join('|'), true)

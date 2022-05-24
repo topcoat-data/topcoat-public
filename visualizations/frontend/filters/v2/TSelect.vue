@@ -1,10 +1,14 @@
 <template>
-    <base-select
-        :options="options"
-        v-bind="props"
-        v-model="selected"
-        @change="updateUrlParam"
-    />
+    <div class="relative">
+        <div class="absolute top-0 left-0 z-40 w-full h-full m-auto cursor-not-allowed" v-if="loading" />
+        <base-select
+            :class="loading && 'opacity-90'"
+            :options="options"
+            v-bind="props"
+            v-model="selected"
+            @change="updateUrlParam"
+        />
+    </div>
 </template>
 
 <script>
@@ -43,7 +47,7 @@
                 }
                 this.options = options;
             },
-            onVisualizationInit() {
+            handleInit() {
                 const initial_value = this.getFilterValue('dropdown');
                 this.getItems();
                 let option = null;
@@ -55,17 +59,20 @@
                         option = this.options.filter((item) => item.value == this.config.default_value)[0];
                     } else if (this.defaultValue) { // Default value from prop
                         option = this.options.filter((item) => item.value == this.defaultValue)[0];
-                    } else { // First option available
-                        option = this.options[0];
                     }
-                } else {
-                    return;
                 }
 
-                if (option) { // Update url param
-                  this.selected = option.value;
-                  this.setFilterValue('dropdown', option.value, true);
+                if (!option && this.options.length) {
+                    option = this.options[0];
                 }
+                this.selected = option ? option.value : '';
+                this.setFilterValue('dropdown', option ? option.value : '', true);
+            },
+            onVisualizationInit() {
+                this.handleInit();
+            },
+            onVisualizationUpdated() {
+                this.handleInit();
             },
             updateUrlParam() {
                 this.setFilterValue('dropdown', this.selected, true);
