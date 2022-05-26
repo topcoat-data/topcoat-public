@@ -54,10 +54,6 @@
                 this.values = values;
             },
             onVisualizationInit() {
-                console.log('here')
-                this.handleInit();
-            },
-            handleInit() {
                 const initial_value = this.getFilterValue('selected_items')
                 let urlParams = ''
 
