@@ -3,7 +3,7 @@
         <div class="absolute top-0 left-0 z-40 w-full h-full m-auto cursor-not-allowed" v-if="loading" />
         <base-select
             :class="loading && 'opacity-90'"
-            :options="options"
+            :options="menu"
             v-bind="props"
             v-model="selected"
             @change="updateUrlParam"
@@ -22,57 +22,55 @@
         computed: {
             props() {
                 return this.$attrs;
-            }
-        },
-        data: () => ({
-            is_filter: true,
-            options: [],
-            selected: '',
-        }),
-        methods: {
-            getItems() {
-                const idColumn = this.findColumnByTag('options');
-                const labelColumn = this.findColumnByTag('labels');
-
-                const values = this.getColumn(idColumn);
-                const titles = this.getColumn(labelColumn);
-                const options = [];
+            },
+            options() {
+                const column_name = this.findColumnByTag('options');
+                return this.getColumn(column_name);
+            },
+            labels() {
+                const column_name = this.findColumnByTag('labels');
+                return this.getColumn(column_name);
+            },
+            menu() {
+                const values = this.options;
+                const titles = this.labels;
+                const menu = [];
 
                 if (values && titles) {
                     for (let index in values) {
                         const value = values[index];
                         const title = titles[index];
-                        options.push({ value, title });
+                        menu.push({ value, title });
                     }
                 }
-                this.options = options;
-            },
-            handleInit() {
+                return menu;
+            }
+        },
+        data: () => ({
+            is_filter: true,
+            selected: '',
+        }),
+        methods: {
+            onVisualizationInit() {
                 const initial_value = this.getFilterValue('dropdown');
-                this.getItems();
                 let option = null;
 
                 if (initial_value) { // Value from url param.
-                    option = this.options.filter((item) => item.value == initial_value)[0];
-                } else if (this.options.length) {
+                    option = this.menu.filter((item) => item.value == initial_value)[0];
+                } else if (this.menu.length) {
                     if (this.config.default_value) { // Default value from layer
-                        option = this.options.filter((item) => item.value == this.config.default_value)[0];
+                        option = this.menu.filter((item) => item.value == this.config.default_value)[0];
                     } else if (this.defaultValue) { // Default value from prop
-                        option = this.options.filter((item) => item.value == this.defaultValue)[0];
+                        option = this.menu.filter((item) => item.value == this.defaultValue)[0];
                     }
                 }
 
-                if (!option && this.options.length) {
-                    option = this.options[0];
+                if (!option && this.menu.length) {
+                    option = this.menu[0];
                 }
+                console.log(option)
                 this.selected = option ? option.value : '';
                 this.setFilterValue('dropdown', option ? option.value : '', true);
-            },
-            onVisualizationInit() {
-                this.handleInit();
-            },
-            onVisualizationUpdated() {
-                this.handleInit();
             },
             updateUrlParam() {
                 this.setFilterValue('dropdown', this.selected, true);

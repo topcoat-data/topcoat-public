@@ -1,7 +1,7 @@
 <template>
     <base-multiple-value-input
         class="!min-w-[200px]"
-        :data="data"
+        :data="menu"
         :loading="loading"
         v-bind="props"
         v-model="values"
@@ -18,9 +18,25 @@
             props() {
                 return this.$attrs;
             },
+            names() {
+                const column_name = this.findColumnByTag('names');
+                return this.getColumn(column_name);
+            },
+            ids() {
+                const column_name = this.findColumnByTag('ids');
+                return this.getColumn(column_name);
+            },
+            menu() {
+                let menu = [];
+                for (let index in this.names) {
+                    const id = this.ids[index].replace(/,/g,"");
+                    const name = this.names[index];
+                    menu.push({ id, name });
+                }
+                return menu;
+            }
         },
         data: () => ({
-            data: [],
             is_filter: true,
             values: [],
         }),
@@ -28,8 +44,8 @@
             findItems(urlParam) {
                 const ids = urlParam.split('|');
                 const values = [];
-                if (ids.length && this.data.length) {
-                    for (let item of this.data) {
+                if (ids.length && this.menu.length) {
+                    for (let item of this.menu) {
                         if (ids.indexOf(item.id) > -1) {
                             values.push(item.id);
                         }
@@ -37,33 +53,9 @@
                 }
                 this.values = values;
             },
-            getItems() {
-                const idColumn = this.findColumnByTag('ids');
-                const nameColumn = this.findColumnByTag('names');
-
-                const ids = this.getColumn(idColumn);
-                const names = this.getColumn(nameColumn);
-
-                const data = [];
-                if (ids && names) {
-                    for (let index in ids) {
-                        const id = ids[index];
-                        const name = names[index];
-                        data.push({ id, name });
-                    }
-                }
-                this.data = data;
-            },
             onVisualizationInit() {
-                this.handleInit();
-            },
-            onVisualizationUpdated() {
-                this.handleInit();
-            },
-            handleInit() {
                 const initial_value = this.getFilterValue('selected_items')
                 let urlParams = ''
-                this.getItems()
 
                 if (initial_value) {
                     // Url has selected value (url param is id).
