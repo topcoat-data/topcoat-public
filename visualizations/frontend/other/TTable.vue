@@ -50,9 +50,14 @@
         </span>
       </div>
 
+      <!-- Loading data, showSpinner -->
+      <div v-if="showSpinner" class="spanAllColumns center_cell">
+         <base-loading-spinner :inline="false" size="medium" />
+      </div>
+
       <!-- No table data -->
       <div
-        v-if="!internalRows || internalRows.length === 0 || !displayRows || displayRows.length === 0"
+        v-else-if="!internalRows || internalRows.length === 0 || !displayRows || displayRows.length === 0"
         class="spanAllColumns center_cell"
       >
         <div><i class="i-fa-solid i-fa-inbox"></i></div>
@@ -70,11 +75,14 @@
           </div>
 
           <!-- Rows -->
-          <div
-            v-for="(row, rindex) in displayRows.slice(
+          <!-- 
+                        .slice(
               Math.max(group.filteredStartIndex - startIndex, 0),
               Math.max(group.filteredEndIndex - startIndex, 0),
-            )"
+            )
+           -->
+          <div
+            v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
             :key="rindex + row.toString()"
             class="makeGridIgnoreDiv row"
           >
@@ -145,8 +153,8 @@
     </div>
 
     <div style="margin: 0px auto">
-      <TPager
-        v-if="canPage"
+      <TestPager
+        v-if="canPage || canPageServer"
         id="pagingControls"
         :start-index="startIndex"
         :end-index="endIndex"
@@ -155,6 +163,7 @@
         :items-per-page="rowsPerPage"
         @updateStartIndex="updateStartIndex"
         @updateEndIndex="updateEndIndex"
+        @setResetFunction="setPagerResetFunction"
       />
     </div>
   </div>
@@ -207,6 +216,10 @@ export default {
     canPage: {
       type: Boolean,
       default: true,
+    },
+    canPageServer:{
+      type: Boolean,
+      default: false,
     },
     rowsPerPage: {
       type: Number,
@@ -264,6 +277,10 @@ export default {
       isDataAvailable: false,
       columnConfigs: [],
       groups: null,
+      is_filter: true,
+      showSpinner: true,
+      displayRows: [],
+      pagerResetFunction: null,
     }
   },
   computed: {
@@ -323,12 +340,6 @@ export default {
         this.internalSelectedItems?.length > 0
       )
     },
-    displayRows() {
-      let rows = this.filterRowsBySearchValue(this.internalRows, this.searchTerm, this.enableSearchFilter)
-      rows = this.sortRows(rows)
-      rows = this.pageRows(rows)
-      return rows
-    },
     uniqueOriginalRows() {
       return _.uniq(this.internalRows.map((r) => r.originalRow))
     },
@@ -349,8 +360,8 @@ export default {
       let cols = this.columns
       if (typeof this.columns === 'function') cols = []
 
-      if (cols.length === 0 && this.layerRows && this.layerRows.length > 0) {
-        cols = Object.keys(this.layerRows[0])
+      if (cols.length === 0 && this.rows && this.rows.length > 0) {
+        cols = Object.keys(this.rows[0])
       }
       cols = cols.map((columnString) => {
         return {
@@ -406,7 +417,7 @@ export default {
 
       // remove sorting on calculated columns for now.
       // TODO: figure out if there is a way to get the computed value in each cell slot so that dynamic columns can be sorted
-      const baseColumns = Object.keys(this.layerRows[0])
+      const baseColumns = Object.keys(this.rows[0])
       cols.forEach((col) => {
         if (!baseColumns.includes(col.property)) {
           col.sort = null
@@ -422,6 +433,14 @@ export default {
     },
   },
   watch: {
+      loading(){
+          if(!this.loading){
+              this.updateEndIndex(this.rowsPerPage)
+              this.updateStartIndex(0)
+              this.pagerResetFunction()
+          }
+          this.showSpinner=this.loading
+      },
     internalSelectedItem() {
       this.$emit('update:selectedItem', this.internalSelectedItem)
       this.$emit('selectedItemChanged', this.internalSelectedItem)
@@ -430,20 +449,23 @@ export default {
       this.$emit('update:selectedItems', this.internalSelectedItems)
       this.$emit('selectedItemsChanged', this.internalSelectedItems)
     },
-    layerRows() {
-      this.init()
-    },
   },
   mounted() {
-    this.init()
+    this.fetchTotalRows()
   },
   methods: {
+    setDisplayRows(){
+      let rows = this.filterRowsBySearchValue(this.internalRows, this.searchTerm, this.enableSearchFilter)
+      rows = this.sortRows(rows)
+      rows = this.pageRows(rows)
+      this.displayRows.splice(0, this.displayRows.length, ...rows)
+    },
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm
+      this.setupInternalRows()
     },
     setColumnConfig(columnConfig) {
       this.columnConfigs = this.columnConfigs.concat(columnConfig)
-      this.init()
     },
     onVisualizationInit() {
       this.init()
@@ -473,10 +495,31 @@ export default {
         })
       }
 
+      this.setupInternalRows()
+
+      // Handle radio buttons setup
+      if (this.selectedItem) {
+        if (this.internalRows.find((r) => r.originalRow === this.selectedItem))
+          this.internalSelectedItem = this.selectedItem
+        else {
+          console.warn("The 'selectedItem' prop is not one of the objects in the rows: ", this.selectedItem)
+        }
+      }
+
+      // Handle checkboxes setup
+      if (this.selectedItems) {
+        this.internalSelectedItems = _.intersection(this.selectedItems, this.uniqueOriginalRows)
+      }
+
+      this.warningPropValidations()
+
+      this.isDataAvailable = true
+    },
+    setupInternalRows(){
       // Handle internal rows setup
       let groupedRows
       if (this.groupByColumn) {
-        const groupNames = _.uniq(this.layerRows.map((r) => r[this.groupByColumn].rendered))
+        const groupNames = _.uniq(this.rows.map((r) => r[this.groupByColumn].rendered))
         if (groupNames) {
           this.groups = groupNames.map((gn) => {
             return {
@@ -488,7 +531,7 @@ export default {
           })
         }
       }
-      groupedRows = this.groupRows(this.layerRows)
+      groupedRows = this.groupRows(this.rows)
 
       // The detail rows with accordian controls get really hinky
       // given that 1) the *original* object needs to be preserved
@@ -509,23 +552,8 @@ export default {
         }
       })
 
-      // Handle radio buttons setup
-      if (this.selectedItem) {
-        if (this.internalRows.find((r) => r.originalRow === this.selectedItem))
-          this.internalSelectedItem = this.selectedItem
-        else {
-          console.warn("The 'selectedItem' prop is not one of the objects in the rows: ", this.selectedItem)
-        }
-      }
-
-      // Handle checkboxes setup
-      if (this.selectedItems) {
-        this.internalSelectedItems = _.intersection(this.selectedItems, this.uniqueOriginalRows)
-      }
-
-      this.warningPropValidations()
-
-      this.isDataAvailable = true
+      this.setDisplayRows()
+      this.showSpinner=false
     },
     groupRows(rows) {
       this.internalGroups = []
@@ -565,7 +593,7 @@ export default {
         // todo
         groupedRows = _.clone(rows)
       }
-      this.totalRows = groupedRows.length
+      if(!this.canPageServer) this.totalRows = groupedRows.length
       return groupedRows
     },
     filterRowsBySearchValue(rows, searchTerm, enableSearchFilter) {
@@ -586,7 +614,7 @@ export default {
           filteredStartIndex = filteredStartIndex + filteredRowsInGroup.length
           filteredRows = filteredRows.concat(filteredRowsInGroup)
         })
-        this.totalRows = filteredRows.length
+        if(!this.canPageServer) this.totalRows = filteredRows.length
         return filteredRows
       }
 
@@ -594,7 +622,7 @@ export default {
         group.filteredStartIndex = group.startIndex
         group.filteredEndIndex = group.endIndex
       })
-      this.totalRows = rows.length
+      if(!this.canPageServer) this.totalRows = rows.length
       return rows
     },
     sortRows(rows) {
@@ -620,7 +648,7 @@ export default {
       return rows
     },
     pageRows(rows) {
-      if (this.canPage) {
+      if (this.canPage && !this.canPageServer) {
         return rows.slice(this.startIndex, this.endIndex)
       }
       return rows
@@ -644,6 +672,7 @@ export default {
       }
 
       this.columnSortDirection.push(sortObject)
+      this.setupInternalRows()
     },
     getSortByProperty(columnProperty) {
       return this.columnSortDirection.find((csd) => csd.property === columnProperty)
@@ -692,7 +721,7 @@ export default {
       }
 
       // rows and groups
-      if (!this.layerRows) {
+      if (!this.rows) {
         if (!this.groups) {
           console.error('The rows prop or groups with rows properties are required')
           return false
@@ -760,7 +789,7 @@ export default {
         console.warn("The 'selectedItem' prop is only valid when the 'showRadioButtons' prop is true")
       }
 
-      if (this.selectedItems && !this.showCheckboxes) {
+      if (this.selectedItems && this.selectedItems.length > 0 && !this.showCheckboxes) {
         console.warn("The 'selectedItems' prop is only valid when the 'showCheckboxes' prop is true")
       }
 
@@ -849,10 +878,65 @@ export default {
     // this will have to do for now.
     updateStartIndex(newStartIndex) {
       this.startIndex = newStartIndex
+      if(this.canPageServer){
+        const thisTable = this.$store.state.layers.components[this.tag_unique]
+        if(!thisTable.filters){
+            thisTable.filters={}
+        }
+        thisTable.filters.limit='' + this.rowsPerPage
+        thisTable.filters.offset= '' + this.startIndex
+        this.fetchPagedLayer()
+        return;
+      }else{
+        this.setupInternalRows()
+      }
     },
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex
+      if(!this.canPageServer) this.setupInternalRows()
     },
+    fetchTotalRows(){
+        const payload= this.createRequestPayload();
+        this.$store.dispatch('layers/fetchLayerCount', payload).then(totalRows =>{
+            this.totalRows=totalRows
+        })
+    },
+    fetchPagedLayer(limit, offset){
+        const payload= this.createRequestPayload();
+        this.showSpinner=true
+        this.$store.dispatch('layers/fetchPagedLayer', payload).then(()=>{
+          this.setupInternalRows()
+        })
+    },
+    createRequestPayload(){
+        let properties = ((obj) => {
+            let {columns, dimensions, filters, is_iframe, layers, load_phase, measures, tag, type,
+               output_filters, persist_filters, default_value,
+               ...properties} = obj;
+
+          return properties;
+        })(this.metadata);
+        
+        return payload = {
+          render:{
+            visualization: this.tag,
+            properties: properties,
+          },
+          target: this.tag_unique,
+          layer: this.layer,
+        };
+    },
+    filterDisplayRowsInGroup(group){
+      const startIndex = this.canPageServer ? 0 : this.startIndex
+      return this.displayRows.slice(
+              Math.max(group.filteredStartIndex - startIndex, 0),
+              Math.max(group.filteredEndIndex - startIndex, 0)
+      )
+    },
+    setPagerResetFunction(resetFunction){
+      this.pagerResetFunction=resetFunction
+      console.log('setPagerResetFunction', resetFunction)
+    }
   },
 }
 </script>
