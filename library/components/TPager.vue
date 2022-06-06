@@ -53,7 +53,6 @@ export default {
   props: {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
-    reset: {type: Boolean, default: false}
   },
   emits: ['updateStartIndex', 'updateEndIndex', 'setResetFunction'],
   data() {
@@ -102,7 +101,7 @@ export default {
   },
   methods: {
     reset(){
-      if(this.reset) this.internalPage = 1
+      this.internalPage = 1
     },
     validatePage(internalPage) {
       if (!_.isFinite(internalPage)) return false
