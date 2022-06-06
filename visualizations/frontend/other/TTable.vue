@@ -8,10 +8,10 @@
       :highlight-query-selector="enableSearchHighlight ? '#tableContainer' : null"
       :highlight-options="highlightOptions"
       @updateSearchTerm="updateSearchTerm"
-    ></TSearch>
+    />
 
     <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
-      <!-- Search input/ Title -->
+      <!-- Title -->
       <div v-if="title" id="title" class="spanAllColumns center_cell">
         {{ title }}
       </div>
@@ -52,7 +52,7 @@
 
       <!-- Loading data, showSpinner -->
       <div v-if="showSpinner" class="spanAllColumns center_cell">
-         <base-loading-spinner :inline="false" size="medium" />
+         <base-loading-spinner />
       </div>
 
       <!-- No table data -->
@@ -74,13 +74,6 @@
             </slot>
           </div>
 
-          <!-- Rows -->
-          <!-- 
-                        .slice(
-              Math.max(group.filteredStartIndex - startIndex, 0),
-              Math.max(group.filteredEndIndex - startIndex, 0),
-            )
-           -->
           <div
             v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
             :key="rindex + row.toString()"
@@ -91,13 +84,11 @@
               <div v-if="row.detailRowOpen" @click="collapseRow(row)">
                 <slot name="expandedDetailRowIcon">
                   <div class="icon move_up">-</div>
-                  <!-- <font-awesome-icon :ref="'angleDown_' + rindex" icon="angle-down" /> -->
                 </slot>
               </div>
               <div v-else @click="expandRow(row)">
                 <slot name="collapsedDetailRowIcon">
                   <div class="icon move_up">+</div>
-                  <!-- <font-awesome-icon :ref="'angleRight_' + rindex" icon="angle-right" /> -->
                 </slot>
               </div>
             </div>
