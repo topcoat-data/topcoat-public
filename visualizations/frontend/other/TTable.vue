@@ -926,7 +926,6 @@ export default {
     },
     setPagerResetFunction(resetFunction){
       this.pagerResetFunction=resetFunction
-      console.log('setPagerResetFunction', resetFunction)
     }
   },
 }
