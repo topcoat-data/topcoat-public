@@ -144,7 +144,7 @@
     </div>
 
     <div style="margin: 0px auto">
-      <TestPager
+      <TPager
         v-if="canPage || canPageServer"
         id="pagingControls"
         :start-index="startIndex"
