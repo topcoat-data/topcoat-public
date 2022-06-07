@@ -429,6 +429,7 @@ export default {
               this.updateEndIndex(this.rowsPerPage)
               this.updateStartIndex(0)
               this.pagerResetFunction()
+              this.fetchTotalRows()
           }
           this.showSpinner=this.loading
       },
