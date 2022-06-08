@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid"
+    class="grid w-full"
     :class="[
       gapX && styles.gapsX[gapX],
       gapY && styles.gapsY[gapY],

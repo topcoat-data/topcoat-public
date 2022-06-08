@@ -1,9 +1,11 @@
 <template>
   <div
-    class="flex flex-wrap items-center"
+    class="flex items-center gap-1"
     :class="[
       gapX && styles.gapsX[gapX],
       gapY && styles.gapsY[gapY],
+      isJustifyBetween && 'justify-between',
+      isFullWidth && 'w-full',
       isPadded && 'p-4',
       isColumn && 'flex-col',
       styles.gaps[gap],
@@ -51,6 +53,14 @@ export default {
     isColumn: {
       type: [Boolean, String],
       default: false,
+    },
+    isFullWidth: {
+        type: [Boolean, String],
+        default: false,
+    },
+    isJustifyBetween: {
+        type: [Boolean, String],
+        default: false,
     }
   },
   data() {
