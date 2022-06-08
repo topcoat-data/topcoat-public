@@ -54,7 +54,7 @@ export default {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
   },
-  emits: ['updateStartIndex', 'updateEndIndex'],
+  emits: ['updateStartIndex', 'updateEndIndex', 'setResetFunction'],
   data() {
     return {
       internalPage: 1,
@@ -97,8 +97,12 @@ export default {
   created() {
     this.$emit('updateStartIndex', this.startIndex)
     this.$emit('updateEndIndex', this.endIndex)
+    this.$emit('setResetFunction', this.reset)
   },
   methods: {
+    reset(){
+      this.internalPage = 1
+    },
     validatePage(internalPage) {
       if (!_.isFinite(internalPage)) return false
       if (internalPage < 1) return false
