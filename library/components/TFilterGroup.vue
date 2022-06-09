@@ -24,12 +24,13 @@
                 size="small"
                 clearable
                 v-model="search"
+                @change="searchFilter"
             />
         </div>
 
         <t-expandable v-show="false" />
-
-        <expansion-wrapper>
+        <!-- Bug: Render functions cannot use t-expandable without this line -->
+        <expansion-wrapper ref="expansionWrapper">
             <slot></slot>
         </expansion-wrapper>
 
@@ -43,12 +44,13 @@
             this.$slots.default.forEach((element,index) => {
                 if (element.tag) {
                     const label = element.data && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
+                    const id = `${label.replace(" ", "_")}-${index}`;
                     list.push(
-                        createElement('t-expandable', {}, 
-                        [
-                            createElement('span', {slot: 'label'}, label),
-                            element
-                        ]
+                        createElement('t-expandable', {attrs: { id }}, 
+                            [
+                                createElement('span', {slot: 'label'}, label),
+                                element
+                            ]
                         )
                     )
                 }
@@ -66,8 +68,28 @@
         data: () => ({
             popup: false,
             search: '',
-            items: []
+            items: [],
+            visibleFilters: [],
         }),
+        methods: {
+            searchFilter() {
+                const children = this.$refs.expansionWrapper.$children || [];
+                for (let child of children) {
+
+                    const id = child.$attrs.id;
+                    const element = document.getElementById(id);
+                    const label = id.split('-')[1];
+
+                    if (element) {
+                        if (id.toLowerCase().includes(this.search.toLowerCase())) {
+                            element.style.display = "block";
+                        } else {
+                            element.style.display = "none";
+                        }
+                    }
+                }
+            }
+        }
     }
 </script>
 
