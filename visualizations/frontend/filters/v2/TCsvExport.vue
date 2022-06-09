@@ -1,36 +1,16 @@
 <template>
-    <div>
-        <label class="pb-1 text-sm font-medium" v-if="label">
-          {{ label }}
-        </label>
-        <base-dropdown-menu class="mt-[5px]">
-            <template #handle>
-                <base-button
-                    class="!bg-[#145DEB] !border-[#145DEB] !text-white"
-                    :disabled="is_loading"
-                >
-                    <t-grids
-                    gap="2"
-                    column-count="2"
-                    >
-                    Export
-                    <t-loading-spinner
-                        v-if="is_loading"
-                        position="relative"
-                    />
-                    <chevron-down-icon
-                        v-else
-                        class="pt-[2px]"
-                    />
-                    </t-grids>
-                </base-button>
-            </template>
-            <base-dropdown-menu-item
-                value="Export CSV"
-                @click="download"
-            />
-        </base-dropdown-menu>
-    </div>
+	<button
+        class="rounded cursor-pointer border-1 border-[#C3C2CB] text-[#555463] bg-white w-max p-1"
+        style="height: fit-content;"
+        :disabled="is_loading"
+        @click="download"
+    >
+        <div class="flex items-center gap-1">
+			<t-loading-spinner v-if="is_loading" position="relative" />
+			<download-outline-icon v-else :size="18" />
+			{{ label }}
+        </div>
+    </button>
 </template>
 
 <script>
@@ -38,7 +18,7 @@
     props: {
       label: {
         type: String,
-        default: '',
+        default: 'Download CSV',
       },
       isNonAjax: {
         type: Boolean,
