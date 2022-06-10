@@ -22,7 +22,7 @@
                 class="mt-0 mb-3 text-sm !rounded-md" 
                 placeholder="Search Filters"
                 size="small"
-                clearable
+                :clearable="false"
                 v-model="search"
                 @change="searchFilter"
             />

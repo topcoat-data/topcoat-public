@@ -6,29 +6,43 @@
 		ref="dropdownFilter"
 	>
         <div
-            @click="setPopup(!popup)" :class="active ? 'active' : 'in-active'"
-            class="rounded cursor-pointer border-1"
+            @click="setPopup(!popup)" :class="activeClass"
+            class="rounded cursor-pointer"
         >
             <slot name="handle"></slot>
         </div>
 		<div
 			v-show="popup"
 			ref="popup"
-			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1"
+			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1 min-w-"
 			:class="alignClass"
 		>
-            <slot></slot>
+            <slot :popup="setPopup"></slot>
 		</div>
 	</div>
 </template>
 
 <script>
 	export default {
+        props: {
+            disableHandleClass: {
+                type: Boolean,
+                default: false,
+            }
+        },
 		data: () => ({
 			active: false,
 			alignClass: '',
 			popup: false,
 		}),
+        computed: {
+            activeClass() {
+                if (!this.disableHandleClass) {
+                    return this.active ? 'border-1 active' : 'border-1 in-active'
+                }
+                return '';
+            }
+        },
 		methods: {
 			alignPopup() {
 				const element = this.$refs.popup;

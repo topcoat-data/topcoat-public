@@ -1,6 +1,6 @@
 <template>
     <button
-        class="!bg-[#145DEB] !border-[#145DEB] !text-white !text-sm !px-2 py-[5px] rounded-[4px] w-max"
+        class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
         style="height: fit-content;"
         :disabled="is_loading"
         @click="downloadPdf"
