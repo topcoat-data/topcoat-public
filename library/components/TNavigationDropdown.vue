@@ -4,7 +4,7 @@
 			<span style="color: #145DEB" class="pl-2">
 				<chart-timeline-variant-shimmer-icon size="18" />
 			</span>
-				{{ label }}
+				{{ page.title }}
 			<menu-down-icon size="20" class="pr-1" />
 		</div>
 

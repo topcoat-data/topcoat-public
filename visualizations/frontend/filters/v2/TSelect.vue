@@ -6,7 +6,7 @@
 			<div class="pl-1">
 				<slot name="icon"></slot>
 			</div>
-			<span>{{ label }}</span>
+			<span>{{ selectedItemLabel || label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
 			<menu-down-icon v-else size="20" class="pr-1" />
@@ -60,6 +60,10 @@
                 type: String,
 				default: ''
             },
+			selectedAsLabel: {
+				type: Boolean,
+				default: false,
+			}
 		},
 		data: () => ({
 			is_filter: true,
@@ -95,12 +99,17 @@
                     }
                 }
                 return menu;
-            }
+            },
+			selectedItemLabel() {
+				const selected = this.menu.filter(item => item.value === this.selected_internal)[0]
+				return selected ? selected.title : null;
+			},
 		},
 		methods: {
             onVisualizationInit() {
                 // See if the page was loaded with a url param value
                 const initial_value = this.getFilterValue("dropdown");
+                const column_name = this.findColumnByTag('labels');
 
                 if (initial_value) {
                     this.selected_internal = initial_value;

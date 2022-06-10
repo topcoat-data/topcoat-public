@@ -4,7 +4,7 @@
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 py-1 text-sm">
             <filter-variant-icon size="18" class="pl-1" />
-            <span>{{ label }}</span>
+            <span>{{ totalItems ? totalItems + ' Filters' : label }}</span>
 
             <menu-down-icon size="20" class="pr-1" />
     	</div>
@@ -22,8 +22,8 @@
                 class="mt-0 mb-3 text-sm !rounded-md" 
                 placeholder="Search Filters"
                 size="small"
-                :clearable="false"
                 v-model="search"
+                :clearable="false"
                 @change="searchFilter"
             />
         </div>
@@ -70,7 +70,13 @@
             search: '',
             items: [],
             visibleFilters: [],
+			totalItems: 0,
         }),
+		mounted() {
+			const element = this.$refs.expansionWrapper;
+			const children = element ? element.$children : [];
+			this.totalItems = children.length;
+		},
         methods: {
             searchFilter() {
                 const children = this.$refs.expansionWrapper.$children || [];
