@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col">
+    <div class="flex flex-col overflow-x-hidden">
         <label class="pb-[7px] text-sm font-medium" v-if="label">
 			{{ label }}
 		</label>
@@ -11,12 +11,14 @@
             @mouseup="handleDragend"
             ref="rangeContainer"
         >
-            <div class="w-full border-1 border-[#C3C2CB] bg-[#C3C2CB] relative">
+            <div class="w-full border-1 border-[#C3C2CB] bg-[#C3C2CB] relative" slot="handle">
                 <div class="border-1 border-[#145DEB]" :style="{ width: left + '%' }"></div>
                 <div
-                    class="absolute m-auto w-[20px] h-[20px] bg-white rounded-full top-0 bottom-0 border-1 border-[#C3C2CB] z-10"
+                    class="absolute m-auto bg-white rounded-full top-0 bottom-0 border-1 border-[#C3C2CB] z-10 py-3 px-1 flex items-center justify-center cursor-pointer"
                     :style="{ left: left + '%' }"
-                />
+                >
+                    {{ value }}
+                </div>
             </div>
         </div>
     </div>
