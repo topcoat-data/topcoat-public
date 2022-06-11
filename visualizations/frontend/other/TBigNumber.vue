@@ -12,7 +12,7 @@
             </span>
         </div>
         <div class="mt-3">
-            <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
+            <span class="font-normal leading-8 tracking-widest" :class="fontSizes[bigNumberSize]">
                 <div class="flex gap-2">
                     <span>{{ value || '--' }}</span>
                     <t-loading-spinner position="relative" v-if="loading" />
