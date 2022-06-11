@@ -38,19 +38,6 @@
 				</small>
             </div>
 	    </div>
-        <div
-            class="mt-2 text-center"
-            v-if="!isExpanded && canBeExpanded"
-        >
-            <base-button
-                ghost
-                @click="expanded ? collapse() : expand()"
-                :disabled="loading"
-            >
-				<span v-if="expanded">Show Less</span>
-				<span v-else>Show More</span>
-            </base-button>
-        </div>
     </div>
 </template>
 
