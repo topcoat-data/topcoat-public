@@ -5,23 +5,19 @@
 		</label>
 	  	<div class="inline-flex w-max">
 			<div v-if="!hidePresets" class="relative">
-				<base-button
-					style="height: 44px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"
-					:style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
-					slot="handle"
-					@click="openPicker"
-					class="!rounded-tl-[2px] !rounded-bl-[2px]"
-				>
-					<div class="flex items-center justify-center gap-1">
+                <t-dropdown>
+                    <div
+                        @click="openPicker"
+                        class="flex items-center justify-center gap-1 py-1 text-sm"
+                        slot="handle"
+                        :style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
+                    >
 						{{ presetValue }}
-						<t-loading-spinner v-if="loading" />
-						<span v-else class="mt-2">
-							<chevron-up-icon v-if="pickerOpened" />
-							<chevron-down-icon v-else />
-						</span>
+						<t-loading-spinner v-if="loading" position="relative" />
+						<menu-down-icon :size="20" v-else />
 					</div>
-				</base-button>
-				<div class="absolute top-[45px] w-max z-[99999]" v-if="pickerOpened">
+                </t-dropdown>
+				<div class="absolute top-[32px] w-max z-[99999]" v-if="pickerOpened">
 					<base-card
 						:condensed="true"
 						:style="{
@@ -36,7 +32,7 @@
 						>
 							<base-dropdown-menu-item
 								:value="preset.label"
-								:style="{ color: preset.key === datePreset ? '#157575' : 'black' }"
+								:style="{ color: preset.key === datePreset ? '#145DEB' : 'black' }"
 								@click="presetChange(preset)"
 							/>
 						</div>
@@ -44,7 +40,7 @@
 				</div>
 			</div>
 			<div
-				class="inline-block h-9"
+				class="inline-block"
 				:class='{"full-picker": !hidePresets}'
 			>
 				<!-- Range Picker -->
@@ -63,12 +59,20 @@
 							<template slot="renderExtraFooter">
 								<div style="padding: 2.0rem; padding-right: 1.0rem;" class="flex items-center justify-end">
 									<div class="flex content-center justify-end h-full gap-1 ml-1">
-										<base-button style="float:right;" ghost class="h-full py-1" @click="close">
+										<button
+											class="bg-white border-[#C3C2CB] text-[#1C1C21] text-sm px-2 py-[5px] rounded-[4px]"
+											style="float:right;"
+											@click="close"
+										>
 											Cancel
-										</base-button>
-										<base-button style="float:right;" class="h-full py-1" @click="apply">
+										</button>
+										<button
+											class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
+											style="float:right;"
+											@click="apply"
+										>
 											Apply
-										</base-button>
+										</button>
 									</div>
 								</div>
 							</template>
@@ -95,12 +99,20 @@
 					>
 						<template slot="renderExtraFooter">
 							<div class="flex content-center justify-end h-full gap-1 pb-2 pr-1 ml-1">
-								<base-button style="float:right;" ghost class="h-full py-1" @click="close">
+								<button
+									class="bg-white border-[#C3C2CB] text-[#1C1C21] text-sm px-2 py-[5px] rounded-[4px]"
+									style="float:right;"
+									@click="close"
+								>
 									Cancel
-								</base-button>
-								<base-button style="float:right;" class="h-full py-1" @click="apply">
+								</button>
+								<button
+									class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
+									style="float:right;"
+									@click="apply"
+								>
 									Apply
-								</base-button>
+								</button>
 							</div>
 						</template>
 					</a-date-picker>
@@ -306,7 +318,7 @@
 <style>
 	.wld-date-picker .ant-calendar-range,
 	.wld-date-picker .ant-calendar-picker-container-content {
-		@apply !absolute !top-[48px];
+		@apply !absolute !top-[35px];
 	}
 	
 	.date-filter-container input {
@@ -314,7 +326,7 @@
 	}
 	
 	.full-picker .ant-calendar-filter .ant-calendar-picker-input {
-		@apply !rounded-l-none !rounded-r-[2px];
+		@apply !rounded !h-[30px] !border-[#C3C2CB] !text-[#555463] !bg-white;
 	}
 
 	.ant-calendar-picker-input.ant-input,
@@ -327,13 +339,13 @@
 	.ant-calendar-selected-day .ant-calendar-date,
 	.ant-calendar-range .ant-calendar-selected-start-date .ant-calendar-date:hover,
 	.ant-calendar-range .ant-calendar-selected-end-date .ant-calendar-date:hover {
-		background: #157575;
-		border-color: #157575;
+		background: #145DEB;
+		border-color: #145DEB;
 		color: white;
 	}
 
 	.ant-calendar-today .ant-calendar-date {
-		border-color: #157575;
+		border-color: #145DEB;
 		color: black;
 	}
 

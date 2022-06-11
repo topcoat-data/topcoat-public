@@ -1,10 +1,12 @@
 <template>
-    <base-input
-        v-bind="props"
-        v-model="value" 
-        @change="() => { props.type && props.type === 'date' && updateUrlParam() }"
-        @keyup.enter="updateUrlParam"
-    />
+    <div class="t-input-container">
+        <base-input
+            v-bind="props"
+            v-model="value" 
+            @change="() => { props.type && props.type === 'date' && updateUrlParam() }"
+            @keyup.enter="updateUrlParam"
+        />
+    </div>
 </template>
 
 <script>
@@ -44,3 +46,9 @@ export default {
     }
 }
 </script>
+
+<style>
+    .t-input-container .vue--input__field {
+        height: 30px;
+    }
+</style>

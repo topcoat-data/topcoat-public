@@ -1,14 +1,14 @@
 <template>
   <div
-    class="grid w-full"
+    class="flex items-center gap-1"
     :class="[
       gapX && styles.gapsX[gapX],
       gapY && styles.gapsY[gapY],
+      isJustifyBetween && 'justify-between',
+      isFullWidth && 'w-full',
       isPadded && 'p-4',
-      styles.bgColors[bgColor],
-      styles.columns[columnCount],
+      isColumn && 'flex-col',
       styles.gaps[gap],
-      styles.rows[rowCount],
       styles.shadows[isElevated],
     ]"
   >
@@ -18,19 +18,12 @@
 
 <script>
 export default {
-  // eslint-disable-next-line
-  name: 't-grids',
   props: {
     //* Strings
     bgColor: {
       type: String,
       default: 'transparent',
       validator: (v) => ['transparent', 'primary', 'secondary', 'light', 'dark', 'neutral'].includes(v),
-    },
-    columnCount: {
-      type: String,
-      default: 'none',
-      validator: (v) => ['none', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].includes(v),
     },
     gap: {
       type: String,
@@ -47,11 +40,6 @@ export default {
       default: '0',
       validator: (v) => ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(v),
     },
-    rowCount: {
-      type: String,
-      default: 'none',
-      validator: (v) => ['none', '1', '2', '3', '4', '5', '6'].includes(v),
-    },
     //* String-leans
     isElevated: {
       type: [Boolean, String],
@@ -61,35 +49,23 @@ export default {
     isPadded: {
       type: [Boolean, String],
       default: false,
-      validator: (v) => ['true', 'false'].includes(String(v)),
     },
+    isColumn: {
+      type: [Boolean, String],
+      default: false,
+    },
+    isFullWidth: {
+        type: [Boolean, String],
+        default: false,
+    },
+    isJustifyBetween: {
+        type: [Boolean, String],
+        default: false,
+    }
   },
   data() {
     return {
       styles: {
-        bgColors: {
-          primary: 'bg-primary-400',
-          secondary: 'bg-secondary-400',
-          light: 'bg-neutral-50',
-          dark: 'bg-neutral-900',
-          neutral: 'bg-neutral-200',
-          transparent: 'bg-transparent',
-        },
-        columns: {
-          1: 'grid-cols-1',
-          2: 'grid-cols-2',
-          3: 'grid-cols-3',
-          4: 'grid-cols-4',
-          5: 'grid-cols-5',
-          6: 'grid-cols-6',
-          7: 'grid-cols-7',
-          8: 'grid-cols-8',
-          9: 'grid-cols-9',
-          10: 'grid-cols-10',
-          11: 'grid-cols-11',
-          12: 'grid-cols-12',
-          none: 'grids-cols-none',
-        },
         gaps: {
           0: 'gap-0',
           1: 'gap-1',
@@ -128,15 +104,6 @@ export default {
           8: 'gap-y-8',
           9: 'gap-y-9',
           10: 'gap-y-10',
-        },
-        rows: {
-          1: 'grid-rows-1',
-          2: 'grid-rows-2',
-          3: 'grid-rows-3',
-          4: 'grid-rows-4',
-          5: 'grid-rows-5',
-          6: 'grid-rows-6',
-          none: 'grids-rows-none',
         },
         shadows: {
           true: 'shadow',

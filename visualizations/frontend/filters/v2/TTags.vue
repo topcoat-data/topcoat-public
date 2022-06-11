@@ -1,16 +1,16 @@
 <template>
-   <div class="find-me p-2 rounded-[2px] h-max t-checkbox-group">
+   <div class="find-me p-2 rounded-[2px] h-max t-checkbox-group" :class="{ 'is-outlined': isOutlined }">
         <div class="font-bold tracking-widest" v-if="label">
             {{ label.toUpperCase() }}
         </div>
         <div
             ref="checkBoxesContainer"
-            class="relative px-3 py-2 overflow-hidden transition"
+            class="relative py-2 overflow-hidden transition"
             :style="{
                 maxHeight: containerHeight,
                 transition: '0.3s',
             }"
-            :class="{ 'w-max': !isInline }"
+            :class="{ 'w-max': !isInline, 'px-3': label }"
         >
             <div>
                 <t-loading-spinner position="relative" v-if="!init || loading" />
@@ -77,6 +77,10 @@
 			   type: Boolean,
 			   default: false,
 			},
+            isOutlined: {
+                type: Boolean,
+                default: false,
+            },
 			defaultHeight: {
 			   type: String,
 			   default: '200px',
@@ -152,7 +156,7 @@
 </script>
 
 <style scoped>
-   .t-checkbox-group {
+   .t-checkbox-group .is-outlined {
 	  box-shadow: inset 0 0 0 1px hsl(244deg 8% 84%);
    }
 </style>
