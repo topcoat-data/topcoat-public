@@ -4,7 +4,7 @@
         :style="{ background: bgColor, color: textColor }"
     >
         <div class="flex items-center gap-2">
-            <div class="hidden md:block">
+            <div class="hidden opacity-50 md:block">
                 <slot name="icon"></slot>
             </div>
             <span class="text-xs font-semibold leading-4">
@@ -13,8 +13,10 @@
         </div>
         <div class="mt-3">
             <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
-                <t-loading-spinner position="relative" v-if="loading" />
-                <span v-else>{{ value || '--' }}</span>
+                <div class="flex gap-2">
+                    <span>{{ value || '--' }}</span>
+                    <t-loading-spinner position="relative" v-if="loading" />
+                </div>
             </span>
         </div>
     </div>
