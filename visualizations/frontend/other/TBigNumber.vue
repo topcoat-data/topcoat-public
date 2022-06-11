@@ -7,12 +7,12 @@
             <div class="hidden opacity-50 md:block">
                 <slot name="icon"></slot>
             </div>
-            <span class="text-xs font-semibold leading-4">
+            <span class="text-xs font-semibold leading-4 tracking-widest">
                 {{ label || '--' }}
             </span>
         </div>
         <div class="mt-3">
-            <span class="font-normal leading-8 tracking-widest" :class="fontSizes[bigNumberSize]">
+            <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
                 <div class="flex gap-2">
                     <span>{{ value || '--' }}</span>
                     <t-loading-spinner position="relative" v-if="loading" />
