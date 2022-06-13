@@ -11,7 +11,7 @@
 
         <!-- Contents -->
         <div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center">
-            <h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px]">Filters</h6>
+            <h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">Filters</h6>
             <span class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px]">
             <!-- Clear All -->
             </span>

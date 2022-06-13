@@ -16,7 +16,7 @@
 		<template v-slot:default="{ popup }">
 			<div class="min-w-[254px]">
 				<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full" v-if="menuLabel">
-					<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px]">
+					<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
 						{{ menuLabel }}
 					</h6>
 				</div>
