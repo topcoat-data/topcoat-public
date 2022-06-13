@@ -1,16 +1,23 @@
 <template>
-  <div style="display: inline-block;">
+  <div style="display: inline-block">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
       v-if="canSearch"
       ref="easySearch"
-      :highlight-query-selector="enableSearchHighlight ? '#tableContainer' : null"
+      :highlight-query-selector="
+        enableSearchHighlight ? '#tableContainer' : null
+      "
       :highlight-options="highlightOptions"
       @updateSearchTerm="updateSearchTerm"
     />
 
-    <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
+    <div
+      v-if="isDataAvailable"
+      id="tableContainer"
+      ref="tableContainer"
+      :style="columnWidthsStyle"
+    >
       <!-- Title -->
       <div v-if="title" id="title" class="spanAllColumns">
         {{ title }}
@@ -40,8 +47,15 @@
           {{ column.header }}
         </slot>
 
-        <span v-if="column.sort || column.initialSort" @click="reverseSort(column.property)">
-          <slot v-if="arrowDirection[column.property] === 'asc'" name="sortAscendingIcon" v-bind="column">
+        <span
+          v-if="column.sort || column.initialSort"
+          @click="reverseSort(column.property)"
+        >
+          <slot
+            v-if="arrowDirection[column.property] === 'asc'"
+            name="sortAscendingIcon"
+            v-bind="column"
+          >
             <div class="icon move_up">&#8964;</div>
           </slot>
           <slot v-else name="sortDescendingIcon" v-bind="column">
@@ -52,12 +66,17 @@
 
       <!-- Loading data, showSpinner -->
       <div v-if="showSpinner" class="spinnerOverlay">
-         <base-loading-spinner class="spinner"/>
+        <base-loading-spinner class="spinner" />
       </div>
 
       <!-- No table data -->
       <div
-        v-if="!internalRows || internalRows.length === 0 || !displayRows || displayRows.length === 0"
+        v-if="
+          !internalRows ||
+          internalRows.length === 0 ||
+          !displayRows ||
+          displayRows.length === 0
+        "
         class="spanAllColumns center_cell"
       >
         <div><i class="i-fa-solid i-fa-inbox"></i></div>
@@ -66,9 +85,16 @@
 
       <!-- Data Rows -->
       <div v-else class="makeGridIgnoreDiv">
-        <div v-for="(group, gindex) in internalGroups" :key="gindex" class="makeGridIgnoreDiv">
+        <div
+          v-for="(group, gindex) in internalGroups"
+          :key="gindex"
+          class="makeGridIgnoreDiv"
+        >
           <!-- Group Header -->
-          <div v-if="showGroupHeader(group)" class="spanAllColumns groupHeader row">
+          <div
+            v-if="showGroupHeader(group)"
+            class="spanAllColumns groupHeader row"
+          >
             <slot name="group_header" v-bind="group.originalGroup">
               {{ group.header }}
             </slot>
@@ -162,11 +188,11 @@
 
 <script>
 export default {
-  name: 'TTable',
+  name: "TTable",
   props: {
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     isHeaderFixed: {
       type: Boolean,
@@ -174,11 +200,11 @@ export default {
     },
     noDataMessage: {
       type: String,
-      default: 'No Data',
+      default: "No Data",
     },
     noDataIcon: {
       type: String,
-      default: 'No Data',
+      default: "No Data",
     },
     showRadioButtons: {
       type: Boolean,
@@ -208,7 +234,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    canPageServer:{
+    canPageServer: {
       type: Boolean,
       default: false,
     },
@@ -230,7 +256,7 @@ export default {
     },
     sortDirection: {
       type: String,
-      default: 'asc',
+      default: "asc",
     },
     enableSearchFilter: {
       type: Boolean,
@@ -243,26 +269,27 @@ export default {
     highlightOptions: {
       type: Object,
       default() {
-        return {}
+        return {};
       },
     },
     headerClasses: {
       type: String,
-      default: 'py-2 border-b border-[#D3D3D9] text-[10px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase'
+      default:
+        "py-2 border-b border-[#D3D3D9] text-[10px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
     },
     cellClasses: {
       type: String,
-      default: 'border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px]'
+      default: "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px]",
     },
     exludeFromColumns: {
       type: Array,
       default: () => [],
-    }
+    },
   },
   emits: {
-    'update:selectedItem': null,
+    "update:selectedItem": null,
     selectedItemChanged: null,
-    'update:selectedItems': null,
+    "update:selectedItems": null,
     selectedItemsChanged: null,
   },
   data() {
@@ -273,7 +300,7 @@ export default {
       internalSelectedItems: [],
       internalGroups: [],
       internalRows: [],
-      searchTerm: '',
+      searchTerm: "",
       totalRows: 0,
       startIndex: 0,
       endIndex: 0,
@@ -284,34 +311,36 @@ export default {
       showSpinner: true,
       displayRows: [],
       pagerResetFunction: null,
-    }
+    };
   },
   computed: {
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
-        let columnsWidths = 'grid-template-columns:'
+        let columnsWidths = "grid-template-columns:";
         if (this.showRadioButtons) {
-          columnsWidths += ' 2em'
+          columnsWidths += " 2em";
         }
         if (this.showCheckboxes) {
-          columnsWidths += ' 2em'
+          columnsWidths += " 2em";
         }
         if (this.canCollapseDetailRows) {
-          columnsWidths += ' 2em'
+          columnsWidths += " 2em";
         }
 
         this.internalColumns.forEach((column) => {
-          if (column.width) columnsWidths += ` ${column.width}`
-          else columnsWidths += ' auto'
-        })
-        return columnsWidths
+          if (column.width) columnsWidths += ` ${column.width}`;
+          else columnsWidths += " auto";
+        });
+        return columnsWidths;
       } else {
-        return ''
+        return "";
       }
     },
     allChecked: {
       get() {
-        return this.internalSelectedItems.length === this.uniqueOriginalRows.length
+        return (
+          this.internalSelectedItems.length === this.uniqueOriginalRows.length
+        );
       },
       set(checked) {
         // it is a bit confusing to "check all" and only have some items be checked,
@@ -322,17 +351,21 @@ export default {
         const filteredRows = this.filterRowsBySearchValue(
           this.internalRows,
           this.searchTerm,
-          this.enableSearchFilter,
-        ).map((row) => row.originalRow)
+          this.enableSearchFilter
+        ).map((row) => row.originalRow);
 
         if (checked) {
-          this.internalSelectedItems = this.internalSelectedItems.concat(filteredRows)
-          this.internalSelectedItems = _.uniq(this.internalSelectedItems)
+          this.internalSelectedItems =
+            this.internalSelectedItems.concat(filteredRows);
+          this.internalSelectedItems = _.uniq(this.internalSelectedItems);
         } else {
           if (this.searchTerm) {
-            this.internalSelectedItems = _.difference(this.internalSelectedItems, filteredRows)
+            this.internalSelectedItems = _.difference(
+              this.internalSelectedItems,
+              filteredRows
+            );
           } else {
-            this.internalSelectedItems = []
+            this.internalSelectedItems = [];
           }
         }
       },
@@ -341,10 +374,10 @@ export default {
       return (
         this.internalSelectedItems?.length < this.uniqueOriginalRows.length &&
         this.internalSelectedItems?.length > 0
-      )
+      );
     },
     uniqueOriginalRows() {
-      return _.uniq(this.internalRows.map((r) => r.originalRow))
+      return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
@@ -360,187 +393,204 @@ export default {
     // ]
     //  plus configurations for sorting etc.
     internalColumns() {
-      let cols = this.columns
-      if (typeof this.columns === 'function') cols = []
+      let cols = this.columns;
+      if (typeof this.columns === "function") cols = [];
 
       if (cols.length === 0 && this.rows && this.rows.length > 0) {
-        cols = Object.keys(this.rows[0])
+        cols = Object.keys(this.rows[0]);
       }
       cols = cols.map((columnString) => {
         return {
-            header: _.toString(columnString),
-            property: columnString,
-        }
-      })
+          header: _.toString(columnString),
+          property: columnString,
+        };
+      });
 
-        console.log('this.exludeFromColumns', this.exludeFromColumns)
-        console.log('colss', cols)
       // exclude the grouping column
       if (this.groupByColumn) {
-        cols = cols.filter((col) => col.property !== this.groupByColumn)
+        cols = cols.filter((col) => col.property !== this.groupByColumn);
       }
 
       // remove the excluded columns
-      cols = cols.filter((col) => !this.exludeFromColumns.includes(col.property))
+      cols = cols.filter(
+        (col) => !this.exludeFromColumns.includes(col.property)
+      );
 
       if (this.columnConfigs) {
         this.columnConfigs.forEach((columnConfig) => {
           const defaultConfigIndex = cols.findIndex((dc) => {
-            return dc.property === columnConfig.property
-          })
+            return dc.property === columnConfig.property;
+          });
 
           if (defaultConfigIndex !== -1) {
-            const defaultConfig = cols[defaultConfigIndex]
+            const defaultConfig = cols[defaultConfigIndex];
             if (!columnConfig.header) {
-              columnConfig.header = defaultConfig.header
+              columnConfig.header = defaultConfig.header;
             }
             if (columnConfig?.sort?.priority) {
-              columnConfig.sort.priority = Number(columnConfig.sort.priority)
+              columnConfig.sort.priority = Number(columnConfig.sort.priority);
             }
-            cols.splice(defaultConfigIndex, 1, columnConfig)
+            cols.splice(defaultConfigIndex, 1, columnConfig);
           } else {
-            cols.push(columnConfig)
+            cols.push(columnConfig);
           }
-        })
+        });
       }
       if (this.canSort) {
         // Note: the "+" in "+col.sort.priority" converts strings to numbers
         const sortPriorities = cols
           .map((col) => (col.sort ? +col.sort.priority : null))
           .filter((priority) => priority !== null)
-          .sort()
+          .sort();
 
-        let maxSortPriority = sortPriorities.length > 0 ? sortPriorities.pop() : 0
+        let maxSortPriority =
+          sortPriorities.length > 0 ? sortPriorities.pop() : 0;
 
         cols.forEach((col) => {
           if (!col.sort) {
-            maxSortPriority += 1
+            maxSortPriority += 1;
             col.sort = {
               direction: this.sortDirection,
               priority: maxSortPriority,
-            }
+            };
           }
-        })
+        });
       }
 
       // remove sorting on calculated columns for now.
       // TODO: figure out if there is a way to get the computed value in each cell slot so that dynamic columns can be sorted
-      const baseColumns = Object.keys(this.rows[0])
+      const baseColumns = Object.keys(this.rows[0]);
       cols.forEach((col) => {
         if (!baseColumns.includes(col.property)) {
-          col.sort = null
+          col.sort = null;
         }
-      })
+      });
 
-      return cols
+      return cols;
     },
     layerRows() {
-      if (typeof this.rows === 'function') return this.rows(this.$attrs?.['t-layer'])
-      if (this.rows) return this.rows
-      return []
+      if (typeof this.rows === "function")
+        return this.rows(this.$attrs?.["t-layer"]);
+      if (this.rows) return this.rows;
+      return [];
     },
   },
   watch: {
-      loading(){
-          if(!this.loading){
-              this.updateEndIndex(this.rowsPerPage)
-              this.updateStartIndex(0)
-              this.pagerResetFunction()
-              this.fetchTotalRows()
-          }
-          this.showSpinner=this.loading
-      },
+    loading() {
+      if (!this.loading) {
+        this.updateEndIndex(this.rowsPerPage);
+        this.updateStartIndex(0);
+        this.pagerResetFunction();
+        this.fetchTotalRows();
+      }
+      this.showSpinner = this.loading;
+    },
     internalSelectedItem() {
-      this.$emit('update:selectedItem', this.internalSelectedItem)
-      this.$emit('selectedItemChanged', this.internalSelectedItem)
+      this.$emit("update:selectedItem", this.internalSelectedItem);
+      this.$emit("selectedItemChanged", this.internalSelectedItem);
     },
     internalSelectedItems() {
-      this.$emit('update:selectedItems', this.internalSelectedItems)
-      this.$emit('selectedItemsChanged', this.internalSelectedItems)
+      this.$emit("update:selectedItems", this.internalSelectedItems);
+      this.$emit("selectedItemsChanged", this.internalSelectedItems);
     },
   },
   mounted() {
-    this.fetchTotalRows()
+    this.fetchTotalRows();
   },
   methods: {
-    setDisplayRows(){
-      let rows = this.filterRowsBySearchValue(this.internalRows, this.searchTerm, this.enableSearchFilter)
-      rows = this.sortRows(rows)
-      rows = this.pageRows(rows)
-      this.displayRows.splice(0, this.displayRows.length, ...rows)
+    setDisplayRows() {
+      let rows = this.filterRowsBySearchValue(
+        this.internalRows,
+        this.searchTerm,
+        this.enableSearchFilter
+      );
+      rows = this.sortRows(rows);
+      rows = this.pageRows(rows);
+      this.displayRows.splice(0, this.displayRows.length, ...rows);
     },
     updateSearchTerm(newSearchTerm) {
-      this.searchTerm = newSearchTerm
-      this.setupInternalRows()
+      this.searchTerm = newSearchTerm;
+      this.setupInternalRows();
     },
     setColumnConfig(columnConfig) {
-      this.columnConfigs = this.columnConfigs.concat(columnConfig)
+      this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
-      this.init()
+      this.init();
     },
     init() {
       // Error checking
-      let validProps = this.errorPropValidations()
-      if (!validProps) return
-      if (!this.rows) return
+      let validProps = this.errorPropValidations();
+      if (!validProps) return;
+      if (!this.rows) return;
 
       // Handle sorting setup
       let sortableColumns = this.internalColumns.filter((c) => {
-        return c.sort && typeof c.sort.priority === 'number' && c.sort.direction
-      })
+        return (
+          c.sort && typeof c.sort.priority === "number" && c.sort.direction
+        );
+      });
 
       if (sortableColumns.length > 0) {
-        sortableColumns = _.sortBy(sortableColumns, ['sort.priority'])
-        sortableColumns = _.reverse(sortableColumns)
+        sortableColumns = _.sortBy(sortableColumns, ["sort.priority"]);
+        sortableColumns = _.reverse(sortableColumns);
         sortableColumns.forEach((sortableColumn) => {
           this.columnSortDirection.push({
             property: sortableColumn.property,
             direction: sortableColumn.sort.direction,
             format: sortableColumn.format,
             sortBy: sortableColumn.sortBy,
-          })
-          this.arrowDirection[sortableColumn.property] = sortableColumn.sort.direction
-        })
+          });
+          this.arrowDirection[sortableColumn.property] =
+            sortableColumn.sort.direction;
+        });
       }
 
-      this.setupInternalRows()
+      this.setupInternalRows();
 
       // Handle radio buttons setup
       if (this.selectedItem) {
         if (this.internalRows.find((r) => r.originalRow === this.selectedItem))
-          this.internalSelectedItem = this.selectedItem
+          this.internalSelectedItem = this.selectedItem;
         else {
-          console.warn("The 'selectedItem' prop is not one of the objects in the rows: ", this.selectedItem)
+          console.warn(
+            "The 'selectedItem' prop is not one of the objects in the rows: ",
+            this.selectedItem
+          );
         }
       }
 
       // Handle checkboxes setup
       if (this.selectedItems) {
-        this.internalSelectedItems = _.intersection(this.selectedItems, this.uniqueOriginalRows)
+        this.internalSelectedItems = _.intersection(
+          this.selectedItems,
+          this.uniqueOriginalRows
+        );
       }
 
-      this.warningPropValidations()
+      this.warningPropValidations();
 
-      this.isDataAvailable = true
+      this.isDataAvailable = true;
     },
-    setupInternalRows(){
+    setupInternalRows() {
       // Handle internal rows setup
-      let groupedRows
+      let groupedRows;
       if (this.groupByColumn) {
-        const groupNames = _.uniq(this.rows.map((r) => r[this.groupByColumn].rendered))
+        const groupNames = _.uniq(
+          this.rows.map((r) => r[this.groupByColumn].rendered)
+        );
         if (groupNames) {
           this.groups = groupNames.map((gn) => {
             return {
               header: gn,
               filter: (row) => {
-                return row[this.groupByColumn].rendered === gn
+                return row[this.groupByColumn].rendered === gn;
               },
-            }
-          })
+            };
+          });
         }
       }
-      groupedRows = this.groupRows(this.rows)
+      groupedRows = this.groupRows(this.rows);
 
       // The detail rows with accordian controls get really hinky
       // given that 1) the *original* object needs to be preserved
@@ -558,25 +608,25 @@ export default {
         return {
           originalRow: row,
           detailRowOpen: !this.canCollapseDetailRows,
-        }
-      })
+        };
+      });
 
-      this.setDisplayRows()
-      this.showSpinner=false
+      this.setDisplayRows();
+      this.showSpinner = false;
     },
     groupRows(rows) {
-      this.internalGroups = []
-      let groupedRows = []
+      this.internalGroups = [];
+      let groupedRows = [];
       if (this.groups) {
-        let startIndex = 0
+        let startIndex = 0;
         this.groups.forEach((group) => {
           if (group.filter) {
             const rowsInGroup = rows.filter((row) => {
-              return group.filter(row)
-            })
-            groupedRows = groupedRows.concat(rowsInGroup)
+              return group.filter(row);
+            });
+            groupedRows = groupedRows.concat(rowsInGroup);
           } else {
-            groupedRows = groupedRows.concat(group.rows)
+            groupedRows = groupedRows.concat(group.rows);
           }
 
           const newGroup = {
@@ -587,10 +637,10 @@ export default {
             endIndex: groupedRows.length,
             filteredEndIndex: groupedRows.length,
             originalGroup: group,
-          }
-          this.internalGroups.push(newGroup)
-          startIndex = groupedRows.length
-        })
+          };
+          this.internalGroups.push(newGroup);
+          startIndex = groupedRows.length;
+        });
       } else {
         this.internalGroups.push({
           displayHeader: false,
@@ -598,377 +648,440 @@ export default {
           filteredStartIndex: 0,
           endIndex: rows.length,
           filteredEndIndex: rows.length,
-        })
+        });
         // todo
-        groupedRows = _.clone(rows)
+        groupedRows = _.clone(rows);
       }
-      if(!this.canPageServer) this.totalRows = groupedRows.length
-      return groupedRows
+      if (!this.canPageServer) this.totalRows = groupedRows.length;
+      return groupedRows;
     },
     filterRowsBySearchValue(rows, searchTerm, enableSearchFilter) {
       if (searchTerm && enableSearchFilter) {
-        let filteredRows = []
-        let filteredStartIndex = 0
+        let filteredRows = [];
+        let filteredStartIndex = 0;
         this.internalGroups.forEach((group) => {
-          const rowsInGroup = this.internalRows.slice(group.startIndex, group.endIndex)
+          const rowsInGroup = this.internalRows.slice(
+            group.startIndex,
+            group.endIndex
+          );
           const filteredRowsInGroup = rowsInGroup.filter((row) => {
             // Note: stringifyRow only includes visible fields
             // That way searching for say "12" doesn't incorrectly
             // also include rows that have a non-visible ID field
             // that happens to include "12"
-            return this.stringifyRow(row).toLowerCase().includes(searchTerm.toLowerCase())
-          })
-          group.filteredStartIndex = filteredStartIndex
-          group.filteredEndIndex = filteredStartIndex + filteredRowsInGroup.length
-          filteredStartIndex = filteredStartIndex + filteredRowsInGroup.length
-          filteredRows = filteredRows.concat(filteredRowsInGroup)
-        })
-        if(!this.canPageServer) this.totalRows = filteredRows.length
-        return filteredRows
+            return this.stringifyRow(row)
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
+          });
+          group.filteredStartIndex = filteredStartIndex;
+          group.filteredEndIndex =
+            filteredStartIndex + filteredRowsInGroup.length;
+          filteredStartIndex = filteredStartIndex + filteredRowsInGroup.length;
+          filteredRows = filteredRows.concat(filteredRowsInGroup);
+        });
+        if (!this.canPageServer) this.totalRows = filteredRows.length;
+        return filteredRows;
       }
 
       this.internalGroups.forEach((group) => {
-        group.filteredStartIndex = group.startIndex
-        group.filteredEndIndex = group.endIndex
-      })
-      if(!this.canPageServer) this.totalRows = rows.length
-      return rows
+        group.filteredStartIndex = group.startIndex;
+        group.filteredEndIndex = group.endIndex;
+      });
+      if (!this.canPageServer) this.totalRows = rows.length;
+      return rows;
     },
     sortRows(rows) {
       if (this.columnSortDirection.length > 0) {
-        let sortedRows = []
+        let sortedRows = [];
         this.internalGroups.forEach((group) => {
-          let rowsInGroup = rows.slice(group.filteredStartIndex, group.filteredEndIndex)
+          let rowsInGroup = rows.slice(
+            group.filteredStartIndex,
+            group.filteredEndIndex
+          );
           this.columnSortDirection.forEach((sortableColumn) => {
             rowsInGroup = _.sortBy(rowsInGroup, [
               (row) => {
                 if (sortableColumn.sortBy) {
-                  return sortableColumn.sortBy(row.originalRow[sortableColumn.property], row.originalRow)
+                  return sortableColumn.sortBy(
+                    row.originalRow[sortableColumn.property],
+                    row.originalRow
+                  );
                 }
-                return this.getCellValue(row, sortableColumn)
+                return this.getCellValue(row, sortableColumn);
               },
-            ])
-            if (sortableColumn.direction === 'desc') rowsInGroup = _.reverse(rowsInGroup)
-          })
-          sortedRows = sortedRows.concat(rowsInGroup)
-        })
-        return sortedRows
+            ]);
+            if (sortableColumn.direction === "desc")
+              rowsInGroup = _.reverse(rowsInGroup);
+          });
+          sortedRows = sortedRows.concat(rowsInGroup);
+        });
+        return sortedRows;
       }
-      return rows
+      return rows;
     },
     pageRows(rows) {
       if (this.canPage && !this.canPageServer) {
-        return rows.slice(this.startIndex, this.endIndex)
+        return rows.slice(this.startIndex, this.endIndex);
       }
-      return rows
+      return rows;
     },
     stringifyRow(row) {
       return this.internalColumns
         .map((column) => this.getCellValue(row, column))
         .filter((cell) => !_.isNil(cell))
-        .join(' ')
+        .join(" ");
     },
     reverseSort(columnProperty) {
-      const sortObject = this.getSortByProperty(columnProperty)
-      _.pull(this.columnSortDirection, [sortObject])
+      const sortObject = this.getSortByProperty(columnProperty);
+      _.pull(this.columnSortDirection, [sortObject]);
 
-      if (sortObject.direction === 'asc') {
-        this.arrowDirection[columnProperty] = 'desc'
-        sortObject.direction = 'desc'
+      if (sortObject.direction === "asc") {
+        this.arrowDirection[columnProperty] = "desc";
+        sortObject.direction = "desc";
       } else {
-        this.arrowDirection[columnProperty] = 'asc'
-        sortObject.direction = 'asc'
+        this.arrowDirection[columnProperty] = "asc";
+        sortObject.direction = "asc";
       }
 
-      this.columnSortDirection.push(sortObject)
-      this.setupInternalRows()
+      this.columnSortDirection.push(sortObject);
+      this.setupInternalRows();
     },
     getSortByProperty(columnProperty) {
-      return this.columnSortDirection.find((csd) => csd.property === columnProperty)
+      return this.columnSortDirection.find(
+        (csd) => csd.property === columnProperty
+      );
     },
     showGroupHeader(group) {
       const anyRowsInRange =
-        this.indexInPagedRows(group.filteredStartIndex) || this.indexInPagedRows(group.filteredEndIndex - 1)
-      const hasRows = group.filteredStartIndex < group.filteredEndIndex
-      return group.displayHeader && anyRowsInRange && hasRows
+        this.indexInPagedRows(group.filteredStartIndex) ||
+        this.indexInPagedRows(group.filteredEndIndex - 1);
+      const hasRows = group.filteredStartIndex < group.filteredEndIndex;
+      return group.displayHeader && anyRowsInRange && hasRows;
     },
     indexInPagedRows(index) {
-      if (!this.rowsPerPage) return true
-      return index >= this.startIndex && index < this.endIndex
+      if (!this.rowsPerPage) return true;
+      return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
-      let cellValue = _.get(row.originalRow, column.property, column.default_value)
-      if (cellValue && typeof cellValue === 'object') {
-        if(cellValue.rendered)
-          cellValue = cellValue.rendered
-        else
-          cellValue= ''
+      let cellValue = _.get(
+        row.originalRow,
+        column.property,
+        column.default_value
+      );
+      if (cellValue && typeof cellValue === "object") {
+        if (cellValue.rendered) cellValue = cellValue.rendered;
+        else cellValue = "";
       }
-      return cellValue
+      return cellValue;
     },
     getCellValue(row, column) {
-      const cellValue = this.getRawCellValue(row, column)
-      return column.format ? column.format(cellValue, row.originalRow) : cellValue
+      const cellValue = this.getRawCellValue(row, column);
+      return column.format
+        ? column.format(cellValue, row.originalRow)
+        : cellValue;
     },
     generateHeaderClasses(header, index) {
-      let classes = _.camelCase(header)
-      classes += ' cellPadding '
-      classes += ' ' + _.camelCase('header ' + header)
-      classes += index % 2 === 0 ? ' evenColumn' : ' oddColumn'
-      classes += ' ' + this.headerClasses
-      if (this.isHeaderFixed) classes += ' isHeaderFixed'
-      return classes
+      let classes = _.camelCase(header);
+      classes += " cellPadding ";
+      classes += " " + _.camelCase("header " + header);
+      classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
+      classes += " " + this.headerClasses;
+      if (this.isHeaderFixed) classes += " isHeaderFixed";
+      return classes;
     },
     generateSlotName(prefix, value) {
-      return _.snakeCase(prefix + ' ' + value)
+      return _.snakeCase(prefix + " " + value);
     },
     errorPropValidations() {
       // validate columns
       if (!this.columns) {
-        console.error('columns is required')
-        return false
+        console.error("columns is required");
+        return false;
       }
-      if (!Array.isArray(this.columns) && typeof this.columns !== 'function') {
-        console.error("'columns' must be an array or function, not", typeof this.columns)
-        return false
+      if (!Array.isArray(this.columns) && typeof this.columns !== "function") {
+        console.error(
+          "'columns' must be an array or function, not",
+          typeof this.columns
+        );
+        return false;
       }
 
       // rows and groups
       if (!this.rows) {
         if (!this.groups) {
-          console.error('The rows prop or groups with rows properties are required')
-          return false
+          console.error(
+            "The rows prop or groups with rows properties are required"
+          );
+          return false;
         }
-        const rowsInGroups = this.groups.map((group) => group.rows)
+        const rowsInGroups = this.groups.map((group) => group.rows);
         if (!rowsInGroups) {
-          console.error('The rows prop or groups with rows properties are required')
-          return false
+          console.error(
+            "The rows prop or groups with rows properties are required"
+          );
+          return false;
         }
 
-        const groupFilters = this.groups.map((group) => group.filter)
+        const groupFilters = this.groups.map((group) => group.filter);
         if (groupFilters.length > 0) {
-          console.error('Groups with filter properties require the row prop.')
-          return false
+          console.error("Groups with filter properties require the row prop.");
+          return false;
         }
       }
       if (this.groups) {
         // Filter property on groups needs to be an function
         const groupsWithBadFilters = this.groups
-          .filter((group) => group.filter && typeof group.filter !== 'function')
-          .map((g) => g.header)
+          .filter((group) => group.filter && typeof group.filter !== "function")
+          .map((g) => g.header);
         if (groupsWithBadFilters.length > 0) {
           console.error(
-            'The filter property in group objects must be a function, these groups have non-function filters: ' +
-              groupsWithBadFilters,
-          )
-          return false
+            "The filter property in group objects must be a function, these groups have non-function filters: " +
+              groupsWithBadFilters
+          );
+          return false;
         }
 
         // Rows property on groups needs to be an Array
         const groupsWithBadRows = this.groups
           .filter((group) => group.rows && !Array.isArray(group.rows))
-          .map((g) => g.header)
+          .map((g) => g.header);
         if (groupsWithBadRows.length > 0) {
           console.error(
-            'The rows property in group objects must be an Array, these groups have non-array rows: ' +
-              groupsWithBadRows,
-          )
-          return false
+            "The rows property in group objects must be an Array, these groups have non-array rows: " +
+              groupsWithBadRows
+          );
+          return false;
         }
 
         // Groups require either rows or filter property
         const groupsWithNoRowsOrFilters = this.groups
           .filter((group) => !group.rows && !group.filter)
-          .map((g) => g.header)
+          .map((g) => g.header);
         if (groupsWithNoRowsOrFilters.length > 0) {
           console.error(
             "Every group must have either a 'rows' property or a 'filter' property, these groups have nither: " +
-              groupsWithNoRowsOrFilters,
-          )
-          return false
+              groupsWithNoRowsOrFilters
+          );
+          return false;
         }
       }
 
       // Rows Per Page
       if (this.rowsPerPage < 1) {
-        console.error("The 'rowsPerPage' prop must be greater than 0")
-        return false
+        console.error("The 'rowsPerPage' prop must be greater than 0");
+        return false;
       }
-      return true
+      return true;
     },
     warningPropValidations() {
       // radio buttons
       if (this.selectedItem && !this.showRadioButtons) {
-        console.warn("The 'selectedItem' prop is only valid when the 'showRadioButtons' prop is true")
+        console.warn(
+          "The 'selectedItem' prop is only valid when the 'showRadioButtons' prop is true"
+        );
       }
 
-      if (this.selectedItems && this.selectedItems.length > 0 && !this.showCheckboxes) {
-        console.warn("The 'selectedItems' prop is only valid when the 'showCheckboxes' prop is true")
+      if (
+        this.selectedItems &&
+        this.selectedItems.length > 0 &&
+        !this.showCheckboxes
+      ) {
+        console.warn(
+          "The 'selectedItems' prop is only valid when the 'showCheckboxes' prop is true"
+        );
       }
 
       // canCollapseDetailRows
       if (this.onlyShowOneDetailRow && !this.canCollapseDetailRows) {
-        console.warn("The 'onlyShowOneDetailRow' prop is only valid when the 'canCollapseDetailRows' is true")
+        console.warn(
+          "The 'onlyShowOneDetailRow' prop is only valid when the 'canCollapseDetailRows' is true"
+        );
       }
 
       // selected items
       if (this.selectedItems) {
-        const selectedItemsNotInRows = _.difference(this.selectedItems, this.uniqueOriginalRows)
+        const selectedItemsNotInRows = _.difference(
+          this.selectedItems,
+          this.uniqueOriginalRows
+        );
         if (selectedItemsNotInRows.length > 0) {
-          console.warn('These selected items are not in the rows: ', selectedItemsNotInRows)
+          console.warn(
+            "These selected items are not in the rows: ",
+            selectedItemsNotInRows
+          );
         }
       }
 
       // searching
-      if (this.canSearch && !this.enableSearchFilter && !this.enableSearchHighlight) {
+      if (
+        this.canSearch &&
+        !this.enableSearchFilter &&
+        !this.enableSearchHighlight
+      ) {
         console.warn(
-          'The search input is visible but both the enableSearchFilter and the enableSearchHighlight props are disabled so searching will have no effect',
-        )
+          "The search input is visible but both the enableSearchFilter and the enableSearchHighlight props are disabled so searching will have no effect"
+        );
       }
 
       // sorting
       let sortableColumns = this.internalColumns.filter((c) => {
-        return c.sort
-      })
+        return c.sort;
+      });
       if (sortableColumns.length > 0) {
-        sortableColumns = _.sortBy(sortableColumns, ['sort.priority'])
-        let lastSortableColumn = null
+        sortableColumns = _.sortBy(sortableColumns, ["sort.priority"]);
+        let lastSortableColumn = null;
         sortableColumns.forEach((column) => {
-          const sortOptions = column.sort
+          const sortOptions = column.sort;
 
-          if (typeof sortOptions.priority !== 'number') {
+          if (typeof sortOptions.priority !== "number") {
             console.warn(
-              'The sort priority option must be a number. For column ' +
+              "The sort priority option must be a number. For column " +
                 column.property +
-                ' it is a ' +
-                typeof sortOptions.priority,
-            )
+                " it is a " +
+                typeof sortOptions.priority
+            );
           }
-          if (!['asc', 'desc'].includes(sortOptions.direction)) {
+          if (!["asc", "desc"].includes(sortOptions.direction)) {
             console.warn(
               "The sort direction option must be either 'asc' or 'desc'. For column " +
                 column.property +
-                ' it is ' +
-                sortOptions.direction,
-            )
+                " it is " +
+                sortOptions.direction
+            );
           }
-          if (lastSortableColumn !== null && lastSortableColumn.sort.priority === column.sort.priority) {
+          if (
+            lastSortableColumn !== null &&
+            lastSortableColumn.sort.priority === column.sort.priority
+          ) {
             console.warn(
-              'The sort priority option for column ' +
+              "The sort priority option for column " +
                 column.property +
-                ' is the same as the sort priority option for ' +
-                lastSortableColumn.property,
-            )
+                " is the same as the sort priority option for " +
+                lastSortableColumn.property
+            );
           }
-          lastSortableColumn = column
-        })
+          lastSortableColumn = column;
+        });
       }
     },
     expandRow(row) {
       if (this.onlyShowOneDetailRow) {
-        this.internalRows.forEach((row) => (row.detailRowOpen = false))
+        this.internalRows.forEach((row) => (row.detailRowOpen = false));
       }
-      row.detailRowOpen = true
-      const index = this.internalRows.indexOf(row)
-      this.$set(this.internalRows, index, row)
+      row.detailRowOpen = true;
+      const index = this.internalRows.indexOf(row);
+      this.$set(this.internalRows, index, row);
     },
     collapseRow(row) {
-      row.detailRowOpen = false
-      const index = this.internalRows.indexOf(row)
-      this.$set(this.internalRows, index, row)
+      row.detailRowOpen = false;
+      const index = this.internalRows.indexOf(row);
+      this.$set(this.internalRows, index, row);
     },
     generateCellClasses({ column, cindex, rindex }) {
-      let classes = 'row '
-      classes += ' cellPadding '
-      classes += _.camelCase(column.property)
-      classes += cindex % 2 === 0 ? ' evenColumn' : ' oddColumn'
-      classes += rindex % 2 === 0 ? ' evenRow' : ' oddRow'
-      classes += ' ' + this.cellClasses
-      return classes
+      let classes = "row ";
+      classes += " cellPadding ";
+      classes += _.camelCase(column.property);
+      classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
+      classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
+      classes += " " + this.cellClasses;
+      return classes;
     },
     // These should be changed to use the 'v-model:start-index="startIndex' syntax
     // when we switch to vue 3, since the .sync and v-model and incompatible and
     // I am trying to keep this working in both expandable-modules and in topcoat
     // this will have to do for now.
     updateStartIndex(newStartIndex) {
-      this.startIndex = newStartIndex
-      if(this.canPageServer){
-        const thisTable = this.$store.state.layers.components[this.tag_unique]
-        if(!thisTable.filters){
-            thisTable.filters={}
+      this.startIndex = newStartIndex;
+      if (this.canPageServer) {
+        const thisTable = this.$store.state.layers.components[this.tag_unique];
+        if (!thisTable.filters) {
+          thisTable.filters = {};
         }
-        thisTable.filters.limit='' + this.rowsPerPage
-        thisTable.filters.offset= '' + this.startIndex
-        this.fetchPagedLayer()
+        thisTable.filters.limit = "" + this.rowsPerPage;
+        thisTable.filters.offset = "" + this.startIndex;
+        this.fetchPagedLayer();
         return;
-      }else{
-        this.setupInternalRows()
+      } else {
+        this.setupInternalRows();
       }
     },
     updateEndIndex(newEndIndex) {
-      this.endIndex = newEndIndex
-      if(!this.canPageServer) this.setupInternalRows()
+      this.endIndex = newEndIndex;
+      if (!this.canPageServer) this.setupInternalRows();
     },
-    fetchTotalRows(){
-        const payload= this.createRequestPayload();
-        this.$store.dispatch('layers/fetchLayerCount', payload).then(totalRows =>{
-            this.totalRows=totalRows
-        })
+    fetchTotalRows() {
+      const payload = this.createRequestPayload();
+      this.$store
+        .dispatch("layers/fetchLayerCount", payload)
+        .then((totalRows) => {
+          this.totalRows = totalRows;
+        });
     },
-    fetchPagedLayer(limit, offset){
-        const payload= this.createRequestPayload();
-        this.showSpinner=true
-        this.$store.dispatch('layers/fetchPagedLayer', payload).then(()=>{
-          this.setupInternalRows()
-        })
+    fetchPagedLayer(limit, offset) {
+      const payload = this.createRequestPayload();
+      this.showSpinner = true;
+      this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
+        this.setupInternalRows();
+      });
     },
-    createRequestPayload(){
-        let properties = ((obj) => {
-            let {columns, dimensions, filters, is_iframe, layers, load_phase, measures, tag, type,
-               output_filters, persist_filters, default_value,
-               ...properties} = obj;
+    createRequestPayload() {
+      let properties = ((obj) => {
+        let {
+          columns,
+          dimensions,
+          filters,
+          is_iframe,
+          layers,
+          load_phase,
+          measures,
+          tag,
+          type,
+          output_filters,
+          persist_filters,
+          default_value,
+          ...properties
+        } = obj;
 
-          return properties;
-        })(this.metadata);
-        
-        return payload = {
-          render:{
-            visualization: this.tag,
-            properties: properties,
-          },
-          target: this.tag_unique,
-          layer: this.layer,
-        };
+        return properties;
+      })(this.metadata);
+
+      return (payload = {
+        render: {
+          visualization: this.tag,
+          properties: properties,
+        },
+        target: this.tag_unique,
+        layer: this.layer,
+      });
     },
-    filterDisplayRowsInGroup(group){
-      const startIndex = this.canPageServer ? 0 : this.startIndex
+    filterDisplayRowsInGroup(group) {
+      const startIndex = this.canPageServer ? 0 : this.startIndex;
       return this.displayRows.slice(
-              Math.max(group.filteredStartIndex - startIndex, 0),
-              Math.max(group.filteredEndIndex - startIndex, 0)
-      )
+        Math.max(group.filteredStartIndex - startIndex, 0),
+        Math.max(group.filteredEndIndex - startIndex, 0)
+      );
     },
-    setPagerResetFunction(resetFunction){
-      this.pagerResetFunction=resetFunction
+    setPagerResetFunction(resetFunction) {
+      this.pagerResetFunction = resetFunction;
     },
   },
-}
+};
 </script>
 
 <style scoped>
-    
 .spinnerOverlay {
-    z-index: 2;
-    background: rgba(0,0,0,0.05);
-    position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.05);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
-.spinner{
-    position: absolute;
-    top:50%;
-    left:50%;
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 .icon {
   float: left;
@@ -1052,14 +1165,13 @@ highlighting a row on hover etc. */
 }
 
 #title {
-  font-family: 'Nunito', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 23px;
-    display: flex;
-    align-items: center;
-    font-feature-settings: 'tnum' on, 'lnum' on;
-    
+  font-family: "Nunito", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+  display: flex;
+  align-items: center;
+  font-feature-settings: "tnum" on, "lnum" on;
 }
 </style>
