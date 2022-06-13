@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: inline-block;">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
@@ -12,7 +12,7 @@
 
     <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Title -->
-      <div v-if="title" id="title" class="spanAllColumns center_cell">
+      <div v-if="title" id="title" class="spanAllColumns">
         {{ title }}
       </div>
 
@@ -51,13 +51,13 @@
       </div>
 
       <!-- Loading data, showSpinner -->
-      <div v-if="showSpinner" class="spanAllColumns center_cell">
-         <base-loading-spinner />
+      <div v-if="showSpinner" class="spinnerOverlay">
+         <base-loading-spinner class="spinner"/>
       </div>
 
       <!-- No table data -->
       <div
-        v-else-if="!internalRows || internalRows.length === 0 || !displayRows || displayRows.length === 0"
+        v-if="!internalRows || internalRows.length === 0 || !displayRows || displayRows.length === 0"
         class="spanAllColumns center_cell"
       >
         <div><i class="i-fa-solid i-fa-inbox"></i></div>
@@ -144,7 +144,7 @@
     </div>
 
     <div style="margin: 0px auto">
-      <TPager
+      <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
         :start-index="startIndex"
@@ -246,6 +246,18 @@ export default {
         return {}
       },
     },
+    headerClasses: {
+      type: String,
+      default: 'py-2 border-b border-[#D3D3D9] text-[10px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase'
+    },
+    cellClasses: {
+      type: String,
+      default: 'border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px]'
+    },
+    exludeFromColumns: {
+      type: Array,
+      default: () => [],
+    }
   },
   emits: {
     'update:selectedItem': null,
@@ -356,15 +368,20 @@ export default {
       }
       cols = cols.map((columnString) => {
         return {
-          header: _.toString(columnString),
-          property: columnString,
+            header: _.toString(columnString),
+            property: columnString,
         }
       })
 
+        console.log('this.exludeFromColumns', this.exludeFromColumns)
+        console.log('colss', cols)
       // exclude the grouping column
       if (this.groupByColumn) {
         cols = cols.filter((col) => col.property !== this.groupByColumn)
       }
+
+      // remove the excluded columns
+      cols = cols.filter((col) => !this.exludeFromColumns.includes(col.property))
 
       if (this.columnConfigs) {
         this.columnConfigs.forEach((columnConfig) => {
@@ -681,8 +698,11 @@ export default {
     },
     getRawCellValue(row, column) {
       let cellValue = _.get(row.originalRow, column.property, column.default_value)
-      if (cellValue && typeof cellValue === 'object' && cellValue.rendered) {
-        cellValue = cellValue.rendered
+      if (cellValue && typeof cellValue === 'object') {
+        if(cellValue.rendered)
+          cellValue = cellValue.rendered
+        else
+          cellValue= ''
       }
       return cellValue
     },
@@ -695,6 +715,7 @@ export default {
       classes += ' cellPadding '
       classes += ' ' + _.camelCase('header ' + header)
       classes += index % 2 === 0 ? ' evenColumn' : ' oddColumn'
+      classes += ' ' + this.headerClasses
       if (this.isHeaderFixed) classes += ' isHeaderFixed'
       return classes
     },
@@ -862,6 +883,7 @@ export default {
       classes += _.camelCase(column.property)
       classes += cindex % 2 === 0 ? ' evenColumn' : ' oddColumn'
       classes += rindex % 2 === 0 ? ' evenRow' : ' oddRow'
+      classes += ' ' + this.cellClasses
       return classes
     },
     // These should be changed to use the 'v-model:start-index="startIndex' syntax
@@ -927,12 +949,27 @@ export default {
     },
     setPagerResetFunction(resetFunction){
       this.pagerResetFunction=resetFunction
-    }
+    },
   },
 }
 </script>
 
 <style scoped>
+    
+.spinnerOverlay {
+    z-index: 2;
+    background: rgba(0,0,0,0.05);
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+.spinner{
+    position: absolute;
+    top:50%;
+    left:50%;
+}
 .icon {
   float: left;
   font-size: large;
@@ -967,6 +1004,7 @@ export default {
 #tableContainer {
   display: grid;
   margin: 5px;
+  position: relative;
 }
 
 .spanAllColumns {
@@ -976,7 +1014,8 @@ export default {
 .isHeaderFixed {
   position: sticky;
   top: 0;
-  background-color: white;
+  /* TODO */
+  background-color: var(--page-background-color);
 }
 
 .headerCell {
@@ -998,12 +1037,13 @@ export default {
 /* Note: gap leaves spaces when 
 highlighting a row on hover etc. */
 .cellPadding {
-  padding-left: 2px;
-  padding-right: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
+.headerCell,
 .row {
-  padding: 2px 0;
+  margin: 0px 0;
 }
 
 .center_cell {
@@ -1012,7 +1052,14 @@ highlighting a row on hover etc. */
 }
 
 #title {
-  font-weight: 700;
-  font-size: 2em;
+  font-family: 'Nunito', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+    
 }
 </style>
