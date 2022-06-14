@@ -13,8 +13,8 @@
 				<div v-else-if="menu.length">
 					<span
 						@click="reset"
-						class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px]"
-						:class="checked.length ? 'text-[#7FA7F5]' : 'text-[#727184]'"
+						class="text-[13px] cursor-pointer font-normal leading-[18px]"
+						:class="checked.length ? 'text-[#7FA7F5]' : 'text-[#D3D3D9] cursor-not-allowed'"
 					>
 						Clear
 					</span>

@@ -5,7 +5,8 @@
     >
         <div class="flex items-center gap-2">
             <div class="hidden opacity-50 md:block">
-                <slot name="icon"></slot>
+                <t-loading-spinner v-if="dataLoading" position="relative" />
+                <slot v-else name="icon"></slot>
             </div>
             <span class="text-xs font-semibold leading-4 tracking-widest">
                 {{ label || '--' }}
@@ -15,7 +16,7 @@
             <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
                 <div class="flex gap-2">
                     <span>{{ value || '--' }}</span>
-                    <t-loading-spinner position="relative" v-if="loading" />
+                    <t-loading-spinner position="relative" v-if="loading && !numberValue" />
                 </div>
             </span>
         </div>
@@ -33,6 +34,14 @@
                 type: String,
                 default: 'medium',
                 validator: v => ['small', 'medium', 'big'].includes(v),
+            },
+            dataLoading: {
+                type: Boolean,
+                default: false,
+            },
+            numberValue: {
+                type: String,
+                default: '',
             },
             label: {
                 type: String,
@@ -54,6 +63,7 @@
         computed: {
             value() {
                 // Find by tags
+                if (this.numberValue) return this.numberValue;
                 const column = this.findColumnByTag('value');
                 const value = this.getColumn(column)
                 return value && value.length ? value[0] : '--';
