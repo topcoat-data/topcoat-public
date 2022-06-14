@@ -14,7 +14,7 @@
 
 		<!-- Popup Contents -->
 		<div class="min-w-[294px]">
-			<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full" v-if="menuLabel">
+			<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full">
 				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
 					{{ menuLabel }}
 				</h6>
