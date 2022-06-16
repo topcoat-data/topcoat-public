@@ -1,8 +1,8 @@
 <template>
-    <div class="flex justify-between px-4 py-2 items-center border-b border-[#E5E7EB] bg-white sticky top-0 m-auto z-[9999]">
+    <div class="flex justify-between px-4 py-2 items-center border-b border-[#E5E7EB] bg-white sticky top-0 m-auto z-50">
         <div class="flex items-center gap-4">
             <snyk-logo />
-            <div class="text-[#461D9E] font-semibold text-base tracking-widest">INSIGHTS</div>
+            <!-- <div class="text-[#461D9E] font-semibold text-base tracking-widest">INSIGHTS</div> -->
         </div>
         <div class="flex items-center justify-between gap-4">
             <div class="flex items-center gap-2">
