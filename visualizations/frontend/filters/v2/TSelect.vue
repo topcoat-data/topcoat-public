@@ -15,9 +15,9 @@
 		<!-- Popup Contents -->
 		<template v-slot:default="{ popup }">
 			<div class="min-w-[254px]">
-				<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full" v-if="menuLabel">
+				<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full" v-if="label">
 					<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
-						{{ menuLabel }}
+						{{ label }}
 					</h6>
 				</div>
 				<div class="px-[8px] pt-[4px] pb-[6px] w-full">
@@ -56,11 +56,7 @@
 				type: String,
 				default: 'Select'
 			},
-            menuLabel: {
-                type: String,
-				default: ''
-            },
-			selectedAsLabel: {
+			isUnselectable: {
 				type: Boolean,
 				default: false,
 			}
@@ -114,13 +110,17 @@
                     this.selected_internal = initial_value;
                 } else if (this.config.default_value) {
                     this.selected_internal = this.config.default_value;
-                } else if (this.options.length) {
+                } else if (this.options.length && !this.isUnselectable) {
 					this.selected_internal = this.options[0];
 				}
                 this.setFilterValue("dropdown", this.selected_internal, true);
             },
             selectItem(item, popup) {
-                this.selected_internal = item.value;
+                if (this.selected_internal === item.value && this.isUnselectable) {
+                    this.selected_internal = '';
+                } else {
+                    this.selected_internal = item.value;
+                }
                 this.setFilterValue("dropdown", this.selected_internal, true);
 				popup(false);
             },
