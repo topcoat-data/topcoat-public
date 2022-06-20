@@ -1,16 +1,16 @@
 <template>
   	<t-dropdown>
-		<div slot="handle" class="flex items-center gap-1 py-1 text-sm">
-			<span style="color: #145DEB" class="pl-2">
+		<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+			<span style="color: #145DEB" class="pl-1">
 				<chart-timeline-variant-shimmer-icon size="18" />
 			</span>
 				{{ page.title }}
-			<menu-down-icon size="20" class="pr-1" />
+			<menu-down-icon size="20" />
 		</div>
 
 		<div class="px-2 pt-4 pb-2 border-b border-[#E4E3E8]">
 			<h6 class="text-xs text-[#727184] tracking-[0.1em]">CHOOSE REPORT</h6>
-			<ul class="inline-flex gap-2 mt-2 base-tabs">
+			<!-- <ul class="inline-flex gap-2 mt-2 base-tabs">
 				<li
 					class="p-2 rounded-lg text-xs cursor-pointer text-[#1c1c21]"
 					v-for="pane in panes"
@@ -20,10 +20,10 @@
 				>
 					{{ pane.label }}
 				</li>
-			</ul>
+			</ul> -->
 		</div>
 
-      <div class="px-2 pt-2 nav-search">
+      	<div class="px-2 pt-2 nav-search">
 			<base-search-input
 				class="mt-0 mb-3 text-sm search-report !rounded-md" 
 				placeholder="Search Reports"

@@ -8,7 +8,7 @@
                 <t-dropdown>
                     <div
                         @click="openPicker"
-                        class="flex items-center justify-center gap-1 py-1 text-sm"
+                        class="flex items-center justify-center gap-1 p-1 text-sm"
                         slot="handle"
                         :style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
                     >
