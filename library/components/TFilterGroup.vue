@@ -2,11 +2,11 @@
 	<t-dropdown>
 
 		  <!-- Handle -->
-    	<div slot="handle" class="flex items-center gap-1 py-1 text-sm">
-            <filter-variant-icon size="18" class="pl-1" />
+    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+            <filter-variant-icon size="18" />
             <span>{{ totalItems ? totalItems + ' Filters' : label }}</span>
 
-            <menu-down-icon size="20" class="pr-1" />
+            <menu-down-icon size="20" />
     	</div>
 
         <!-- Contents -->
