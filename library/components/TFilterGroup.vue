@@ -3,10 +3,10 @@
 
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
-            <filter-variant-icon size="18" />
+            <filter-variant-icon :size="18" />
             <span>{{ totalItems ? totalItems + ' Filters' : label }}</span>
 
-            <menu-down-icon size="20" />
+            <menu-down-icon :size="20" />
     	</div>
 
         <!-- Contents -->

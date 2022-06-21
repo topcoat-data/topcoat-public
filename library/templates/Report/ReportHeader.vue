@@ -24,7 +24,7 @@
             </div>
             <a href="https://snyk.io/" class="md:flex md:gap-1 md:border-1 border-[#C3C2CB] items-center hidden rounded py-1 px-2">
                 Go to snyk.io
-                <open-in-new-icon size="18" />
+                <open-in-new-icon :size="18" />
             </a>
         </div>
     </div>

@@ -9,7 +9,7 @@
 			<span>{{ selectedItemLabel || label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else size="20" />
+			<menu-down-icon v-else :size="20" />
     	</div>
 
 		<!-- Popup Contents -->
@@ -52,6 +52,10 @@
 <script>
 	export default {
 		props: {
+            filterName: {
+                type: String,
+                default: null,
+            },
 			label: {
 				type: String,
 				default: 'Select'
@@ -102,6 +106,16 @@
 			},
 		},
 		methods: {
+            getGlobalFilterData() {
+                let global_filter = null;
+                if (this.filterName) {
+                    let data = this.menu.length ? this.menu.filter(item => this.selected_internal === item.value)[0] : null;
+                    if (data) {
+                        global_filter = { name: this.filterName, data }
+                    }
+                }
+                return global_filter;
+            },
             onVisualizationInit() {
                 // See if the page was loaded with a url param value
                 const initial_value = this.getFilterValue("dropdown");
@@ -113,7 +127,7 @@
                 } else if (this.options.length && !this.isUnselectable) {
 					this.selected_internal = this.options[0];
 				}
-                this.setFilterValue("dropdown", this.selected_internal, true);
+                this.setFilterValue("dropdown", this.selected_internal, true, this.getGlobalFilterData());
             },
             selectItem(item, popup) {
                 if (this.selected_internal === item.value && this.isUnselectable) {
@@ -121,7 +135,8 @@
                 } else {
                     this.selected_internal = item.value;
                 }
-                this.setFilterValue("dropdown", this.selected_internal, true);
+
+                this.setFilterValue("dropdown", this.selected_internal, true, this.getGlobalFilterData());
 				popup(false);
             },
 		}
