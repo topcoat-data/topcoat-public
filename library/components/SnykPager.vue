@@ -150,8 +150,6 @@ export default {
     },
   },
   created() {
-    this.$emit("updateStartIndex", this.startIndex);
-    this.$emit("updateEndIndex", this.endIndex);
     this.$emit("setResetFunction", this.reset);
   },
   methods: {
