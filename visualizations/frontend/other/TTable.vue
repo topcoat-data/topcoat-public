@@ -1175,5 +1175,7 @@ highlighting a row on hover etc. */
   display: flex;
   align-items: center;
   font-feature-settings: "tnum" on, "lnum" on;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 </style>
