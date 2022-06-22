@@ -4,7 +4,10 @@
       class="pagination-footer flex justify-center relative"
       v-if="numberOfItems"
     >
-      <ul class="pagination-nav pagination-selector inline-flex pt-[16px]">
+      <ul
+        class="pagination-nav pagination-selector inline-flex pt-[16px]"
+        id="pages"
+      >
         <li class="pagination-nav-item">
           <button
             class="
@@ -180,5 +183,9 @@ export default {
 .minWidth {
   min-width: 2em;
   margin-right: 0.25em;
+}
+
+#pages {
+  z-index: 2;
 }
 </style>
