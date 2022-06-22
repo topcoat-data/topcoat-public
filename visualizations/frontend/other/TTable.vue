@@ -1,5 +1,6 @@
 <template>
   <div style="display: inline-block">
+    {{startIndex}} <br/> {{endIndex}}
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
@@ -1082,6 +1083,7 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: scale(3);
 }
 .icon {
   float: left;
