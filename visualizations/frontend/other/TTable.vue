@@ -280,7 +280,7 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px]",
+      default: "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
     },
     exludeFromColumns: {
       type: Array,
@@ -1177,5 +1177,9 @@ highlighting a row on hover etc. */
   font-feature-settings: "tnum" on, "lnum" on;
   padding-top: 12px;
   padding-bottom: 12px;
+}
+
+.snykCell{
+  word-break: break-word;
 }
 </style>
