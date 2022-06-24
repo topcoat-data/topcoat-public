@@ -28,7 +28,7 @@
 				class="mt-0 mb-3 text-sm search-report !rounded-md" 
 				placeholder="Search Reports"
 				size="small"
-				clearable
+				:clearable="false"
 				v-model="search"
 			/>
 

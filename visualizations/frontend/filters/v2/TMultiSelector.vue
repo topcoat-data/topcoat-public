@@ -9,14 +9,14 @@
 			<span>{{ label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else :size="20" />
+			<menu-down-icon v-else size="20" />
     	</div>
 
 		<!-- Popup Contents -->
 		<div class="min-w-[294px]">
 			<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full">
 				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
-					{{ menuLabel }}
+					{{ label }}
 				</h6>
 				<span
 					@click="reset"
@@ -25,6 +25,15 @@
 				>
 					Reset
 				</span>
+			</div>
+			<div class="px-2 pt-2 nav-search" v-if="isSearchable">
+				<base-search-input
+					class="mt-0 mb-3 text-sm search-report !rounded-md" 
+					placeholder="Search Reports"
+					size="small"
+					:clearable="false"
+					v-model="search"
+				/>
 			</div>
 			<div class="px-[8px] pt-[4px] pb-[6px] w-full">
 				<ul class="max-h-[320px] overflow-auto">
@@ -63,18 +72,15 @@
 				type: String,
 				default: 'Select'
 			},
-            menuLabel: {
-                type: String,
-				default: ''
-            },
-			selectedAsLabel: {
+			isSearchable: {
 				type: Boolean,
 				default: false,
 			}
 		},
 		data: () => ({
-			is_filter: true,
             checked: [],
+			is_filter: true,
+			search: '',
 		}),
 		computed: {
             names() {
@@ -102,6 +108,9 @@
                     for (let index in values) {
                         const value = values[index];
                         const title = titles[index];
+						if (this.isSearchable && !title.toLowerCase().includes(this.search.toLowerCase())) {
+							continue;
+						}
                         menu.push({ value, title });
                     }
                 }
@@ -119,7 +128,6 @@
 				if (!initial_value && typeof initial_value !== 'string' && this.hasCheckedAll) {
 					this.checked = this.ids;
 				}
-
                 this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
 			reset() {
@@ -132,3 +140,9 @@
 		}
 	}
 </script>
+
+<style>
+	.nav-search .vue--search-input__field {
+		@apply !rounded-3xl !bg-white !opacity-[0.5];
+	}
+</style>
