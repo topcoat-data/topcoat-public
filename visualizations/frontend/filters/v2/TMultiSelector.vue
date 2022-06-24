@@ -55,10 +55,6 @@
 <script>
 	export default {
 		props: {
-            filterName: {
-                type: String,
-                default: null,
-            },
 			hasCheckedAll: {
 				type: Boolean,
 				default: false,
@@ -113,16 +109,6 @@
             }
 		},
 		methods: {
-            getGlobalFilterData() {
-                let global_filter = null;
-                if (this.filterName) {
-                    let data = this.menu.length ? this.menu.filter(item => this.checked.indexOf(item.value) > -1) : null;
-                    if (data) {
-                        global_filter = { name: this.filterName, data: data.length === 1 ? data[0] : data }
-                    }
-                }
-                return global_filter;
-            },
             onVisualizationInit() {
                 // See if the page was loaded with a url param value
                 const initial_value = this.getFilterValue("selected_items");
@@ -134,14 +120,14 @@
 					this.checked = this.ids;
 				}
 
-                this.setFilterValue("selected_items", this.checked.join('|'), true, this.getGlobalFilterData());
+                this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
 			reset() {
 				this.checked = [];
 				this.updateUrlParam();
 			},
             updateUrlParam() {
-                this.setFilterValue("selected_items", this.checked.join('|'), true, this.getGlobalFilterData());
+                this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
 		}
 	}
