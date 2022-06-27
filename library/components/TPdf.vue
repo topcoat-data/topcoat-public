@@ -37,7 +37,7 @@
                     if (this.is_loading) return;
                     this.is_loading = true;
                 }
-                const baseurl = `/downloadPdf/${this.page.tag}`
+                const baseurl = `/downloadPdf/${this.page.url}`
                 const params = window.location.search;
 
                 if (this.isNonAjax) {
