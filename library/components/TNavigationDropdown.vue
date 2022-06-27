@@ -2,10 +2,10 @@
   	<t-dropdown>
 		<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
 			<span style="color: #145DEB" class="pl-1">
-				<chart-timeline-variant-shimmer-icon size="18" />
+				<chart-timeline-variant-shimmer-icon :size="18" />
 			</span>
 				{{ page.title }}
-			<menu-down-icon size="20" />
+			<menu-down-icon :size="20" />
 		</div>
 
 		<div class="px-2 pt-4 pb-2 border-b border-[#E4E3E8]">
@@ -28,7 +28,7 @@
 				class="mt-0 mb-3 text-sm search-report !rounded-md" 
 				placeholder="Search Reports"
 				size="small"
-				clearable
+				:clearable="false"
 				v-model="search"
 			/>
 

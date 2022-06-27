@@ -9,7 +9,7 @@
 			<span>{{ selectedItemLabel || label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else size="20" />
+			<menu-down-icon v-else :size="20" />
     	</div>
 
 		<!-- Popup Contents -->
@@ -121,6 +121,7 @@
                 } else {
                     this.selected_internal = item.value;
                 }
+
                 this.setFilterValue("dropdown", this.selected_internal, true);
 				popup(false);
             },
