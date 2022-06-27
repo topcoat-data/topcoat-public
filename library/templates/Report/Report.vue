@@ -32,10 +32,11 @@
       popup:false
     }),
     props: {
-      // to hide header use this prop
+      // to hide the header use this prop
+      // the header is shown only if the report is not shown in an iframe
       hasHeader: {
         type: Boolean,
-        default: false,
+        default: () => window.location === window.parent.location,
       },
       showSidebar: {
         type: Boolean,
