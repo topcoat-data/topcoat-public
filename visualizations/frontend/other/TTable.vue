@@ -1,6 +1,5 @@
 <template>
-  <div style="display: inline-block">
-    {{startIndex}} <br/> {{endIndex}}
+  <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
@@ -171,7 +170,7 @@
     </div>
 
     <div style="margin: 0px auto">
-      <SnykPager
+      <TestSnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
         :start-index="startIndex"
@@ -280,7 +279,8 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
+      default:
+        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
     },
     exludeFromColumns: {
       type: Array,
@@ -1070,6 +1070,12 @@ export default {
 </script>
 
 <style scoped>
+.rootTableContainer {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
 .spinnerOverlay {
   z-index: 2;
   background: rgba(0, 0, 0, 0.05);
@@ -1175,11 +1181,11 @@ highlighting a row on hover etc. */
   display: flex;
   align-items: center;
   font-feature-settings: "tnum" on, "lnum" on;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
-.snykCell{
+.snykCell {
   word-break: break-word;
 }
 </style>
