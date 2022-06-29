@@ -11,6 +11,7 @@
         >
             <slot name="handle"></slot>
         </div>
+		<slot name="below"></slot>
 		<div
 			v-show="popup"
 			ref="popup"
@@ -28,7 +29,7 @@
             disableHandleClass: {
                 type: Boolean,
                 default: false,
-            }
+            },
         },
 		data: () => ({
 			active: false,

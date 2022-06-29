@@ -30,9 +30,11 @@
 
         <t-expandable v-show="false" />
         <!-- Bug: Render functions cannot use t-expandable without this line -->
-        <expansion-wrapper ref="expansionWrapper">
-            <slot></slot>
-        </expansion-wrapper>
+        <div class="overflow-auto" :style="{ maxWidth, maxHeight }">
+            <expansion-wrapper ref="expansionWrapper">
+                <slot></slot>
+            </expansion-wrapper>
+        </div>
 
 	</t-dropdown>
 </template>
@@ -63,6 +65,14 @@
             label: {
                 type: String,
                 default: 'Select'
+            },
+            maxHeight: {
+                type: String,
+                default: '300px'
+            },
+            maxWidth: {
+                type: String,
+                default: '400px'
             },
         },
         data: () => ({

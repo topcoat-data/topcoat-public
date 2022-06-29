@@ -1,8 +1,9 @@
 <template>
-	<t-dropdown>
+    
+	<m-dropdown :disable-handle-class="isExpanded">
 
 		<!-- Handle -->
-    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm" v-if="!isExpanded">
 			<div class="pl-1">
 				<slot name="icon"></slot>
 			</div>
@@ -13,23 +14,26 @@
     	</div>
 
 		<!-- Popup Contents -->
-		<div class="min-w-[294px]">
+		<div class="min-w-[294px]" v-bind="popupAttrs">
 			<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full">
-				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
+				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest" v-if="label">
 					{{ label }}
 				</h6>
 				<span
-					@click="reset"
+					@click="selectUnselect"
 					class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px]"
 					:class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
 				>
-					Reset
+					<t-loading-spinner v-if="isExpanded && loading" position="relative" />
+					<span v-else>
+						{{ checked.length < ids.length ? 'Select All' : 'Reset' }}
+					</span>
 				</span>
 			</div>
 			<div class="px-2 pt-2 nav-search" v-if="isSearchable">
 				<base-search-input
 					class="mt-0 mb-3 text-sm search-report !rounded-md" 
-					placeholder="Search Reports"
+					:placeholder="searchPlaceholder"
 					size="small"
 					:clearable="false"
 					v-model="search"
@@ -58,24 +62,36 @@
 				</ul>
 			</div>
 		</div>
-	</t-dropdown>
+	</m-dropdown>
 </template>
 
 <script>
 	export default {
 		props: {
+            defaultValue: {
+                type: Array,
+                default: [],
+            },
 			hasCheckedAll: {
 				type: Boolean,
 				default: false,
 			},
 			label: {
 				type: String,
-				default: 'Select'
+				default: ''
 			},
 			isSearchable: {
 				type: Boolean,
 				default: false,
-			}
+			},
+			searchPlaceholder: {
+				type: String,
+				default: 'Search',
+			},
+            isExpanded: {
+                type: Boolean,
+                default: false,
+            },
 		},
 		data: () => ({
             checked: [],
@@ -115,7 +131,14 @@
                     }
                 }
                 return menu;
-            }
+            },
+			popupAttrs() {
+				let attrs = {};
+				if (this.isExpanded) {
+					attrs.slot = "outside";
+				}
+				return attrs;
+			}
 		},
 		methods: {
             onVisualizationInit() {
@@ -130,8 +153,12 @@
 				}
                 this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
-			reset() {
-				this.checked = [];
+			selectUnselect() {
+                if (this.checked.length === this.ids.length) {
+                    this.checked = [];
+                } else {
+                    this.checked = this.ids;
+                }
 				this.updateUrlParam();
 			},
             updateUrlParam() {
