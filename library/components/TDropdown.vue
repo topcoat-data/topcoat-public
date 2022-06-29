@@ -13,7 +13,7 @@
         </div>
 		<slot name="below"></slot>
 		<div
-			v-show="popup"
+			v-if="popup"
 			ref="popup"
 			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1 min-w-"
 			:class="alignClass"
