@@ -517,7 +517,9 @@ export default {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
-      this.init();
+      if (!this.canPageServer) {
+        this.init();
+      }
     },
     init() {
       // Error checking
@@ -570,7 +572,6 @@ export default {
       }
 
       this.warningPropValidations();
-
       this.isDataAvailable = true;
     },
     setupInternalRows() {
@@ -1022,6 +1023,7 @@ export default {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
+        if (!this.isDataAvailable) this.init();
         this.setupInternalRows();
       });
     },
@@ -1074,6 +1076,9 @@ export default {
   display: inline-block;
   width: 100%;
   height: 100%;
+  max-width: inherit;
+  max-height: inherit;
+  position: relative;
 }
 
 .spinnerOverlay {
