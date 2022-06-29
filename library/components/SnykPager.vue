@@ -2,7 +2,7 @@
   <div>
     <div
       class="pagination-footer flex justify-center relative"
-      v-if="numberOfItems"
+      v-if="numberOfItems && numberOfItems > itemsPerPage"
     >
       <ul
         class="pagination-nav pagination-selector inline-flex pt-[16px]"
