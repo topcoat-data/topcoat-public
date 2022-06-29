@@ -52,6 +52,10 @@
 <script>
 	export default {
 		props: {
+			defaultValue: {
+				type: String,
+				default: '',
+			},
 			label: {
 				type: String,
 				default: 'Select'
@@ -108,9 +112,9 @@
 
                 if (initial_value) {
                     this.selected_internal = initial_value;
-                } else if (this.config.default_value) {
-                    this.selected_internal = this.config.default_value;
-                } else if (this.options.length && !this.isUnselectable) {
+                } else if (this.defaultValue) {
+					this.selected_internal = this.defaultValue;
+				} else if (this.options.length && !this.isUnselectable) {
 					this.selected_internal = this.options[0];
 				}
                 this.setFilterValue("dropdown", this.selected_internal, true);
