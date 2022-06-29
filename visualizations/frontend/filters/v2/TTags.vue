@@ -1,7 +1,18 @@
 <template>
    <div class="find-me p-2 rounded-[2px] h-max t-checkbox-group" :class="{ 'is-outlined': isOutlined }">
-        <div class="font-bold tracking-widest" v-if="label">
-            {{ label.toUpperCase() }}
+        <div class="flex justify-between gap-1">
+            <div class="font-bold tracking-widest" v-if="label">
+                {{ label.toUpperCase() }}
+            </div>
+            <div class="px-2 pt-2 nav-search" v-if="isSearchable">
+				<base-search-input
+					class="mt-0 mb-3 text-sm search-report !rounded-md" 
+					:placeholder="searchPlaceholder"
+					size="small"
+					:clearable="false"
+					v-model="search"
+				/>
+			</div>
         </div>
         <div
             ref="checkBoxesContainer"
@@ -65,6 +76,10 @@
 				type: String,
 				default: '',
 			},
+            searchPlaceholder: {
+				type: String,
+				default: 'Search',
+			},
 			isExpanded: {
 			   type: Boolean,
 			   default: false,
@@ -81,6 +96,10 @@
                 type: Boolean,
                 default: false,
             },
+            isSearchable: {
+				type: Boolean,
+				default: false,
+			},
 			defaultHeight: {
 			   type: String,
 			   default: '200px',
@@ -90,12 +109,47 @@
 			canBeExpanded: true,
 			checked: [],
 			containerHeight: "200px",
-			items: {},
 			is_filter: true,
 			init: false,
 			slotHeight: 0,
 			expanded: false,
+            search: '',
 		}),
+        computed: {
+            keyColumn() {
+                return this.findColumnByTag('keys');
+            },
+            valueColumn() {
+                return this.findColumnByTag('values');
+            },
+            items() {
+                const items = {};
+                this.slotHeight = 0;
+                console.log(this.rows)
+				for (let row of this.rows) {
+					const key = row[this.keyColumn];
+					if (!key) continue;
+                    const value = row[this.valueColumn]
+                    if (value && value.rendered && this.search) {
+                        const text = value.rendered.toLowerCase();
+                        if (!text.includes(this.search.toLowerCase())) {
+                            continue;
+                        }
+                    }
+					if (items[key.value]) {
+						items[key.value].data.push(value);
+					} else {
+						this.slotHeight += 40;
+						items[key.value] = { label: '', data: [] }
+						items[key.value].label = key.rendered;
+						items[key.value].data = [value];
+					}
+					this.slotHeight += 40;
+				}
+                this.handleHeight();
+				return items;
+            }
+        },
 		methods: {
 			collapse() {
 			   this.containerHeight = this.defaultHeight;
@@ -105,48 +159,20 @@
 			   this.containerHeight = this.slotHeight + 'px';
 			   this.expanded = true;
 			},
-			getItems() {
-				const items = {};
-				const keyColumn = this.findColumnByTag('keys');
-				const valueColumn = this.findColumnByTag('values');
-				this.slotHeight = 0;
-				for (let row of this.rows) {
-					const key = row[keyColumn];
-					if (!key) continue;
-					if (items[key.value]) {
-						items[key.value].data.push(row[valueColumn]);
-					} else {
-						this.slotHeight += 40;
-						items[key.value] = { label: '', data: [] }
-						items[key.value].label = key.rendered;
-						items[key.value].data = [row[valueColumn]];
-					}
-					this.slotHeight += 40;
-				}
-				this.items = items;
-			},
 			handleHeight() {
 				const containerHeight = parseInt(this.defaultHeight.replace(/\D+/g, ''));
 				this.canBeExpanded = containerHeight < this.slotHeight;
 				return this.containerHeight = this.isExpanded ? this.slotHeight + 'px' : this.defaultHeight;	
 			},
-			handleInit() {
-				this.init = false;
+			onVisualizationInit() {
+                this.init = false;
 				const selected = this.getFilterValue("selected_items");
-				this.getItems();
 				if (selected) {
 					this.checked = selected.split('|');
 				} else {
 				   this.setFilterValue("selected_items", this.checked.join('|'), true);
 				}
 				this.init = true;
-				this.handleHeight();
-			},
-			onVisualizationInit() {
-				this.handleInit();
-			},
-			onVisualizationUpdated() {
-				this.handleInit();
 			},
 			updateUrlParams() {
 				this.setFilterValue("selected_items", this.checked.join('|'), true);
