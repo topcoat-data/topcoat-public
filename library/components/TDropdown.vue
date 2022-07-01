@@ -11,7 +11,7 @@
         >
             <slot name="handle"></slot>
         </div>
-		<slot name="below"></slot>
+		<slot name="outside"></slot>
 		<div
 			v-show="popup"
 			ref="popup"
