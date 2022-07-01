@@ -1,6 +1,6 @@
 <template>
   	<t-dropdown>
-		<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+		<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
 			<span style="color: #145DEB" class="pl-1">
 				<chart-timeline-variant-shimmer-icon :size="18" />
 			</span>

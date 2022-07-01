@@ -2,7 +2,7 @@
 	<t-dropdown>
 
 		<!-- Handle -->
-    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
 			<div class="pl-1">
 				<slot name="icon"></slot>
 			</div>
