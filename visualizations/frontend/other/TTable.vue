@@ -1,5 +1,5 @@
 <template>
-  <div style="display: inline-block">
+  <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
     <TSearch
@@ -279,7 +279,8 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px]",
+      default:
+        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
     },
     exludeFromColumns: {
       type: Array,
@@ -516,7 +517,9 @@ export default {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
-      this.init();
+      if (!this.canPageServer) {
+        this.init();
+      }
     },
     init() {
       // Error checking
@@ -569,7 +572,6 @@ export default {
       }
 
       this.warningPropValidations();
-
       this.isDataAvailable = true;
     },
     setupInternalRows() {
@@ -1021,6 +1023,7 @@ export default {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
+        if (!this.isDataAvailable) this.init();
         this.setupInternalRows();
       });
     },
@@ -1069,6 +1072,15 @@ export default {
 </script>
 
 <style scoped>
+.rootTableContainer {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  max-width: inherit;
+  max-height: inherit;
+  position: relative;
+}
+
 .spinnerOverlay {
   z-index: 2;
   background: rgba(0, 0, 0, 0.05);
@@ -1082,6 +1094,7 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: scale(3);
 }
 .icon {
   float: left;
@@ -1173,5 +1186,11 @@ highlighting a row on hover etc. */
   display: flex;
   align-items: center;
   font-feature-settings: "tnum" on, "lnum" on;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.snykCell {
+  word-break: break-word;
 }
 </style>

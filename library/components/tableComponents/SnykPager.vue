@@ -2,9 +2,12 @@
   <div>
     <div
       class="pagination-footer flex justify-center relative"
-      v-if="numberOfItems"
+      v-if="numberOfItems && numberOfItems > itemsPerPage"
     >
-      <ul class="pagination-nav pagination-selector inline-flex pt-[16px]">
+      <ul
+        class="pagination-nav pagination-selector inline-flex pt-[16px]"
+        id="pages"
+      >
         <li class="pagination-nav-item">
           <button
             class="
@@ -93,26 +96,36 @@ export default {
       pageNumbersToShow = [];
       let pageToAdd = this.internalPage;
       let numberOfPagesAdded = 0;
-      while (pageToAdd <= this.lastPage && numberOfPagesAdded < 4) {
-        pageNumbersToShow.push(pageToAdd);
-        pageToAdd++;
-        numberOfPagesAdded++;
+
+      // if there are only up to 5 pages, only show the valid pages, do
+      // not include "..."
+      if (this.lastPage <= 5) {
+        return [...Array(this.lastPage)].map((item, index) => index + 1);
       }
-      if (numberOfPagesAdded === 4) {
+
+      if (this.internalPage + 3 < this.lastPage) {
+        while (numberOfPagesAdded < 4) {
+          pageNumbersToShow.push(pageToAdd);
+          pageToAdd++;
+          numberOfPagesAdded++;
+        }
         pageNumbersToShow.push("...");
         pageNumbersToShow.push(this.lastPage);
       } else {
-        pageToAdd = 1;
-        prePages = [];
-        while (this.internalPage <= this.lastPage && numberOfPagesAdded <= 4) {
-          prePages.push(pageToAdd);
-          pageToAdd++;
-          if (numberOfPagesAdded === 4) {
-            prePages.push("...");
-          }
+        pageToAdd = this.lastPage;
+        while (numberOfPagesAdded < 4 && pageToAdd >= this.internalPage) {
+          pageNumbersToShow.push(pageToAdd);
+          pageToAdd--;
           numberOfPagesAdded++;
         }
-        pageNumbersToShow = prePages.concat(pageNumbersToShow);
+        pageNumbersToShow.push("...");
+        pageToAdd = 5 - numberOfPagesAdded;
+        while (numberOfPagesAdded < 5) {
+          pageNumbersToShow.push(pageToAdd);
+          pageToAdd--;
+          numberOfPagesAdded++;
+        }
+        pageNumbersToShow = pageNumbersToShow.reverse();
       }
       return pageNumbersToShow;
     },
@@ -150,8 +163,6 @@ export default {
     },
   },
   created() {
-    this.$emit("updateStartIndex", this.startIndex);
-    this.$emit("updateEndIndex", this.endIndex);
     this.$emit("setResetFunction", this.reset);
   },
   methods: {
@@ -172,5 +183,9 @@ export default {
 .minWidth {
   min-width: 2em;
   margin-right: 0.25em;
+}
+
+#pages {
+  z-index: 2;
 }
 </style>
