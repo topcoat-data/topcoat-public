@@ -1,13 +1,11 @@
 <template>
   <div class="centerCheckOrX">
-    <span v-if="value" class="text-[#2D9283] mr-[6px]">
-      <i class="fas fa-check-circle"> </i>
-    </span>
-    <span v-else class="text-[#ba1515] mr-[6px]">
-      <i class="fas fa-times-circle"> </i>
+    <span :class="value ? 'text-[#2D9283]' : 'text-[#ba1515]'" class="mr-[6px]">
+      <i :class="value ? 'fa-check-circle' : 'fa-times-circle'" class="fas"></i>
     </span>
   </div>
 </template>
+
 <script>
 export default {
   name: "CheckOrX",
