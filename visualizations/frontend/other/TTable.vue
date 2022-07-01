@@ -170,7 +170,7 @@
     </div>
 
     <div style="margin: 0px auto">
-      <TestSnykPager
+      <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
         :start-index="startIndex"
