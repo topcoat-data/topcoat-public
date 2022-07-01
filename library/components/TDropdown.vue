@@ -13,10 +13,11 @@
         </div>
 		<slot name="below"></slot>
 		<div
-			v-if="popup"
+			v-show="popup"
 			ref="popup"
 			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1 min-w-"
 			:class="alignClass"
+            :key="componentKey"
 		>
             <slot :popup="setPopup"></slot>
 		</div>
@@ -30,19 +31,28 @@
                 type: Boolean,
                 default: false,
             },
+            isActive: {
+                type: Boolean,
+                default: false,
+            },
+            isPersisted: {
+                type: Boolean,
+                default: false,
+            }
         },
 		data: () => ({
-			active: false,
+			internal_active: false,
 			alignClass: '',
 			popup: false,
+            componentKey: '',
 		}),
         computed: {
             activeClass() {
                 if (!this.disableHandleClass) {
-                    return this.active ? 'border-1 active' : 'border-1 in-active'
+                    return this.internal_active || this.isActive ? 'border-1 active' : 'border-1 in-active'
                 }
                 return '';
-            }
+            },
         },
 		methods: {
 			alignPopup() {
@@ -62,7 +72,7 @@
 				const container = this.$refs.dropdownFilter;
 				if (container && event && !container.contains(event.target)) {
 					this.popup = false;
-					this.active = false;
+					this.internal_active = false;
 
 					document.body.removeEventListener("click", this.handleOutsideClick);
 
@@ -73,11 +83,11 @@
 			},
 			setActiveState(e, state = true) {
 				if (!state && this.popup) return;
-				this.active = state;
+				this.internal_active = state;
 			},
 			setPopup(toggle) {
 				this.popup = toggle;
-				this.active = toggle;
+				this.internal_active = toggle;
 
 				if (toggle) {
 					document.body.addEventListener("click", this.handleOutsideClick);
@@ -89,7 +99,14 @@
 					this.alignPopup();
 				})
 			},
-		}
+		},
+        watch: {
+            popup() {
+                if (!this.isPersisted) {
+                    this.componentKey = Math.floor(Math.random() * (999 - 1 + 1) + 1);
+                }
+            }
+        }
 	}
 </script>
 

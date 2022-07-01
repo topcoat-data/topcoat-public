@@ -1,12 +1,18 @@
 <template>
     
-	<m-dropdown :disable-handle-class="isExpanded">
+	<t-dropdown
+        :disable-handle-class="isExpanded"
+        :is-active="checked.length ? true : false"
+    >
 
 		<!-- Handle -->
-    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm" v-if="!isExpanded">
+    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium" v-if="!isExpanded">
 			<div class="pl-1">
 				<slot name="icon"></slot>
 			</div>
+            <span v-if="checked.length">
+                {{ checked.length }}
+            </span>
 			<span>{{ label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
@@ -62,15 +68,15 @@
 				</ul>
 			</div>
 		</div>
-	</m-dropdown>
+	</t-dropdown>
 </template>
 
 <script>
 	export default {
 		props: {
             defaultValue: {
-                type: Array,
-                default: [],
+                type: String,
+                default: '',
             },
 			hasCheckedAll: {
 				type: Boolean,
@@ -91,10 +97,6 @@
             isExpanded: {
                 type: Boolean,
                 default: false,
-            },
-			defaultValue: {
-                type: Array,
-                default: [],
             },
 		},
 		data: () => ({
@@ -157,7 +159,6 @@
                     const defaultIds = this.defaultValue.split('|');
                     this.checked = this.ids.filter(id => defaultIds.indexOf(id) > -1);
                 }
-
                 this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
 			selectUnselect() {

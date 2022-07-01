@@ -45,7 +45,7 @@
             var list = []
             this.$slots.default.forEach((element,index) => {
                 if (element.tag) {
-                    const label = element.data && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
+                    const label = element.data && element.data.attrs && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
                     const id = `${label.replace(" ", "_")}-${index}`;
                     list.push(
                         createElement('t-expandable', {attrs: { id }}, 
@@ -64,7 +64,7 @@
         props: {
             label: {
                 type: String,
-                default: 'Select'
+                default: 'Add filters'
             },
             maxHeight: {
                 type: String,
@@ -94,7 +94,6 @@
 
                     const id = child.$attrs.id;
                     const element = document.getElementById(id);
-                    const label = id.split('-')[1];
 
                     if (element) {
                         if (id.toLowerCase().includes(this.search.toLowerCase())) {
