@@ -125,7 +125,7 @@
             items() {
                 const items = {};
                 this.slotHeight = 0;
-                console.log(this.rows)
+
 				for (let row of this.rows) {
 					const key = row[this.keyColumn];
 					if (!key) continue;

@@ -22,9 +22,6 @@
 
 <script>
     export default {
-        props: {
-
-        },
         data: () => ({
             expanded: false,
         }),
