@@ -2,6 +2,7 @@
 	<t-dropdown
         :is-active="activeFilters > 0"
         @closed="handleClosed"
+        z-index="800"
     >
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">

@@ -15,8 +15,9 @@
 		<div
 			v-show="popup"
 			ref="popup"
-			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1 min-w-"
+			class="absolute mt-1 bg-white rounded-lg shadow-md base-dropdown-menu w-max min-w-"
 			:class="alignClass"
+			:style="{ zIndex }"
             :key="componentKey"
 		>
             <slot :popup="setPopup"></slot>
@@ -35,6 +36,14 @@
                 type: Boolean,
                 default: false,
             },
+			isPersisted: {
+                type: Boolean,
+                default: false,
+            },
+            zIndex: {
+                type: String,
+                default: '999',
+            }
         },
 		data: () => ({
 			internal_active: false,
