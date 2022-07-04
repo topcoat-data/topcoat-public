@@ -1,10 +1,11 @@
 <template>
-	<t-dropdown>
-
+	<t-dropdown
+        :is-active="activeFilters > 0"
+    >
 		  <!-- Handle -->
-    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm">
+    	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
             <filter-variant-icon :size="18" />
-            <span>{{ totalItems ? totalItems + ' Filters' : label }}</span>
+            <span>{{ activeFilters ? '+' + activeFilters + ' Filters' : label }}</span>
 
             <menu-down-icon :size="20" />
     	</div>
@@ -28,11 +29,13 @@
             />
         </div>
 
-        <t-expandable v-show="false" />
-        <!-- Bug: Render functions cannot use t-expandable without this line -->
-        <expansion-wrapper ref="expansionWrapper">
-            <slot></slot>
-        </expansion-wrapper>
+        <t-expandable v-show="false" /> <!-- Bug: Render functions cannot use t-expandable without this line -->
+
+        <div class="overflow-auto" :style="{ maxWidth, maxHeight }" @click="handleActiveFilters">
+            <expansion-wrapper ref="expansionWrapper">
+                <slot></slot>
+            </expansion-wrapper>
+        </div>
 
 	</t-dropdown>
 </template>
@@ -43,12 +46,14 @@
             var list = []
             this.$slots.default.forEach((element,index) => {
                 if (element.tag) {
-                    const label = element.data && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
+                    const label = element.data && element.data.attrs && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
                     const id = `${label.replace(" ", "_")}-${index}`;
+                    const tag_id = element && element.componentInstance ? element.componentInstance.tag_unique : '';
                     list.push(
                         createElement('t-expandable', {attrs: { id }}, 
                             [
                                 createElement('span', {slot: 'label'}, label),
+                                createElement('div', {slot: 'icon', attrs: { class: 'active-round-element', id: `elem-${tag_id}` }}),
                                 element
                             ]
                         )
@@ -62,7 +67,15 @@
         props: {
             label: {
                 type: String,
-                default: 'Select'
+                default: 'Add filters'
+            },
+            maxHeight: {
+                type: String,
+                default: '300px'
+            },
+            maxWidth: {
+                type: String,
+                default: '400px'
             },
         },
         data: () => ({
@@ -70,13 +83,12 @@
             search: '',
             items: [],
             visibleFilters: [],
-			totalItems: 0,
+			activeFilters: 0,
+            filters: {},
         }),
-		mounted() {
-			const element = this.$refs.expansionWrapper;
-			const children = element ? element.$children : [];
-			this.totalItems = children.length;
-		},
+        mounted() {
+            this.handleActiveFilters();
+        },
         methods: {
             searchFilter() {
                 const children = this.$refs.expansionWrapper.$children || [];
@@ -84,7 +96,6 @@
 
                     const id = child.$attrs.id;
                     const element = document.getElementById(id);
-                    const label = id.split('-')[1];
 
                     if (element) {
                         if (id.toLowerCase().includes(this.search.toLowerCase())) {
@@ -94,6 +105,53 @@
                         }
                     }
                 }
+            },
+            handleActiveFilters() {
+
+                // Unable to avoid timeout for now,
+                // Need to get url value for the filters this wrapper has
+                // And it is only accurate when timeout given.
+                setTimeout(() => {
+                    this.filters = [];
+                    for (let component of this.$slots.default) {
+                        let componentInstance = component ? component.componentInstance : null;
+                        if (componentInstance) {
+                            const metadata = componentInstance.metadata;
+                            const filters = metadata && metadata.filters ? metadata.filters.output : [];
+                            for (let filter of filters) {
+                                const value = this.getValueByUrl(filter.urlparam);
+                                if (value) {
+                                    const obj = this.filters[componentInstance.tag_unique];
+                                    if (obj) {
+                                        this.filters[componentInstance.tag_unique].push(value);
+                                    } else {
+                                        this.filters[componentInstance.tag_unique] = [value];
+                                    }
+                                } else {
+                                    this.hideIcon(`elem-${componentInstance.tag_unique}`);
+                                }
+                            }
+                        }
+                    }
+                    this.activeFilters = Object.keys(this.filters).length;
+                    this.showActiveIcon();
+                }, 100);
+            },
+            getValueByUrl(urlParam) {
+                const params = new URLSearchParams(location.search)
+                return params.get(urlParam);
+            },
+            showActiveIcon() {
+                for (let key of Object.keys(this.filters)) {
+                    const element = document.getElementById(`elem-${key}`);
+                    if (element) {
+                        element.style.display = "block"
+                    }
+                }
+            },
+            hideIcon(id) {
+                const element = document.getElementById(id);
+                element.style.display = "none";
             }
         }
     }
@@ -103,4 +161,11 @@
 	.nav-search .vue--search-input__field {
 		@apply !rounded-3xl !bg-white !opacity-[0.5];
 	}
+    .active-round-element {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #145DEB;
+        display: none;
+    }
 </style>
