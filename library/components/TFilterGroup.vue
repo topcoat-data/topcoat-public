@@ -54,8 +54,8 @@
                     list.push(
                         createElement('t-expandable', {attrs: { id }}, 
                             [
-                                createElement('span', {slot: 'label'}, label),
-                                createElement('div', {slot: 'icon', attrs: { class: 'active-round-element', id: `elem-${tag_id}` }}),
+                                createElement('span', {slot: 'label', attrs: { id: `elem-label-${tag_id}` }}, label),
+                                createElement('div', {slot: 'icon', attrs: { class: 'active-round-element', id: `elem-icon-${tag_id}` }}),
                                 element
                             ]
                         )
@@ -79,6 +79,10 @@
                 type: String,
                 default: '400px'
             },
+            isPersisted: {
+                type: Boolean,
+                default: false,
+            }
         },
         data: () => ({
             popup: false,
@@ -130,32 +134,44 @@
                                         this.filters[componentInstance.tag_unique] = [value];
                                     }
                                 } else {
-                                    this.hideIcon(`elem-${componentInstance.tag_unique}`);
+                                    this.showInactive(componentInstance.tag_unique);
                                 }
                             }
                         }
                     }
                     this.activeFilters = Object.keys(this.filters).length;
-                    this.showActiveIcon();
+                    this.showActive();
                 }, 100);
             },
             getValueByUrl(urlParam) {
                 const params = new URLSearchParams(location.search)
                 return params.get(urlParam);
             },
-            showActiveIcon() {
+            showActive() {
                 for (let key of Object.keys(this.filters)) {
-                    const element = document.getElementById(`elem-${key}`);
-                    if (element) {
-                        element.style.display = "block"
+                    const icon = document.getElementById(`elem-icon-${key}`);
+                    if (icon) {
+                        icon.style.display = "block"
+                    }
+                    const label = document.getElementById(`elem-label-${key}`);
+                    if (label) {
+                        label.classList.add('text-[#1C1C21]', 'font-medium');
+                        label.classList.remove('text-[#555463]', 'font-normal');
                     }
                 }
             },
-            hideIcon(id) {
-                const element = document.getElementById(id);
-                element.style.display = "none";
+            showInactive(id) {
+                const icon = document.getElementById(`elem-icon-${id}`);
+                icon.style.display = "none";
+
+                const label = document.getElementById(`elem-label-${id}`);
+                if (label) {
+                    label.classList.add('text-[#555463]', 'font-normal');
+                    label.classList.remove('text-[#1C1C21]', 'font-medium');
+                }
             },
             handleClosed() {
+                if (this.isPersisted) return;
                 for (slotItem of this.$slots.default) {
                     if (slotItem && slotItem.componentInstance && slotItem.componentInstance.$parent) {
                         slotItem.componentInstance.$parent.expanded = false;
