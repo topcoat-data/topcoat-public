@@ -155,11 +155,12 @@
                     this.checked = initial_value.split('|').filter(id => this.ids.indexOf(id) > -1);
                 } else if (!initial_value && typeof initial_value !== 'string' && this.hasCheckedAll) {
 					this.checked = this.ids;
+                	this.setFilterValue("selected_items", this.checked.join('|'), true);
 				} else if (!initial_value && typeof initial_value !== 'string' && this.defaultValue) {
                     const defaultIds = this.defaultValue.split('|');
                     this.checked = this.ids.filter(id => defaultIds.indexOf(id) > -1);
+                	this.setFilterValue("selected_items", this.checked.join('|'), true);
                 }
-                this.setFilterValue("selected_items", this.checked.join('|'), true);
             },
 			selectUnselect() {
                 if (this.checked.length === this.ids.length) {

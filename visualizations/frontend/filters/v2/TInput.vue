@@ -33,12 +33,13 @@ export default {
                 this.value = initial_value;
             } else if (this.config.default_value) { // Default value from layer
                 this.value = this.config.default_value;
+                this.setFilterValue('query', this.value, true)
             } else if (this.defaultValue) { // Default value from prop
                 this.value = this.defaultValue;
+                this.setFilterValue('query', this.value, true)
             } else {
                 return
             }
-            this.setFilterValue('query', this.value, true)
         },
         updateUrlParam() {
             this.setFilterValue('query', this.value, true)

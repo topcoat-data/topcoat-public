@@ -114,10 +114,11 @@
                     this.selected_internal = initial_value;
                 } else if (this.defaultValue) {
 					this.selected_internal = this.defaultValue;
+                	this.setFilterValue("dropdown", this.selected_internal, true);
 				} else if (this.options.length && !this.isUnselectable) {
 					this.selected_internal = this.options[0];
+                	this.setFilterValue("dropdown", this.selected_internal, true);
 				}
-                this.setFilterValue("dropdown", this.selected_internal, true);
             },
             selectItem(item, popup) {
                 if (this.selected_internal === item.value && this.isUnselectable) {
