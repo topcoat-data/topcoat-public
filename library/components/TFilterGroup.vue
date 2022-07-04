@@ -1,6 +1,7 @@
 <template>
 	<t-dropdown
         :is-active="activeFilters > 0"
+        @closed="handleClosed"
     >
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -152,7 +153,14 @@
             hideIcon(id) {
                 const element = document.getElementById(id);
                 element.style.display = "none";
-            }
+            },
+            handleClosed() {
+                for (slotItem of this.$slots.default) {
+                    if (slotItem && slotItem.componentInstance && slotItem.componentInstance.$parent) {
+                        slotItem.componentInstance.$parent.expanded = false;
+                    }
+                }
+            },
         }
     }
 </script>

@@ -35,10 +35,6 @@
                 type: Boolean,
                 default: false,
             },
-            isPersisted: {
-                type: Boolean,
-                default: false,
-            }
         },
 		data: () => ({
 			internal_active: false,
@@ -73,6 +69,7 @@
 				if (container && event && !container.contains(event.target)) {
 					this.popup = false;
 					this.internal_active = false;
+					this.$emit('closed');
 
 					document.body.removeEventListener("click", this.handleOutsideClick);
 
@@ -84,6 +81,9 @@
 			setActiveState(e, state = true) {
 				if (!state && this.popup) return;
 				this.internal_active = state;
+				if (!state) {
+                    this.$emit('closed')
+                }
 			},
 			setPopup(toggle) {
 				this.popup = toggle;
@@ -93,6 +93,7 @@
 					document.body.addEventListener("click", this.handleOutsideClick);
 				} else {
 					document.body.removeEventListener("click", this.handleOutsideClick);
+					this.$emit('closed');
 				}
 
 				this.$nextTick(() => {
@@ -100,13 +101,6 @@
 				})
 			},
 		},
-        watch: {
-            popup() {
-                if (!this.isPersisted) {
-                    this.componentKey = Math.floor(Math.random() * (999 - 1 + 1) + 1);
-                }
-            }
-        }
 	}
 </script>
 
