@@ -15,8 +15,9 @@
 		<div
 			v-show="popup"
 			ref="popup"
-			class="base-dropdown-menu w-max shadow-md absolute z-[9999] bg-white rounded-lg mt-1 min-w-"
+			class="absolute mt-1 bg-white rounded-lg shadow-md base-dropdown-menu w-max min-w-"
 			:class="alignClass"
+			:style="{ zIndex }"
             :key="componentKey"
 		>
             <slot :popup="setPopup"></slot>
@@ -35,9 +36,13 @@
                 type: Boolean,
                 default: false,
             },
-            isPersisted: {
+			isPersisted: {
                 type: Boolean,
                 default: false,
+            },
+            zIndex: {
+                type: String,
+                default: '999',
             }
         },
 		data: () => ({
@@ -73,6 +78,7 @@
 				if (container && event && !container.contains(event.target)) {
 					this.popup = false;
 					this.internal_active = false;
+					this.$emit('closed');
 
 					document.body.removeEventListener("click", this.handleOutsideClick);
 
@@ -84,6 +90,9 @@
 			setActiveState(e, state = true) {
 				if (!state && this.popup) return;
 				this.internal_active = state;
+				if (!state) {
+                    this.$emit('closed')
+                }
 			},
 			setPopup(toggle) {
 				this.popup = toggle;
@@ -93,6 +102,7 @@
 					document.body.addEventListener("click", this.handleOutsideClick);
 				} else {
 					document.body.removeEventListener("click", this.handleOutsideClick);
+					this.$emit('closed');
 				}
 
 				this.$nextTick(() => {
@@ -100,13 +110,6 @@
 				})
 			},
 		},
-        watch: {
-            popup() {
-                if (!this.isPersisted) {
-                    this.componentKey = Math.floor(Math.random() * (999 - 1 + 1) + 1);
-                }
-            }
-        }
 	}
 </script>
 
