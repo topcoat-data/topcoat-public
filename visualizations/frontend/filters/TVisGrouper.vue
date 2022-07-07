@@ -32,8 +32,7 @@
                             attrs: { class: 'relative' }
                         },
                         [
-                            this.loading && createElement('t-loading-spinner'),
-                            element,
+                            this.loading ? createElement('t-loading-spinner', {attrs: { position:'relative' }}) : element
                         ]),
                     )
                 }
