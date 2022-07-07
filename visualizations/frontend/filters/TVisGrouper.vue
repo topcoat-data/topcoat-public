@@ -1,13 +1,15 @@
 <script>
     export default {
         props: {
-            tClasses: {
+            tClass: {
                 String,
                 default: "flex flex-wrap gap-2"
             },
         },
         data: () => ({
             is_filter: true,
+            filters: {},
+            init: false,
         }),
         render: function (createElement) {
             var list = []
@@ -21,6 +23,7 @@
 
                     // Add parent layer as attribute for topcoat-core
                     element.data.attrs['t-parent-layer'] = this.layer;
+                    element.data.attrs['t-parent-tag'] = this.tag_unique;
 
                     // Append slot element to list along with loader
                     list.push(
@@ -29,19 +32,13 @@
                             attrs: { class: 'relative' }
                         },
                         [
+                            this.loading && createElement('t-loading-spinner'),
                             element,
-                            this.loading && createElement('t-loading-spinner')
                         ]),
                     )
                 }
             });
-            return createElement('div', { attrs: { class: `relative ${this.tClasses}` } }, list);
+            return createElement('div', { attrs: { class: `relative ${this.tClass}` } }, list);
         },
-        methods: {
-            onVisualizationUpdated() {
-                // Update layer data
-                this.fetchLayerData();
-            }
-        }
     }
 </script>

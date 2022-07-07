@@ -60,6 +60,14 @@
 				type: String,
 				default: 'Select'
 			},
+			tKeyColumn: {
+                type: String,
+                default: '',
+            },
+            tValueColumn: {
+                type: String,
+                default: '',
+            },
 			isUnselectable: {
 				type: Boolean,
 				default: false,
@@ -71,20 +79,12 @@
 		}),
 		computed: {
             labels() {
-                try {
-                    const column_name = this.findColumnByTag('labels');
-                    return this.getColumn(column_name);
-                } catch (err) {
-                    return []
-                }
+				const column_name = this.tValueColumn ? this.tValueColumn : this.findColumnByTag("labels");
+				return this.getColumn(column_name);
             },
             options() {
-                try {
-                    const column_name = this.findColumnByTag('options');
-                    return this.getColumn(column_name);
-                } catch (err) {
-                    return []
-                }
+				const column_name = this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag("options");
+				return this.getColumn(column_name);
             },
 			menu() {
                 const values = this.options;

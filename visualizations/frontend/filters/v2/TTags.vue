@@ -103,7 +103,15 @@
 			defaultHeight: {
 			   type: String,
 			   default: '200px',
-			}
+			},
+			tKeyColumn: {
+                type: String,
+                default: '',
+            },
+            tValueColumn: {
+                type: String,
+                default: '',
+            },
 		},
 		data: () => ({
 			canBeExpanded: true,
@@ -117,10 +125,10 @@
 		}),
         computed: {
             keyColumn() {
-                return this.findColumnByTag('keys');
+                return this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag('keys');
             },
             valueColumn() {
-                return this.findColumnByTag('values');
+                return this.tValueColumn ? this.tValueColumn : this.findColumnByTag('values');
             },
             items() {
                 const items = {};
