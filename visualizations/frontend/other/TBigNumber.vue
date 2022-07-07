@@ -73,10 +73,5 @@
                 return value && value.length ? value[0] : '--';
             },
         },
-        methods: {
-            onVisualizationUpdate() {
-                console.log("Big num updated")
-            }
-        }
     }
 </script>
