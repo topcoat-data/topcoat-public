@@ -1,5 +1,5 @@
 <template>
-  <div class="centerCheckOrX">
+  <div>
     <span :class="value ? 'text-[#2D9283]' : 'text-[#ba1515]'" class="mr-[6px]">
       <i :class="value ? 'fa-check-circle' : 'fa-times-circle'" class="fas"></i>
     </span>
@@ -19,8 +19,4 @@ export default {
 </script>
 
 <style scoped>
-.centerCheckOrX {
-  position: relative;
-  top: 4px;
-}
 </style>
