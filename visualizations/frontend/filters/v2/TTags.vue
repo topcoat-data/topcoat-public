@@ -40,6 +40,7 @@
 							class="tracking-widest"
                         >
                             <base-checkbox
+								v-if="value.rendered && value.value"
                                 :label="value.rendered"
                                 :value="value.value + '_' + key"
                                 v-model="checked"
