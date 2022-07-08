@@ -30,7 +30,7 @@
                     v-for="key in Object.keys(items)"
                     :key="key"
                 >
-                    <div class="font-bold tracking-widest">
+                    <div class="font-bold tracking-widest" v-if="!hideLabels">
                         {{ isLabelCapitalized ? key.toUpperCase() : key }}
                     </div>
                     <div class="flex flex-wrap gap-2 px-2 py-3" :class="{ 'flex-col': !isInline }">
@@ -103,6 +103,10 @@
 			defaultHeight: {
 			   type: String,
 			   default: '200px',
+			},
+			hideLabels: {
+				type: Boolean,
+				default: false,
 			}
 		},
 		data: () => ({
