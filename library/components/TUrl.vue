@@ -1,6 +1,6 @@
 <template>
   <a :href="fullUrl" class="tUrl">
-    <slot ></slot>
+    <slot></slot>
   </a>
 </template>
 
@@ -41,21 +41,21 @@ export default {
         }
       }
       let fullUrl = this.url;
-      let urlParams= '?'
+      let urlParams = "?";
       if (filters.length > 0) {
         const pageFilters = filters.join("&");
         urlParams += pageFilters;
       }
-      if(this.additionalUrlParams){
-        if(this.additionalUrlParams[0] !== "&" && filters.length > 0 ){
-          urlParams+='&'
+      if (this.additionalUrlParams) {
+        if (this.additionalUrlParams[0] !== "&" && filters.length > 0) {
+          urlParams += "&";
         }
-        urlParams +=this.additionalUrlParams
+        urlParams += this.additionalUrlParams;
       }
 
-      if(urlParams.length > 0){
-        return fullUrl+urlParams;
-      }else{
+      if (urlParams.length > 0) {
+        return fullUrl + urlParams;
+      } else {
         return fullUrl;
       }
     },
@@ -63,8 +63,8 @@ export default {
   methods: {
     exlude(filterToCheck) {
       // Note: forEach doesn't allow early termination
-      for(const [index, filter] of this.excludeFilters.entries()){
-        if (filterToCheck.toLowerCase().startsWith(filter.toLowerCase())){
+      for (const [index, filter] of this.excludeFilters.entries()) {
+        if (filterToCheck.toLowerCase().startsWith(filter.toLowerCase())) {
           return true;
         }
       }
@@ -75,8 +75,8 @@ export default {
 </script>
 
 <style scoped>
-  .tUrl {
-    color: rgba(20, 93, 235);
-    text-decoration: underline;
-  }
+.tUrl {
+  color: rgba(20, 93, 235);
+  text-decoration: underline;
+}
 </style>
