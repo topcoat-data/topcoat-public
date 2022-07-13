@@ -22,7 +22,7 @@ export default {
         return ["context"];
       },
     },
-    additionalFilters: {
+    additionalUrlParams: {
       type: String,
       default: "",
     },
@@ -46,11 +46,11 @@ export default {
         const pageFilters = filters.join("&");
         urlParams += pageFilters;
       }
-      if(this.additionalFilters){
-        if(this.additionalFilters[0] !== "&" && filters.length > 0 ){
+      if(this.additionalUrlParams){
+        if(this.additionalUrlParams[0] !== "&" && filters.length > 0 ){
           urlParams+='&'
         }
-        urlParams +=this.additionalFilters
+        urlParams +=this.additionalUrlParams
       }
 
       if(urlParams.length > 0){
