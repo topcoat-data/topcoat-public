@@ -23,41 +23,29 @@ export default {
       },
     },
     additionalUrlParams: {
-      type: String,
-      default: "",
+      type: Object,
+      default:{},
     },
   },
   computed: {
     fullUrl() {
-      const queryString = window.location.search;
-      const urlSearchParams = new URLSearchParams(queryString);
-      let filters = [];
-      if (this.includeFilterParams) {
-        for (let filterKey of urlSearchParams.keys()) {
-          if (!this.exlude(filterKey)) {
-            filters.push(filterKey + "=" + urlSearchParams.get(filterKey));
+      let allUrlParams = this.additionalUrlParams;
+
+      if (this.includeFilterParams ) {
+        const queryString = window.location.search;
+        const urlSearchParams = new URLSearchParams(queryString);
+        urlSearchParams.forEach((value, key)=>{
+          if (!this.exlude(key)) {
+            allUrlParams[key] = value; 
           }
-        }
+        })
       }
 
-      let fullUrl = this.url;
-      let urlParams = "?";
-      if (filters.length > 0) {
-        const pageFilters = filters.join("&");
-        urlParams += pageFilters;
+      const urlParamString = new URLSearchParams(allUrlParams).toString();
+      if (urlParamString.length > 0) {
+        return this.url + "?" + urlParamString;
       }
-      if (this.additionalUrlParams) {
-        if (this.additionalUrlParams[0] !== "&" && filters.length > 0) {
-          urlParams += "&";
-        }
-        urlParams += this.additionalUrlParams;
-      }
-
-      if (urlParams.length > 0) {
-        return fullUrl + urlParams;
-      } else {
-        return fullUrl;
-      }
+      return this.url;
     },
   },
   methods: {
