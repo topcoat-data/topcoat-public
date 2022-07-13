@@ -29,17 +29,17 @@ export default {
   },
   computed: {
     fullUrl() {
-      if (!this.includeFilterParams) {
-        return this.url;
-      }
       const queryString = window.location.search;
       const urlSearchParams = new URLSearchParams(queryString);
       let filters = [];
-      for (let filterKey of urlSearchParams.keys()) {
-        if (!this.exlude(filterKey)) {
-          filters.push(filterKey + "=" + urlSearchParams.get(filterKey));
+      if (this.includeFilterParams) {
+        for (let filterKey of urlSearchParams.keys()) {
+          if (!this.exlude(filterKey)) {
+            filters.push(filterKey + "=" + urlSearchParams.get(filterKey));
+          }
         }
       }
+
       let fullUrl = this.url;
       let urlParams = "?";
       if (filters.length > 0) {
