@@ -1,5 +1,5 @@
 <template>
-  <a :href="fullUrl" class="tUrl" :target="openInNewTab ? '_blank' : '_self'" rel="noopener noreferrer">
+  <a :href="fullUrl" class="tUrl" :target="openInNewTab ? '_blank' : '_top'" rel="noopener noreferrer">
     <slot></slot>
   </a>
 </template>
