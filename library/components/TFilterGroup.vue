@@ -33,7 +33,7 @@
 
         <t-expandable v-show="false" /> <!-- Bug: Render functions cannot use t-expandable without this line -->
 
-        <div class="overflow-auto" :style="{ maxWidth, maxHeight }" @click="handleActiveFilters">
+        <div class="overflow-auto" :style="{ maxWidth, maxHeight }">
             <expansion-wrapper ref="expansionWrapper">
                 <slot></slot>
             </expansion-wrapper>
@@ -91,9 +91,15 @@
             visibleFilters: [],
 			activeFilters: 0,
             filters: {},
+            observer: null,
         }),
         mounted() {
-            this.handleActiveFilters();
+            this.observeUrlChanges();
+        },
+        destroyed() {
+            if (this.observer) {
+                this.observer.disconnect();
+            }
         },
         methods: {
             searchFilter() {
@@ -113,35 +119,29 @@
                 }
             },
             handleActiveFilters() {
-
-                // Unable to avoid timeout for now,
-                // Need to get url value for the filters this wrapper has
-                // And it is only accurate when timeout given.
-                setTimeout(() => {
-                    this.filters = [];
-                    for (let component of this.$slots.default) {
-                        let componentInstance = component ? component.componentInstance : null;
-                        if (componentInstance) {
-                            const metadata = componentInstance.metadata;
-                            const filters = metadata && metadata.filters ? metadata.filters.output : [];
-                            for (let filter of filters) {
-                                const value = this.getValueByUrl(filter.urlparam);
-                                if (value) {
-                                    const obj = this.filters[componentInstance.tag_unique];
-                                    if (obj) {
-                                        this.filters[componentInstance.tag_unique].push(value);
-                                    } else {
-                                        this.filters[componentInstance.tag_unique] = [value];
-                                    }
+                this.filters = [];
+                for (let component of this.$slots.default) {
+                    let componentInstance = component ? component.componentInstance : null;
+                    if (componentInstance) {
+                        const metadata = componentInstance.metadata;
+                        const filters = metadata && metadata.filters ? metadata.filters.output : [];
+                        for (let filter of filters) {
+                            const value = this.getValueByUrl(filter.urlparam);
+                            if (value) {
+                                const obj = this.filters[componentInstance.tag_unique];
+                                if (obj) {
+                                    this.filters[componentInstance.tag_unique].push(value);
                                 } else {
-                                    this.showInactive(componentInstance.tag_unique);
+                                    this.filters[componentInstance.tag_unique] = [value];
                                 }
+                            } else {
+                                this.showInactive(componentInstance.tag_unique);
                             }
                         }
                     }
-                    this.activeFilters = Object.keys(this.filters).length;
-                    this.showActive();
-                }, 100);
+                }
+                this.activeFilters = Object.keys(this.filters).length;
+                this.showActive();
             },
             getValueByUrl(urlParam) {
                 const params = new URLSearchParams(location.search)
@@ -162,7 +162,9 @@
             },
             showInactive(id) {
                 const icon = document.getElementById(`elem-icon-${id}`);
-                icon.style.display = "none";
+                if (icon) {
+                    icon.style.display = "none";
+                }
 
                 const label = document.getElementById(`elem-label-${id}`);
                 if (label) {
@@ -178,7 +180,18 @@
                     }
                 }
             },
-        }
+            observeUrlChanges() {
+                let previousUrl = '';
+                const ref = this;
+                this.observer = new MutationObserver(function(mutations) {
+                    if (location.href !== previousUrl) {
+                        ref.handleActiveFilters();
+                    }
+                });
+                const config = {subtree: true, childList: true};
+                this.observer.observe(document, config);
+            }
+        },
     }
 </script>
 

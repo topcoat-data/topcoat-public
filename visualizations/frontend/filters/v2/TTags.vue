@@ -30,16 +30,17 @@
                     v-for="key in Object.keys(items)"
                     :key="key"
                 >
-                    <div class="font-bold tracking-widest">
+                    <div class="pb-3 font-bold tracking-widest" v-if="!hideLabels">
                         {{ isLabelCapitalized ? key.toUpperCase() : key }}
                     </div>
-                    <div class="flex flex-wrap gap-2 px-2 py-3" :class="{ 'flex-col': !isInline }">
+                    <div class="flex flex-wrap gap-2 px-2 pb-3" :class="{ 'flex-col': !isInline }">
                         <div
                             v-for="value in items[key].data"
                             :key="value.value + '_' + key"
 							class="tracking-widest"
                         >
                             <base-checkbox
+								v-if="value.rendered && value.value"
                                 :label="value.rendered"
                                 :value="value.value + '_' + key"
                                 v-model="checked"
@@ -112,6 +113,10 @@
                 type: String,
                 default: '',
             },
+			hideLabels: {
+				type: Boolean,
+				default: false,
+			}
 		},
 		data: () => ({
 			canBeExpanded: true,

@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full lg:p-5 md:p-3 p-1 rounded-[2px]"
+        class="w-full lg:p-5 md:p-3 p-1 rounded-[2px] break-all"
         :style="{ background: bgColor, color: textColor }"
     >
         <div class="flex items-center gap-2">
