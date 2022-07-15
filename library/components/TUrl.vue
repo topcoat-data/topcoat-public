@@ -1,5 +1,5 @@
 <template>
-  <a :href="fullUrl" class="tUrl">
+  <a :href="fullUrl" class="tUrl" :target="openInNewTab ? '_blank' : '_top'" rel="noopener noreferrer">
     <slot></slot>
   </a>
 </template>
@@ -26,6 +26,10 @@ export default {
       type: Object,
       default:{},
     },
+    openInNewTab:{
+      type: Boolean,
+      default: true,
+    }
   },
   computed: {
     fullUrl() {
