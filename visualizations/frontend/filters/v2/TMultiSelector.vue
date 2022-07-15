@@ -98,6 +98,14 @@
                 type: Boolean,
                 default: false,
             },
+			tKeyColumn: {
+                type: String,
+                default: '',
+            },
+            tValueColumn: {
+                type: String,
+                default: '',
+            },
 		},
 		data: () => ({
             checked: [],
@@ -106,20 +114,12 @@
 		}),
 		computed: {
             names() {
-                try {
-                    const column_name = this.findColumnByTag('names');
-                    return this.getColumn(column_name);
-                } catch (err) {
-                    return []
-                }
+				const column_name = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('names');
+				return this.getColumn(column_name);
             },
             ids() {
-                try {
-                    const column_name = this.findColumnByTag('ids');
-                    return this.getColumn(column_name);
-                } catch (err) {
-                    return []
-                }
+				const column_name = this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag('ids');
+				return this.getColumn(column_name);
             },
 			menu() {
                 const values = this.ids;

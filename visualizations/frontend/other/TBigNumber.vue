@@ -51,6 +51,10 @@
                 type: String,
                 default: '#393842'
             },
+            tValueColumn: {
+                type: String,
+                default: '',
+            }
         },
         data: () => ({
             is_filter: true,
@@ -58,13 +62,13 @@
                 small: 'lg:text-3xl md:text-2xl sm:text-lg',
                 medium: 'lg:text-4xl md:text-3xl sm:text-2xl',
                 big: 'lg:text-5xl md:text-4xl sm:text-3xl',
-            }
+            },
         }),
         computed: {
             value() {
                 // Find by tags
                 if (this.numberValue) return this.numberValue;
-                const column = this.findColumnByTag('value');
+                const column = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('value');
                 const value = this.getColumn(column)
                 return value && value.length ? value[0] : '--';
             },
