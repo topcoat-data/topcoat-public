@@ -109,7 +109,7 @@
             is_filter: true,
             fontSizes: {
                 small: 'lg:text-3xl md:text-2xl sm:text-lg',
-                medium: 'lg:text-4xl md:text-3xl sm:text-2xl',
+                medium: 'lg:text-[2.5rem] md:text-3xl sm:text-2xl',
                 big: 'lg:text-5xl md:text-4xl sm:text-3xl',
             },
         }),
@@ -118,24 +118,22 @@
                 return this.$slots.icon;
             },
             value() {
-                if (this.numberValue) return this.numberValue;
+                if (this.numberValue) return parseInt(this.numberValue);
                 const column = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('value');
                 const value = this.getColumn(column)
-                return value && value.length ? value[0] : '--';
+                return value && value.length ? parseInt(value[0]) : 0;
             },
             previous() {
-                if (this.numberPrevious) return this.numberPrevious;
+                if (this.numberPrevious) return parseInt(this.numberPrevious);
                 const column = this.tPreviousColumn ? this.tPreviousColumn : this.findColumnByTag('previous');
                 const previous = this.getColumn(column)
-                return previous && previous.length ? previous[0] : null;
+                return previous && previous.length ? parseInt(previous[0]) : 0;
             },
             percentage() {
                 if (this.previous) {
-                    if (this.value > this.previous) {
-                        return '+' + (100 - ((this.previous * 100) / this.value)).toFixed(0) + '%';
-                    } else if (this.value < this.previous) {
-                        return '-' + (100 - ((this.value * 100) / this.previous)).toFixed(0) + '%';
-                    }
+                    const difference = Math.floor(((this.value - this.previous) / this.previous) * 100)
+                    const appendIncrement = difference > 0 ? '+' : '';
+                    return `${appendIncrement}${difference}%`;
                 }
                 return '';
             }
