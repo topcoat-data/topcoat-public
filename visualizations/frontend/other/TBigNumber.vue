@@ -130,7 +130,7 @@
                 return previous && previous.length ? parseInt(previous[0]) : 0;
             },
             percentage() {
-                if (this.previous) {
+                if (this.previous && this.value !== this.previous) {
                     const difference = Math.floor(((this.value - this.previous) / this.previous) * 100)
                     const appendIncrement = difference > 0 ? '+' : '';
                     return `${appendIncrement}${difference}%`;
