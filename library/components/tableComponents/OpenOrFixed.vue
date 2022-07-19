@@ -48,7 +48,7 @@
 export default {
   name: "OpenOrFixed",
   props: {
-    isOpen: { type: String, required: true },
+    isOpen: { type: Boolean, required: true },
   },
 };
 </script>

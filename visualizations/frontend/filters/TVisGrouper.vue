@@ -7,9 +7,8 @@
             },
         },
         data: () => ({
-            is_filter: true,
-            filters: {},
             init: false,
+            is_filter: true,
         }),
         render: function (createElement) {
             var list = []
@@ -32,7 +31,7 @@
                             attrs: { class: 'relative' }
                         },
                         [
-                            this.loading ? createElement('t-loading-spinner', {attrs: { position:'relative' }}) : element
+                            element
                         ]),
                     )
                 }
