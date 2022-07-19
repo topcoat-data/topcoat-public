@@ -1,5 +1,5 @@
 <template>
-  	<t-dropdown>
+  	<t-dropdown @open="onDropdownOpen">
 		<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
 			<span style="color: #145DEB" class="pl-1">
 				<chart-timeline-variant-shimmer-icon :size="18" />
@@ -91,10 +91,15 @@
 			search: '',
 		}),
 		computed: {
-      selected() {
-          return window.location.pathname.substring(1);
-      },
+			selected() {
+				return window.location.pathname.substring(1);
+			},
 		},
+		methods: {
+            onDropdownOpen() {
+                this.fetchLayerData();
+            }
+		}
 	}
 </script>
 

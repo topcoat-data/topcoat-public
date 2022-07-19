@@ -100,6 +100,7 @@
 
 				if (toggle) {
 					document.body.addEventListener("click", this.handleOutsideClick);
+					this.$emit('open');
 				} else {
 					document.body.removeEventListener("click", this.handleOutsideClick);
 					this.$emit('closed');

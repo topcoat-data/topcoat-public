@@ -1,5 +1,5 @@
 <template>
-	<t-dropdown>
+	<t-dropdown @open="onDropdownOpen">
 
 		<!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -107,18 +107,7 @@
 		},
 		methods: {
             onVisualizationInit() {
-                // See if the page was loaded with a url param value
-                const initial_value = this.getFilterValue("dropdown");
-
-                if (initial_value) {
-                    this.selected_internal = initial_value;
-                } else if (this.defaultValue) {
-					this.selected_internal = this.defaultValue;
-                	this.setFilterValue("dropdown", this.selected_internal, true);
-				} else if (this.options.length && !this.isUnselectable) {
-					this.selected_internal = this.options[0];
-                	this.setFilterValue("dropdown", this.selected_internal, true);
-				}
+                this.selected_internal = this.getFilterValue("dropdown");
             },
             selectItem(item, popup) {
                 if (this.selected_internal === item.value && this.isUnselectable) {
@@ -130,6 +119,9 @@
                 this.setFilterValue("dropdown", this.selected_internal, true);
 				popup(false);
             },
+            onDropdownOpen() {
+                this.fetchLayerData();
+            }
 		}
 	}
 </script>

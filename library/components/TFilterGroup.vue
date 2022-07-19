@@ -3,6 +3,7 @@
         :is-active="activeFilters > 0"
         @closed="handleClosed"
         z-index="800"
+        @open="onDropdownOpen"
     >
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -190,6 +191,9 @@
                 });
                 const config = {subtree: true, childList: true};
                 this.observer.observe(document, config);
+            },
+            onDropdownOpen() {
+                this.fetchLayerData();
             }
         },
     }
