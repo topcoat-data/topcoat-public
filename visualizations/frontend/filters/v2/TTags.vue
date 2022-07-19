@@ -6,7 +6,7 @@
             </div>
             <div class="px-2 pt-2 nav-search" v-if="isSearchable">
 				<base-search-input
-					class="mt-0 mb-3 text-sm search-report !rounded-md" 
+					class="mt-0 mb-3 text-sm search-report !rounded-md"
 					:placeholder="searchPlaceholder"
 					size="small"
 					:clearable="false"
@@ -116,7 +116,11 @@
 			hideLabels: {
 				type: Boolean,
 				default: false,
-			}
+			},
+            onExpandable: {
+                type: Boolean,
+                default: false,
+            },
 		},
 		data: () => ({
 			canBeExpanded: true,
@@ -175,22 +179,28 @@
 			handleHeight() {
 				const containerHeight = parseInt(this.defaultHeight.replace(/\D+/g, ''));
 				this.canBeExpanded = containerHeight < this.slotHeight;
-				return this.containerHeight = this.isExpanded ? this.slotHeight + 'px' : this.defaultHeight;	
+				return this.containerHeight = this.isExpanded ? this.slotHeight + 'px' : this.defaultHeight;
 			},
 			onVisualizationInit() {
-                this.init = false;
 				const selected = this.getFilterValue("selected_items");
+
 				if (selected) {
 					this.checked = selected.split('|');
-				} else {
-				   this.setFilterValue("selected_items", this.checked.join('|'), true);
 				}
+
 				this.init = true;
 			},
 			updateUrlParams() {
 				this.setFilterValue("selected_items", this.checked.join('|'), true);
 			},
-		}
+		},
+		watch: {
+			onExpandable: function(newVal, oldVal) {
+				if (newVal) {
+					this.fetchLayerData();
+				}
+			}
+      	}
 	}
 </script>
 

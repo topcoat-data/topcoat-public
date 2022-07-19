@@ -27,7 +27,7 @@
                         </span>
                         <div class="opacity-30" v-else>-</div>
                     </div>
-                    <t-loading-spinner position="relative" v-if="loading && !numberValue" />
+                    <t-loading-spinner position="relative" v-if="loading" />
                 </div>
             </span>
         </div>

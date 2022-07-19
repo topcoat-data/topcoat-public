@@ -22,7 +22,7 @@
 
         <div class="px-3 pt-2 nav-search">
             <base-search-input
-                class="mt-0 mb-3 text-sm !rounded-md" 
+                class="mt-0 mb-3 text-sm !rounded-md"
                 placeholder="Search Filters"
                 size="small"
                 v-model="search"
@@ -43,156 +43,169 @@
 </template>
 
 <script>
-    window.Vue.component('expansion-wrapper',{
-        render: function(createElement) {
-            var list = []
-            this.$slots.default.forEach((element,index) => {
-                if (element.tag) {
-                    const label = element.data && element.data.attrs && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
-                    const id = `${label.replace(" ", "_")}-${index}`;
-                    const tag_id = element && element.componentInstance ? element.componentInstance.tag_unique : '';
-                    list.push(
-                        createElement('t-expandable', {attrs: { id }}, 
-                            [
-                                createElement('span', {slot: 'label', attrs: { id: `elem-label-${tag_id}` }}, label),
-                                createElement('div', {slot: 'icon', attrs: { class: 'active-round-element', id: `elem-icon-${tag_id}` }}),
-                                element
-                            ]
-                        )
-                    )
-                }
-            });
-            return createElement('div',{},list)
-        }
-    })
-    export default {
-        props: {
-            label: {
-                type: String,
-                default: 'Add filters'
-            },
-            maxHeight: {
-                type: String,
-                default: '300px'
-            },
-            maxWidth: {
-                type: String,
-                default: '400px'
-            },
-            isPersisted: {
-                type: Boolean,
-                default: false,
+window.Vue.component('expansion-wrapper', {
+    render: function (createElement) {
+        var list = []
+
+        //TODO: Refactor this function. Element componentInstance is not declare de first time we called this function so we are relying on re-renders
+        //to make this code to work.
+        //We are mutating _props.onExpandable here as well. We should not be doing that but it's the way we found to pass a prop from the slot to
+        //the children.
+        this.$slots.default.forEach((element, index) => {
+            if (element.tag) {
+                const label = element.data && element.data.attrs && element.data.attrs['item-label'] ? element.data.attrs['item-label'] : '-'
+                const id = `${label.replace(" ", "_")}-${index}`;
+                const tag_id = element && element.componentInstance ? element.componentInstance.tag_unique : '';
+
+                list.push(
+                    createElement('t-expandable', {
+                        attrs: { id },
+                        scopedSlots: {
+                            default: (props) => {
+                                if (element.componentInstance) {
+                                    element.componentInstance._props.onExpandable = props.onExpandable;
+                                }
+
+                                return element;
+                            },
+                            label: (props) => {
+                                return createElement('span', { attrs: { id: `elem-label-${tag_id}`, ref: 'label' } }, label);
+                            },
+                            icon: (props) => {
+                                return createElement('div', { attrs: { class: 'active-round-element', id: `elem-icon-${tag_id}`, ref: 'icon' } });
+                            }
+                        }
+                    })
+                );
             }
+        });
+
+        return createElement('div', {}, list)
+    }
+});
+
+export default {
+    props: {
+        label: {
+            type: String,
+            default: 'Add filters'
         },
-        data: () => ({
+        maxHeight: {
+            type: String,
+            default: '300px'
+        },
+        maxWidth: {
+            type: String,
+            default: '400px'
+        },
+        isPersisted: {
+            type: Boolean,
+            default: false,
+        }
+    },
+    data: function () {
+        return {
             popup: false,
             search: '',
             items: [],
             visibleFilters: [],
-			activeFilters: 0,
-            filters: {},
+            activeFilters: 0,
             observer: null,
-        }),
-        mounted() {
-            this.observeUrlChanges();
-        },
-        destroyed() {
-            if (this.observer) {
-                this.observer.disconnect();
-            }
-        },
-        methods: {
-            searchFilter() {
-                const children = this.$refs.expansionWrapper.$children || [];
-                for (let child of children) {
+        };
+    },
+    mounted() {
+        this.handleActiveFilters();
+    },
+    updated() {
+        this.handleActiveFilters();
+    },
+    methods: {
+        searchFilter() {
+            const children = this.$refs.expansionWrapper.$children || [];
+            for (let child of children) {
 
-                    const id = child.$attrs.id;
-                    const element = document.getElementById(id);
+                const id = child.$attrs.id;
+                const element = document.getElementById(id);
 
-                    if (element) {
-                        if (id.toLowerCase().includes(this.search.toLowerCase())) {
-                            element.style.display = "block";
-                        } else {
-                            element.style.display = "none";
-                        }
+                if (element) {
+                    if (id.toLowerCase().includes(this.search.toLowerCase())) {
+                        element.style.display = "block";
+                    } else {
+                        element.style.display = "none";
                     }
                 }
-            },
-            handleActiveFilters() {
-                this.filters = [];
-                for (let component of this.$slots.default) {
-                    let componentInstance = component ? component.componentInstance : null;
-                    if (componentInstance) {
-                        const metadata = componentInstance.metadata;
-                        const filters = metadata && metadata.filters ? metadata.filters.output : [];
-                        for (let filter of filters) {
-                            const value = this.getValueByUrl(filter.urlparam);
-                            if (value) {
-                                const obj = this.filters[componentInstance.tag_unique];
-                                if (obj) {
-                                    this.filters[componentInstance.tag_unique].push(value);
-                                } else {
-                                    this.filters[componentInstance.tag_unique] = [value];
-                                }
+            }
+        },
+        handleActiveFilters() {
+            let setFilters = {}
+
+            for (let component of this.$slots.default) {
+                let componentInstance = component ? component.componentInstance : null;
+
+                if (componentInstance) {
+                    const metadata = componentInstance.metadata;
+                    const filters = metadata && metadata.filters ? metadata.filters.output : [];
+
+                    for (let filter of filters) {
+                        const value = this.getFiltersState[filter.urlparam];
+
+                        if (value) {
+                            const obj = setFilters[componentInstance.tag_unique];
+                            if (obj) {
+                                setFilters[componentInstance.tag_unique].push(value);
                             } else {
-                                this.showInactive(componentInstance.tag_unique);
+                                setFilters[componentInstance.tag_unique] = [value];
                             }
+                        } else {
+                            this.showInactive(componentInstance.tag_unique);
                         }
                     }
                 }
-                this.activeFilters = Object.keys(this.filters).length;
-                this.showActive();
-            },
-            getValueByUrl(urlParam) {
-                const params = new URLSearchParams(location.search)
-                return params.get(urlParam);
-            },
-            showActive() {
-                for (let key of Object.keys(this.filters)) {
-                    const icon = document.getElementById(`elem-icon-${key}`);
-                    if (icon) {
-                        icon.style.display = "block"
-                    }
-                    const label = document.getElementById(`elem-label-${key}`);
-                    if (label) {
-                        label.classList.add('text-[#1C1C21]', 'font-medium');
-                        label.classList.remove('text-[#555463]', 'font-normal');
-                    }
-                }
-            },
-            showInactive(id) {
-                const icon = document.getElementById(`elem-icon-${id}`);
+            }
+
+            this.activeFilters = Object.keys(setFilters).length;
+            this.showActive(setFilters);
+        },
+        showActive(setFilters) {
+            for (let key of Object.keys(setFilters)) {
+                const icon = document.getElementById(`elem-icon-${key}`);
+                const label = document.getElementById(`elem-label-${key}`);
+
                 if (icon) {
-                    icon.style.display = "none";
+                    icon.style.display = "block"
                 }
 
-                const label = document.getElementById(`elem-label-${id}`);
                 if (label) {
-                    label.classList.add('text-[#555463]', 'font-normal');
-                    label.classList.remove('text-[#1C1C21]', 'font-medium');
+                    label.classList.add('text-[#1C1C21]', 'font-medium');
+                    label.classList.remove('text-[#555463]', 'font-normal');
                 }
-            },
-            handleClosed() {
-                if (this.isPersisted) return;
-                for (slotItem of this.$slots.default) {
-                    if (slotItem && slotItem.componentInstance && slotItem.componentInstance.$parent) {
-                        slotItem.componentInstance.$parent.expanded = false;
-                    }
-                }
-            },
-            observeUrlChanges() {
-                let previousUrl = '';
-                const ref = this;
-                this.observer = new MutationObserver(function(mutations) {
-                    if (location.href !== previousUrl) {
-                        ref.handleActiveFilters();
-                    }
-                });
-                const config = {subtree: true, childList: true};
-                this.observer.observe(document, config);
             }
         },
-    }
+        showInactive(id) {
+            const icon = document.getElementById(`elem-icon-${id}`);
+            if (icon) {
+                icon.style.display = "none";
+            }
+
+            const label = document.getElementById(`elem-label-${id}`);
+            if (label) {
+                label.classList.add('text-[#555463]', 'font-normal');
+                label.classList.remove('text-[#1C1C21]', 'font-medium');
+            }
+        },
+        handleClosed() {
+            if (this.isPersisted) return;
+            for (slotItem of this.$slots.default) {
+                if (slotItem && slotItem.componentInstance && slotItem.componentInstance.$parent) {
+                    slotItem.componentInstance.$parent.expanded = false;
+                }
+            }
+        },
+        onFiltersUpdated() {
+            this.handleActiveFilters();
+        }
+    },
+};
 </script>
 
 <style>
