@@ -18,10 +18,10 @@
                     <span>{{ value || '--' }}</span>
                     {{ valueText }}
                     <div v-if="previous">
-                        <span class="opacity-80" v-if="value > previous">
+                        <span class="opacity-80" v-if="num(value) > num(previous)">
                             <chevron-up-icon />
                         </span>
-                        <span class="opacity-80" v-else-if="value < previous">
+                        <span class="opacity-80" v-else-if="num(value) < num(previous)">
                             <chevron-down-icon class="opacity-90" />
                         </span>
                         <div class="opacity-30" v-else>-</div>
@@ -118,25 +118,33 @@
                 return this.$slots.icon;
             },
             value() {
-                if (this.numberValue) return parseInt(this.numberValue);
+                if (this.numberValue) return this.numberValue;
                 const column = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('value');
                 const value = this.getColumn(column)
-                return value && value.length ? parseInt(value[0]) : 0;
+                return value && value.length ? value[0] : 0;
             },
             previous() {
-                if (this.numberPrevious) return parseInt(this.numberPrevious);
+                if (!this.numberPrevious && !this.layer) return 0;
+                if (this.numberPrevious) return this.numberPrevious;
                 const column = this.tPreviousColumn ? this.tPreviousColumn : this.findColumnByTag('previous');
                 const previous = this.getColumn(column)
-                return previous && previous.length ? parseInt(previous[0]) : 0;
+                return previous && previous.length ? previous[0] : 0;
             },
             percentage() {
-                if (this.previous && this.value !== this.previous) {
-                    const difference = Math.floor(((this.value - this.previous) / this.previous) * 100)
+                const value = this.num(this.value);
+                const previous = this.num(this.previous);
+                if (previous && value !== previous) {
+                    const difference = Math.floor(((value - previous) / previous) * 100)
                     const appendIncrement = difference > 0 ? '+' : '';
                     return `${appendIncrement}${difference}%`;
                 }
                 return '';
             }
         },
+        methods: {
+            num(val) {
+                return parseInt(val.replace(/,/g, ''))
+            }
+        }
     }
 </script>
