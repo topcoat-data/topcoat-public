@@ -16,8 +16,8 @@
             </span>
 			<span>{{ label }}</span>
 
-			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else size="20" />
+			<t-loading-spinner v-show="loading" position="relative" />
+			<menu-down-icon v-show="!loading" :size="20" />
     	</div>
 
 		<!-- Popup Contents -->

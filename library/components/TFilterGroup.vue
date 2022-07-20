@@ -3,7 +3,6 @@
         :is-active="activeFilters > 0"
         @closed="handleClosed"
         z-index="800"
-        @open="onDropdownOpen"
     >
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -23,7 +22,7 @@
 
         <div class="px-3 pt-2 nav-search">
             <base-search-input
-                class="mt-0 mb-3 text-sm !rounded-md" 
+                class="mt-0 mb-3 text-sm !rounded-md"
                 placeholder="Search Filters"
                 size="small"
                 v-model="search"
@@ -53,7 +52,7 @@
                     const id = `${label.replace(" ", "_")}-${index}`;
                     const tag_id = element && element.componentInstance ? element.componentInstance.tag_unique : '';
                     list.push(
-                        createElement('t-expandable', {attrs: { id }}, 
+                        createElement('t-expandable', {attrs: { id }},
                             [
                                 createElement('span', {slot: 'label', attrs: { id: `elem-label-${tag_id}` }}, label),
                                 createElement('div', {slot: 'icon', attrs: { class: 'active-round-element', id: `elem-icon-${tag_id}` }}),
@@ -94,14 +93,6 @@
             filters: {},
             observer: null,
         }),
-        mounted() {
-            this.observeUrlChanges();
-        },
-        destroyed() {
-            if (this.observer) {
-                this.observer.disconnect();
-            }
-        },
         methods: {
             searchFilter() {
                 const children = this.$refs.expansionWrapper.$children || [];
@@ -181,20 +172,6 @@
                     }
                 }
             },
-            observeUrlChanges() {
-                let previousUrl = '';
-                const ref = this;
-                this.observer = new MutationObserver(function(mutations) {
-                    if (location.href !== previousUrl) {
-                        ref.handleActiveFilters();
-                    }
-                });
-                const config = {subtree: true, childList: true};
-                this.observer.observe(document, config);
-            },
-            onDropdownOpen() {
-                this.fetchLayerData();
-            }
         },
     }
 </script>

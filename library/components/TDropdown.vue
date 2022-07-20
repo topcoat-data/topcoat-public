@@ -75,6 +75,7 @@
 			},
 			handleOutsideClick(event) {
 				const container = this.$refs.dropdownFilter;
+
 				if (container && event && !container.contains(event.target)) {
 					this.popup = false;
 					this.internal_active = false;
@@ -99,16 +100,16 @@
 				this.internal_active = toggle;
 
 				if (toggle) {
-					document.body.addEventListener("click", this.handleOutsideClick);
 					this.$emit('open');
+					document.body.addEventListener("click", this.handleOutsideClick);
 				} else {
-					document.body.removeEventListener("click", this.handleOutsideClick);
 					this.$emit('closed');
+					document.body.removeEventListener("click", this.handleOutsideClick);
 				}
 
 				this.$nextTick(() => {
 					this.alignPopup();
-				})
+				});
 			},
 		},
 	}
