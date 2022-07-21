@@ -53,15 +53,19 @@ export default {
         layer: this.tLayer,
       };
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
+		  console.log('csv download response', response)
         this.is_loading = false;
         let aTag = document.createElement("a");
-        aTag.setAttribute(
-          "href",
-          "data:text/plain;charset=utf-8, " +
-            encodeURIComponent(response.data.data)
-        );
+        if (response.data.data.url) {
+          aTag.setAttribute("href", response.data.data.url);
+        } else {
+          aTag.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8, " +
+              encodeURIComponent(response.data.data)
+          );
+        }
         let filename = this.tLayer + filenameFilters + ".csv";
-
         aTag.setAttribute("download", filename);
         document.body.appendChild(aTag);
         aTag.click();
