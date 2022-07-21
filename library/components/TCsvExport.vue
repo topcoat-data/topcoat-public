@@ -53,6 +53,7 @@ export default {
         layer: this.tLayer,
       };
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
+		  console.log('csv download response', response)
         this.is_loading = false;
         let aTag = document.createElement("a");
         if (response.data.data.url) {
@@ -61,7 +62,7 @@ export default {
           aTag.setAttribute(
             "href",
             "data:text/plain;charset=utf-8, " +
-              encodeURIComponent(response.data.data.data)
+              encodeURIComponent(response.data.data)
           );
         }
         let filename = this.tLayer + filenameFilters + ".csv";
