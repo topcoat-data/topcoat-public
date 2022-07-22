@@ -134,7 +134,7 @@
                 const value = this.num(this.value);
                 const previous = this.num(this.previous);
                 if (previous && value !== previous) {
-                    const difference = Math.floor(((value - previous) / previous) * 100)
+                    const difference = (((value - previous) / previous) * 100).toFixed(2);
                     const appendIncrement = difference > 0 ? '+' : '';
                     return `${appendIncrement}${difference}%`;
                 }
