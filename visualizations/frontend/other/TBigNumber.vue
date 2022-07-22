@@ -19,10 +19,10 @@
                     {{ valueText }}
                     <div v-if="previous">
                         <span class="opacity-80" v-if="num(value) > num(previous)">
-                            <chevron-up-icon />
+                            <arrow-up-icon :size="18" />
                         </span>
                         <span class="opacity-80" v-else-if="num(value) < num(previous)">
-                            <chevron-down-icon class="opacity-90" />
+                            <arrow-down-icon :size="18" class="opacity-90" />
                         </span>
                         <div class="opacity-30" v-else>-</div>
                     </div>
