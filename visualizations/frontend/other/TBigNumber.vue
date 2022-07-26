@@ -2,6 +2,7 @@
     <div
         class="w-full lg:p-5 md:p-3 p-1 rounded-[2px] break-all"
         :style="{ background: bgColor, color: textColor }"
+        :class="hasUnderline && 'border-b-2 border-[#21214c]'"
     >
         <div class="flex items-center gap-2">
             <div class="hidden opacity-50 md:block" v-if="hasIcon">
@@ -12,7 +13,7 @@
             </span>
             <base-tooltip v-if="tooltipText" :description="tooltipText" />
         </div>
-        <div class="mt-3">
+        <div :class="hasTallSize ? 'mt-6' : 'mt-3'">
             <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
                 <div class="flex items-center gap-2">
                     <span>{{ value || '--' }}</span>
@@ -103,6 +104,14 @@
             tooltipText: {
                 type: String,
                 default: '',
+            },
+            hasUnderline: {
+                type: Boolean,
+                default: false,
+            },
+            hasTallSize: {
+                type: Boolean,
+                default: false,
             }
         },
         data: () => ({
