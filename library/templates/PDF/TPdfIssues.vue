@@ -26,7 +26,7 @@
 		background: #fff;
 	}
 	@media print {
-		.page-break { page-break-before: always; 
+		.page-break { page-break-before: always; }
 	}
     #pagingControls #pages { 
         display: none;
