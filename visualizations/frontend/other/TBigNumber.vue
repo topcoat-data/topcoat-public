@@ -149,8 +149,13 @@
                 const value = this.num(this.value);
                 const previous = this.num(this.previous);
                 if (previous && value !== previous) {
-                    const difference = (((value - previous) / previous) * 100).toFixed(2);
-                    const appendIncrement = difference > 0 ? '+' : '';
+                    const difference = Math.abs((((value - previous) / previous) * 100).toFixed(2));
+                    let appendIncrement = '';
+                    if (this.isIncreaseBad) {
+                        appendIncrement = difference > 0 ? '-' : '+';
+                    } else {
+                        appendIncrement = difference > 0 ? '+' : '-';
+                    }
                     return `${appendIncrement}${difference}%`;
                 }
                 return '';
