@@ -20,10 +20,12 @@
                     {{ valueText }}
                     <div v-if="previous">
                         <span class="opacity-80" v-if="num(value) > num(previous)">
-                            <arrow-up-icon :size="18" />
+                            <arrow-down-icon :size="18" v-if="isIncreaseBad" />
+                            <arrow-up-icon :size="18" v-else />
                         </span>
                         <span class="opacity-80" v-else-if="num(value) < num(previous)">
-                            <arrow-down-icon :size="18" class="opacity-90" />
+                            <arrow-up-icon :size="18" v-if="isIncreaseBad" />
+                            <arrow-down-icon :size="18" v-else class="opacity-90" />
                         </span>
                         <div class="opacity-30" v-else>-</div>
                     </div>
@@ -110,6 +112,10 @@
                 default: false,
             },
             hasTallSize: {
+                type: Boolean,
+                default: false,
+            },
+            isIncreaseBad: {
                 type: Boolean,
                 default: false,
             }
