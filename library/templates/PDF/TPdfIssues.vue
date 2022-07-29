@@ -15,7 +15,7 @@
             <slot name="filters"></slot>
         </t-grids>
         
-        <div class="pagebreak">
+        <div class="page-break">
             <slot></slot>
         </div>
     </div>
@@ -26,7 +26,7 @@
 		background: #fff;
 	}
 	@media print {
-		.pagebreak { page-break-before: always; } /* page-break-after works, as well */
+		.page-break { page-break-before: always; 
 	}
     #pagingControls #pages { 
         display: none;
