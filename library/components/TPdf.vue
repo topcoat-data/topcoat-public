@@ -17,6 +17,9 @@
 
 <script>
     export default {
+        data: () => ({
+            is_loading: false,
+        }),
         props: {
             label: {
                 type: String,
