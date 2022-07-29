@@ -20,10 +20,12 @@
                     {{ valueText }}
                     <div v-if="previous">
                         <span class="opacity-80" v-if="num(value) > num(previous)">
-                            <arrow-up-icon :size="18" />
+                            <arrow-down-icon :size="18" v-if="isIncreaseBad" />
+                            <arrow-up-icon :size="18" v-else />
                         </span>
                         <span class="opacity-80" v-else-if="num(value) < num(previous)">
-                            <arrow-down-icon :size="18" class="opacity-90" />
+                            <arrow-up-icon :size="18" v-if="isIncreaseBad" />
+                            <arrow-down-icon :size="18" v-else class="opacity-90" />
                         </span>
                         <div class="opacity-30" v-else>-</div>
                     </div>
@@ -112,6 +114,10 @@
             hasTallSize: {
                 type: Boolean,
                 default: false,
+            },
+            isIncreaseBad: {
+                type: Boolean,
+                default: false,
             }
         },
         data: () => ({
@@ -143,8 +149,13 @@
                 const value = this.num(this.value);
                 const previous = this.num(this.previous);
                 if (previous && value !== previous) {
-                    const difference = (((value - previous) / previous) * 100).toFixed(2);
-                    const appendIncrement = difference > 0 ? '+' : '';
+                    const difference = Math.abs((((value - previous) / previous) * 100).toFixed(2));
+                    let appendIncrement = '';
+                    if (this.isIncreaseBad) {
+                        appendIncrement = difference > 0 ? '-' : '+';
+                    } else {
+                        appendIncrement = difference > 0 ? '+' : '-';
+                    }
                     return `${appendIncrement}${difference}%`;
                 }
                 return '';

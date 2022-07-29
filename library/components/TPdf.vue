@@ -22,49 +22,11 @@
                 type: String,
                 default: "Export to PDF"
             },
-            isNonAjax: {
-                type: Boolean,
-                default: false,
-            }
         },
-        data: () => ({
-            is_filter: true,
-            is_loading: false,
-        }),
         methods: {
             downloadPdf() {
-                if (!this.isNonAjax) {
-                    if (this.is_loading) return;
-                    this.is_loading = true;
-                }
-                const baseurl = `/downloadPdf/${this.page.url}`
-                const params = window.location.search;
-
-                if (this.isNonAjax) {
-                    return window.open(baseurl + params, "_self");
-                }
-
-                window.axios.get(baseurl + params, { responseType: 'blob' })
-                .then(response => {
-                    this.is_loading = false;
-
-                    // If failed
-                    if (response.data.status) {
-                        return alert('Failed to download pdf');
-                    }
-
-                    // If successfull
-                    const aTag = document.createElement('a');
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(response.data);
-                    link.download = response.headers['content-disposition'].split("=")[1];
-                    link.click();
-                    return aTag.click();
-                }).catch(error => {
-                    this.is_loading = false;
-                    console.error(error);
-                    return alert('Failed to download pdf');
-                })
+                const url = this.page.url + window.location.search;
+                return this.downloadPdfFile(url);
             }
         }
     } 
