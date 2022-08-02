@@ -72,6 +72,10 @@
                 type: Boolean,
                 default: false,
             },
+            tUrlParam: {
+                type: String,
+                default: '',
+            }
         },
         data: () => ({
             is_filter: true,
@@ -91,6 +95,21 @@
                 return [];
             },
             items() {
+                // If direct values from url are needed (good for cases where id===label inside url)
+                // This approach is way faster as it does not require t-layer.
+                if (this.tUrlParam) {
+                    const urlVal = new URLSearchParams(window.location.search).get(this.tUrlParam);
+                    if (urlVal) {
+                        let urlItems = urlVal.split('|');
+                        if (this.visibleItemsCount > -1) {
+                            let totalItems = urlItems.length;
+                            urlItems = urlItems.slice(0, this.visibleItemsCount);
+                            this.truncatedItemsCount = totalItems - urlItems.length;
+                        }
+                        return urlItems.map(v => { return { key: v, value: v } });
+                    }
+                }
+
                 const keys = this.keys;
                 const values = this.values;
                 const items = [];
