@@ -53,7 +53,6 @@ export default {
         layer: this.tLayer,
       };
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
-		  console.log('csv download response', response)
         this.is_loading = false;
         let aTag = document.createElement("a");
         if (response.data.data.url) {
