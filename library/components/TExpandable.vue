@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="px-2 pt-1" v-show="expanded">
-            <slot></slot>
+            <slot :onExpandable="expanded"></slot>
         </div>
     </div>
 </template>

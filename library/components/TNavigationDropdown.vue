@@ -25,7 +25,7 @@
 
       	<div class="px-2 pt-2 nav-search">
 			<base-search-input
-				class="mt-0 mb-3 text-sm search-report !rounded-md" 
+				class="mt-0 mb-3 text-sm search-report !rounded-md"
 				placeholder="Search Reports"
 				size="small"
 				:clearable="false"
@@ -91,9 +91,9 @@
 			search: '',
 		}),
 		computed: {
-      selected() {
-          return window.location.pathname.substring(1);
-      },
+			selected() {
+				return window.location.pathname.substring(1);
+			},
 		},
 	}
 </script>
