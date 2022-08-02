@@ -1,5 +1,5 @@
 <template>
-    <t-loading-spinner v-if="loading" position="relative" />
+    <t-loading-spinner v-if="loading && !tUrlParam" position="relative" />
     <div v-else-if="Object.keys(items).length">
         <t-grids v-if="isList" column-count="4" gap-x="8">
             <div v-if="label" class="flex-wrap text-base font-semibold whitespace-nowrap h-max">{{ label }}</div>
