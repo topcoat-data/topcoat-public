@@ -967,6 +967,7 @@ export default {
       }
     },
     expandRow(row) {
+      console.log('expandRow(row)', row)
       if (this.onlyShowOneDetailRow) {
         this.internalRows.forEach((row) => (row.detailRowOpen = false));
       }
