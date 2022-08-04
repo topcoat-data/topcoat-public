@@ -150,13 +150,16 @@
 				}
 				return attrs;
 			}
-		},
+        },
 		methods: {
             onVisualizationInit() {
 				const initial_value = this.getFilterValue("selected_items");
 
                 if (initial_value) {
                     this.checked = initial_value.split('|');
+                } else if (this.defaultValue) {
+                    this.checked = this.defaultValue.split('|');
+                    this.setFilterValue("selected_items", this.defaultValue);
                 }
             },
 			selectUnselect() {
@@ -168,7 +171,7 @@
 				this.updateUrlParam();
 			},
             updateUrlParam() {
-                this.setFilterValue("selected_items", this.checked.join('|'), true);
+                this.setFilterValue("selected_items", this.checked.join('|'));
             },
             onDropdownOpen() {
                 this.fetchLayerData();
