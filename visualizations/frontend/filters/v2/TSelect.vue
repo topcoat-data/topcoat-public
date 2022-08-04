@@ -100,14 +100,30 @@
                 }
                 return menu;
             },
-			selectedItemLabel() {
-				const selected = this.menu.filter(item => item.value === this.selected_internal)[0]
-				return selected ? selected.title : null;
-			},
-		},
-		methods: {
+            selectedItemLabel() {
+                const selected = this.menu.filter(item => item.value === this.selected_internal)[0]
+
+                if (selected) {
+                    return selected.title;
+                }
+
+                if (this.selected_internal) {
+                    return this.selected_internal;
+                }
+
+                return null;
+            },
+        },
+        methods: {
             onVisualizationInit() {
-                this.selected_internal = this.getFilterValue("dropdown");
+                const initial_value = this.getFilterValue("dropdown");
+
+                if (initial_value) {
+                    this.selected_internal = initial_value;
+                } else if (this.defaultValue) {
+                    this.selected_internal = this.defaultValue;
+                    this.setFilterValue("dropdown", this.defaultValue);
+                }
             },
             selectItem(item) {
                 if (this.selected_internal === item.value && this.isUnselectable) {
