@@ -1,86 +1,106 @@
 <template>
-    <div class="flex flex-col overflow-x-hidden">
-        <label class="pb-[7px] text-sm font-medium" v-if="label">
+    <t-loading-spinner position="relative" v-if="loading" />
+    <div class="flex flex-col overflow-x-hidden t-range-slider" v-else>
+        <label class="pb-[7px] px-3 text-sm font-medium" v-if="label">
 			{{ label }}
 		</label>
-        <div
-            class="h-[30px] max-w-full min-w-[200px] flex items-center"
-            @click="handleClick"
-            @mousedown="dragging = true"
-            @mouseover="handleDragover"
-            @mouseup="handleDragend"
-            ref="rangeContainer"
-        >
-            <div class="w-full border-1 border-[#C3C2CB] bg-[#C3C2CB] relative" slot="handle">
-                <div class="border-1 border-[#145DEB]" :style="{ width: left + '%' }"></div>
-                <div
-                    class="absolute m-auto bg-white rounded-full top-0 bottom-0 border-1 border-[#C3C2CB] z-10 py-3 px-1 flex items-center justify-center cursor-pointer"
-                    :style="{ left: left + '%' }"
-                >
-                    {{ value }}
-                </div>
-            </div>
-        </div>
+        <base-range-slider
+            :min="minValue"
+            :max="maxValue"
+            :step="step"
+            :minValue="barMinValue"
+            :maxValue="barMaxValue"
+            @input="update"
+        />
     </div>
 </template>
 
 <script>
     export default {
         data: () => ({
-            dragging: false,
             is_filter: true,
-            left: 0,
-            value: 0,
         }),
         props: {
             label: {
                 default: '',
             },
-            max: {
-                default: 100,
+            tMaxColumn: {
+                default: '',
             },
-            min: {
-                default: 0,
+            tMinColumn: {
+                default: '',
             },
+            step: {
+                default: 1,
+            }
+        },
+        computed: {
+            minValue() {
+                const num = this.getColumn(this.tMinColumn);
+                const parsed = num && num.length ? parseInt(num[0]) : 0;
+                return parsed;
+            },
+            maxValue() {
+                const num = this.getColumn(this.tMaxColumn);
+                const parsed = num && num.length ? parseInt(num[0]) : 100;
+                return parsed;
+            },
+            barMinValue: {
+                get() {
+                    const minInternal = this.getFilterValue("min");
+                    return minInternal ? parseInt(minInternal) : this.minValue;
+                },
+                set(val) {
+                    this.setFilterValue('min', val, true);
+                    return val;
+                }
+            },
+            barMaxValue: {
+                get() {
+                    const maxInternal = this.getFilterValue("max");
+                    return maxInternal ? parseInt(maxInternal) : this.maxValue;
+                },
+                set(val) {
+                    this.setFilterValue('max', val, true);
+                    return val;
+                }
+            }
         },
         methods: {
-            handleDragover(e) {
-                if (this.dragging) {
-                    this.handlePlacement(e.clientX);
+            update(e) {
+                if (e.minValue === e.min && e.maxValue == e.max) {
+                    this.unsetFilterValue('min', true);
+                    this.unsetFilterValue('max', true);
+                } else {
+                    this.barMinValue = e.minValue;
+                    this.barMaxValue = e.maxValue;
                 }
-            },
-            handleDragend(e) {
-                this.dragging = false;
-                this.setFilterValue("value", this.value, true);
-            },
-            handleClick(e) {
-                this.dragging = true;
-                this.handlePlacement(e.clientX);
-                this.dragging = false;
-                this.setFilterValue("value", this.value, true);
-            },
-            handlePlacement(clickPos) {
-                const container = this.$refs.rangeContainer;
-                if (container) {
-                    const currentPos = clickPos - container.getBoundingClientRect().left;
-                    const totalSize = container.clientWidth;
-                    let currentPercentage = currentPos * 100 / totalSize;
-                    if (currentPercentage > 100) {
-                        currentPercentage = 100;
-                    } else if (currentPercentage < 0) {
-                        currentPercentage = 0;
-                    }
-                    this.left = currentPercentage;
-                    this.value = Math.round(this.min + (currentPercentage / 100) * (this.max - this.min));
-                }
-            },
-            onVisualizationInit() {
-                const internalValue = this.getFilterValue("value");
-                this.value = (!internalValue || internalValue < this.min) ? this.min : internalValue;
-                const pos = ((this.value - this.min) * 100) / (this.max - this.min);
-                this.left = pos;
-                this.setFilterValue("value", this.value, true);
             }
-        }
+        },
+        mounted() {
+            this.fetchLayerData();
+        },
     }
 </script>
+
+<style>
+    /* Override default look  */
+    .t-range-slider .ruler, .labels { display: none !important; }
+    .t-range-slider .multi-range-slider .bar .bar-inner {
+        background-color: gray;
+    }
+    .t-range-slider .multi-range-slider {
+        border: none;
+        box-shadow: none;
+        padding: 50px 10px 10px 10px;
+    }
+    .t-range-slider .multi-range-slider .bar-left,
+    .t-range-slider .multi-range-slider .bar-right {
+        box-shadow: none;
+        background: #cac8c8;
+    }
+
+    .t-range-slider .multi-range-slider .thumb::before {
+        box-shadow: none;
+    }
+</style>
