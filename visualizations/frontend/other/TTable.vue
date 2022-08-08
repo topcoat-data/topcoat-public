@@ -1,7 +1,6 @@
 <template>
   <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
-
     <TSearch
       v-if="canSearch"
       ref="easySearch"
@@ -19,8 +18,21 @@
       :style="columnWidthsStyle"
     >
       <!-- Title -->
-      <div v-if="title" id="title" class="spanAllColumns">
-        {{ title }}
+      <div class="spanAllColumns tableHeaderContainer">
+        <div v-if="title" id="title">
+          {{ title }}
+        </div>
+
+        <div class="tableControls">
+          <!-- <div>Future Group By</div> -->
+          <t-select-columns
+            v-if="filterableColumns"
+            :filterableColumns="filterableColumns"
+            @updateFilteredColumns="updateFilteredColumns"
+            :t-layer="layer"
+          />
+          <TCsvExport v-if="enableCsvDownload" :t-layer="layer" />
+        </div>
       </div>
 
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
@@ -280,11 +292,18 @@ export default {
     cellClasses: {
       type: String,
       default:
-        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
+        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell table-data",
     },
     exludeFromColumns: {
       type: Array,
       default: () => [],
+    },
+    enableCsvDownload: {
+      type: Boolean,
+      default: true,
+    },
+    filterableColumns: {
+      type: Array,
     },
   },
   emits: {
@@ -312,6 +331,7 @@ export default {
       showSpinner: true,
       displayRows: [],
       pagerResetFunction: null,
+      filterableColumnsToShow: [],
     };
   },
   computed: {
@@ -394,12 +414,9 @@ export default {
     // ]
     //  plus configurations for sorting etc.
     internalColumns() {
-      let cols = this.columns;
-      if (typeof this.columns === "function") cols = [];
+      if (!this.rows) return [];
+      cols = Object.keys(this.rows[0]);
 
-      if (cols.length === 0 && this.rows && this.rows.length > 0) {
-        cols = Object.keys(this.rows[0]);
-      }
       cols = cols.map((columnString) => {
         return {
           header: _.toString(columnString),
@@ -437,6 +454,7 @@ export default {
           }
         });
       }
+
       if (this.canSort) {
         // Note: the "+" in "+col.sort.priority" converts strings to numbers
         const sortPriorities = cols
@@ -466,6 +484,23 @@ export default {
           col.sort = null;
         }
       });
+
+      // remove hidden columns
+      if (this.filterableColumns) {
+        const labelsOfColumnToShow = this.filterableColumnsToShow.map(
+          (fcts) => fcts.label
+        );
+        const columnsToHide = this.filterableColumns.filter((fc) => {
+          const filterableColumnLabel = fc[0];
+          return !labelsOfColumnToShow.includes(filterableColumnLabel);
+        });
+        headerNamesOfColumnsToHide = columnsToHide.map((c) =>
+          c[0].toLowerCase()
+        );
+        cols = cols.filter((col) => {
+          return !headerNamesOfColumnsToHide.includes(col.header.toLowerCase());
+        });
+      }
 
       return cols;
     },
@@ -612,7 +647,6 @@ export default {
           detailRowOpen: !this.canCollapseDetailRows,
         };
       });
-
       this.setDisplayRows();
       this.showSpinner = false;
     },
@@ -1044,10 +1078,8 @@ export default {
           default_value,
           ...properties
         } = obj;
-
         return properties;
       })(this.metadata);
-
       return (payload = {
         render: {
           visualization: this.tag,
@@ -1067,11 +1099,30 @@ export default {
     setPagerResetFunction(resetFunction) {
       this.pagerResetFunction = resetFunction;
     },
+    updateFilteredColumns(filterableColumnsToShow) {
+      this.filterableColumnsToShow = filterableColumnsToShow;
+      const thisTable = this.$store.state.layers.components[this.tag_unique];
+      let allValidColumns = [];
+      filterableColumnsToShow.forEach((fcts) => {
+        allValidColumns = allValidColumns.concat(fcts.sqlColumns);
+      });
+      // remove duplicate entries
+      allValidColumns = [...new Set(allValidColumns)];
+      thisTable.filters.column_list = JSON.stringify(allValidColumns);
+      // todo: determine if a data refresh is necessary, if only hiding columns no need to fetch more data
+      this.fetchPagedLayer();
+    },
   },
 };
 </script>
 
 <style scoped>
+.table-data {
+  padding-top: 12px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #d3d3d9;
+}
+
 .rootTableContainer {
   display: inline-block;
   width: 100%;
@@ -1188,9 +1239,22 @@ highlighting a row on hover etc. */
   font-feature-settings: "tnum" on, "lnum" on;
   padding-top: 15px;
   padding-bottom: 15px;
+  display: inline-block;
 }
 
 .snykCell {
   word-break: break-word;
+}
+
+.tableHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  width: 100%;
+}
+.tableControls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 </style>
