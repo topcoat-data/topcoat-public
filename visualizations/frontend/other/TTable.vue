@@ -31,7 +31,11 @@
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
-          <TCsvExport v-if="enableCsvDownload" :t-layer="layer" />
+          <TestCsvExport1
+            v-if="enableCsvDownload"
+            :t-layer="layer"
+            :additionalFilters="additionalFilters"
+          />
         </div>
       </div>
 
@@ -332,6 +336,7 @@ export default {
       displayRows: [],
       pagerResetFunction: null,
       filterableColumnsToShow: [],
+      additionalFilters: null,
     };
   },
   computed: {
@@ -1109,6 +1114,9 @@ export default {
       // remove duplicate entries
       allValidColumns = [...new Set(allValidColumns)];
       thisTable.filters.column_list = JSON.stringify(allValidColumns);
+      if (allValidColumns.length > 0)
+        this.additionalFilters = { column_list: thisTable.filters.column_list };
+      else this.additionalFilters = null;
       this.fetchPagedLayer();
     },
   },
