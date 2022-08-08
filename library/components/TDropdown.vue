@@ -1,8 +1,8 @@
 <template>
 	<div
 		class="relative font-sans cursor-pointer w-max dropdown-filter"
-		@mouseover="setActiveState"
-		@mouseleave="setActiveState($event, false)"
+		@mouseover="hasMouseOver = true"
+		@mouseleave="hasMouseOver = false"
 		ref="dropdownFilter"
 	>
         <div
@@ -32,10 +32,6 @@
                 type: Boolean,
                 default: false,
             },
-			isPersisted: {
-                type: Boolean,
-                default: false,
-            },
             zIndex: {
                 type: String,
                 default: '999',
@@ -49,6 +45,7 @@
 			alignClass: '',
 			isPopupOpen: false,
             componentKey: '',
+			hasMouseOver: false,  // Useful in some cases when a child is also a dropdown, clicking on it can cause main dropdown to close
 		}),
         computed: {
             activeClass() {
@@ -84,7 +81,7 @@
 				return this.alignClass = '';
 			},
 			handleOutsideClick(event) {
-				if (this.$refs.dropdownFilter.contains(event.target)) {
+				if (this.$refs.dropdownFilter.contains(event.target) || this.hasMouseOver) {
 					return;
 				}
 
@@ -93,11 +90,6 @@
 				this.$nextTick(() => {
 					this.alignPopup();
 				})
-			},
-			setActiveState(e, state = true) {
-				if (!state && this.isPopupOpen) {
-					return;
-				}
 			},
 			openPopup() {
 				if (this.isPopupOpen) {
