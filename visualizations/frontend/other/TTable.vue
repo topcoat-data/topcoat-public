@@ -1109,7 +1109,6 @@ export default {
       // remove duplicate entries
       allValidColumns = [...new Set(allValidColumns)];
       thisTable.filters.column_list = JSON.stringify(allValidColumns);
-      // todo: determine if a data refresh is necessary, if only hiding columns no need to fetch more data
       this.fetchPagedLayer();
     },
   },

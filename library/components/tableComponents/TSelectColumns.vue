@@ -158,7 +158,6 @@ export default {
   methods: {
     selectAll() {
       this.checked = [...this.internalColumns];
-      const visibleColumnlabels = this.checked.map((c) => c.label);
     },
     deselectAll() {
       this.checked = [];
