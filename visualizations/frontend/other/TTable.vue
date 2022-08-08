@@ -185,7 +185,7 @@
       </div>
     </div>
 
-    <div style="margin: 0px auto">
+    <div v-if="!hidePagination" style="margin: 0px auto">
       <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
@@ -308,6 +308,10 @@ export default {
     },
     filterableColumns: {
       type: Array,
+    },
+    hidePagination: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: {
