@@ -133,12 +133,16 @@
 
                 if (values && titles) {
                     for (let index in values) {
-                        const value = values[index];
+                        const value = values[index] && values[index].toString();
                         const title = titles[index];
+
 						if (this.isSearchable && !title.toLowerCase().includes(this.search.toLowerCase())) {
 							continue;
 						}
-                        menu.push({ value, title });
+
+						if (value && title) {
+							menu.push({ value, title });
+						}
                     }
                 }
                 return menu;
