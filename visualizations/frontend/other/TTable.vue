@@ -12,8 +12,8 @@
       @updateSearchTerm="updateSearchTerm"
     />
 
+
     <div
-      v-if="isDataAvailable"
       id="tableContainer"
       ref="tableContainer"
       :style="columnWidthsStyle"
@@ -22,6 +22,14 @@
       <div v-if="title" id="title" class="spanAllColumns">
         {{ title }}
       </div>
+
+<!-- Special case when there are no rows, so there are no column headers, 
+so the no data message below can't show up -->
+        <!-- <div v-if="!isDataAvailable">
+            <div><i class="i-fa-solid i-fa-inbox"></i></div>
+            Top: <div>{{ noDataMessage }}</div>
+        </div> -->
+
 
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
@@ -312,6 +320,7 @@ export default {
       showSpinner: true,
       displayRows: [],
       pagerResetFunction: null,
+      internalColumns: [],
     };
   },
   computed: {
@@ -380,6 +389,38 @@ export default {
     uniqueOriginalRows() {
       return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
+    layerRows() {
+      if (typeof this.rows === "function")
+        return this.rows(this.$attrs?.["t-layer"]);
+      if (this.rows) return this.rows;
+      return [];
+    },
+  },
+  watch: {
+    loading() {
+      if (!this.loading) {
+        this.updateEndIndex(this.rowsPerPage);
+        this.updateStartIndex(0);
+        this.pagerResetFunction();
+        this.fetchTotalRows();
+      }
+      this.showSpinner = this.loading;
+    },
+    internalSelectedItem() {
+      this.$emit("update:selectedItem", this.internalSelectedItem);
+      this.$emit("selectedItemChanged", this.internalSelectedItem);
+    },
+    internalSelectedItems() {
+      this.$emit("update:selectedItems", this.internalSelectedItems);
+      this.$emit("selectedItemsChanged", this.internalSelectedItems);
+    },
+  },
+  mounted() {
+    this.fetchTotalRows();
+    this.setInternalColumns();
+  },
+  
+  methods: {
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
     // of the first row of data. That way users don't have to manually specify
@@ -393,7 +434,7 @@ export default {
     //   {header: 'baz', property:'baz'}
     // ]
     //  plus configurations for sorting etc.
-    internalColumns() {
+    setInternalColumns() {
       let cols = this.columns;
       if (typeof this.columns === "function") cols = [];
 
@@ -467,38 +508,8 @@ export default {
         }
       });
 
-      return cols;
+      this.internalColumns= cols;
     },
-    layerRows() {
-      if (typeof this.rows === "function")
-        return this.rows(this.$attrs?.["t-layer"]);
-      if (this.rows) return this.rows;
-      return [];
-    },
-  },
-  watch: {
-    loading() {
-      if (!this.loading) {
-        this.updateEndIndex(this.rowsPerPage);
-        this.updateStartIndex(0);
-        this.pagerResetFunction();
-        this.fetchTotalRows();
-      }
-      this.showSpinner = this.loading;
-    },
-    internalSelectedItem() {
-      this.$emit("update:selectedItem", this.internalSelectedItem);
-      this.$emit("selectedItemChanged", this.internalSelectedItem);
-    },
-    internalSelectedItems() {
-      this.$emit("update:selectedItems", this.internalSelectedItems);
-      this.$emit("selectedItemsChanged", this.internalSelectedItems);
-    },
-  },
-  mounted() {
-    this.fetchTotalRows();
-  },
-  methods: {
     setDisplayRows() {
       let rows = this.filterRowsBySearchValue(
         this.internalRows,
@@ -507,7 +518,11 @@ export default {
       );
       rows = this.sortRows(rows);
       rows = this.pageRows(rows);
-      this.displayRows.splice(0, this.displayRows.length, ...rows);
+        if(rows.length === 0){
+            this.displayRows.splice(0);
+        }else{
+            this.displayRows.splice(0, this.displayRows.length, ...rows);
+        }
     },
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
@@ -527,6 +542,9 @@ export default {
       if (!validProps) return;
       if (!this.rows) return;
 
+        if(this.internalColumns.length === 0) this.setInternalColumns();
+        
+        
       // Handle sorting setup
       let sortableColumns = this.internalColumns.filter((c) => {
         return (
@@ -1023,8 +1041,8 @@ export default {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
-        if (!this.isDataAvailable) this.init();
-        this.setupInternalRows();
+        if (!this.isDataAvailable) this.init()
+        else this.setupInternalRows();
       });
     },
     createRequestPayload() {
