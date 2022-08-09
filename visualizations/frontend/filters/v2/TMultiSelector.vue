@@ -124,7 +124,7 @@
             },
             ids() {
 				const column_name = this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag('ids');
-				return this.getColumn(column_name);
+				return this.getColumn(column_name, 'value');
             },
 			menu() {
                 const values = this.ids;
