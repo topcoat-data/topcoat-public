@@ -12,24 +12,11 @@
       @updateSearchTerm="updateSearchTerm"
     />
 
-
-    <div
-      id="tableContainer"
-      ref="tableContainer"
-      :style="columnWidthsStyle"
-    >
+    <div id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Title -->
       <div v-if="title" id="title" class="spanAllColumns">
         {{ title }}
       </div>
-
-<!-- Special case when there are no rows, so there are no column headers, 
-so the no data message below can't show up -->
-        <!-- <div v-if="!isDataAvailable">
-            <div><i class="i-fa-solid i-fa-inbox"></i></div>
-            Top: <div>{{ noDataMessage }}</div>
-        </div> -->
-
 
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
@@ -419,7 +406,7 @@ export default {
     this.fetchTotalRows();
     this.setInternalColumns();
   },
-  
+
   methods: {
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
@@ -508,7 +495,7 @@ export default {
         }
       });
 
-      this.internalColumns= cols;
+      this.internalColumns = cols;
     },
     setDisplayRows() {
       let rows = this.filterRowsBySearchValue(
@@ -518,11 +505,11 @@ export default {
       );
       rows = this.sortRows(rows);
       rows = this.pageRows(rows);
-        if(rows.length === 0){
-            this.displayRows.splice(0);
-        }else{
-            this.displayRows.splice(0, this.displayRows.length, ...rows);
-        }
+      if (rows.length === 0) {
+        this.displayRows.splice(0);
+      } else {
+        this.displayRows.splice(0, this.displayRows.length, ...rows);
+      }
     },
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
@@ -542,9 +529,8 @@ export default {
       if (!validProps) return;
       if (!this.rows) return;
 
-        if(this.internalColumns.length === 0) this.setInternalColumns();
-        
-        
+      if (this.internalColumns.length === 0) this.setInternalColumns();
+
       // Handle sorting setup
       let sortableColumns = this.internalColumns.filter((c) => {
         return (
@@ -1041,7 +1027,7 @@ export default {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
-        if (!this.isDataAvailable) this.init()
+        if (!this.isDataAvailable) this.init();
         else this.setupInternalRows();
       });
     },
