@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: "TCsvExport",
+  name: "TSelectColumns",
   props: {
     tLayer: {
       type: String,
