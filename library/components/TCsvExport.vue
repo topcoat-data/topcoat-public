@@ -33,6 +33,10 @@ export default {
       type: String,
       default: "Download CSV",
     },
+    additionalFilters:{
+      type: Object,
+      default: ()=>{},
+    },
   },
   data: () => ({
     is_loading: false,
@@ -40,18 +44,14 @@ export default {
   methods: {
     download() {
       this.is_loading = true;
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      let filters = {};
-      let filenameFilters = "";
-      for (let filterKey of urlParams.keys()) {
-        filters[filterKey] = urlParams.get(filterKey);
-        filenameFilters += "-" + filterKey + "_" + urlParams.get(filterKey);
-      }
       payload = {
-        filters,
         layer: this.tLayer,
       };
+      filters = this.getFiltersState ? this.getFiltersState : {}
+      if(this.additionalFilters)
+        filters = {...filters, ...this.additionalFilters }
+      payload.filters=filters
+
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
         this.is_loading = false;
         let aTag = document.createElement("a");
@@ -64,7 +64,7 @@ export default {
               encodeURIComponent(response.data.data)
           );
         }
-        let filename = this.tLayer + filenameFilters + ".csv";
+        let filename = this.tLayer + ".csv";
         aTag.setAttribute("download", filename);
         document.body.appendChild(aTag);
         aTag.click();
