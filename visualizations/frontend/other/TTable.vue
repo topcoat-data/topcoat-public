@@ -385,12 +385,6 @@ export default {
   },
   watch: {
     loading() {
-      if (!this.loading) {
-        this.updateEndIndex(this.rowsPerPage);
-        this.updateStartIndex(0);
-        this.pagerResetFunction();
-        this.fetchTotalRows();
-      }
       this.showSpinner = this.loading;
     },
     internalSelectedItem() {
@@ -406,8 +400,13 @@ export default {
     this.fetchTotalRows();
     this.setInternalColumns();
   },
-
   methods: {
+    onVisualizationUpdated() {
+      this.updateEndIndex(this.rowsPerPage);
+      this.updateStartIndex(0);
+      this.pagerResetFunction();
+      this.fetchTotalRows();
+    },
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
     // of the first row of data. That way users don't have to manually specify
