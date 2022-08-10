@@ -8,8 +8,8 @@
 			</div>
 			<span>{{ selectedItemLabel || label }}</span>
 
-			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else :size="20" />
+			<t-loading-spinner position="relative" :class="loading ? '' : 'hidden'"/>
+			<menu-down-icon :size="20" :class="loading ? 'hidden' : ''"/>
     	</div>
 
 		<!-- Popup Contents -->
