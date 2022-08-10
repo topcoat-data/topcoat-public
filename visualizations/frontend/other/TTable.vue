@@ -377,10 +377,10 @@ export default {
       return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
     layerRows() {
-      if (typeof this.rows === "function")
-        return this.rows(this.$attrs?.["t-layer"]);
-      if (this.rows) return this.rows;
-      return [];
+        if (typeof this.rows === "function") {
+            return this.rows(this.$attrs?.["t-layer"]);
+        }
+        return this.rows || [];
     },
   },
   watch: {
