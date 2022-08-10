@@ -92,7 +92,7 @@
     .t-range-slider .multi-range-slider {
         border: none;
         box-shadow: none;
-        padding: 50px 10px 10px 10px;
+        padding: 40px 20px 10px 14px;
     }
     .t-range-slider .multi-range-slider .bar-left,
     .t-range-slider .multi-range-slider .bar-right {
@@ -102,5 +102,9 @@
 
     .t-range-slider .multi-range-slider .thumb::before {
         box-shadow: none;
+    }
+
+    .t-range-slider .multi-range-slider .caption {
+        bottom: 31px;
     }
 </style>
