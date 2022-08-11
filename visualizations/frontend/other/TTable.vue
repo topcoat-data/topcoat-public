@@ -19,11 +19,11 @@
     >
       <!-- Title -->
       <div class="spanAllColumns tableHeaderContainer">
-        <div v-if="title" id="title">
-          {{ title }}
+        <div class="title">
+            <span v-if="title">{{ title }}</span>
         </div>
 
-        <div class="tableControls">
+        <div class="tableControls" v-show="!isPdf">
           <!-- <div>Future Group By</div> -->
           <t-select-columns
             v-if="filterableColumns"
@@ -31,7 +31,7 @@
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
-          <TestCsvExport1
+          <TCsvExport
             v-if="enableCsvDownload"
             :t-layer="layer"
             :additionalFilters="additionalFilters"
@@ -185,7 +185,7 @@
       </div>
     </div>
 
-    <div v-if="!hidePagination" style="margin: 0px auto">
+    <div v-if="!isPdf" style="margin: 0px auto">
       <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
@@ -309,10 +309,6 @@ export default {
     filterableColumns: {
       type: Array,
     },
-    hidePagination: {
-      type: Boolean,
-      default: false,
-    },
   },
   emits: {
     "update:selectedItem": null,
@@ -344,6 +340,10 @@ export default {
     };
   },
   computed: {
+      isPdf(){
+          console.log('window.location.href', window.location.href)
+          return window.location.href.includes('/pdf?')
+      },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
@@ -1239,7 +1239,7 @@ highlighting a row on hover etc. */
   text-align: center;
 }
 
-#title {
+.title {
   font-family: "Nunito", sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -1251,6 +1251,7 @@ highlighting a row on hover etc. */
   padding-top: 15px;
   padding-bottom: 15px;
   display: inline-block;
+  min-wdith: 1px;
 }
 
 .snykCell {
