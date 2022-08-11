@@ -64,7 +64,7 @@ export default {
               encodeURIComponent(response.data.data)
           );
         }
-        let filename = this.tLayer + ".csv";
+        const filename = `${this.tLayer}.csv`;
         aTag.setAttribute("download", filename);
         document.body.appendChild(aTag);
         aTag.click();
