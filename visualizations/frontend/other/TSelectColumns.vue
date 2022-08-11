@@ -117,43 +117,39 @@ export default {
     internalColumns: [],
   }),
   mounted() {
-    let initialSelection = this.getFilterState(this.urlParamName);
-    if (initialSelection) initialSelection = initialSelection.split("|");
+    let urlFilter = this.getFilterState(this.urlParamName);
+    const useUrlParams = typeof urlFilter === 'string';
+    if (urlFilter) {
+      urlFilter = urlFilter.split("|");
+    }
 
     this.filterableColumns.forEach((col) => {
       const label = col[0];
-      let sqlColumns;
-      if (typeof col[1] === "string") sqlColumns = [col[1]];
-      else sqlColumns = col[1];
+      let sqlColumns = typeof col[1] === "string" ?  [col[1]] : col[1];
       const iCol = { label: label, sqlColumns: sqlColumns };
       this.internalColumns.push(iCol);
-      if (initialSelection) {
-        if (initialSelection.includes(label)) this.checked.push(iCol);
+      if (useUrlParams) {
+        if (urlFilter.includes(label)) this.checked.push(iCol);
       } else if (col.length === 3 && col[2]) {
         this.checked.push(iCol);
       }
     });
-
     this.$emit("updateFilteredColumns", this.checked);
   },
   watch: {
     checked() {
       this.$emit("updateFilteredColumns", this.checked);
-      if (this.checked.length === 0) {
-        this.deleteFilter({ name: this.urlParamName });
-      } else {
-        const selectColumnLabels = this.checked.map((c) => c.label);
-        this.setFilter({
-          name: this.urlParamName,
-          value: selectColumnLabels.join("|"),
-          persist: false,
-        });
-      }
+      const selectColumnLabels = this.checked.map((c) => c.label);
+      this.setFilter({
+        name: this.urlParamName,
+        value: selectColumnLabels.join("|"),
+        persist: false,
+      });
     },
   },
   computed: {
     urlParamName() {
-      return this.TLayer + "cols";
+      return `${this.TLayer}_cols`;
     },
   },
   methods: {
