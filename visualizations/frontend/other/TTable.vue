@@ -384,9 +384,6 @@ export default {
     },
   },
   watch: {
-    loading() {
-      this.showSpinner = this.loading;
-    },
     internalSelectedItem() {
       this.$emit("update:selectedItem", this.internalSelectedItem);
       this.$emit("selectedItemChanged", this.internalSelectedItem);
