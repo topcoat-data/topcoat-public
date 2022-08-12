@@ -424,7 +424,7 @@ export default {
     //  plus configurations for sorting etc.
     internalColumns() {
       if (!this.rows) return [];
-      cols = Object.keys(this.rows[0]);
+      let cols = Object.keys(this.rows[0]);
 
       cols = cols.map((columnString) => {
         return {
@@ -503,7 +503,7 @@ export default {
           const filterableColumnLabel = fc[0];
           return !labelsOfColumnToShow.includes(filterableColumnLabel);
         });
-        headerNamesOfColumnsToHide = columnsToHide.map((c) =>
+        const headerNamesOfColumnsToHide = columnsToHide.map((c) =>
           c[0].toLowerCase()
         );
         cols = cols.filter((col) => {
