@@ -1022,6 +1022,15 @@ export default {
     fetchPagedLayer(limit, offset) {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
+      const thisTable = this.$store.state.layers.components[this.tag_unique];
+
+      if (!thisTable.filters) {
+        thisTable.filters = {};
+      }
+
+      thisTable.filters.limit = `${this.rowsPerPage}`;
+      thisTable.filters.offset = `${this.startIndex}`;
+
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) this.init();
         this.setupInternalRows();
@@ -1160,7 +1169,7 @@ export default {
   display: block;
 }
 
-/* Note: gap leaves spaces when 
+/* Note: gap leaves spaces when
 highlighting a row on hover etc. */
 .cellPadding {
   padding-left: 5px;
