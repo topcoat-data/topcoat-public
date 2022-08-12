@@ -15,7 +15,7 @@
                     </span>
                 </div>
                 <t-dropdown disable-handle-class>
-                    <menu-down-icon slot="handle" class="relative right-1" />
+                    <menu-down-icon slot="handle" />
                     <div class="flex flex-col gap-2 px-2 py-2 md:px-5">
                         <a href="/logout">Logout</a>
                         <a href="https://snyk.io/" class="md:hidden">Go to snyk.io</a>

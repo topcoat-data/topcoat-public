@@ -166,7 +166,8 @@
                 if (this.checked.length === this.ids.length) {
                     this.checked = [];
                 } else {
-                    this.checked = this.ids;
+					// Only select what is visible, search can affect this.
+                    this.checked = this.menu.map(i => i.value);
                 }
 				this.updateUrlParam();
 			},
