@@ -341,7 +341,6 @@ export default {
   },
   computed: {
       isPdf(){
-          console.log('window.location.href', window.location.href)
           return window.location.href.includes('/pdf?')
       },
     columnWidthsStyle() {
