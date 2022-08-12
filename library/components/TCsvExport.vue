@@ -47,10 +47,13 @@ export default {
       payload = {
         layer: this.tLayer,
       };
-      filters = this.getFiltersState ? this.getFiltersState : {}
-      if(this.additionalFilters)
-        filters = {...filters, ...this.additionalFilters }
-      payload.filters=filters
+      let filters = this.getFiltersState ? this.getFiltersState : {};
+      
+      if (this.additionalFilters) {
+        filters = {...filters, ...this.additionalFilters };
+      }
+      
+      payload.filters = filters;
 
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
         this.is_loading = false;
