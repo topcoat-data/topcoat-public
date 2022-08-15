@@ -82,11 +82,11 @@
 
       <!-- No table data -->
       <div
-        v-if="
+        v-if="!showSpinner && (
           !internalRows ||
           internalRows.length === 0 ||
           !displayRows ||
-          displayRows.length === 0
+          displayRows.length === 0)
         "
         class="spanAllColumns center_cell"
       >
@@ -515,9 +515,6 @@ export default {
     },
   },
   watch: {
-    loading() {
-      this.showSpinner = this.loading;
-    },
     internalSelectedItem() {
       this.$emit("update:selectedItem", this.internalSelectedItem);
       this.$emit("selectedItemChanged", this.internalSelectedItem);
