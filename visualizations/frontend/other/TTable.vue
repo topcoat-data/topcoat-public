@@ -331,7 +331,7 @@ export default {
       displayRows: [],
       pagerResetFunction: null,
       filterableColumnsToShow: [],
-      additionalFilters: null,
+      additionalFilters: {},
     };
   },
   computed: {
@@ -1112,12 +1112,11 @@ export default {
       // remove duplicate entries
       allValidColumns = [...new Set(allValidColumns)];
       if(allValidColumns.includes(undefined)){
-        console.error('Modify Column Configuration includes "undefined" value, please check that all sql column names are quoted!')
+        console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
       }
-      thisTable.filters.column_list = JSON.stringify(allValidColumns);
-      if (allValidColumns.length > 0)
-        this.additionalFilters = { column_list: thisTable.filters.column_list };
-      else this.additionalFilters = null;
+      const columnList = JSON.stringify(allValidColumns)
+      thisTable.filters.column_list = columnList;
+      this.additionalFilters = allValidColumns.length > 0 ? { column_list: columnList } : {}
       this.fetchPagedLayer();
     },
   },
