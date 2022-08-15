@@ -124,13 +124,12 @@ export default {
     }
 
     this.filterableColumns.forEach((col) => {
-      const label = col[0];
-      let sqlColumns = typeof col[1] === "string" ?  [col[1]] : col[1];
-      const iCol = { label: label, sqlColumns: sqlColumns };
+      const label = col.displayColumn;
+      const iCol = { label: label, sqlColumns: col.layerColumns };
       this.internalColumns.push(iCol);
       if (useUrlParams) {
         if (urlFilter.includes(label)) this.checked.push(iCol);
-      } else if (col.length === 3 && col[2]) {
+      } else if (col.displayByDefault) {
         this.checked.push(iCol);
       }
     });

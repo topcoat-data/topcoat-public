@@ -494,11 +494,11 @@ export default {
           (fcts) => fcts.label
         );
         const columnsToHide = this.filterableColumns.filter((fc) => {
-          const filterableColumnLabel = fc[0];
+          const filterableColumnLabel = fc.displayColumn;
           return !labelsOfColumnToShow.includes(filterableColumnLabel);
         });
         const headerNamesOfColumnsToHide = columnsToHide.map((c) =>
-          c[0].toLowerCase()
+          c.displayColumn.toLowerCase()
         );
         cols = cols.filter((col) => {
           return !headerNamesOfColumnsToHide.includes(col.header.toLowerCase());
