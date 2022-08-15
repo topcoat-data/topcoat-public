@@ -1,8 +1,6 @@
 <template>
 	<div
-		class="relative font-sans cursor-pointer w-max dropdown-filter"
-		@mouseover="setActiveState"
-		@mouseleave="setActiveState($event, false)"
+		class="relative w-auto font-sans cursor-pointer dropdown-filter"
 		ref="dropdownFilter"
 	>
         <div
@@ -13,12 +11,11 @@
         </div>
 		<slot name="outside"></slot>
 		<div
-			v-show="isPopupOpen"
 			ref="popup"
-			class="absolute mt-1 bg-white rounded-lg shadow-md base-dropdown-menu w-max min-w-"
-			:class="alignClass"
+			class="absolute mt-1 bg-white rounded-lg shadow-md base-dropdown-menu w-max"
+			:class="[alignClass, isPopupOpen ? 'h-max': 'h-[0px] opacity-0 overflow-y-hidden']"
 			:style="{ zIndex }"
-            :key="componentKey"
+			@click.stop
 		>
             <slot></slot>
 		</div>
@@ -29,10 +26,6 @@
 	export default {
         props: {
             isActive: {
-                type: Boolean,
-                default: false,
-            },
-			isPersisted: {
                 type: Boolean,
                 default: false,
             },
@@ -48,7 +41,6 @@
 		data: () => ({
 			alignClass: '',
 			isPopupOpen: false,
-            componentKey: '',
 		}),
         computed: {
             activeClass() {
@@ -93,11 +85,6 @@
 				this.$nextTick(() => {
 					this.alignPopup();
 				})
-			},
-			setActiveState(e, state = true) {
-				if (!state && this.isPopupOpen) {
-					return;
-				}
 			},
 			openPopup() {
 				if (this.isPopupOpen) {
