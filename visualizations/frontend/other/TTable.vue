@@ -1115,12 +1115,13 @@ export default {
         console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
       }
       const columnList = JSON.stringify(allValidColumns)
-      thisTable.filters.column_list = columnList;
       this.additionalFilters = allValidColumns.length > 0 ? { column_list: columnList } : {}
+      const tableFilters = thisTable.filters ? {...thisTable.filters} : {}
+      tableFilters.column_list = columnList;
       this.storeAttribute({
           target: this.tag_unique,
           attribute: "filters",
-          value: thisTable.filters,
+          value: tableFilters,
       })
       this.fetchPagedLayer();
     },
