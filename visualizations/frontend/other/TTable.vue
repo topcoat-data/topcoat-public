@@ -1117,6 +1117,11 @@ export default {
       const columnList = JSON.stringify(allValidColumns)
       thisTable.filters.column_list = columnList;
       this.additionalFilters = allValidColumns.length > 0 ? { column_list: columnList } : {}
+      this.storeAttribute({
+          target: this.tag_unique,
+          attribute: "filters",
+          value: thisTable.filters,
+      })
       this.fetchPagedLayer();
     },
   },
