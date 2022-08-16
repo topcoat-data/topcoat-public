@@ -146,6 +146,7 @@
                 :row="row.originalRow"
                 :value="getRawCellValue(row, column)"
                 :rendered_value="getCellValue(row, column)"
+                :rendered="getRenderedCellValue(row, column)"
               >
                 {{ getCellValue(row, column) }}
               </slot>
@@ -771,16 +772,32 @@ export default {
         column.default_value
       );
       if (cellValue && typeof cellValue === "object") {
-        if (cellValue.rendered) cellValue = cellValue.rendered;
+        if (cellValue.value){
+            cellValue = cellValue.value;
+        } 
         else cellValue = "";
       }
       return cellValue;
     },
     getCellValue(row, column) {
-      const cellValue = this.getRawCellValue(row, column);
+      const cellValue = this.getRenderedCellValue(row, column);
       return column.format
         ? column.format(cellValue, row.originalRow)
         : cellValue;
+    },
+    getRenderedCellValue(row, column){
+        let cellValue = _.get(
+        row.originalRow,
+        column.property,
+        column.default_value
+      );
+      if (cellValue && typeof cellValue === "object") {
+        if (cellValue.rendered){
+            cellValue = cellValue.rendered;
+        } 
+        else cellValue = "";
+      }
+      return cellValue;
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
