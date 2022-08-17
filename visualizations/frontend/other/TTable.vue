@@ -766,38 +766,25 @@ export default {
       return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
-      let cellValue = _.get(
+      const cellValue = _.get(
         row.originalRow,
         column.property,
         column.default_value
       );
-      if (cellValue && typeof cellValue === "object") {
-        if (cellValue.value){
-            cellValue = cellValue.value;
-        } 
-        else cellValue = "";
-      }
-      return cellValue;
+      return cellValue && typeof cellValue === "object" ? cellValue.value : '';
     },
     getCellValue(row, column) {
-      const cellValue = this.getRenderedCellValue(row, column);
       return column.format
-        ? column.format(cellValue, row.originalRow)
-        : cellValue;
+        ? column.format(this.getRenderedCellValue(row, column), row.originalRow)
+        : this.getRenderedCellValue(row, column);
     },
     getRenderedCellValue(row, column){
-        let cellValue = _.get(
+        const cellValue = _.get(
         row.originalRow,
         column.property,
         column.default_value
       );
-      if (cellValue && typeof cellValue === "object") {
-        if (cellValue.rendered){
-            cellValue = cellValue.rendered;
-        } 
-        else cellValue = "";
-      }
-      return cellValue;
+      return cellValue && typeof cellValue === "object" ? cellValue.rendered : '';
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
