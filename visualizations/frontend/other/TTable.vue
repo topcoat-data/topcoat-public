@@ -294,7 +294,7 @@ export default {
       default:
         "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell table-data",
     },
-    exludeFromColumns: {
+    layerColumnsToHide: {
       type: Array,
       default: () => [],
     },
@@ -435,7 +435,7 @@ export default {
 
       // remove the excluded columns
       cols = cols.filter(
-        (col) => !this.exludeFromColumns.includes(col.property)
+        (col) => !this.layerColumnsToHide.includes(col.property)
       );
 
       if (this.columnConfigs) {
