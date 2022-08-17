@@ -21,8 +21,8 @@
         <div class="tableControls" v-show="!isPdf">
           <!-- <div>Future Group By</div> -->
           <t-select-columns
-            v-if="filterableColumns"
-            :filterableColumns="filterableColumns"
+            v-if="modifiableColumns"
+            :modifiableColumns="modifiableColumns"
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
@@ -302,7 +302,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    filterableColumns: {
+    modifiableColumns: {
       type: Array,
     },
   },
@@ -490,11 +490,11 @@ export default {
       });
 
       // remove hidden columns
-      if (this.filterableColumns) {
+      if (this.modifiableColumns) {
         const labelsOfColumnToShow = this.filterableColumnsToShow.map(
           (fcts) => fcts.label
         );
-        const columnsToHide = this.filterableColumns.filter((fc) => {
+        const columnsToHide = this.modifiableColumns.filter((fc) => {
           const filterableColumnLabel = fc.displayColumn;
           return !labelsOfColumnToShow.includes(filterableColumnLabel);
         });

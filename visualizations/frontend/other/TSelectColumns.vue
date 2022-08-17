@@ -48,7 +48,7 @@
           :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
         >
           <span
-            v-if="checked.length < filterableColumns.length"
+            v-if="checked.length < modifiableColumns.length"
             @click="selectAll"
           >
             Select All
@@ -89,7 +89,7 @@
               />
             </div>
           </li>
-          <small v-if="!filterableColumns.length"> No items found </small>
+          <small v-if="!modifiableColumns.length"> No items found </small>
         </ul>
       </div>
     </div>
@@ -100,7 +100,7 @@
 export default {
   name: "TSelectColumns",
   props: {
-    filterableColumns: {
+    modifiableColumns: {
       type: Array,
       default() {
         return [];
@@ -123,7 +123,7 @@ export default {
       urlFilter = urlFilter.split("|");
     }
 
-    this.filterableColumns.forEach((col) => {
+    this.modifiableColumns.forEach((col) => {
       const label = col.displayColumn;
       const iCol = { label: label, sqlColumns: col.layerColumns };
       this.internalColumns.push(iCol);
