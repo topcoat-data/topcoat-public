@@ -137,13 +137,7 @@ export default {
   },
   watch: {
     checked() {
-      this.$emit("updateFilteredColumns", this.checked);
-      const selectColumnLabels = this.checked.map((c) => c.label);
-      this.setFilter({
-        name: this.urlParamName,
-        value: selectColumnLabels.join("|"),
-        persist: false,
-      });
+      this.updateChecked()
     },
   },
   computed: {
@@ -159,6 +153,15 @@ export default {
     deselectAll() {
       this.checked = [];
     },
+    updateChecked: _.debounce(function(){
+      this.$emit("updateFilteredColumns", this.checked);
+      const selectColumnLabels = this.checked.map((c) => c.label);
+      this.setFilter({
+        name: this.urlParamName,
+        value: selectColumnLabels.join("|"),
+        persist: false,
+      });
+    }, 750),
   },
 };
 </script>
