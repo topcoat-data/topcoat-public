@@ -1,29 +1,13 @@
 <template>
 	<div class="relative">
-		<!-- PDF Modal -->
-		<t-modal
-			@close-clicked="showPdfModal = false"
-			:is-open="showPdfModal"
-		>
-			<div class="max-w-[552px] text-center">
-				<div class="text-2xl font-sans pb-3 text-[#1C1C21]">
-					Snyk is generating a PDF
-				</div>
-				<div class="text-[#555463]">
-					Are you sure you want to leave this page? Your PDF report generation will be cancelled until you decide to export again.
-				</div>
-				<div class="pt-5 flex justify-end">
-					<base-button
-						ghost
-						variant="basic"
-						v-if="selectedUrl"
-						@click="openPage(selectedUrl, true)"
-					>
-						Leave
-					</base-button>
-				</div>
-			</div>
-		</t-modal>
+		
+		<!-- PDF tooltip -->
+		<base-tooltip id="tooltip" :open="showPdfTooltip">
+      		<span><!-- To hide default handle --></span>
+			<span slot="description">
+				Are you sure you want to leave this page? Your PDF report generation will be cancelled until you decide to export again.
+			</span>
+    	</base-tooltip>
 
 		<!-- Dropdown -->
 		<t-dropdown>
@@ -121,7 +105,7 @@
             ],
 			popup: false,
 			search: '',
-			showPdfModal: false,
+			showPdfTooltip: false,
 			selectedUrl: false,
 		}),
 		computed: {
@@ -133,9 +117,9 @@
 			openPage(url, skipPdf=false) {
 				if (this.isDownloadingPdf && !skipPdf) {
 					this.selectedUrl = url;
-					return this.showPdfModal = true;
+					return this.showPdfTooltip = true;
 				}
-				this.showPdfModal = false;
+				this.showPdfTooltip = false;
 				window.open(url, "_self");
 			}
 		}

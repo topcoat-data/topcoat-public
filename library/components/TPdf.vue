@@ -1,18 +1,14 @@
 <template>
     <div class="relative">
-      <t-modal
-        @close-clicked="showPdfModal = false"
-        :is-open="showPdfModal"
-      >
-        <div class="max-w-[552px] text-center">
-          <div class="text-2xl font-sans pb-3 text-[#1C1C21]">
-            Snyk is generating a PDF
-          </div>
-          <div class="text-[#555463]">
+
+      <!-- PDF tooltip -->
+      <base-tooltip id="tooltip" :open="showPdfTooltip">
+          <span><!-- To hide default handle --></span>
+          <span slot="description">
             Your PDF report generation is under process, will be downloaded shortly, please do not leave or close the page.
-          </div>
-        </div>
-      </t-modal>
+          </span>
+    	</base-tooltip>
+
       <button
           class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
           :class="is_loading && 'opacity-60 cursor-not-allowed'"
@@ -40,13 +36,13 @@
             },
         },
         data: () => ({
-          showPdfModal: false,
+          showPdfTooltip: false,
         }),
         methods: {
             async downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.$emit("handlePdfDownload", true);
-                this.showPdfModal = true;
+                this.showPdfTooltip = true;
                 await this.downloadPdfFile(url);
                 this.$emit("handlePdfDownload", false);
             }
