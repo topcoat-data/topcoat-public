@@ -1,19 +1,9 @@
 <template>
   <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
-    <TSearch
-      v-if="canSearch"
-      ref="easySearch"
-      :highlight-query-selector="
-        enableSearchHighlight ? '#tableContainer' : null
-      "
-      :highlight-options="highlightOptions"
-      @updateSearchTerm="updateSearchTerm"
-    />
 
-    <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Title -->
-      <div class="spanAllColumns tableHeaderContainer">
+      <div class="tableHeaderContainer">
         <div class="title">
             <span v-if="title">{{ title }}</span>
         </div>
@@ -31,9 +21,26 @@
             :t-layer="layer"
             :additionalFilters="additionalFilters"
           />
+          <TSearch
+            v-if="canSearch"
+            ref="easySearch"
+            :highlight-query-selector="
+              enableSearchHighlight ? '#tableContainer' : null
+            "
+            :highlight-options="highlightOptions"
+            @updateSearchTerm="updateSearchTerm"
+          />
         </div>
       </div>
 
+      <!-- Loading data, showSpinner -->
+      <div v-if="showSpinner">
+        <div class="spinnerOverlay">
+          <base-loading-spinner class="spinner" />
+        </div>
+      </div>
+
+    <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
       <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
@@ -75,13 +82,6 @@
         </span>
       </div>
 
-      <!-- Loading data, showSpinner -->
-      <div v-if="showSpinner" class="tableContents">
-        <div class="spinnerOverlay tableContents">
-          <base-loading-spinner class="spinner" />
-        </div>
-      </div>
-
       <!-- No table data -->
       <div
         v-if="!showSpinner && (
@@ -90,14 +90,14 @@
           !displayRows ||
           displayRows.length === 0)
         "
-        class="spanAllColumns center_cell tableContents"
+        class="spanAllColumns center_cell"
       >
         <div><i class="i-fa-solid i-fa-inbox"></i></div>
         <div>{{ noDataMessage }}</div>
       </div>
 
       <!-- Data Rows -->
-      <div v-else class="makeGridIgnoreDiv tableContents">
+      <div v-else class="makeGridIgnoreDiv">
         <div
           v-for="(group, gindex) in internalGroups"
           :key="gindex"
@@ -1068,9 +1068,8 @@ export default {
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) {
           this.init();
-        }else{
-          this.setupInternalRows();
         }
+        this.setupInternalRows();
       });
     },
     createRequestPayload() {
@@ -1152,10 +1151,7 @@ export default {
   max-width: inherit;
   max-height: inherit;
   position: relative;
-}
-
-.tableContents{
-  min-height: 85px;
+  min-height: 100px;
 }
 
 .spinnerOverlay {
