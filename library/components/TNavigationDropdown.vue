@@ -1,62 +1,90 @@
 <template>
-  	<t-dropdown>
-		<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
-			<span style="color: #145DEB" class="pl-1">
-				<chart-timeline-variant-shimmer-icon :size="18" />
-			</span>
-				{{ page.title }}
-			<menu-down-icon :size="20" />
-		</div>
+	<div class="relative">
+		<!-- PDF Modal -->
+		<t-modal
+			@close-clicked="showPdfModal = false"
+			:is-open="showPdfModal"
+		>
+			<div class="max-w-[552px] text-center">
+				<div class="text-2xl font-sans pb-3 text-[#1C1C21]">
+					Snyk is generating a PDF
+				</div>
+				<div class="text-[#555463]">
+					Are you sure you want to leave this page? Your PDF report generation will be cancelled until you decide to export again.
+				</div>
+				<div class="pt-5 flex justify-end">
+					<base-button
+						ghost
+						variant="basic"
+						v-if="selectedUrl"
+						@click="openPage(selectedUrl, true)"
+					>
+						Leave
+					</base-button>
+				</div>
+			</div>
+		</t-modal>
 
-		<div class="px-2 pt-4 pb-2 border-b border-[#E4E3E8]">
-			<h6 class="text-xs text-[#727184] tracking-[0.1em]">CHOOSE REPORT</h6>
-			<!-- <ul class="inline-flex gap-2 mt-2 base-tabs">
-				<li
-					class="p-2 rounded-lg text-xs cursor-pointer text-[#1c1c21]"
-					v-for="pane in panes"
-					:key="pane.key"
-					:class="activeSection === pane.key ? 'bg-[#eaf1ff] text-[#0F47C6]' : 'text-[#1c1c21]'"
-					@click="activeSection = pane.key"
-				>
-					{{ pane.label }}
-				</li>
-			</ul> -->
-		</div>
+		<!-- Dropdown -->
+		<t-dropdown>
+			<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
+				<span style="color: #145DEB" class="pl-1">
+					<chart-timeline-variant-shimmer-icon :size="18" />
+				</span>
+					{{ page.title }}
+				<menu-down-icon :size="20" />
+			</div>
 
-      	<div class="px-2 pt-2 nav-search">
-			<base-search-input
-				class="mt-0 mb-3 text-sm search-report !rounded-md"
-				placeholder="Search Reports"
-				size="small"
-				:clearable="false"
-				v-model="search"
-			/>
+			<div class="px-2 pt-4 pb-2 border-b border-[#E4E3E8]">
+				<h6 class="text-xs text-[#727184] tracking-[0.1em]">CHOOSE REPORT</h6>
+				<!-- <ul class="inline-flex gap-2 mt-2 base-tabs">
+					<li
+						class="p-2 rounded-lg text-xs cursor-pointer text-[#1c1c21]"
+						v-for="pane in panes"
+						:key="pane.key"
+						:class="activeSection === pane.key ? 'bg-[#eaf1ff] text-[#0F47C6]' : 'text-[#1c1c21]'"
+						@click="activeSection = pane.key"
+					>
+						{{ pane.label }}
+					</li>
+				</ul> -->
+			</div>
 
-			<small v-if="activeSection === 'all' && !pages.all.length">No reports found.</small>
-			<small v-else-if="activeSection === 'favorites' && !pages.favorites.length">No favorites found.</small>
-			<small v-else-if="activeSection === 'recents' && !pages.recents.length">No recents found.</small>
+			<div class="px-2 pt-2 nav-search">
+				<base-search-input
+					class="mt-0 mb-3 text-sm search-report !rounded-md"
+					placeholder="Search Reports"
+					size="small"
+					:clearable="false"
+					v-model="search"
+				/>
 
-			<ul class="px-2 max-h-[200px] overflow-auto">
-				<li
-					class="flex justify-between mb-3 text-sm cursor-pointer hover:text-[#1c1c21]"
-					v-for="(page, index) in pages[activeSection].filter(p => p.url.toLowerCase().includes(search))"
-					:key='index'
-					:class="navSelected(page.url, 'text-[#1c1c21]', 'text-[#555463]')"
-				>
-					<a :href="page.url" class="flex items-center justify-between w-full">
-						{{ page.title }}
-						<span
-							v-if="selected === page.url"
-							style="color: #0F47C6"
-							class="flex items-center h-full"
-						>
-							<check-icon />
-						</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-  	</t-dropdown>
+				<small v-if="activeSection === 'all' && !pages.all.length">No reports found.</small>
+				<small v-else-if="activeSection === 'favorites' && !pages.favorites.length">No favorites found.</small>
+				<small v-else-if="activeSection === 'recents' && !pages.recents.length">No recents found.</small>
+
+				<ul class="px-2 max-h-[200px] overflow-auto">
+					<li
+						class="flex justify-between mb-3 text-sm cursor-pointer hover:text-[#1c1c21]"
+						v-for="(page, index) in pages[activeSection].filter(p => p.url.toLowerCase().includes(search))"
+						:key='index'
+						:class="navSelected(page.url, 'text-[#1c1c21]', 'text-[#555463]')"
+					>
+						<div class="flex items-center justify-between w-full" @click="openPage(page.url)">
+							{{ page.title }}
+							<span
+								v-if="selected === page.url"
+								style="color: #0F47C6"
+								class="flex items-center h-full"
+							>
+								<check-icon />
+							</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</t-dropdown>
+	</div>
 </template>
 
 <script>
@@ -66,6 +94,10 @@
 				type: String,
 				default: 'Select'
 			},
+			isDownloadingPdf: {
+				type: Boolean,
+				default: false,
+			}
 		},
         mounted() {
 			if (this.pages) {
@@ -89,12 +121,24 @@
             ],
 			popup: false,
 			search: '',
+			showPdfModal: false,
+			selectedUrl: false,
 		}),
 		computed: {
 			selected() {
 				return window.location.pathname.substring(1);
 			},
 		},
+		methods: {
+			openPage(url, skipPdf=false) {
+				if (this.isDownloadingPdf && !skipPdf) {
+					this.selectedUrl = url;
+					return this.showPdfModal = true;
+				}
+				this.showPdfModal = false;
+				window.open(url, "_self");
+			}
+		}
 	}
 </script>
 
