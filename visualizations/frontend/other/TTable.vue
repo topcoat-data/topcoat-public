@@ -341,6 +341,11 @@ export default {
       isPdf(){
           return window.location.href.includes('/pdf?')
       },
+      allInitializationComplete(){
+        const isPagingInitialized = !this.canPageServer || this.endIndex
+        const isModifiableColumnsInitialized = !this.modifiableColumns || this.$store.state.layers.components[this.tag_unique]?.filters?.column_list !== undefined
+        return isPagingInitialized && isModifiableColumnsInitialized
+      },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
@@ -1063,6 +1068,7 @@ export default {
         });
     },
     fetchPagedLayer(limit, offset) {
+      if(!this.allInitializationComplete) return;
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
@@ -1263,7 +1269,6 @@ highlighting a row on hover etc. */
   padding-top: 15px;
   padding-bottom: 15px;
   display: inline-block;
-  min-wdith: 1px;
 }
 
 .snykCell {
