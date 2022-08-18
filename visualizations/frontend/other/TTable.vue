@@ -1074,8 +1074,9 @@ export default {
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) {
           this.init();
+        }else{
+          this.setupInternalRows();
         }
-        this.setupInternalRows();
       });
     },
     createRequestPayload() {
