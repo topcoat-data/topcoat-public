@@ -76,8 +76,10 @@
       </div>
 
       <!-- Loading data, showSpinner -->
-      <div v-if="showSpinner" class="spinnerOverlay">
-        <base-loading-spinner class="spinner" />
+      <div v-if="showSpinner" class="tableContents">
+        <div class="spinnerOverlay tableContents">
+          <base-loading-spinner class="spinner" />
+        </div>
       </div>
 
       <!-- No table data -->
@@ -88,14 +90,14 @@
           !displayRows ||
           displayRows.length === 0)
         "
-        class="spanAllColumns center_cell"
+        class="spanAllColumns center_cell tableContents"
       >
         <div><i class="i-fa-solid i-fa-inbox"></i></div>
         <div>{{ noDataMessage }}</div>
       </div>
 
       <!-- Data Rows -->
-      <div v-else class="makeGridIgnoreDiv">
+      <div v-else class="makeGridIgnoreDiv tableContents">
         <div
           v-for="(group, gindex) in internalGroups"
           :key="gindex"
@@ -524,6 +526,9 @@ export default {
       this.$emit("update:selectedItems", this.internalSelectedItems);
       this.$emit("selectedItemsChanged", this.internalSelectedItems);
     },
+    loading(){
+      this.showSpinner = this.loading
+    }
   },
   mounted() {
     this.fetchTotalRows();
@@ -1149,6 +1154,10 @@ export default {
   position: relative;
 }
 
+.tableContents{
+  min-height: 85px;
+}
+
 .spinnerOverlay {
   z-index: 2;
   background: rgba(0, 0, 0, 0.05);
@@ -1157,6 +1166,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  min-height: 120px;
 }
 .spinner {
   position: absolute;
