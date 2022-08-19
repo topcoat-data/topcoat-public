@@ -50,11 +50,13 @@
                 return '';
             },
         },
-		created: function() {
-			document.body.addEventListener("click", this.handleOutsideClick);
-		},
-		beforeDestroy: function() {
-			document.body.removeEventListener("click", this.handleOutsideClick);
+		mounted() {
+			onClickOutside(this.$refs.dropdownFilter, (event) => {
+				if (this.isPopupOpen) {
+					this.isPopupOpen = false;
+					this.$emit('closed');
+				}
+			});
 		},
 		methods: {
 			alignPopup() {
@@ -74,17 +76,6 @@
 				}
 
 				return this.alignClass = '';
-			},
-			handleOutsideClick(event) {
-				if (this.$refs.dropdownFilter.contains(event.target)) {
-					return;
-				}
-
-				this.isPopupOpen = false;
-				this.$emit('closed');
-				this.$nextTick(() => {
-					this.alignPopup();
-				})
 			},
 			openPopup() {
 				if (this.isPopupOpen) {
