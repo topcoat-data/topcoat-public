@@ -1,5 +1,5 @@
 <template>
-	<t-dropdown>
+	<t-dropdown @open="onDropdownOpen">
 
 		<!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -13,7 +13,7 @@
     	</div>
 
 		<!-- Popup Contents -->
-		<template v-slot:default="{ popup }">
+		<template>
 			<div class="min-w-[254px]">
 				<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full" v-if="label">
 					<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
@@ -26,7 +26,7 @@
 							class="flex justify-between px-[8px] py-[6px] text-sm cursor-pointer text-[#555463]"
 							v-for="(item, index) in menu"
 							:key="index"
-							@click="selectItem(item, popup)"
+							@click="selectItem(item)"
 						>
 							<div class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]">
 								{{ item.title }}
@@ -100,27 +100,32 @@
                 }
                 return menu;
             },
-			selectedItemLabel() {
-				const selected = this.menu.filter(item => item.value === this.selected_internal)[0]
-				return selected ? selected.title : null;
-			},
-		},
-		methods: {
+            selectedItemLabel() {
+                const selected = this.menu.filter(item => item.value === this.selected_internal)[0]
+
+                if (selected) {
+                    return selected.title;
+                }
+
+                if (this.selected_internal) {
+                    return this.selected_internal;
+                }
+
+                return null;
+            },
+        },
+        methods: {
             onVisualizationInit() {
-                // See if the page was loaded with a url param value
                 const initial_value = this.getFilterValue("dropdown");
 
                 if (initial_value) {
                     this.selected_internal = initial_value;
                 } else if (this.defaultValue) {
-					this.selected_internal = this.defaultValue;
-                	this.setFilterValue("dropdown", this.selected_internal, true);
-				} else if (this.options.length && !this.isUnselectable) {
-					this.selected_internal = this.options[0];
-                	this.setFilterValue("dropdown", this.selected_internal, true);
-				}
+                    this.selected_internal = this.defaultValue;
+                    this.setFilterValue("dropdown", this.defaultValue);
+                }
             },
-            selectItem(item, popup) {
+            selectItem(item) {
                 if (this.selected_internal === item.value && this.isUnselectable) {
                     this.selected_internal = '';
                 } else {
@@ -128,8 +133,10 @@
                 }
 
                 this.setFilterValue("dropdown", this.selected_internal, true);
-				popup(false);
             },
+            onDropdownOpen() {
+                this.fetchLayerData();
+            }
 		}
 	}
 </script>

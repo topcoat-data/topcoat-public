@@ -1,8 +1,9 @@
 <template>
-    
+
 	<t-dropdown
-        :disable-handle-class="isExpanded"
+        :is-expanded="onExpandable"
         :is-active="checked.length ? true : false"
+		@open="onDropdownOpen"
     >
 
 		<!-- Handle -->
@@ -16,7 +17,7 @@
 			<span>{{ label }}</span>
 
 			<t-loading-spinner v-if="loading" position="relative" />
-			<menu-down-icon v-else size="20" />
+			<menu-down-icon v-else :size="20" />
     	</div>
 
 		<!-- Popup Contents -->
@@ -38,7 +39,7 @@
 			</div>
 			<div class="px-2 pt-2 nav-search" v-if="isSearchable">
 				<base-search-input
-					class="mt-0 mb-3 text-sm search-report !rounded-md" 
+					class="mt-0 mb-3 text-sm search-report !rounded-md"
 					:placeholder="searchPlaceholder"
 					size="small"
 					:clearable="false"
@@ -106,6 +107,10 @@
                 type: String,
                 default: '',
             },
+            onExpandable: {
+                type: Boolean,
+                default: false,
+            },
 		},
 		data: () => ({
             checked: [],
@@ -119,7 +124,7 @@
             },
             ids() {
 				const column_name = this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag('ids');
-				return this.getColumn(column_name);
+				return this.getColumn(column_name, 'value');
             },
 			menu() {
                 const values = this.ids;
@@ -128,12 +133,16 @@
 
                 if (values && titles) {
                     for (let index in values) {
-                        const value = values[index];
+                        const value = values[index] && values[index].toString();
                         const title = titles[index];
+
 						if (this.isSearchable && !title.toLowerCase().includes(this.search.toLowerCase())) {
 							continue;
 						}
-                        menu.push({ value, title });
+
+						if (value && title) {
+							menu.push({ value, title });
+						}
                     }
                 }
                 return menu;
@@ -145,34 +154,33 @@
 				}
 				return attrs;
 			}
-		},
+        },
 		methods: {
             onVisualizationInit() {
-                // See if the page was loaded with a url param value
-                const initial_value = this.getFilterValue("selected_items");
+				const initial_value = this.getFilterValue("selected_items");
 
                 if (initial_value) {
-                    this.checked = initial_value.split('|').filter(id => this.ids.indexOf(id) > -1);
-                } else if (!initial_value && typeof initial_value !== 'string' && this.hasCheckedAll) {
-					this.checked = this.ids;
-                	this.setFilterValue("selected_items", this.checked.join('|'), true);
-				} else if (!initial_value && typeof initial_value !== 'string' && this.defaultValue) {
-                    const defaultIds = this.defaultValue.split('|');
-                    this.checked = this.ids.filter(id => defaultIds.indexOf(id) > -1);
-                	this.setFilterValue("selected_items", this.checked.join('|'), true);
+                    this.checked = initial_value.split('|');
+                } else if (this.defaultValue) {
+                    this.checked = this.defaultValue.split('|');
+                    this.setFilterValue("selected_items", this.defaultValue);
                 }
             },
 			selectUnselect() {
                 if (this.checked.length === this.ids.length) {
                     this.checked = [];
                 } else {
-                    this.checked = this.ids;
+					// Only select what is visible, search can affect this.
+                    this.checked = this.menu.map(i => i.value);
                 }
 				this.updateUrlParam();
 			},
             updateUrlParam() {
-                this.setFilterValue("selected_items", this.checked.join('|'), true);
+                this.setFilterValue("selected_items", this.checked.join('|'));
             },
+            onDropdownOpen() {
+                this.fetchLayerData();
+            }
 		}
 	}
 </script>

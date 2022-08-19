@@ -201,9 +201,6 @@
 				} else {
 					this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
 					this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
-		
-					var start = this.startDate.clone();
-					var end = this.endDate.clone();
 				}
 				this.setFilterValue("date_preset", this.datePreset, false);
 			},
@@ -266,35 +263,14 @@
 				this.datePreset = "custom";
 			},
 			onVisualizationInit() {
-
 				if (this.pickerMode === 'single') {
-
-					// Unset any range filter
-					this.unsetFilterValue('start_date', false);
-					this.unsetFilterValue('end_date', false);
-
-					// Set variables
 					this.date = this.getFilterValue('date') ? Moment(this.getFilterValue('date')) : Moment();
 					this.handleUrlPreset('single');
-
-					// Set url filters
-					this.setFilterValue('date', this.date.format('YYYY-MM-DD'), false);
-					this.setFilterValue('date_preset', this.datePreset, true);
 				} else if (this.pickerMode === 'range') {
-					
-					// Unset single filter
-					this.unsetFilterValue('date', false);
-
-					// Set variables
 					this.startDate = (this.getFilterValue('start_date') ? Moment(this.getFilterValue('start_date')) : Moment().subtract(1, 'days'));
 					this.endDate = (this.getFilterValue('end_date') ? Moment(this.getFilterValue('end_date')) : Moment().subtract(1, 'days'));
 					this.datePreset = this.getFilterValue('date_preset');
 					this.handleUrlPreset('range');
-
-					// Set url filters
-					this.setFilterValue('start_date', this.startDate.format('YYYY-MM-DD'), false);
-					this.setFilterValue('end_date', this.endDate.format('YYYY-MM-DD'), false);
-					this.setFilterValue('date_preset', this.datePreset, true);
 				}
 				
 			},

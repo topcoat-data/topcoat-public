@@ -12,12 +12,7 @@
       @updateSearchTerm="updateSearchTerm"
     />
 
-    <div
-      v-if="isDataAvailable"
-      id="tableContainer"
-      ref="tableContainer"
-      :style="columnWidthsStyle"
-    >
+    <div id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Title -->
       <div v-if="title" id="title" class="spanAllColumns">
         {{ title }}
@@ -151,6 +146,7 @@
                 :row="row.originalRow"
                 :value="getRawCellValue(row, column)"
                 :rendered_value="getCellValue(row, column)"
+                :rendered="getRenderedCellValue(row, column)"
               >
                 {{ getCellValue(row, column) }}
               </slot>
@@ -312,6 +308,7 @@ export default {
       showSpinner: true,
       displayRows: [],
       pagerResetFunction: null,
+      internalColumns: [],
     };
   },
   computed: {
@@ -380,6 +377,34 @@ export default {
     uniqueOriginalRows() {
       return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
+    layerRows() {
+        if (typeof this.rows === "function") {
+            return this.rows(this.$attrs?.["t-layer"]);
+        }
+        return this.rows || [];
+    },
+  },
+  watch: {
+    internalSelectedItem() {
+      this.$emit("update:selectedItem", this.internalSelectedItem);
+      this.$emit("selectedItemChanged", this.internalSelectedItem);
+    },
+    internalSelectedItems() {
+      this.$emit("update:selectedItems", this.internalSelectedItems);
+      this.$emit("selectedItemsChanged", this.internalSelectedItems);
+    },
+  },
+  mounted() {
+    this.fetchTotalRows();
+    this.setInternalColumns();
+  },
+  methods: {
+    onVisualizationUpdated() {
+      this.updateEndIndex(this.rowsPerPage);
+      this.updateStartIndex(0);
+      this.pagerResetFunction();
+      this.fetchTotalRows();
+    },
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
     // of the first row of data. That way users don't have to manually specify
@@ -393,7 +418,7 @@ export default {
     //   {header: 'baz', property:'baz'}
     // ]
     //  plus configurations for sorting etc.
-    internalColumns() {
+    setInternalColumns() {
       let cols = this.columns;
       if (typeof this.columns === "function") cols = [];
 
@@ -467,38 +492,8 @@ export default {
         }
       });
 
-      return cols;
+      this.internalColumns = cols;
     },
-    layerRows() {
-      if (typeof this.rows === "function")
-        return this.rows(this.$attrs?.["t-layer"]);
-      if (this.rows) return this.rows;
-      return [];
-    },
-  },
-  watch: {
-    loading() {
-      if (!this.loading) {
-        this.updateEndIndex(this.rowsPerPage);
-        this.updateStartIndex(0);
-        this.pagerResetFunction();
-        this.fetchTotalRows();
-      }
-      this.showSpinner = this.loading;
-    },
-    internalSelectedItem() {
-      this.$emit("update:selectedItem", this.internalSelectedItem);
-      this.$emit("selectedItemChanged", this.internalSelectedItem);
-    },
-    internalSelectedItems() {
-      this.$emit("update:selectedItems", this.internalSelectedItems);
-      this.$emit("selectedItemsChanged", this.internalSelectedItems);
-    },
-  },
-  mounted() {
-    this.fetchTotalRows();
-  },
-  methods: {
     setDisplayRows() {
       let rows = this.filterRowsBySearchValue(
         this.internalRows,
@@ -507,7 +502,11 @@ export default {
       );
       rows = this.sortRows(rows);
       rows = this.pageRows(rows);
-      this.displayRows.splice(0, this.displayRows.length, ...rows);
+      if (rows.length === 0) {
+        this.displayRows.splice(0);
+      } else {
+        this.displayRows.splice(0, this.displayRows.length, ...rows);
+      }
     },
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
@@ -526,6 +525,8 @@ export default {
       let validProps = this.errorPropValidations();
       if (!validProps) return;
       if (!this.rows) return;
+
+      if (this.internalColumns.length === 0) this.setInternalColumns();
 
       // Handle sorting setup
       let sortableColumns = this.internalColumns.filter((c) => {
@@ -765,22 +766,25 @@ export default {
       return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
-      let cellValue = _.get(
+      const cellValue = _.get(
         row.originalRow,
         column.property,
         column.default_value
       );
-      if (cellValue && typeof cellValue === "object") {
-        if (cellValue.rendered) cellValue = cellValue.rendered;
-        else cellValue = "";
-      }
-      return cellValue;
+      return cellValue && typeof cellValue === "object" ? cellValue.value : '';
     },
     getCellValue(row, column) {
-      const cellValue = this.getRawCellValue(row, column);
       return column.format
-        ? column.format(cellValue, row.originalRow)
-        : cellValue;
+        ? column.format(this.getRenderedCellValue(row, column), row.originalRow)
+        : this.getRenderedCellValue(row, column);
+    },
+    getRenderedCellValue(row, column){
+        const cellValue = _.get(
+        row.originalRow,
+        column.property,
+        column.default_value
+      );
+      return cellValue && typeof cellValue === "object" ? cellValue.rendered : '';
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
@@ -1024,7 +1028,7 @@ export default {
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) this.init();
-        this.setupInternalRows();
+        else this.setupInternalRows();
       });
     },
     createRequestPayload() {
