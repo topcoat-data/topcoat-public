@@ -1,24 +1,31 @@
 <template>
-    <button
-        class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
-        style="height: fit-content;"
-        :disabled="is_loading"
-        @click="downloadPdf"
-    >
-        <div class="flex items-center gap-1">
-            {{ label }}
-            <t-loading-spinner
-                v-if="is_loading"
-                position="relative"
-            />
-        </div>
-    </button>
+    <div class="relative">
+        <!-- PDF tooltip -->
+		<t-tooltip v-if="showPdfTooltip" position="left" width="260px">
+			You PDF will be downloaded shorty.
+    	</t-tooltip>
+
+        <button
+            class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
+            style="height: fit-content;"
+            :disabled="is_loading"
+            @click="downloadPdf"
+        >
+            <div class="flex items-center gap-1">
+                {{ is_loading ? "Generating PDF" : label }}
+                <t-loading-spinner
+                    v-if="is_loading"
+                    position="relative"
+                />
+            </div>
+        </button>
+    </div>
 </template>
 
 <script>
     export default {
         data: () => ({
-            is_loading: false,
+            showPdfTooltip: false,
         }),
         props: {
             label: {
@@ -27,10 +34,13 @@
             },
         },
         methods: {
-            downloadPdf() {
+            async downloadPdf() {
                 const url = this.page.url + window.location.search;
-                return this.downloadPdfFile(url);
+                this.$emit("handlePdfDownload", true);
+                this.showPdfTooltip = true;
+                await this.downloadPdfFile(url);
+                this.$emit("handlePdfDownload", false);
             }
-        }
+        },
     } 
 </script>
