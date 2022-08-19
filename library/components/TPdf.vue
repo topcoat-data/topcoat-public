@@ -1,5 +1,5 @@
 <template>
-    <div class="relative">
+    <div class="relative" @mouseover="handleTooltip" @mouseleave="showPdfTooltip = false">
         <!-- PDF tooltip -->
 		<t-tooltip v-if="showPdfTooltip" position="left" width="260px">
 			You PDF will be downloaded shorty.
@@ -38,9 +38,13 @@
             async downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.$emit("handlePdfDownload", true);
-                this.showPdfTooltip = true;
                 await this.downloadPdfFile(url);
                 this.$emit("handlePdfDownload", false);
+            },
+            handleTooltip() {
+                if (this.is_loading) {
+                    this.showPdfTooltip = true;
+                }
             }
         },
     } 
