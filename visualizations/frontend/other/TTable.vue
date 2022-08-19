@@ -1167,6 +1167,7 @@ export default {
   max-height: inherit;
   position: relative;
   min-height: 100px;
+  overflow-x: scroll;
 }
 
 .spinnerOverlay {
