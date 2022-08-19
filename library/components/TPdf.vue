@@ -37,6 +37,7 @@
         methods: {
             async downloadPdf() {
                 const url = this.page.url + window.location.search;
+                this.showPdfTooltip = true;
                 this.$emit("handlePdfDownload", true);
                 await this.downloadPdfFile(url);
                 this.$emit("handlePdfDownload", false);
