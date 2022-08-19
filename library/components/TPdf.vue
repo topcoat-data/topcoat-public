@@ -10,6 +10,7 @@
             style="height: fit-content;"
             :disabled="is_loading"
             @click="downloadPdf"
+            :class="is_loading && 'opacity-60'"
         >
             <div class="flex items-center gap-1">
                 {{ is_loading ? "Generating PDF" : label }}
