@@ -16,7 +16,7 @@
             @open="fetchLayerData"
         >
             <div class="presets-dropown" slot="sidebar">
-                <div
+                <button
                     v-for="preset in presets[mode]"
                     :key="preset.key"
                     :style="{ color: preset.key === selectedPreset.key ? '#1284e7' : '#73879c' }"
@@ -24,14 +24,18 @@
                     @click="handlePreset(preset)"
                 >
                     {{ preset.label }}
-                </div>
+                </button>
             </div>
 
             <div slot="icon-clear"></div>
             <div slot="icon-calendar">
                 <div class="flex items-center gap-1">
-                    <reload-icon @click="handleReload" class="cursor-pointer" />
-                    <close-icon @click="handleClear" class="cursor-pointer" />
+                    <button>
+                        <reload-icon @click="handleReload" />
+                    </button>
+                    <button>
+                        <close-icon @click="handleClear" />
+                    </button>
                     <t-loading-spinner position="relative" slot="icon-calendar" v-if="loading" />
                     <span style="color: #1284e7" v-else>
                         <calendar-blank-outline-icon />
@@ -48,6 +52,7 @@ export default {
         dateFormat: {
             type: String,
             default: "YYYY-MM-DD",
+            // Fromat tokens are inspired from moment.js style formatting.
         },
         placeholder: {
             type: String,
@@ -99,13 +104,16 @@ export default {
             this.selectedPreset = this.presets[this.mode].filter(p => p.key === "custom")[0];
         },
         handleConfirm(date) {
+            // Url should always store date in a readable format to avoid failure on component load.
             if (this.mode === "range") {
+                // Returns array
                 const startDate = date[0];
                 const endDate = date[1]
-                this.setFilterValue("start_date", this.formatDate(startDate));
-                this.setFilterValue("end_date", this.formatDate(endDate));
+                this.setFilterValue("start_date", this.formatDate(startDate, "YYYY-MM-DD"));
+                this.setFilterValue("end_date", this.formatDate(endDate, "YYYY-MM-DD"));
             } else {
-                this.setFilterValue("date", this.formatDate(date));
+                // Returns string
+                this.setFilterValue("start_date", this.formatDate(date, "YYYY-MM-DD"));
             }
             this.setFilterValue("date_preset", this.selectedPreset.key);
 
@@ -120,22 +128,21 @@ export default {
         },
         assignDatesFromFilters() {
             if (this.mode === "range") {
-                const date = [];
                 const startDate = this.getFilterValue("start_date");
                 const endDate = this.getFilterValue("end_date");
 
                 if (startDate) {
-                    date.push(new Date(startDate));
+                    this.date.push(window.Moment(startDate).toDate());
                 }
 
                 if (endDate) {
-                    date.push(new Date(endDate));
+                    this.date.push(window.Moment(endDate).toDate());
                 }
-
-                this.date = date;
             } else {
-                const date = this.getFilterValue("date");
-                this.date = new Date(date);
+                const date = this.getFilterValue("start_date");
+                if (date) {
+                    this.date = window.Moment(date).toDate();
+                }
             }
 
             const preset = this.getFilterValue("date_preset");
@@ -153,72 +160,71 @@ export default {
             this.selectedPreset = preset;
         },
         handleRangeDates(preset) {
-            let startDate = new Date();
-            let endDate = new Date();
+            let startDate = window.Moment();
+            let endDate = window.Moment();
 
             switch (preset) {
                 case "last7days":
-                    startDate = new Date(startDate.setDate(startDate.getDate() - 7));
-                    endDate = new Date(endDate.setDate(endDate.getDate() - 1));
+                    startDate = startDate.subtract(7, 'days');
+					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "lastmonth":
-                    const lastMonth = startDate.getMonth() - 1;
-                    startDate.setMonth(lastMonth);
-                    startDate.setDate(1); // First day of month
-                    endDate.setMonth(lastMonth);
-
-                    const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth()+1, 0).getDate();
-                    endDate.setDate(lastDayOfMonth); // Last day of month
+					startDate = startDate.subtract(1, 'months').startOf('month');
+					endDate = endDate.subtract(1, 'months').endOf('month');
                     break;
-                
+
                 case "last30days":
-                    startDate = new Date(startDate.setDate(startDate.getDate() - 30));
-                    endDate = new Date(endDate.setDate(endDate.getDate() - 1));
+					startDate = startDate.subtract(30, 'days');
+					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "last90days":
-                    startDate = new Date(startDate.setDate(startDate.getDate() - 90));
-                    endDate = new Date(endDate.setDate(endDate.getDate() - 1));
+					startDate = startDate.subtract(90, 'days');
+					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "mtd":
-                    startDate.setDate(1);
+                    startDate = startDate.startOf('month');
+					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "ytd":
-                    startDate.setMonth(0);
-                    startDate.setDate(1);
+					startDate = startDate.startOf('year');
+					endDate = endDate.subtract(1, 'days');
                     break;
             }
 
-            this.date = [startDate, endDate];
+            this.date = [
+                startDate.toDate(),
+                endDate.toDate(),
+            ];
         },
         handleSingleDates(preset) {
-            let date = new Date();
+            let date = window.Moment();
             switch(preset) {
                 case "yesterday":
-                    date.setDate(date.getDate() - 1);
+                    date = date.subtract(1, 'days');
                     break;
 
                 case "7DaysAgo":
-                    date.setDate(date.getDate() - 7);
+                    date = date.subtract(7, 'days');
                     break;
 
                 case "30DaysAgo":
-                    date.setDate(date.getDate() - 30);
+                    date = date.subtract(30, 'days')
                     break;
                 
                 case "90DaysAgo":
-                    date.setDate(date.getDate() - 90);
+                    date = date.subtract(90, 'days')
                     break;
                 
                 case "yearAgo":
-                    date.setDate(date.getDate() - 365);
+                    date = date.subtract(1, 'year')
                     break;
                 
             }
-            this.date = date;
+            this.date = date.toDate();
         },
         handleClear() {
             this.date = [];
@@ -226,34 +232,9 @@ export default {
             this.unsetFilterValue("start_date");
             this.unsetFilterValue("end_date");
             this.unsetFilterValue("date_preset");
-            this.unsetFilterValue("date");
         },
-        formatDate(dateValue) {
-            const date = [];
-
-            const dateObject = new Date(dateValue);
-            let year = dateObject.getFullYear();
-
-            let month = dateObject.getMonth() + 1;
-            month = month < 10 ? ("0" + month) : month;
-
-            let day = dateObject.getDate();
-            day = day < 10 ? ("0" + day) : day;
-
-            let formatItems = this.dateFormat.match(/(.)\1*/g);  // Formats the date-format like this ['YYYY', '-', 'MM', '-', 'DD']
-            for (let item of formatItems) {
-                if (item === "YYYY") {
-                    date.push(year);
-                } else if (item === "MM") {
-                    date.push(month);
-                } else if (item === "DD") {
-                    date.push(day);
-                } else {
-                    // It's a seperator
-                    date.push(item);
-                }
-            }
-            return date.join("");
+        formatDate(date, format=this.dateFormat) {
+            return window.Moment(date).format(format);
         }
     },
 }
