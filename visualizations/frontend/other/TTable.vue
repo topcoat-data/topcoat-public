@@ -2,22 +2,45 @@
   <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
-    <TSearch
-      v-if="canSearch"
-      ref="easySearch"
-      :highlight-query-selector="
-        enableSearchHighlight ? '#tableContainer' : null
-      "
-      :highlight-options="highlightOptions"
-      @updateSearchTerm="updateSearchTerm"
-    />
-
-    <div id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Title -->
-      <div v-if="title" id="title" class="spanAllColumns">
-        {{ title }}
+      <div class="tableHeaderContainer">
+        <div class="title">
+            <span v-if="title">{{ title }}</span>
+        </div>
+
+        <div class="tableControls" v-show="!isPdf">
+          <!-- <div>Future Group By</div> -->
+          <t-select-columns
+            v-if="modifiableColumns"
+            :modifiableColumns="modifiableColumns"
+            @updateFilteredColumns="updateFilteredColumns"
+            :t-layer="layer"
+          />
+          <TCsvExport
+            v-if="enableCsvDownload"
+            :t-layer="layer"
+            :additionalFilters="additionalFilters"
+          />
+          <TSearch
+            v-if="canSearch"
+            ref="easySearch"
+            :highlight-query-selector="
+              enableSearchHighlight ? '#tableContainer' : null
+            "
+            :highlight-options="highlightOptions"
+            @updateSearchTerm="updateSearchTerm"
+          />
+        </div>
       </div>
 
+      <!-- Loading data, showSpinner -->
+      <div v-if="showSpinner">
+        <div class="spinnerOverlay">
+          <base-loading-spinner class="spinner" />
+        </div>
+      </div>
+
+    <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
       <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
@@ -59,18 +82,13 @@
         </span>
       </div>
 
-      <!-- Loading data, showSpinner -->
-      <div v-if="showSpinner" class="spinnerOverlay">
-        <base-loading-spinner class="spinner" />
-      </div>
-
       <!-- No table data -->
       <div
-        v-if="
+        v-if="!showSpinner && (
           !internalRows ||
           internalRows.length === 0 ||
           !displayRows ||
-          displayRows.length === 0
+          displayRows.length === 0)
         "
         class="spanAllColumns center_cell"
       >
@@ -146,6 +164,7 @@
                 :row="row.originalRow"
                 :value="getRawCellValue(row, column)"
                 :rendered_value="getCellValue(row, column)"
+                :rendered="getRenderedCellValue(row, column)"
               >
                 {{ getCellValue(row, column) }}
               </slot>
@@ -164,7 +183,7 @@
       </div>
     </div>
 
-    <div style="margin: 0px auto">
+    <div v-if="!isPdf" style="margin: 0px auto">
       <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
@@ -275,11 +294,18 @@ export default {
     cellClasses: {
       type: String,
       default:
-        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell",
+        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell table-data",
     },
-    exludeFromColumns: {
+    layerColumnsToHide: {
       type: Array,
       default: () => [],
+    },
+    enableCsvDownload: {
+      type: Boolean,
+      default: true,
+    },
+    modifiableColumns: {
+      type: Array,
     },
   },
   emits: {
@@ -307,10 +333,20 @@ export default {
       showSpinner: true,
       displayRows: [],
       pagerResetFunction: null,
+      filterableColumnsToShow: [],
+      additionalFilters: {},
       internalColumns: [],
     };
   },
   computed: {
+      isPdf(){
+          return window.location.href.includes('/pdf?')
+      },
+      allInitializationComplete(){
+        const isPagingInitialized = !this.canPageServer || this.endIndex
+        const isModifiableColumnsInitialized = !this.modifiableColumns || this.$store.state.layers.components[this.tag_unique]?.filters?.column_list !== undefined
+        return isPagingInitialized && isModifiableColumnsInitialized
+      },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
@@ -377,10 +413,10 @@ export default {
       return _.uniq(this.internalRows.map((r) => r.originalRow));
     },
     layerRows() {
-        if (typeof this.rows === "function") {
-            return this.rows(this.$attrs?.["t-layer"]);
-        }
-        return this.rows || [];
+      if (typeof this.rows === "function")
+        return this.rows(this.$attrs?.["t-layer"]);
+      if (this.rows) return this.rows;
+      return [];
     },
   },
   watch: {
@@ -392,19 +428,15 @@ export default {
       this.$emit("update:selectedItems", this.internalSelectedItems);
       this.$emit("selectedItemsChanged", this.internalSelectedItems);
     },
+    loading(){
+      this.showSpinner = this.loading
+    }
   },
   mounted() {
     this.fetchTotalRows();
-    this.setInternalColumns();
   },
   methods: {
-    onVisualizationUpdated() {
-      this.updateEndIndex(this.rowsPerPage);
-      this.updateStartIndex(0);
-      this.pagerResetFunction();
-      this.fetchTotalRows();
-    },
-    // internal columns takes any column configurations from the TColumnConfig
+        // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
     // of the first row of data. That way users don't have to manually specify
     // all of the columns- it is assmumed that if the layer is providing a column
@@ -418,12 +450,9 @@ export default {
     // ]
     //  plus configurations for sorting etc.
     setInternalColumns() {
-      let cols = this.columns;
-      if (typeof this.columns === "function") cols = [];
+      if (!this.rows || this.rows.length === 0) return [];
+      let cols = Object.keys(this.rows[0]);
 
-      if (cols.length === 0 && this.rows && this.rows.length > 0) {
-        cols = Object.keys(this.rows[0]);
-      }
       cols = cols.map((columnString) => {
         return {
           header: _.toString(columnString),
@@ -438,7 +467,7 @@ export default {
 
       // remove the excluded columns
       cols = cols.filter(
-        (col) => !this.exludeFromColumns.includes(col.property)
+        (col) => !this.layerColumnsToHide.includes(col.property)
       );
 
       if (this.columnConfigs) {
@@ -461,6 +490,7 @@ export default {
           }
         });
       }
+
       if (this.canSort) {
         // Note: the "+" in "+col.sort.priority" converts strings to numbers
         const sortPriorities = cols
@@ -491,6 +521,23 @@ export default {
         }
       });
 
+      // remove hidden columns
+      if (this.modifiableColumns) {
+        const labelsOfColumnToShow = this.filterableColumnsToShow.map(
+          (fcts) => fcts.label
+        );
+        const columnsToHide = this.modifiableColumns.filter((fc) => {
+          const filterableColumnLabel = fc.displayColumn;
+          return !labelsOfColumnToShow.includes(filterableColumnLabel);
+        });
+        const headerNamesOfColumnsToHide = columnsToHide.map((c) =>
+          c.displayColumn.toLowerCase()
+        );
+        cols = cols.filter((col) => {
+          return !headerNamesOfColumnsToHide.includes(col.header.toLowerCase());
+        });
+      }
+
       this.internalColumns = cols;
     },
     setDisplayRows() {
@@ -501,11 +548,7 @@ export default {
       );
       rows = this.sortRows(rows);
       rows = this.pageRows(rows);
-      if (rows.length === 0) {
-        this.displayRows.splice(0);
-      } else {
-        this.displayRows.splice(0, this.displayRows.length, ...rows);
-      }
+      this.displayRows.splice(0, this.displayRows.length, ...rows);
     },
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
@@ -519,13 +562,19 @@ export default {
         this.init();
       }
     },
+    onVisualizationUpdated() {
+      this.updateEndIndex(this.rowsPerPage);
+      this.updateStartIndex(0);
+      this.pagerResetFunction();
+      this.fetchTotalRows();
+    },
     init() {
       // Error checking
       let validProps = this.errorPropValidations();
       if (!validProps) return;
       if (!this.rows) return;
 
-      if (this.internalColumns.length === 0) this.setInternalColumns();
+      this.setInternalColumns();
 
       // Handle sorting setup
       let sortableColumns = this.internalColumns.filter((c) => {
@@ -612,7 +661,6 @@ export default {
           detailRowOpen: !this.canCollapseDetailRows,
         };
       });
-
       this.setDisplayRows();
       this.showSpinner = false;
     },
@@ -765,22 +813,25 @@ export default {
       return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
-      let cellValue = _.get(
+      const cellValue = _.get(
         row.originalRow,
         column.property,
         column.default_value
       );
-      if (cellValue && typeof cellValue === "object") {
-        if (cellValue.rendered) cellValue = cellValue.rendered;
-        else cellValue = "";
-      }
-      return cellValue;
+      return cellValue && typeof cellValue === "object" ? cellValue.value : '';
     },
     getCellValue(row, column) {
-      const cellValue = this.getRawCellValue(row, column);
       return column.format
-        ? column.format(cellValue, row.originalRow)
-        : cellValue;
+        ? column.format(this.getRenderedCellValue(row, column), row.originalRow)
+        : this.getRenderedCellValue(row, column);
+    },
+    getRenderedCellValue(row, column){
+        const cellValue = _.get(
+        row.originalRow,
+        column.property,
+        column.default_value
+      );
+      return cellValue && typeof cellValue === "object" ? cellValue.rendered : '';
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
@@ -1019,12 +1070,17 @@ export default {
           this.totalRows = totalRows;
         });
     },
-    fetchPagedLayer(limit, offset) {
+    fetchPagedLayer() {
+      if(!this.allInitializationComplete) return;
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
-        if (!this.isDataAvailable) this.init();
-        else this.setupInternalRows();
+        if (!this.isDataAvailable) {
+          this.init();
+        }else{
+          this.setInternalColumns();
+          this.setupInternalRows();
+        }
       });
     },
     createRequestPayload() {
@@ -1044,10 +1100,8 @@ export default {
           default_value,
           ...properties
         } = obj;
-
         return properties;
       })(this.metadata);
-
       return (payload = {
         render: {
           visualization: this.tag,
@@ -1067,11 +1121,44 @@ export default {
     setPagerResetFunction(resetFunction) {
       this.pagerResetFunction = resetFunction;
     },
+    updateFilteredColumns(filterableColumnsToShow) {
+      this.filterableColumnsToShow = filterableColumnsToShow;
+      const thisTable = this.$store.state.layers.components[this.tag_unique];
+      let allValidColumns = [];
+      filterableColumnsToShow.forEach((fcts) => {
+        allValidColumns = allValidColumns.concat(fcts.sqlColumns);
+      });
+      // remove duplicate entries
+      allValidColumns = [...new Set(allValidColumns)];
+      if(allValidColumns.includes(undefined)){
+        console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
+      }
+      const columnList = JSON.stringify(allValidColumns)
+      this.additionalFilters = allValidColumns.length > 0 ? { column_list: columnList } : {}
+      const tableFilters = thisTable.filters ? {...thisTable.filters} : {}
+      tableFilters.column_list = columnList;
+      this.storeAttribute({
+          target: this.tag_unique,
+          attribute: "filters",
+          value: tableFilters,
+      })
+      if(this.canPageServer){
+        this.fetchPagedLayer()
+      }else{
+        this.setInternalColumns();
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+.table-data {
+  padding-top: 12px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #d3d3d9;
+}
+
 .rootTableContainer {
   display: inline-block;
   width: 100%;
@@ -1079,6 +1166,8 @@ export default {
   max-width: inherit;
   max-height: inherit;
   position: relative;
+  min-height: 100px;
+  overflow-x: scroll;
 }
 
 .spinnerOverlay {
@@ -1089,6 +1178,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  min-height: 120px;
 }
 .spinner {
   position: absolute;
@@ -1177,7 +1267,7 @@ highlighting a row on hover etc. */
   text-align: center;
 }
 
-#title {
+.title {
   font-family: "Nunito", sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -1188,9 +1278,22 @@ highlighting a row on hover etc. */
   font-feature-settings: "tnum" on, "lnum" on;
   padding-top: 15px;
   padding-bottom: 15px;
+  display: inline-block;
 }
 
 .snykCell {
   word-break: break-word;
+}
+
+.tableHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  width: 100%;
+}
+.tableControls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 </style>
