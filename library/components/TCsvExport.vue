@@ -72,6 +72,12 @@ export default {
         document.body.appendChild(aTag);
         aTag.click();
         document.body.removeChild(aTag);
+
+        window.ampli.reportDataExport({
+            reportExportType: "csv",
+            reportName: this.page.title,
+            reportLayerName: this.tLayer,
+        })
       });
     },
   },

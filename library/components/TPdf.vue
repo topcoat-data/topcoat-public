@@ -29,7 +29,12 @@
         methods: {
             downloadPdf() {
                 const url = this.page.url + window.location.search;
-                return this.downloadPdfFile(url);
+                this.downloadPdfFile(url);
+                window.ampli.reportDataExport({
+                    reportExportType: "pdf",
+                    reportName: this.page.title,
+                    reportLayerName: "null",
+                })
             }
         }
     } 
