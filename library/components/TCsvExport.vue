@@ -54,7 +54,7 @@ export default {
       }
       
       payload.filters = filters;
-
+      this.trackCSVExport();
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
         this.is_loading = false;
         let aTag = document.createElement("a");
@@ -72,14 +72,17 @@ export default {
         document.body.appendChild(aTag);
         aTag.click();
         document.body.removeChild(aTag);
-
-        window.ampli.reportDataExport({
-            reportExportType: "csv",
-            reportName: this.page.title,
-            reportLayerName: this.tLayer,
-        })
       });
     },
+    trackCSVExport() {
+      if (window.ampli) {
+        window.ampli.reportDataExport({
+          reportExportType: "csv",
+          reportName: this.page.title,
+          reportLayerName: this.tLayer,
+        })
+      }
+    }
   },
 };
 </script>
