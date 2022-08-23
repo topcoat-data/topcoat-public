@@ -1166,7 +1166,7 @@ export default {
   max-width: inherit;
   max-height: inherit;
   position: relative;
-  min-height: 100px;
+  min-height: 120px;
   overflow-x: scroll;
 }
 
@@ -1178,7 +1178,6 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 120px;
 }
 .spinner {
   position: absolute;
