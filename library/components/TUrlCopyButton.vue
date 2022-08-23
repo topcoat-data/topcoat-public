@@ -1,8 +1,8 @@
 <template>
-    <div class="relative">
+    <div class="relative" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
         
-        <t-tooltip position="bottom" width="400px">
-            {{ copied ? "Link Copied" : "Copy Url" }}
+        <t-tooltip v-if="showTooltip" position="left" width="max-content">
+            {{ copied ? "URL Copied" : "Copy URL" }}
         </t-tooltip>
 
         <button
@@ -20,6 +20,7 @@
     export default {
         data: () => ({
             copied: false,
+            showTooltip: false,
         }),
         methods: {
             copy() {
