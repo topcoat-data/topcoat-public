@@ -1,24 +1,32 @@
 <template>
-    <button
-        class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
-        style="height: fit-content;"
-        :disabled="is_loading"
-        @click="downloadPdf"
-    >
-        <div class="flex items-center gap-1">
-            {{ label }}
-            <t-loading-spinner
-                v-if="is_loading"
-                position="relative"
-            />
-        </div>
-    </button>
+    <div class="relative" @mouseover="handleTooltip" @mouseleave="showPdfTooltip = false">
+        <!-- PDF tooltip -->
+        <t-tooltip v-if="showPdfTooltip" position="left" width="400px">
+            Your PDF is downloading. It may take up to 30 seconds to complete. Remain on the this page for the download to complete.
+        </t-tooltip>
+
+        <button
+            class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
+            style="height: fit-content;"
+            :disabled="is_loading"
+            @click="downloadPdf"
+            :class="is_loading && 'opacity-60'"
+        >
+            <div class="flex items-center gap-1">
+                {{ is_loading ? "Generating PDF" : label }}
+                <t-loading-spinner
+                    v-if="is_loading"
+                    position="relative"
+                />
+            </div>
+        </button>
+    </div>
 </template>
 
 <script>
     export default {
         data: () => ({
-            is_loading: false,
+            showPdfTooltip: false,
         }),
         props: {
             label: {
@@ -27,9 +35,15 @@
             },
         },
         methods: {
-            downloadPdf() {
+            async downloadPdf() {
                 const url = this.page.url + window.location.search;
-                return this.downloadPdfFile(url);
+                this.showPdfTooltip = true;
+                await this.downloadPdfFile(url);
+            },
+            handleTooltip() {
+                if (this.is_loading) {
+                    this.showPdfTooltip = true;
+                }
             }
         }
     } 

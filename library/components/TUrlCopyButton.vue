@@ -1,11 +1,18 @@
 <template>
-    <div
-        class="cursor-pointer h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
-        @click="copy"
-        :class="{ 'bg-[#B4E4D9]': copied }"
-    >
-        <check-icon :size="18" v-if="copied" />
-        <link-icon :size="18" v-else />
+    <div class="relative">
+        
+        <t-tooltip position="bottom" width="400px">
+            {{ copied ? "Link Copied" : "Copy Url" }}
+        </t-tooltip>
+
+        <button
+            class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
+            @click="copy"
+            :class="{ 'bg-[#B4E4D9]': copied }"
+        >
+            <check-icon :size="18" v-if="copied" />
+            <link-icon :size="18" v-else />
+        </button>
     </div>
 </template>
 
