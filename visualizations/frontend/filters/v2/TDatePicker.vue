@@ -28,11 +28,11 @@
             <div slot="icon-clear"></div>
             <div slot="icon-calendar">
                 <div class="flex items-center gap-1">
+                    <t-loading-spinner position="relative" v-if="loading" />
                     <button @click="handleClear">
                         <close-icon />
                     </button>
-                    <t-loading-spinner position="relative" slot="icon-calendar" v-if="loading" />
-                    <span style="color: #1284e7" v-else>
+                    <span style="color: #1284e7">
                         <calendar-blank-outline-icon />
                     </span>
                 </div>
