@@ -35,10 +35,10 @@
             },
         },
         methods: {
-            async downloadPdf() {
+            downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.showPdfTooltip = true;
-                await this.downloadPdfFile(url);
+                this.downloadPdfFile(url);
             },
             handleTooltip() {
                 if (this.is_loading) {
