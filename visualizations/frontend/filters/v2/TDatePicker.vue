@@ -30,17 +30,21 @@
             <div slot="icon-clear"></div>
             <div slot="icon-calendar">
                 <div class="flex items-center gap-1">
-                    <button>
-                        <reload-icon @click="handleReload" />
-                    </button>
-                    <button>
-                        <close-icon @click="handleClear" />
+                    <button @click="handleClear">
+                        <close-icon />
                     </button>
                     <t-loading-spinner position="relative" slot="icon-calendar" v-if="loading" />
                     <span style="color: #1284e7" v-else>
                         <calendar-blank-outline-icon />
                     </span>
                 </div>
+            </div>
+
+            <div slot="footer" class="flex justify-center">
+                <button class="flex items-center gap-2 mx-btn" @click="handleReload">
+                    Reset Date
+                    <reload-icon :size="18" />
+                </button>
             </div>
         </base-date-picker>
     </div>
@@ -128,6 +132,8 @@ export default {
         },
         assignDatesFromFilters() {
             if (this.mode === "range") {
+                this.date = [];
+
                 const startDate = this.getFilterValue("start_date");
                 const endDate = this.getFilterValue("end_date");
 
@@ -259,5 +265,11 @@ export default {
 
     .mx-icon-calendar {
         display: block !important;
+    }
+
+    .mx-datepicker-footer {
+        display: flex;
+        justify-content: end;
+        gap: 10px;
     }
 </style>

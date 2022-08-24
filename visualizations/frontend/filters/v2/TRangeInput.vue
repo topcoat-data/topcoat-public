@@ -36,14 +36,23 @@
         },
         computed: {
             minValue() {
-                const num = this.getColumn(this.tMinColumn);
-                const parsed = num && num.length ? parseInt(num[0]) : 0;
-                return parsed;
+                const item = this.rows.length ? this.rows[0] : null;
+                if (item) {
+                    if (item[this.tMinColumn]) {
+                        return item[this.tMinColumn].value;
+                    }
+                }
+                return 0;
             },
             maxValue() {
-                const num = this.getColumn(this.tMaxColumn);
-                const parsed = num && num.length ? parseInt(num[0]) : 100;
-                return parsed;
+                const item = this.rows.length ? this.rows[0] : null;
+                if (item) {
+                    if (item[this.tMinColumn]) {
+                        console.log(item[this.tMaxColumn])
+                        return item[this.tMaxColumn].value;
+                    }
+                }
+                return 100;
             },
             barMinValue: {
                 get() {
