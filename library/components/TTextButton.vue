@@ -1,17 +1,12 @@
 <template>
-  <button class="
+  <base-button class="
     rounded
-    text-[#145deb]" v-on="$listeners">
+    bg-white" v-on="$listeners" variant="link" style="color: #145deb;">
+    <!-- 
+      base button's color property for variant="link" has a higher 
+      specificity than tailwind classes 
+      using 'style' is the only way to override the color of the base button
+    -->
     <slot></slot>
-  </button>
+  </base-button>
 </template>
-<script>
-export default {
-  props: {
-    text: {
-      type: String,
-      required: true
-    }
-  }
-}
-</script>
