@@ -2,8 +2,6 @@
     <div class="relative flex t-date-picker">
         <!-- Date Picker -->
         <base-date-picker
-            read-only
-            show-clear-button
             confirm
             confirm-text="Apply"
             v-model="date"

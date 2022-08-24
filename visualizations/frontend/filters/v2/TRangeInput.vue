@@ -48,7 +48,6 @@
                 const item = this.rows.length ? this.rows[0] : null;
                 if (item) {
                     if (item[this.tMinColumn]) {
-                        console.log(item[this.tMaxColumn])
                         return item[this.tMaxColumn].value;
                     }
                 }
