@@ -39,7 +39,8 @@
 			},
 			outsideElementClasses: {
 				type: Array,
-				default: [],
+				// Todo: Remoave & Replace with a better fix.
+				default: ["mx-datepicker-popup"],
         	},
         },
 		data: () => ({

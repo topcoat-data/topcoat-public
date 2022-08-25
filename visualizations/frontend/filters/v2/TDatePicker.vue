@@ -38,12 +38,6 @@
                 </div>
             </div>
 
-            <div slot="footer" class="flex justify-center">
-                <button class="flex items-center gap-2 mx-btn" @click="handleReload">
-                    Reset Date
-                    <reload-icon :size="18" />
-                </button>
-            </div>
         </base-date-picker>
     </div>
 </template>
