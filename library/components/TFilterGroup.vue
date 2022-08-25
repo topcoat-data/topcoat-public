@@ -3,6 +3,7 @@
         :is-active="activeFilters > 0"
         @closed="handleClosed"
         z-index="800"
+        :outsideElementClasses="outsideElementClasses"
     >
 		  <!-- Handle -->
     	<div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -101,6 +102,10 @@ export default {
         isPersisted: {
             type: Boolean,
             default: false,
+        },
+        outsideElementClasses: {
+            type: Array,
+            default: [],
         }
     },
     data: function () {
