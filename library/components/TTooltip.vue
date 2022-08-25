@@ -41,7 +41,6 @@ export default {
 	data: () => ({
 		positions: {},
 		showTooltip: false,
-		isForcedOpen: false
 	}),
 	mounted() {
 		onClickOutside(this.$refs.tooltipContainer, () => {
