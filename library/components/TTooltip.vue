@@ -1,64 +1,122 @@
 <template>
-  <div
-    class="p-4 bg-[#1C1C21] text-white w-max h-max rounded absolute top-0 z-50"
-    :style="{ width, ...tooltipPositions }"
-  >
-    <slot></slot>
-    <div
-		class="bg-[#1C1C21] w-4 h-4 absolute rotate-45 m-auto"
-		:class="arrowPositions[position]"
-	></div>
-  </div>
+	<div @mouseover="handleMouseOver" @click="handleClick" ref="tooltipContainer">
+		<div ref="trigger">
+			<slot name="trigger">
+				<help-circle-outline-icon :size="12" />
+			</slot>
+		</div>
+		<div
+			class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
+			:style="{ width, ...positions.tooltip }"
+			ref="tooltip"
+			v-show="showTooltip"
+			@mouseleave="handleMouseLeave"
+		>
+			<slot></slot>
+			<div
+				class="bg-[#1C1C21] w-4 h-4 fixed rotate-45"
+				:style="{ ...positions.arrow }"
+			></div>
+		</div>
+	</div>
 </template>
 
 <script>
-  export default {
-    props: {
-      width: {
-        type: String,
-        default: "200px",
-      },
-	  position: {
-		type: String,
-		default: "top",
-	  }
-    },
+export default {
+	props: {
+		width: {
+			type: String,
+			default: "200px"
+		},
+		position: {
+			type: String,
+			default: "top"
+		},
+		isClickable: {
+			// Force with prop
+			type: Boolean,
+			default: false
+		}
+	},
 	data: () => ({
-		tooltipPositions: {}, // This object should be empty by default to only apply related properties (top, left...)
-        arrowPositions: {
-            top: "left-0 right-0 -bottom-[7px]",
-            bottom: "left-0 right-0 -top-[7px]",
-            left: "top-2 -right-[7px]",
-            right: "top-2 -left-[7px]",
-        }
+		positions: {},
+		showTooltip: false,
+		isForcedOpen: false
 	}),
 	mounted() {
-		this.placeTooltip();
+		onClickOutside(this.$refs.tooltipContainer, () => {
+			this.showTooltip = false;
+		});
 	},
 	methods: {
 		placeTooltip() {
+			// Calculate and place both tooltip and arrow.
+			const triggerElement = this.$refs.trigger;
+			const tooltipElement = this.$refs.tooltip;
+			const tooltipPositions = {};
+			const positions = { arrow: {}, tooltip: {} };
 
-            // Place tooltip near parent according to `position` prop.
-			const parent = this.$parent.$el;
-            const tooltipPositions = {}
-			if (parent) {
-				const position = parent.getBoundingClientRect();
+			if (triggerElement && tooltipElement) {
+				const position = triggerElement.getBoundingClientRect();
+
 				if (this.position === "top") {
-					// Push from bottom
-					tooltipPositions.top = "-" + (position.bottom + 15) + "px";
+					positions.tooltip.top =
+						position.top - (tooltipElement.clientHeight + 10) + "px";
+					positions.tooltip.left =
+						position.left - tooltipElement.clientWidth / 2 + "px";
+					positions.arrow.top = position.top - 20 + "px";
+					positions.arrow.left = position.left + "px";
 				} else if (this.position === "bottom") {
-					// Push from top
-					tooltipPositions.top = (parent.clientHeight + 15) + "px";
+					positions.tooltip.top =
+						position.top + triggerElement.clientHeight + 15 + "px";
+					positions.tooltip.left =
+						position.left - tooltipElement.clientWidth / 2 + "px";
+					positions.arrow.top =
+						position.top + triggerElement.clientHeight + 10 + "px";
+					positions.arrow.left = position.left + "px";
 				} else if (this.position === "left") {
-                    // Place on left side
-                    tooltipPositions.right = (position.width + 15) + "px";
-                } else {
-                    // Place on right side
-                    tooltipPositions.left = (position.width + 15) + "px";
-                }
+					positions.tooltip.top =
+						position.top - tooltipElement.clientHeight / 2 + "px";
+					positions.tooltip.left =
+						position.left - tooltipElement.clientWidth - 15 + "px";
+					positions.arrow.top = position.top + "px";
+					positions.arrow.left = position.left - 25 + "px";
+				} else {
+					positions.tooltip.top =
+						position.top - tooltipElement.clientHeight / 2 + "px";
+					positions.tooltip.left =
+						position.left + triggerElement.clientWidth + 15 + "px";
+					positions.arrow.top = position.top + "px";
+					positions.arrow.left =
+						position.left + triggerElement.clientWidth + 10 + "px";
+				}
 			}
-            this.tooltipPositions = tooltipPositions;
+			this.positions = positions;
+		},
+		handleMouseOver() {
+			if (this.isClickable) return;
+			this.show();
+		},
+		handleMouseLeave() {
+			if (this.isClickable) return;
+			this.hide();
+		},
+		handleClick() {
+			if (this.isClickable) {
+				this.show();
+			}
+		},
+		show() {
+			this.showTooltip = true;
+
+			// Glitchy behaviour without nextTick()
+			this.$nextTick(() => {
+				this.placeTooltip();
+			});
+		},
+		hide() {
+			this.showTooltip = false;
 		}
 	}
-  }
+};
 </script>

@@ -1,18 +1,18 @@
 <template>
-    <div class="relative" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <div class="relative">
         
-        <t-tooltip v-if="showTooltip" position="left" width="max-content">
+        <t-tooltip position="bottom" width="130px">
+            <button
+                class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
+                @click="copy"
+                :class="{ 'bg-[#B4E4D9]': copied }"
+                slot="trigger"
+            >
+                <check-icon :size="18" v-if="copied" />
+                <link-icon :size="18" v-else />
+            </button>
             {{ copied ? "URL Copied" : "Copy URL" }}
         </t-tooltip>
-
-        <button
-            class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
-            @click="copy"
-            :class="{ 'bg-[#B4E4D9]': copied }"
-        >
-            <check-icon :size="18" v-if="copied" />
-            <link-icon :size="18" v-else />
-        </button>
     </div>
 </template>
 
@@ -20,7 +20,6 @@
     export default {
         data: () => ({
             copied: false,
-            showTooltip: false,
         }),
         methods: {
             copy() {
