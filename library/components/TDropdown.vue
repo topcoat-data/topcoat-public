@@ -36,7 +36,12 @@
 			isExpanded: {
 				type: Boolean,
 				default: false,
-			}
+			},
+			outsideElementClasses: {
+				type: Array,
+				// Todo: Remoave & Replace with a better fix.
+				default: ["mx-datepicker-popup"],
+        	},
         },
 		data: () => ({
 			alignClass: '',
@@ -52,6 +57,12 @@
         },
 		mounted() {
 			onClickOutside(this.$refs.dropdownFilter, (event) => {
+				// Temporary solution
+                // If a component is appending it's inner dropdown directly to body.
+                for (let cl of this.outsideElementClasses) {
+                    // If an outside element is still open, keep the dropdown from closing.
+                    if (document.querySelector(`.${cl}`)) return;
+                } 
 				if (this.isPopupOpen) {
 					this.isPopupOpen = false;
 					this.$emit('closed');
