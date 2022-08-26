@@ -13,8 +13,7 @@ export default {
     direction:{
       type: [Number, String],
       required: true,
-      validator: function (value) {
-        // The value must match one of these strings
+      validator(value) {
         if(typeof value === "string"){
           return ['up', 'down', 'neutral'].includes(value)
         }
@@ -24,7 +23,7 @@ export default {
     },
     iconSize:{
       type: Number,
-      default: 20,
+      default: 80,
     }
   },
   data: () => ({}),
