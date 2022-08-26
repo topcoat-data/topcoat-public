@@ -59,35 +59,33 @@ export default {
 				const position = triggerElement.getBoundingClientRect();
 
 				if (this.position === "top") {
-					positions.tooltip.top =
-						position.top - (tooltipElement.clientHeight + 10) + "px";
-					positions.tooltip.left =
-						position.left - tooltipElement.clientWidth / 2 + "px";
+
+					positions.tooltip.top = position.top - (tooltipElement.clientHeight + 10) + "px";
+					positions.tooltip.left = position.left - tooltipElement.clientWidth / 2 + "px";
 					positions.arrow.top = position.top - 20 + "px";
 					positions.arrow.left = position.left + "px";
+
 				} else if (this.position === "bottom") {
-					positions.tooltip.top =
-						position.top + triggerElement.clientHeight + 15 + "px";
-					positions.tooltip.left =
-						position.left - tooltipElement.clientWidth / 2 + "px";
-					positions.arrow.top =
-						position.top + triggerElement.clientHeight + 10 + "px";
+
+					positions.tooltip.top = position.top + triggerElement.clientHeight + 15 + "px";
+					positions.tooltip.left = position.left - tooltipElement.clientWidth / 2 + "px";
+					positions.arrow.top = position.top + triggerElement.clientHeight + 10 + "px";
 					positions.arrow.left = position.left + "px";
+
 				} else if (this.position === "left") {
-					positions.tooltip.top =
-						position.top - tooltipElement.clientHeight / 2 + "px";
-					positions.tooltip.left =
-						position.left - tooltipElement.clientWidth - 15 + "px";
+
+					positions.tooltip.top = position.top - tooltipElement.clientHeight / 2 + "px";
+					positions.tooltip.left = position.left - tooltipElement.clientWidth - 15 + "px";
 					positions.arrow.top = position.top + "px";
 					positions.arrow.left = position.left - 25 + "px";
+
 				} else {
-					positions.tooltip.top =
-						position.top - tooltipElement.clientHeight / 2 + "px";
-					positions.tooltip.left =
-						position.left + triggerElement.clientWidth + 15 + "px";
+
+					positions.tooltip.top = position.top - tooltipElement.clientHeight / 2 + "px";
+					positions.tooltip.left = position.left + triggerElement.clientWidth + 15 + "px";
 					positions.arrow.top = position.top + "px";
-					positions.arrow.left =
-						position.left + triggerElement.clientWidth + 10 + "px";
+					positions.arrow.left = position.left + triggerElement.clientWidth + 10 + "px";
+
 				}
 			}
 			this.positions = positions;
