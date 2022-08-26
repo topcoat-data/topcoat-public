@@ -92,8 +92,10 @@
         "
         class="spanAllColumns center_cell"
       >
-        <div><i class="i-fa-solid i-fa-inbox"></i></div>
-        <div>{{ noDataMessage }}</div>
+        <slot name="no_data" >
+          <div><i class="i-fa-solid i-fa-inbox"></i></div>
+          <div>{{ noDataMessage }}</div>
+        </slot>
       </div>
 
       <!-- Data Rows -->
