@@ -1,22 +1,26 @@
 <template>
     <div class="trendArrow">
-        <arrow-up-icon v-if="difference > 0" :size="iconSize" />
-        <minus-icon v-else-if="difference === 0" :size="iconSize" />
-        <arrow-down-icon v-else :size="iconSize" />
+        <arrow-up-icon v-if="arrowDirection === 'up'" :size="iconSize" />
+        <minus-icon v-else-if="arrowDirection === 'neutral'" :size="iconSize" />
+        <arrow-down-icon v-else-if="arrowDirection === 'down'" :size="iconSize" />
     </div>
 </template>
 
 <script>
 export default {
-  name: "TrendArrow",
+  name: "TTrendArrow",
   props: {
-    firstNumber: {
-      type: Number,
+    direction:{
+      type: [Number, String],
       required: true,
-    },
-    secondNumber: {
-      type: Number,
-      required: true,
+      validator: function (value) {
+        // The value must match one of these strings
+        if(typeof value === "String"){
+          return ['up', 'down', 'neutral'].includes(value)
+        }
+        // Note: if it isn't a string or number vue will already print a warning
+        return true;
+      }
     },
     iconSize:{
       type: String,
@@ -25,8 +29,19 @@ export default {
   },
   data: () => ({}),
   computed:{
-      difference(){
-          return this.firstNumber - this.secondNumber
+      arrowDirection(){
+        if(typeof this.direction === "String"){
+          return this.direction
+        }
+        if(this.direction > 0){
+          return 'up'
+        }
+        if(this.direction === 0){
+          return 'neutral'
+        }
+        if(this.direction < 0){
+          return 'down'
+        }
       },
   },
 };
