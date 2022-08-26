@@ -15,7 +15,7 @@ export default {
       required: true,
       validator: function (value) {
         // The value must match one of these strings
-        if(typeof value === "String"){
+        if(typeof value === "string"){
           return ['up', 'down', 'neutral'].includes(value)
         }
         // Note: if it isn't a string or number vue will already print a warning
@@ -23,14 +23,14 @@ export default {
       }
     },
     iconSize:{
-      type: String,
-      default: '20'
+      type: Number,
+      default: 20,
     }
   },
   data: () => ({}),
   computed:{
       arrowDirection(){
-        if(typeof this.direction === "String"){
+        if(typeof this.direction === "string"){
           return this.direction
         }
         if(this.direction > 0){
