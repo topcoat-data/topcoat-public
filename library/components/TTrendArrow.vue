@@ -25,7 +25,6 @@ export default {
       type: Number,
       default: 20,
       validator: function(value) {
-        console.log("size validator", value)
         return value > 0
       }
     }
