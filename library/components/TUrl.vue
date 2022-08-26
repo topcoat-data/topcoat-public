@@ -28,16 +28,27 @@ export default {
     },
     includeUrlStyle: {
       type: Boolean,
-      default: true
+      default: true,
+    },
+    includeContextParam:{
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     fullUrl() {
-      let allUrlParams = {...this.additionalUrlParams};
+      let allUrlParams = {};
+      const { 'context[org]': org, 'context[group]': group, ...restOfFilters } = this.getFiltersState;
+
+      if(this.includeContextParam){
+        if(org){
+          allUrlParams['context[org]'] = org
+        }else if(group){
+          allUrlParams['context[group]'] = group
+        }
+      }
 
       if (this.includeFilterParams ) {
-        const { 'context[org]': org, 'context[group]': group, ...restOfFilters } = this.getFiltersState;
-
         // Sometimes the additional URL params will include the same filter as one of the filters already in the URL
         // So the order of the url params below is important, any duplicated keys will end up being the last one added. 
         // 
@@ -46,8 +57,9 @@ export default {
         // url should go to the page with the issues-details filtered on the row's project, not the page where
         // all of the projects selected in the filter are present.
         allUrlParams = {
+          ...allUrlParams,
           ...restOfFilters,
-          ...allUrlParams
+          ...this.additionalUrlParams,
         };
       }
 
