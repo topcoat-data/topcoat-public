@@ -21,9 +21,9 @@ export default {
         return true;
       }
     },
-    iconSize:{
+    size:{
       type: Number,
-      default: 80,
+      default: 20,
     }
   },
   data: () => ({}),
