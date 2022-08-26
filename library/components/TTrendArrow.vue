@@ -1,8 +1,8 @@
 <template>
     <div class="trendArrow">
-        <arrow-up-icon v-if="arrowDirection === 'up'" :size="iconSize" />
-        <minus-icon v-else-if="arrowDirection === 'neutral'" :size="iconSize" />
-        <arrow-down-icon v-else-if="arrowDirection === 'down'" :size="iconSize" />
+        <arrow-up-icon v-if="arrowDirection === 'up'" :size="size" />
+        <minus-icon v-else-if="arrowDirection === 'neutral'" :size="size" />
+        <arrow-down-icon v-else-if="arrowDirection === 'down'" :size="size" />
     </div>
 </template>
 
