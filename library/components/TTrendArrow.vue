@@ -24,6 +24,9 @@ export default {
     size:{
       type: Number,
       default: 20,
+      validator(value) {
+        return value > 0
+      }
     }
   },
   data: () => ({}),
