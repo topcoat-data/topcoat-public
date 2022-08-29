@@ -133,7 +133,7 @@
                 } else {
                     this.selected_internal = item.value;
                 }
-
+                this.setFilterValueAsObject({ name: "dropdown", value: this.selected_internal, isDefault: false });
                 this.setFilterValue("dropdown", this.selected_internal, true);
             },
             onDropdownOpen() {
