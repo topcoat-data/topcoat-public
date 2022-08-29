@@ -121,7 +121,9 @@
                 if (initial_value) {
                     this.selected_internal = initial_value;
                 } else if (this.defaultValue) {
+                    console.log('this.defaultValue in Tselect', this.defaultValue)
                     this.selected_internal = this.defaultValue;
+                    this.setFilterValueAsObject({name: "dropdown", value: this.defaultValue, isDefault: true});
                     this.setFilterValue("dropdown", this.defaultValue);
                 }
             },
