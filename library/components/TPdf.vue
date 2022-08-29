@@ -30,10 +30,12 @@
             downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.downloadPdfFile(url);
-                window.ampli.reportDataExport({
+                this.trackPdfExport();
+            },
+            trackPdfExport() {
+                window.ampli.reportIsExported({
                     reportExportType: "pdf",
-                    reportName: this.page.title,
-                    reportLayerName: "null",
+                    reportTitle: this.page.title,
                 })
             }
         }

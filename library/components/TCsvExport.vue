@@ -76,10 +76,9 @@ export default {
     },
     trackCSVExport() {
       if (window.ampli) {
-        window.ampli.reportDataExport({
+        window.ampli.reportIsExported({
           reportExportType: "csv",
-          reportName: this.page.title,
-          reportLayerName: this.tLayer,
+          reportTitle: this.page.title,
         })
       }
     }
