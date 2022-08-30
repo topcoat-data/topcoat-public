@@ -282,7 +282,6 @@ export default {
             const defaultEndDate = this.defaultEndDate || defaultStartDate; // If no end date default, set same as start to avoid error.
 
             if (defaultStartDate && defaultEndDate) {
-                console.log(window.Moment(defaultStartDate).toDate())
                 const date = [
                     window.Moment(defaultStartDate).toDate(),
                     window.Moment(defaultEndDate).toDate()
