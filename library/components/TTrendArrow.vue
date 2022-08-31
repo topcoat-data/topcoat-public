@@ -1,8 +1,8 @@
 <template>
     <div class="trendArrow">
-        <arrow-up-icon v-if="arrowDirection === 'up'" :size="size" />
-        <minus-icon v-else-if="arrowDirection === 'neutral'" :size="size" />
-        <arrow-down-icon v-else-if="arrowDirection === 'down'" :size="size" />
+        <arrow-up-icon v-if="direction >0" :size="size" />
+        <minus-icon v-else-if="direction === 0" :size="size" />
+        <arrow-down-icon v-else-if="direction < 0" :size="size" />
     </div>
 </template>
 
@@ -11,15 +11,8 @@ export default {
   name: "TTrendArrow",
   props: {
     direction:{
-      type: [Number, String],
+      type: Number,
       required: true,
-      validator(value) {
-        if(typeof value === "string"){
-          return ['up', 'down', 'neutral'].includes(value)
-        }
-        // Note: if it isn't a string or number vue will already print a warning
-        return true;
-      }
     },
     size:{
       type: Number,
@@ -29,23 +22,6 @@ export default {
       }
     }
   },
-  data: () => ({}),
-  computed:{
-      arrowDirection(){
-        if(typeof this.direction === "string"){
-          return this.direction
-        }
-        if(this.direction > 0){
-          return 'up'
-        }
-        if(this.direction === 0){
-          return 'neutral'
-        }
-        if(this.direction < 0){
-          return 'down'
-        }
-      },
-  },
 };
 </script>
 
@@ -54,3 +30,4 @@ export default {
         color: #727184;
     }
 </style>
+
