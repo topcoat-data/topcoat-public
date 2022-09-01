@@ -197,12 +197,10 @@ export default {
                 
                 case "mtd":
                     startDate = startDate.startOf('month');
-					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "ytd":
 					startDate = startDate.startOf('year');
-					endDate = endDate.subtract(1, 'days');
                     break;
             }
 
