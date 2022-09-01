@@ -1,18 +1,19 @@
 <template>
-    <div class="relative" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <div class="relative">
         
-        <t-tooltip v-if="showTooltip" position="left" width="max-content">
+        <t-tooltip position="bottom" width="130px">
+            <button
+                class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
+                @click="copy"
+                :class="{ 'bg-[#B4E4D9]': copied }"
+                slot="trigger"
+            >
+                <check-icon :size="18" v-if="copied" />
+                <link-icon :size="18" v-else />
+                <span class="visually-hidden">{{ copied ? "URL Copied" : "Copy URL" }}</span>
+            </button>
             {{ copied ? "URL Copied" : "Copy URL" }}
         </t-tooltip>
-
-        <button
-            class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
-            @click="copy"
-            :class="{ 'bg-[#B4E4D9]': copied }"
-        >
-            <check-icon :size="18" v-if="copied" />
-            <link-icon :size="18" v-else />
-        </button>
     </div>
 </template>
 
@@ -20,7 +21,6 @@
     export default {
         data: () => ({
             copied: false,
-            showTooltip: false,
         }),
         methods: {
             copy() {
@@ -39,3 +39,19 @@
         }
     }
 </script>
+
+<style>
+/* 
+ * Utility class to hide content visually while keeping it screen reader-accessible.
+ * Source: https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html 
+ */
+    .visually-hidden:not(:focus):not(:active) {
+        clip: rect(0 0 0 0); 
+        clip-path: inset(100%); 
+        height: 1px; 
+        overflow: hidden; 
+        position: absolute; 
+        white-space: nowrap; 
+        width: 1px; 
+    }
+</style>
