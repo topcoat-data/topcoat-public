@@ -16,7 +16,7 @@
         <div :class="hasTallSize ? 'mt-6' : 'mt-3'">
             <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
                 <div class="flex items-center gap-2">
-                    <span>{{ value || '--' }}</span>
+                    <span  :style="{ color: numberTextColor }">{{ value || '--' }}</span>
                     {{ valueText }}
                     <div v-if="previous">
                         <span class="opacity-80" v-if="num(value) > num(previous)">
@@ -76,6 +76,10 @@
                 default: '',
             },
             textColor: {
+                type: String,
+                default: '#393842'
+            },
+            numberTextColor: {
                 type: String,
                 default: '#393842'
             },
