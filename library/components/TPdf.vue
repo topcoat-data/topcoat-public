@@ -18,7 +18,9 @@
                     />
                 </div>
             </button>
-            Your PDF is downloading. It may take up to 30 seconds to complete. Remain on the this page for the download to complete.
+            <div v-if="is_loading">
+                Your PDF is downloading. It may take up to 30 seconds to complete. Remain on the this page for the download to complete.
+            </div>
         </t-tooltip>
     </div>
 </template>
