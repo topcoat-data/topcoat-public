@@ -54,7 +54,7 @@ export default {
 			// Calculate and place both tooltip and arrow.
 			const triggerElement = this.$refs.trigger;
 			const tooltipElement = this.$refs.tooltip;
-			const tooltipPositions = {};
+
 			const positions = { arrow: {}, tooltip: {} };
 			if (triggerElement && tooltipElement) {
 				const position = triggerElement.getBoundingClientRect();
