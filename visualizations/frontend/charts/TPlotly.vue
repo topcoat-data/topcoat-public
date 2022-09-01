@@ -110,6 +110,15 @@
         window.Plotly.relayout(this.tag_unique + this._uid + "_plot", update);
       },
     },
+    watch: {
+      filters: {
+        handler() {
+          console.log("filter changed")
+          this.handlePlotly();
+        },
+        deep: true,
+      }
+    }
   };
   </script>
   
