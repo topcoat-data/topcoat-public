@@ -10,6 +10,7 @@
             >
                 <check-icon :size="18" v-if="copied" />
                 <link-icon :size="18" v-else />
+                <span class="visually-hidden">{{ copied ? "URL Copied" : "Copy URL" }}</span>
             </button>
             {{ copied ? "URL Copied" : "Copy URL" }}
         </t-tooltip>
