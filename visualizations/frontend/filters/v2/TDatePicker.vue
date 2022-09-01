@@ -58,6 +58,18 @@ export default {
             type: String,
             default: " ~ ",
         },
+        defaultStartDate: {
+            type: String,
+            default: "",
+        },
+        defaultEndDate: {
+            type: String,
+            default: "",
+        },
+        defaultDatePreset: {
+            type: String,
+            default: "",
+        }
     },
     computed: {
         mode() {
@@ -95,6 +107,7 @@ export default {
     methods: {
         onVisualizationInit() {
             this.assignDatesFromFilters();
+            this.handleDefaults();
         },
         setCustomPreset() {
             this.selectedPreset = this.presets[this.mode].filter(p => p.key === "custom")[0];
@@ -184,12 +197,10 @@ export default {
                 
                 case "mtd":
                     startDate = startDate.startOf('month');
-					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "ytd":
 					startDate = startDate.startOf('year');
-					endDate = endDate.subtract(1, 'days');
                     break;
             }
 
@@ -233,6 +244,53 @@ export default {
         },
         formatDate(date, format=this.dateFormat) {
             return window.Moment(date).format(format);
+        },
+        handleDefaults() {
+            const urlPreset = this.getFilterValue("date_preset");
+
+            // Handle Preset, override dates.
+            if (!urlPreset && this.defaultDatePreset) {
+                // If preset used, skip start and end dates default
+                return this.handleDefaultPreset();
+            }
+
+            return this.handleDefaultDates();
+        },
+        handleDefaultPreset() {
+            const defaultPreset = this.presets[this.mode]
+                .filter(p => {
+                    return p.key === this.defaultDatePreset ||
+                        p.label === this.defaultDatePreset
+                })[0];
+            
+            if (defaultPreset) {
+                this.handlePreset(defaultPreset);
+                this.handleConfirm(this.date);
+            }
+        },
+        handleDefaultDates() {
+            const urlStartDate = this.getFilterValue("start_date");
+            const urlEndDate = this.getFilterValue("end_date");
+
+            if (urlStartDate || urlEndDate) {
+                return;
+            }
+
+            const defaultStartDate = this.defaultStartDate;
+            const defaultEndDate = this.defaultEndDate || defaultStartDate; // If no end date default, set same as start to avoid error.
+
+            if (defaultStartDate && defaultEndDate) {
+                const date = [
+                    window.Moment(defaultStartDate).toDate(),
+                    window.Moment(defaultEndDate).toDate()
+                ];
+
+                this.date = this.mode === "range" ? date : date[0];
+                const preset = this.presets.range.filter(p => p.key === "custom")[0];
+
+                this.selectedPreset = preset;
+                this.handleConfirm(this.date);
+            }
         }
     },
 }
