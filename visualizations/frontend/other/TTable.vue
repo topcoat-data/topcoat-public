@@ -92,8 +92,10 @@
         "
         class="spanAllColumns center_cell"
       >
-        <div><i class="i-fa-solid i-fa-inbox"></i></div>
-        <div>{{ noDataMessage }}</div>
+        <slot name="no_data" >
+          <div><i class="i-fa-solid i-fa-inbox"></i></div>
+          <div>{{ noDataMessage }}</div>
+        </slot>
       </div>
 
       <!-- Data Rows -->
@@ -1166,7 +1168,7 @@ export default {
   max-width: inherit;
   max-height: inherit;
   position: relative;
-  min-height: 100px;
+  min-height: 120px;
   overflow-x: scroll;
 }
 
@@ -1178,7 +1180,6 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 120px;
 }
 .spinner {
   position: absolute;

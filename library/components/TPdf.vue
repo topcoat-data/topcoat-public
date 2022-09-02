@@ -1,25 +1,32 @@
 <template>
-    <button
-        class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
-        style="height: fit-content;"
-        :disabled="is_loading"
-        @click="downloadPdf"
-    >
-        <div class="flex items-center gap-1">
-            {{ label }}
-            <t-loading-spinner
-                v-if="is_loading"
-                position="relative"
-            />
-        </div>
-    </button>
+    <div class="relative">
+        <!-- PDF tooltip -->
+        <t-tooltip position="left" width="400px" is-clickable>
+            <button
+                class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
+                style="height: fit-content;"
+                :disabled="is_loading"
+                @click="downloadPdf"
+                :class="is_loading && 'opacity-60'"
+                slot="trigger"
+            >
+                <div class="flex items-center gap-1">
+                    {{ is_loading ? "Generating PDF" : label }}
+                    <t-loading-spinner
+                        v-if="is_loading"
+                        position="relative"
+                    />
+                </div>
+            </button>
+            <div v-if="is_loading">
+                Your PDF is downloading. It may take up to 30 seconds to complete. Remain on the this page for the download to complete.
+            </div>
+        </t-tooltip>
+    </div>
 </template>
 
 <script>
     export default {
-        data: () => ({
-            is_loading: false,
-        }),
         props: {
             label: {
                 type: String,
