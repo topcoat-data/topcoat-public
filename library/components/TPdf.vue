@@ -37,14 +37,8 @@
             downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.downloadPdfFile(url);
-                this.trackPdfExport();
+                this.trackExport("pdf");
             },
-            trackPdfExport() {
-                window.ampli.reportIsExported({
-                    reportExportType: "pdf",
-                    reportTitle: this.page.title,
-                })
-            }
         }
     } 
 </script>

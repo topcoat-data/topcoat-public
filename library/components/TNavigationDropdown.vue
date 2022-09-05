@@ -43,7 +43,7 @@
 					:key='index'
 					:class="navSelected(page.url, 'text-[#1c1c21]', 'text-[#555463]')"
 				>
-					<button @click="openReport(page)" class="flex items-center justify-between w-full">
+					<a :href="page.url" class="flex items-center justify-between w-full">
 						{{ page.title }}
 						<span
 							v-if="selected === page.url"
@@ -52,7 +52,7 @@
 						>
 							<check-icon />
 						</span>
-					</button>
+					</a>
 				</li>
 			</ul>
 		</div>
@@ -94,19 +94,6 @@
 			selected() {
 				return window.location.pathname.substring(1);
 			},
-		},
-		methods: {
-			async openReport(page) {
-				await this.trackReportOpen(page.title);
-				window.location.href = page.url;
-			},
-			async trackReportOpen(reportTitle) {
-				if (window.ampli) {
-					await window.ampli.reportIsSelected({
-						reportTitle,
-					})
-				}
-			}
 		},
 	}
 </script>

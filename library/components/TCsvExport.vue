@@ -53,8 +53,8 @@ export default {
         filters = {...filters, ...this.additionalFilters };
       }
       
+      this.trackExport("csv");
       payload.filters = filters;
-      this.trackCSVExport();
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
         this.is_loading = false;
         let aTag = document.createElement("a");
@@ -74,14 +74,6 @@ export default {
         document.body.removeChild(aTag);
       });
     },
-    trackCSVExport() {
-      if (window.ampli) {
-        window.ampli.reportIsExported({
-          reportExportType: "csv",
-          reportTitle: this.page.title,
-        })
-      }
-    }
   },
 };
 </script>
