@@ -177,7 +177,6 @@ export default {
             switch (preset) {
                 case "last7days":
                     startDate = startDate.subtract(7, 'days');
-					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "lastmonth":
@@ -187,12 +186,10 @@ export default {
 
                 case "last30days":
 					startDate = startDate.subtract(30, 'days');
-					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "last90days":
 					startDate = startDate.subtract(90, 'days');
-					endDate = endDate.subtract(1, 'days');
                     break;
                 
                 case "mtd":
