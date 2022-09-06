@@ -53,8 +53,8 @@ export default {
         filters = {...filters, ...this.additionalFilters };
       }
       
+      this.trackExport("csv");
       payload.filters = filters;
-
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {
         this.is_loading = false;
         let aTag = document.createElement("a");

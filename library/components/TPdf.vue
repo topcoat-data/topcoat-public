@@ -37,6 +37,7 @@
             downloadPdf() {
                 const url = this.page.url + window.location.search;
                 this.downloadPdfFile(url);
+                this.trackExport("pdf");
             },
         }
     } 
