@@ -76,14 +76,18 @@
         },
         methods: {
             update(e) {
-                if (e.minValue === e.min && e.maxValue == e.max) {
-                    this.unsetFilterValue('min', true);
-                    this.unsetFilterValue('max', true);
-                } else {
-                    this.barMinValue = e.minValue;
-                    this.barMaxValue = e.maxValue;
-                }
-            }
+                if (this.throttleInterval) clearInterval(this.throttleInterval);
+
+                this.throttleInterval = setTimeout(() => {
+                    if (e.minValue === e.min && e.maxValue == e.max) {
+                        this.unsetFilterValue('min', true);
+                        this.unsetFilterValue('max', true);
+                    } else {
+                        this.barMinValue = e.minValue;
+                        this.barMaxValue = e.maxValue;
+                    }      
+                }, 500)
+            },
         },
         mounted() {
             this.fetchLayerData();
