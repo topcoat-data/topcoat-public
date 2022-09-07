@@ -136,14 +136,15 @@ export default {
   },
   methods: {
     onVisualizationInit() {
-      const initial_value = this.getFilterValue("selected_items");
+      // const initial_value = this.getFilterValue("selected_items");
+      const initial_value = this.getFilterValueNew("selected_items");
 
       if (initial_value) {
         this.checked = initial_value.split('|');
       } else if (this.defaultValue) {
         this.checked = this.defaultValue.split('|');
         this.setFilterValueAsObject({ name: "selected_items", value: this.defaultValue, defaultValue: this.defaultValue });
-        this.setFilterValue("selected_items", this.defaultValue);
+        // this.setFilterValue("selected_items", this.defaultValue);
       }
     },
     selectUnselect() {
@@ -157,7 +158,7 @@ export default {
     },
     updateUrlParam() {
       this.setFilterValueAsObject({ name: "selected_items", value: this.checked.join('|') });
-      this.setFilterValue("selected_items", this.checked.join('|'));
+      // this.setFilterValue("selected_items", this.checked.join('|'));
     },
     onDropdownOpen() {
       this.fetchLayerData();
