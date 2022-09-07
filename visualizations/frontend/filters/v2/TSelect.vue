@@ -109,7 +109,8 @@ export default {
   },
   methods: {
     onVisualizationInit() {
-      const initial_value = this.getFilterValue("dropdown");
+      // const initial_value = this.getFilterValue("dropdown");
+      const initial_value = this.getFilterValueNew("dropdown");
 
       if (initial_value) {
         this.selected_internal = initial_value;
@@ -118,7 +119,7 @@ export default {
         this.selected_internal = this.defaultValue;
         // Here we set the default value because we are setting it for the first time.
         this.setFilterValueAsObject({ name: "dropdown", value: this.defaultValue, defaultValue: this.defaultValue });
-        this.setFilterValue("dropdown", this.defaultValue);
+        // this.setFilterValue("dropdown", this.defaultValue);
       }
     },
     selectItem(item) {
@@ -130,7 +131,7 @@ export default {
       console.log('selectItem Tselect this.selected_internal:', this.selected_internal)
       // Here we do not need to set the default Value as it would already have been set
       this.setFilterValueAsObject({ name: "dropdown", value: this.selected_internal });
-      this.setFilterValue("dropdown", this.selected_internal, true);
+      // this.setFilterValue("dropdown", this.selected_internal, true);
     },
     onDropdownOpen() {
       this.fetchLayerData();
