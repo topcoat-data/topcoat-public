@@ -78,7 +78,7 @@
         methods: {
             update(e) {
                 if (this.throttleId) {
-                    clearInterval(this.throttleId);
+                    clearTimeout(this.throttleId);
                 }
 
                 this.throttleId = setTimeout(() => {
