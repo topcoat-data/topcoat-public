@@ -19,6 +19,7 @@
     export default {
         data: () => ({
             is_filter: true,
+            throttleId: null,
         }),
         props: {
             label: {
@@ -76,9 +77,11 @@
         },
         methods: {
             update(e) {
-                if (this.throttleInterval) clearInterval(this.throttleInterval);
+                if (this.throttleId) {
+                    clearInterval(this.throttleId);
+                }
 
-                this.throttleInterval = setTimeout(() => {
+                this.throttleId = setTimeout(() => {
                     if (e.minValue === e.min && e.maxValue == e.max) {
                         this.unsetFilterValue('min', true);
                         this.unsetFilterValue('max', true);
@@ -86,7 +89,7 @@
                         this.barMinValue = e.minValue;
                         this.barMaxValue = e.maxValue;
                     }      
-                }, 500)
+                }, 250)
             },
         },
         mounted() {
