@@ -5,3 +5,4 @@ static/*
 dbt_gen/*
 *.yml
 .dccache
+.DS_Store
