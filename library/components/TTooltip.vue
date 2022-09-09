@@ -1,16 +1,16 @@
 <template>
 	<div
-        @mouseover="handleMouseOver"
-        @mouseleave="handleMouseLeave"
-        ref="tooltipContainer"
-    >
+		@mouseover="handleMouseOver"
+		@mouseleave="handleMouseLeave"
+		ref="tooltipContainer"
+	>
 		<div ref="trigger">
 			<slot name="trigger">
 				<help-circle-outline-icon :size="12" />
 			</slot>
 		</div>
 
-        <!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
+		<!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
 		<div
 			class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
 			:style="{ width, ...positions.tooltip }"
@@ -80,16 +80,16 @@ export default {
 			this.positions = positions;
 		},
 		handleMouseOver() {
-            // Mouseover should also prepare position of tooltip,
-            // Without $nextTick, behaviour is glitched.
-            this.$nextTick(() => {
-                this.placeTooltip();
-            })
+			// Mouseover should also prepare position of tooltip,
+			// Without $nextTick, behaviour is glitched.
+			this.$nextTick(() => {
+				this.placeTooltip();
+			})
 
 			if (this.open) {
 				return;
 			}
-            this.show();
+			this.show();
 		},
 		handleMouseLeave() {
 			if (this.open) {
@@ -97,20 +97,20 @@ export default {
 			}
 			this.hide();
 		},
-        show() {
+		show() {
 			this.isVisible = true;
-        },
-        hide() {
-            this.isVisible = false;
-        }
+		},
+		hide() {
+			this.isVisible = false;
+		}
 	},
-    watch: {
-        open(isOpen) {
-            if (isOpen) {
-                return this.show();
-            }
-            return this.hide();
-        }
-    }
+	watch: {
+		open(isOpen) {
+			if (isOpen) {
+				return this.show();
+			}
+			return this.hide();
+		}
+	}
 };
 </script>
