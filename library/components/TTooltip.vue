@@ -44,7 +44,7 @@ export default {
 	},
 	data: () => ({
 		positions: {},
-		isVisible: false,
+		isVisible: this.isOpen,
 	}),
 	methods: {
 		placeTooltip() {
