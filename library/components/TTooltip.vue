@@ -37,7 +37,7 @@ export default {
 			type: String,
 			default: "top"
 		},
-		open: { // To control state from a component.
+		isOpen: { // To control state from a component.
 			type: Boolean,
 			default: false,
 		}
@@ -86,13 +86,13 @@ export default {
 				this.placeTooltip();
 			})
 
-			if (this.open) {
+			if (this.isOpen) {
 				return;
 			}
 			this.show();
 		},
 		handleMouseLeave() {
-			if (this.open) {
+			if (this.isOpen) {
 				return;
 			}
 			this.hide();
@@ -105,8 +105,8 @@ export default {
 		}
 	},
 	watch: {
-		open(isOpen) {
-			if (isOpen) {
+		isOpen(open) {
+			if (open) {
 				return this.show();
 			}
 			return this.hide();
