@@ -83,8 +83,8 @@
 
                 this.throttleId = setTimeout(() => {
                     if (e.minValue === e.min && e.maxValue == e.max) {
-                        this.unsetFilterValue('min', true);
-                        this.unsetFilterValue('max', true);
+                        this.unsetFilterValue('min');
+                        this.unsetFilterValue('max');
                     } else {
                         this.barMinValue = e.minValue;
                         this.barMaxValue = e.maxValue;
