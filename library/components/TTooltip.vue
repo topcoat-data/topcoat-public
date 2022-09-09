@@ -1,22 +1,21 @@
 <template>
 	<div
-        @mouseover="handleMouseOver"
-        @mouseleave="handleMouseLeave"
-        @click="handleClick"
-        ref="tooltipContainer"
-    >
+		@mouseover="handleMouseOver"
+		@mouseleave="handleMouseLeave"
+		ref="tooltipContainer"
+	>
 		<div ref="trigger">
 			<slot name="trigger">
 				<help-circle-outline-icon :size="12" />
 			</slot>
 		</div>
 
-        <!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
+		<!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
 		<div
 			class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
 			:style="{ width, ...positions.tooltip }"
 			ref="tooltip"
-			v-show="showTooltip && $slots.default"
+			v-show="isVisible && $slots.default"
 		>
 			<slot></slot>
 			<div
@@ -38,17 +37,15 @@ export default {
 			type: String,
 			default: "top"
 		},
+		isOpen: { // To control state from a component.
+			type: Boolean,
+			default: false,
+		}
 	},
 	data: () => ({
 		positions: {},
-		showTooltip: false,
-        isFocused: false,
+		isVisible: this.isOpen,
 	}),
-	mounted() {
-		onClickOutside(this.$refs.tooltipContainer, () => {
-			this.hide();
-		});
-	},
 	methods: {
 		placeTooltip() {
 			// Calculate and place both tooltip and arrow.
@@ -83,28 +80,29 @@ export default {
 			this.positions = positions;
 		},
 		handleMouseOver() {
-			if (this.isFocused) return;
+			// Mouseover should also prepare position of tooltip,
+			// Without $nextTick, behaviour is glitched.
+			this.$nextTick(() => {
+				this.placeTooltip();
+			})
+
+			if (this.isOpen) {
+				return;
+			}
 			this.show();
 		},
 		handleMouseLeave() {
-			if (this.isFocused) return;
+			if (this.isOpen) {
+				return;
+			}
 			this.hide();
 		},
-		handleClick() {
-            this.isFocused = true;
-            this.show();
-		},
 		show() {
-			this.showTooltip = true;
-			// Glitchy behaviour without nextTick()
-			this.$nextTick(() => {
-				this.placeTooltip();
-			});
+			this.isVisible = true;
 		},
 		hide() {
-			this.showTooltip = false;
-            this.isFocused = false;
+			this.isVisible = false;
 		}
-	}
+	},
 };
 </script>
