@@ -2,7 +2,6 @@
 	<div
         @mouseover="handleMouseOver"
         @mouseleave="handleMouseLeave"
-        @click="handleClick"
         ref="tooltipContainer"
     >
 		<div ref="trigger">
@@ -16,7 +15,7 @@
 			class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
 			:style="{ width, ...positions.tooltip }"
 			ref="tooltip"
-			v-show="showTooltip && $slots.default"
+			v-show="isVisible && $slots.default"
 		>
 			<slot></slot>
 			<div
@@ -38,17 +37,19 @@ export default {
 			type: String,
 			default: "top"
 		},
+		open: { // To control state from a component.
+			type: Boolean,
+			default: false,
+		}
 	},
+    mounted() {
+        // Tooltip is a fixed position element, scroll event makes sure it always stays near trigger element.
+        document.addEventListener('scroll', this.placeTooltip);
+    },
 	data: () => ({
 		positions: {},
-		showTooltip: false,
-        isFocused: false,
+		isVisible: false,
 	}),
-	mounted() {
-		onClickOutside(this.$refs.tooltipContainer, () => {
-			this.hide();
-		});
-	},
 	methods: {
 		placeTooltip() {
 			// Calculate and place both tooltip and arrow.
@@ -83,28 +84,37 @@ export default {
 			this.positions = positions;
 		},
 		handleMouseOver() {
-			if (this.isFocused) return;
-			this.show();
-		},
-		handleMouseLeave() {
-			if (this.isFocused) return;
-			this.hide();
-		},
-		handleClick() {
-            this.isFocused = true;
+            // Mouseover should also prepare position of tooltip,
+            // Without $nextTick, behaviour is glitched.
+            this.$nextTick(() => {
+                this.placeTooltip();
+            })
+
+			if (this.open) {
+				return;
+			}
             this.show();
 		},
-		show() {
-			this.showTooltip = true;
-			// Glitchy behaviour without nextTick()
-			this.$nextTick(() => {
-				this.placeTooltip();
-			});
+		handleMouseLeave() {
+			if (this.open) {
+				return;
+			}
+			this.hide();
 		},
-		hide() {
-			this.showTooltip = false;
-            this.isFocused = false;
-		}
-	}
+        show() {
+			this.isVisible = true;
+        },
+        hide() {
+            this.isVisible = false;
+        }
+	},
+    watch: {
+        open(isOpen) {
+            if (isOpen) {
+                return this.show();
+            }
+            return this.hide();
+        }
+    }
 };
 </script>
