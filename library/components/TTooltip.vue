@@ -42,10 +42,6 @@ export default {
 			default: false,
 		}
 	},
-    mounted() {
-        // Tooltip is a fixed position element, scroll event makes sure it always stays near trigger element.
-        document.addEventListener('scroll', this.placeTooltip);
-    },
 	data: () => ({
 		positions: {},
 		isVisible: false,
