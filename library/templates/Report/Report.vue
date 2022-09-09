@@ -2,7 +2,7 @@
     <div>
         <report-header v-if="hasHeader" />
         <div class="bg-[#F9F9FA]">
-            <div class="flex w-full gap-10 pb-20 content-block">
+            <div class="flex w-full gap-10 content-block">
                 <div class="w-full">
                     <div class="flex flex-wrap justify-between items-center w-full py-4 px-6 border-b border-[#E4E3E8] md:flex-row flex-col gap-1">
                         <slot name="filters"></slot>
