@@ -75,15 +75,15 @@
             }
         },
         methods: {
-            update(e) {
-                if (e.minValue === e.min && e.maxValue == e.max) {
-                    this.unsetFilterValue('min', true);
-                    this.unsetFilterValue('max', true);
+			update: window._.debounce(function (e) {
+				if (e.minValue === e.min && e.maxValue == e.max) {
+                    this.unsetFilterValue('min');
+                    this.unsetFilterValue('max');
                 } else {
                     this.barMinValue = e.minValue;
                     this.barMaxValue = e.maxValue;
-                }
-            }
+                } 
+            }, 250)
         },
         mounted() {
             this.fetchLayerData();
