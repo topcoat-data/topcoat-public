@@ -19,7 +19,6 @@
     export default {
         data: () => ({
             is_filter: true,
-            throttleId: null,
         }),
         props: {
             label: {
@@ -76,21 +75,15 @@
             }
         },
         methods: {
-            update(e) {
-                if (this.throttleId) {
-                    clearTimeout(this.throttleId);
-                }
-
-                this.throttleId = setTimeout(() => {
-                    if (e.minValue === e.min && e.maxValue == e.max) {
-                        this.unsetFilterValue('min');
-                        this.unsetFilterValue('max');
-                    } else {
-                        this.barMinValue = e.minValue;
-                        this.barMaxValue = e.maxValue;
-                    }      
-                }, 250)
-            },
+			update: window._.debounce(function (e) {
+				if (e.minValue === e.min && e.maxValue == e.max) {
+                    this.unsetFilterValue('min');
+                    this.unsetFilterValue('max');
+                } else {
+                    this.barMinValue = e.minValue;
+                    this.barMaxValue = e.maxValue;
+                } 
+            }, 250)
         },
         mounted() {
             this.fetchLayerData();
