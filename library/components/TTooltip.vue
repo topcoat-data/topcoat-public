@@ -104,13 +104,5 @@ export default {
 			this.isVisible = false;
 		}
 	},
-	watch: {
-		isOpen(open) {
-			if (open) {
-				return this.show();
-			}
-			return this.hide();
-		}
-	}
 };
 </script>
