@@ -82,12 +82,6 @@ export default {
 			this.positions = positions;
 		},
 		handleMouseOver() {
-			// Mouseover should also prepare position of tooltip,
-			// Without $nextTick, behaviour is glitched.
-			this.$nextTick(() => {
-				this.placeTooltip();
-			})
-
 			if (this.isOpen) {
 				return;
 			}
@@ -101,6 +95,11 @@ export default {
 		},
 		show() {
 			this.isVisible = true;
+
+			this.$nextTick(() => {
+				// Without $nextTick, behaviour is glitched.
+				this.placeTooltip();
+			})
 		},
 		hide() {
 			this.isVisible = false;
