@@ -11,18 +11,20 @@
 		</div>
 
 		<!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
-		<div
-			class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
-			:style="{ width, ...positions.tooltip }"
-			ref="tooltip"
-			v-show="isVisible && $slots.default"
-		>
-			<slot></slot>
+		<transition name="fade">
 			<div
-				class="bg-[#1C1C21] w-4 h-4 fixed rotate-45"
-				:style="{ ...positions.arrow }"
-			></div>
-		</div>
+				class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
+				:style="{ width, ...positions.tooltip }"
+				ref="tooltip"
+				v-show="isVisible && $slots.default"
+			>
+				<slot></slot>
+				<div
+					class="bg-[#1C1C21] w-4 h-4 fixed rotate-45"
+					:style="{ ...positions.arrow }"
+				></div>
+			</div>
+		</transition>
 	</div>
 </template>
 
@@ -43,7 +45,7 @@ export default {
 		}
 	},
 	data: () => ({
-		positions: {},
+		positions: { arrow: {}, tooltip: {} },
 		isVisible: this.isOpen,
 	}),
 	methods: {
@@ -52,7 +54,7 @@ export default {
 			const triggerElement = this.$refs.trigger;
 			const tooltipElement = this.$refs.tooltip;
 
-			const positions = { arrow: {}, tooltip: {} };
+			const positions = { ...this.positions };
 			if (triggerElement && tooltipElement) {
 				const position = triggerElement.getBoundingClientRect();
 				if (this.position === "top") {
@@ -106,3 +108,15 @@ export default {
 	},
 };
 </script>
+
+<style>
+	.fade-enter-active,
+  	.fade-leave-active {
+		transition: opacity 0.5s ease;
+  	}
+  
+  	.fade-enter-from,
+  	.fade-leave-to {
+		opacity: 0;
+  	}
+</style>
