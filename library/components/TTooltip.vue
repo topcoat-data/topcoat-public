@@ -13,7 +13,7 @@
 		<!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
 		<transition name="fade">
 			<div
-				class="p-4 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
+				class="p-2 bg-[#1C1C21] text-white w-max h-max rounded fixed z-50"
 				:style="{ width, ...positions.tooltip }"
 				ref="tooltip"
 				v-show="isVisible && $slots.default"
