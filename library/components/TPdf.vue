@@ -1,7 +1,7 @@
 <template>
-    <div class="relative">
+    <div class="relative" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
         <!-- PDF tooltip -->
-        <t-tooltip position="left" width="400px" is-clickable>
+        <t-tooltip position="left" width="400px" :open="showTooltip">
             <button
                 class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
                 style="height: fit-content;"
@@ -18,7 +18,7 @@
                     />
                 </div>
             </button>
-            <div v-if="is_loading">
+            <div v-if="is_loading && showTooltip">
                 Your PDF is downloading. It may take up to 30 seconds to complete. Remain on this page for the download to complete.
             </div>
         </t-tooltip>
@@ -33,6 +33,9 @@
                 default: "Export to PDF"
             },
         },
+        data: () => ({
+            showTooltip: false,
+        }),
         methods: {
             downloadPdf() {
                 const url = this.page.url + window.location.search;
