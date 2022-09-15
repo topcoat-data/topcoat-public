@@ -445,17 +445,14 @@ export default {
   },
   methods: {
 	getUrlSortConfiguration(){
-		let urlFilter = this.getFilterState(`${this.layer}_sort`);
-			console.log('urlFilter', urlFilter)
+		const urlFilter = this.getFilterState(`${this.layer}_sort`);
 		const useUrlParams = typeof urlFilter === 'string';
 		if(useUrlParams){
 			const urlSortableColumns =[]
 			const urlFilterArray = urlFilter.split(' ').filter((s) => s!== '')
-			console.log('urlFilterArray', urlFilterArray)
 			for (let i = 0; i < urlFilterArray.length; i+=2) {
 				urlSortableColumns.push({column: urlFilterArray[i], direction: urlFilterArray[i+1].replaceAll(',', '')})
 			}
-			console.log('urlSortableColumns', urlSortableColumns)
 			return urlSortableColumns;
 		}
 		return null;
@@ -551,7 +548,6 @@ export default {
           // sort priority. 
           _.reverse(sortableColumns).forEach((sortableColumn,index) =>{
             const column = cols.find((c) => sortableColumn.column === c.property)
-			console.log('column', column)
             if(column){
                 column.sort={
                   priority: index,
@@ -583,9 +579,6 @@ export default {
 				}
             });
         }
-		// if(this.canSortServer){
-		// 	this.setOrderBy();
-		// }
       }
 
       // remove sorting on calculated columns for now.
@@ -634,6 +627,10 @@ export default {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
+		const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
+		if(orderByUrlFilter){
+			this.setTableFilter('orderBy', orderByUrlFilter)
+		}
       if (!this.canPageServer) {
         this.init();
       }
@@ -873,20 +870,13 @@ export default {
         if(orderByFilter.length > 1){
             orderByFilter = orderByFilter.slice(0, -2);
         }
-  this.setOrderByFilter(orderByFilter)
+  		const sortFilterName = `${this.layer}_sort`
+		if(!this.metadata.filters.output.find((f)=>f.name === sortFilterName)){
+			this.metadata.filters.output.push({name: sortFilterName, urlparam: sortFilterName})
+		}
+		this.setFilterValue(sortFilterName, orderByFilter);
+		this.setTableFilter('orderBy', orderByFilter)
     },
-  setOrderByFilter(orderByFilter){
-    const sortFilterName = `${this.layer}_sort`
-
-    if(!this.metadata.filters.output.find((f)=>f.name === sortFilterName)){
-        this.metadata.filters.output.push({name: sortFilterName, urlparam: sortFilterName})
-    }
-        this.setFilterValue(sortFilterName, orderByFilter);
-
-        const thisTable = this.$store.state.layers.components[this.tag_unique];
-        const tableFilters = thisTable.filters ? thisTable.filters : {}
-    Vue.set(tableFilters, 'orderBy', orderByFilter)
-  },
     showGroupHeader(group) {
       const anyRowsInRange =
         this.indexInPagedRows(group.filteredStartIndex) ||
@@ -1091,20 +1081,21 @@ export default {
     updateStartIndex(newStartIndex) {
       this.startIndex = newStartIndex;
       if (this.canPageServer) {
-        const thisTable = this.$store.state.layers.components[this.tag_unique];
-        if (!thisTable.filters) {
-          thisTable.filters = {};
-        }
-        thisTable.filters.limit = "" + this.rowsPerPage;
-        thisTable.filters.offset = "" + this.startIndex;
-
-        console.log('thisTable.filters', thisTable.filters)
+        this.setTableFilter('limit', "" + this.rowsPerPage)
+        this.setTableFilter('offset', "" + this.startIndex)
         this.fetchPagedLayer();
         return;
       } else {
         this.setupInternalRows();
       }
     },
+	setTableFilter(filterName, filterValue){
+		const thisTable = this.$store.state.layers.components[this.tag_unique];
+        if (!thisTable.filters) {
+          thisTable.filters = {};
+        }
+    	Vue.set(thisTable.filters, filterName, filterValue)
+	},
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex;
       if (!this.canPageServer) this.setupInternalRows();
@@ -1121,7 +1112,6 @@ export default {
       if(!this.allInitializationComplete) return;
       const payload = this.createRequestPayload();
       this.showSpinner = true;
-      console.log('payload',payload)
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) {
           this.init();
