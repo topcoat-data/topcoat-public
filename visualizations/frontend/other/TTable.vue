@@ -9,13 +9,13 @@
 
         <div class="tableControls" v-show="!isPdf">
           <!-- <div>Future Group By</div> -->
-          <test-select-columns
+          <t-select-columns
             v-if="modifiableColumns"
             :modifiableColumns="modifiableColumns"
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
-          <test-csv-export
+          <t-csv-export
             v-if="enableCsvDownload"
             :t-layer="layer"
             :additionalFilters="additionalFilters"
