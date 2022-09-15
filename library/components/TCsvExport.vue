@@ -1,5 +1,5 @@
 <template>
-  <BaseButton
+  <button
     class="
       rounded
       cursor-pointer
@@ -18,7 +18,7 @@
       <download-outline-icon v-else :size="18" />
       {{ label }}
     </div>
-  </BaseButton>
+  </button>
 </template>
 
 <script>
