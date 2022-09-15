@@ -15,7 +15,7 @@
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
-          <t-csv-export
+          <test-csv-export
             v-if="enableCsvDownload"
             :t-layer="layer"
             :additionalFilters="additionalFilters"
@@ -871,11 +871,12 @@ export default {
             orderByFilter = orderByFilter.slice(0, -2);
         }
   		const sortFilterName = `${this.layer}_sort`
-		if(!this.metadata.filters.output.find((f)=>f.name === sortFilterName)){
-			this.metadata.filters.output.push({name: sortFilterName, urlparam: sortFilterName})
-		}
-		this.setFilterValue(sortFilterName, orderByFilter);
-		this.setTableFilter('orderBy', orderByFilter)
+      if(!this.metadata.filters.output.find((f)=>f.name === sortFilterName)){
+        this.metadata.filters.output.push({name: sortFilterName, urlparam: sortFilterName})
+      }
+      this.setFilterValue(sortFilterName, orderByFilter);
+      this.setTableFilter('orderBy', orderByFilter)
+      Vue.set(this.additionalFilters, 'orderBy', orderByFilter)
     },
     showGroupHeader(group) {
       const anyRowsInRange =
@@ -1172,7 +1173,8 @@ export default {
         console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
       }
       const columnList = JSON.stringify(allValidColumns)
-      this.additionalFilters = allValidColumns.length > 0 ? { column_list: columnList } : {}
+      Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : null)
+
       const tableFilters = thisTable.filters ? {...thisTable.filters} : {}
       tableFilters.column_list = columnList;
       this.storeAttribute({
