@@ -51,7 +51,7 @@ export default {
   },
   data: () => ({
     positions: { arrow: {}, tooltip: {} },
-    isVisible: this.isOpen,
+    isVisible: false,
     isTooltipFocused: false, // If cursor is on tooltip.
   }),
   methods: {
@@ -78,8 +78,7 @@ export default {
           positions.arrow.left = "25px";
         } else if (this.position === "left") {
           positions.tooltip.top = "-20px";
-          positions.tooltip.left =
-            "-" + (tooltipElement.clientWidth - 7) + "px";
+          positions.tooltip.right = tooltipElement.clientWidth + 7 + "px";
           positions.arrow.right = "-6px";
           positions.arrow.top = "6px";
         } else {
@@ -126,6 +125,16 @@ export default {
       }
       this.isVisible = false;
     }, 100),
+  },
+  watch: {
+    // Watcher triggers placement logic as well.
+    isOpen(n) {
+      if (n) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    },
   },
 };
 </script>
