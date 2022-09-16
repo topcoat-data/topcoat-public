@@ -612,10 +612,10 @@ export default {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
-		const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
-		if(orderByUrlFilter){
-			this.setTableFilter('orderBy', orderByUrlFilter)
-		}
+      const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
+      if(orderByUrlFilter){
+        this.setTableFilter('orderBy', orderByUrlFilter)
+      }
       if (!this.canPageServer) {
         this.init();
       }
@@ -1075,13 +1075,13 @@ export default {
         this.setupInternalRows();
       }
     },
-	setTableFilter(filterName, filterValue){
-		const thisTable = this.$store.state.layers.components[this.tag_unique];
-        if (!thisTable.filters) {
-          thisTable.filters = {};
-        }
-    	Vue.set(thisTable.filters, filterName, filterValue)
-	},
+    setTableFilter(filterName, filterValue) {
+      const thisTable = this.$store.state.layers.components[this.tag_unique];
+      if (!thisTable.filters) {
+        thisTable.filters = {};
+      }
+      Vue.set(thisTable.filters, filterName, filterValue)
+    },
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex;
       if (!this.canPageServer) this.setupInternalRows();
