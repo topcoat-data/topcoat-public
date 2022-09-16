@@ -4,7 +4,7 @@
       <!-- Title -->
       <div class="tableHeaderContainer">
         <div class="title">
-            <span v-if="title">{{ title }} </span>
+            <span v-if="title">{{ title }}</span>
         </div>
 
         <div class="tableControls" v-show="!isPdf">
@@ -15,7 +15,7 @@
             @updateFilteredColumns="updateFilteredColumns"
             :t-layer="layer"
           />
-          <t-csv-export
+          <TCsvExport
             v-if="enableCsvDownload"
             :t-layer="layer"
             :additionalFilters="additionalFilters"
@@ -442,19 +442,6 @@ export default {
     this.fetchTotalRows();
   },
   methods: {
-	getUrlSortConfiguration(){
-		const urlFilter = this.getFilterState(`${this.layer}_sort`);
-		const useUrlParams = typeof urlFilter === 'string';
-		if(useUrlParams){
-			const urlSortableColumns =[]
-			const urlFilterArray = urlFilter.split(' ').filter((s) => s!== '')
-			for (let i = 0; i < urlFilterArray.length; i+=2) {
-				urlSortableColumns.push({column: urlFilterArray[i], direction: urlFilterArray[i+1].replaceAll(',', '')})
-			}
-			return urlSortableColumns;
-		}
-		return null;
-	},
     // internal columns takes any column configurations from the TColumnConfig
     // component and creates default column configurations based on the fields
     // of the first row of data. That way users don't have to manually specify
@@ -1184,6 +1171,19 @@ export default {
       }else{
         this.setInternalColumns();
       }
+    },
+    getUrlSortConfiguration(){
+      const urlFilter = this.getFilterState(`${this.layer}_sort`);
+      const useUrlParams = typeof urlFilter === 'string';
+      if(useUrlParams){
+        const urlSortableColumns =[]
+        const urlFilterArray = urlFilter.split(' ').filter((s) => s!== '')
+        for (let i = 0; i < urlFilterArray.length; i+=2) {
+          urlSortableColumns.push({column: urlFilterArray[i], direction: urlFilterArray[i+1].replaceAll(',', '')})
+        }
+        return urlSortableColumns;
+      }
+      return null;
     },
   },
 };
