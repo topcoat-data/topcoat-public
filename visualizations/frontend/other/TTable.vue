@@ -304,7 +304,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    // TODO: how should this interact with sorting? Should a column that has sorting applied but is hidden have that sorting removed?
     modifiableColumns: {
       type: Array,
     },
@@ -312,7 +311,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    // TODO: should canPageServer and canSortServer be merged? It doesn't make much sense to have 1 without the other
     canSortServer:{
       type: Boolean,
       default: false,
@@ -1174,7 +1172,6 @@ export default {
       }
       const columnList = JSON.stringify(allValidColumns)
       Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : null)
-
       const tableFilters = thisTable.filters ? {...thisTable.filters} : {}
       tableFilters.column_list = columnList;
       this.storeAttribute({
