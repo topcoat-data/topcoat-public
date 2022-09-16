@@ -615,6 +615,7 @@ export default {
       const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
       if(orderByUrlFilter){
         this.setTableFilter('orderBy', orderByUrlFilter)
+        Vue.set(this.additionalFilters, 'orderBy', orderByFilter)
       }
       if (!this.canPageServer) {
         this.init();
