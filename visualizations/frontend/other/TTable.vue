@@ -1,6 +1,7 @@
 <template>
   <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
+
       <!-- Title -->
       <div class="tableHeaderContainer">
         <div class="title">
@@ -52,7 +53,6 @@
         type="checkbox"
         :indeterminate.prop="someChecked"
       />
-
       <!-- Headings -->
       <div
         v-for="(column, index) in internalColumns"
@@ -497,72 +497,72 @@ export default {
         });
       }
 
-	// All computed columns cannot currently be sorted and will be removed from the sorting configuration
-	//
-	// Some columns can be configured to be sortable with the sortableColumns prop
-	// All columns will be configured to be sortable if the canSort prop is true
-	// if both sortableColumns and canSort are set, sortableColumns is used
-	//
-	// If the url includes sortable column configuration, use that to determine direction and ignore
-	// the default directions in sortableColumns/null direction for canSort
-	// Any columns in the url sortable configuration that are not in sortableColumns should be ignored
-	// when configuring the sorting 
-      if(setColumnSort){
-		const urlSortConfig = this.getUrlSortConfiguration()
-		// Some columns can be sorted
-        if(this.sortableColumns){
-		  let sortableColumns = [...this.sortableColumns]
-		  // sort this.sortableColumns by order of URL column configs if urlSortConfig is set
-		  if(urlSortConfig){
-			  let sortConfig = []
-			  urlSortConfig.forEach((usc) =>{
-				  sortConfig.push(usc)
-				  sortableColumns = sortableColumns.filter((sc) => sc.column !== usc.column)
-			  })
-			  // remove the default sort direction of columns not sorted by the url
-			  sortableColumns.forEach((sc) => delete sc.direction)
-			  // append remaining sortable but not sorted columns to the configuration
-			  sortConfig = sortConfig.concat(sortableColumns)
-			  sortableColumns = sortConfig
-		  }
+      // All computed columns cannot currently be sorted and will be removed from the sorting configuration
+      //
+      // Some columns can be configured to be sortable with the sortableColumns prop
+      // All columns will be configured to be sortable if the canSort prop is true
+      // if both sortableColumns and canSort are set, sortableColumns is used
+      //
+      // If the url includes sortable column configuration, use that to determine direction and ignore
+      // the default directions in sortableColumns/null direction for canSort
+      // Any columns in the url sortable configuration that are not in sortableColumns should be ignored
+      // when configuring the sorting 
+      if (setColumnSort) {
+        const urlSortConfig = this.getUrlSortConfiguration()
+        // Some columns can be sorted
+        if (this.sortableColumns) {
+          let sortableColumns = [...this.sortableColumns]
+          // sort this.sortableColumns by order of URL column configs if urlSortConfig is set
+          if (urlSortConfig) {
+            let sortConfig = []
+            urlSortConfig.forEach((usc) => {
+              sortConfig.push(usc)
+              sortableColumns = sortableColumns.filter((sc) => sc.column !== usc.column)
+            })
+            // remove the default sort direction of columns not sorted by the url
+            sortableColumns.forEach((sc) => delete sc.direction)
+            // append remaining sortable but not sorted columns to the configuration
+            sortConfig = sortConfig.concat(sortableColumns)
+            sortableColumns = sortConfig
+          }
           // Note: the _.reverse here is because when sorting on the front end, lodash uses
           // a stable sort. The increasing order of priority preserves user's previouse sorts.
           // Here the code needs to emulate that first priority sort being the "latest" column
           // that is sorted by, same with second etc. So to make the priorities match, the
           // sortable columns need to be reversed so the first column ends up with the largest
           // sort priority. 
-          _.reverse(sortableColumns).forEach((sortableColumn,index) =>{
+          _.reverse(sortableColumns).forEach((sortableColumn, index) => {
             const column = cols.find((c) => sortableColumn.column === c.property)
-            if(column){
-                column.sort={
-                  priority: index,
-				  direction: sortableColumn.direction
-                };
-            }else{
-                console.warn('Invalid sortable column:', sortableColumn.column)
+            if (column) {
+              column.sort = {
+                priority: index,
+                direction: sortableColumn.direction
+              };
+            } else {
+              console.warn('Invalid sortable column:', sortableColumn.column)
             }
           })
         }
         // all columns can be sorted
         else if (this.canSort) {
-            // Note: the "+" in "+col.sort.priority" converts strings to numbers
-            const sortPriorities = cols
+          // Note: the "+" in "+col.sort.priority" converts strings to numbers
+          const sortPriorities = cols
             .map((col) => (col.sort ? +col.sort.priority : null))
             .filter((priority) => priority !== null)
             .sort();
 
-            let maxSortPriority =
+          let maxSortPriority =
             sortPriorities.length > 0 ? sortPriorities.pop() : 0;
 
-            cols.forEach((col) => {
-				if (!col.sort) {
-					maxSortPriority += 1;
-					col.sort = {
-						direction: this.sortDirection,
-						priority: maxSortPriority,
-					};
-				}
-            });
+          cols.forEach((col) => {
+            if (!col.sort) {
+              maxSortPriority += 1;
+              col.sort = {
+                direction: this.sortDirection,
+                priority: maxSortPriority,
+              };
+            }
+          });
         }
       }
 
