@@ -518,10 +518,13 @@ export default {
           sortableColumns = [...this.sortableColumns]
         } else { // all columns can be sorted
           sortableColumns = cols.map((col) => {
-            return {
+
+            const sortCol = {
               column: col.property,
               direction: this.sortDirection
             }
+            console.log('sortCol', sortCol)
+            return sortCol;
           });
         }
         console.log('sortableColumns cols', sortableColumns)
