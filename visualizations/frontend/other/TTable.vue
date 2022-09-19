@@ -511,7 +511,7 @@ export default {
       // Any columns in the url sortable configuration that are not in sortableColumns should be ignored
       // when configuring the sorting 
       if (setColumnSort && this.sort !== 'none') {
-
+        console.log('sort cols', cols)
         let sortableColumns;
         // some columns can be sorted
         if(this.sortableColumns){
