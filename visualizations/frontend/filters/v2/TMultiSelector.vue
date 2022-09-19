@@ -22,13 +22,24 @@
 
 		<!-- Popup Contents -->
 		<div class="min-w-[294px]" v-bind="popupAttrs">
-			<div class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full">
-				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest" v-if="label">
+			<div v-if="label" class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full">
+				<h6 class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest">
 					{{ label }}
 				</h6>
+			</div>
+			<div class="px-2 py-2 flex nav-search" v-if="isSearchable">
+				<div class="grow-2">
+					<base-search-input
+						class="mt-0 text-sm search-report !rounded-md"
+						:placeholder="searchPlaceholder"
+						size="small"
+						:clearable="false"
+						v-model="search"
+					/>
+				</div>
 				<span
 					@click="selectUnselect"
-					class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px]"
+					class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
 					:class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
 				>
 					<t-loading-spinner v-if="isExpanded && loading" position="relative" />
@@ -37,42 +48,75 @@
 					</span>
 				</span>
 			</div>
-			<div class="px-2 pt-2 nav-search" v-if="isSearchable">
-				<base-search-input
-					class="mt-0 mb-3 text-sm search-report !rounded-md"
-					:placeholder="searchPlaceholder"
-					size="small"
-					:clearable="false"
-					v-model="search"
-				/>
-			</div>
+			<span
+				v-else
+				@click="selectUnselect"
+				class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
+				:class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
+			>
+					<t-loading-spinner v-if="isExpanded && loading" position="relative" />
+					<span v-else>
+						{{ checked.length < ids.length ? 'Select All' : 'Reset' }}
+					</span>
+				</span>
 			<div class="px-[8px] pt-[4px] pb-[6px] w-full">
-				<ul class="max-h-[320px] overflow-auto">
-					<li
-						class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
-						v-for="(item, index) in menu"
-						:key="index"
-					>
-						<div class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]">
-							<base-checkbox
-								class="!min-w-[200px]"
-								:label="item.title"
-								:value="item.value"
-								v-model="checked"
-								@change="updateUrlParam"
-							/>
-						</div>
-					</li>
-					<small v-if="!menu.length && !loading">
-						No items found
-					</small>
-				</ul>
+				<virtual-list 
+					:style="{
+						height: Math.min(menu.length * 30, 320) + 'px',
+						'overflow-y': 'auto'
+					}"
+					:estimate-size="32"
+					:extra-props="{checked, updateUrlParam}"
+					:data-key="'index'"
+					:data-sources="menu"
+					:data-component="itemComponent"
+				/>
+				<small v-if="!menu.length && !loading">
+					No items found
+				</small>
 			</div>
 		</div>
 	</t-dropdown>
 </template>
 
 <script>
+	const ItemComponent = Vue.component('item-component', {
+		props: {
+			index: {
+				type: Number
+			},
+			source: {
+				type: Object,
+				default() {
+					return {};
+				}
+			},
+			checked: {
+				type: Array,
+				default() {
+					return [];
+				}
+			},
+			updateUrlParam: {
+				type: Function
+			},
+			model: {
+      			prop: 'checked',
+			},
+		},
+		template: `
+			<div class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]">
+				<base-checkbox
+					class="!min-w-[200px]"
+					:label="source.title"
+					:value="source.value"
+					v-model="checked"
+					@change="updateUrlParam"
+				/>
+			</div>
+		`
+	});
+
 	export default {
 		props: {
             defaultValue: {
@@ -116,7 +160,11 @@
             checked: [],
 			is_filter: true,
 			search: '',
+			itemComponent: ItemComponent,
 		}),
+		components: {
+			ItemComponent
+		},
 		computed: {
             names() {
 				const column_name = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('names');
@@ -127,21 +175,22 @@
 				return this.getColumn(column_name, 'value');
             },
 			menu() {
-                const values = this.ids;
-                const titles = this.names;
                 const menu = [];
+				const names = this.tValueColumn ? this.tValueColumn : this.findColumnByTag('names');
+				const ids = this.tKeyColumn ? this.tKeyColumn : this.findColumnByTag('ids');
+				const columns = this.getColumnsByNameAndAttribute([{name: names}, {name: ids, attribute: 'value'}]);
 
-                if (values && titles) {
-                    for (let index in values) {
-                        const value = values[index] && values[index].toString();
-                        const title = titles[index];
+                if (Object.keys(columns).length) {
+                    for (let index in columns[ids]) {
+                        const value = columns[ids][index] && columns[ids][index].toString();
+                        const title = columns[names][index];
 
 						if (this.isSearchable && !title.toLowerCase().includes(this.search.toLowerCase())) {
 							continue;
 						}
 
 						if (value && title) {
-							menu.push({ value, title });
+							menu.push({ value, title, index });
 						}
                     }
                 }
@@ -175,7 +224,11 @@
                 }
 				this.updateUrlParam();
 			},
-            updateUrlParam() {
+            updateUrlParam(value) {
+				if (value) {
+					this.checked = [...value];
+				}
+
                 this.setFilterValue("selected_items", this.checked.join('|'));
             },
             onDropdownOpen() {
