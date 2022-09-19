@@ -511,14 +511,16 @@ export default {
       // Any columns in the url sortable configuration that are not in sortableColumns should be ignored
       // when configuring the sorting 
       if (setColumnSort && this.sort !== 'none') {
-        console.log('sort cols', cols)
         let sortableColumns;
         // some columns can be sorted
         if(this.sortableColumns){
+          console.log('this.sortableColumns', this.sortableColumns)
           sortableColumns = [...this.sortableColumns]
         } else { // all columns can be sorted
+          console.log('cols to configure for sorting', cols)
           sortableColumns = cols.map((col) => {
             console.log('col', col)
+            console.log('this.sortDirection', this.sortDirection)
             const sortCol = {
               column: col.property,
               direction: this.sortDirection
