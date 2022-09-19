@@ -77,15 +77,15 @@ export default {
           positions.arrow.top = "-6px";
           positions.arrow.left = "25px";
         } else if (this.position === "left") {
-          positions.tooltip.top = "-20px";
-          positions.tooltip.right = tooltipElement.clientWidth + 7 + "px";
+          positions.tooltip.top = "-" + triggerElement.clientHeight + "px";
+          positions.tooltip.right = tooltipElement.clientWidth + 10 + "px";
           positions.arrow.right = "-6px";
-          positions.arrow.top = "6px";
+          positions.arrow.top = "10px";
         } else {
-          positions.tooltip.top = "-20px";
-          positions.tooltip.left = triggerElement.clientWidth + 7 + "px";
+          positions.tooltip.top = "-" + triggerElement.clientHeight + "px";
+          positions.tooltip.left = triggerElement.clientWidth + 10 + "px";
           positions.arrow.left = "-6px";
-          positions.arrow.top = "5px";
+          positions.arrow.top = "10px";
         }
       }
       this.positions = positions;
