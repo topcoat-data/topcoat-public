@@ -301,7 +301,6 @@ export default {
     },
     sortableColumns:{
       type: Array,
-      default: () => [],
     },
     sort:{
       type: String,
