@@ -530,8 +530,10 @@ export default {
         if (urlSortConfig) {
           let sortConfig = []
           urlSortConfig.forEach((usc) => {
-            sortConfig.push(usc)
-            sortableColumns = sortableColumns.filter((sc) => sc.column !== usc.column)
+            if(sortableColumns.find((sc) => sc.column === usc.column)){
+              sortConfig.push(usc)
+              sortableColumns = sortableColumns.filter((sc) => sc.column !== usc.column)
+            }
           })
           // remove the default sort direction of columns not sorted by the url
           sortableColumns.forEach((sc) => delete sc.direction)
