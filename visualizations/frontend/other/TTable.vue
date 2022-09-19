@@ -544,7 +544,6 @@ export default {
           sortConfig = sortConfig.concat(sortableColumns)
           sortableColumns = sortConfig
         }
-        console.log('urlSortConfig cols', urlSortConfig)
         // Note: the _.reverse here is because when sorting on the front end, lodash uses
         // a stable sort. The increasing order of priority preserves user's previouse sorts.
         // Here the code needs to emulate that first priority sort being the "latest" column
