@@ -23,7 +23,7 @@
         >
           <slot></slot>
           <div
-            class="bg-[#1C1C21] w-3 h-3 absolute rotate-45 bg-red"
+            class="bg-[#1C1C21] w-3 h-3 absolute rotate-45"
             :style="{ ...positions.arrow }"
           ></div>
         </div>
