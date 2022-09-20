@@ -19,8 +19,6 @@
           :style="{ width }"
           ref="tooltip"
           v-show="isVisible && $slots.default"
-          @mouseover="handleTooltipFocus(true)"
-          @mouseleave="handleTooltipFocus(false)"
         >
           <slot></slot>
           <div
@@ -53,7 +51,6 @@ export default {
   data: () => ({
     styles: { arrow: {}, tooltip: {} },
     isVisible: false,
-    isTooltipFocused: false, // If cursor is on tooltip.
   }),
   methods: {
     placeTooltip() {
@@ -103,12 +100,6 @@ export default {
       }
       this.hide();
     },
-    handleTooltipFocus(isFocused) {
-      this.isTooltipFocused = isFocused;
-      if (!isFocused) {
-        this.hide();
-      }
-    },
     show() {
       this.isVisible = true;
 
@@ -118,10 +109,6 @@ export default {
       });
     },
     hide() {
-      if (this.isTooltipFocused) {
-        // If user is interacting with tooltip
-        return;
-      }
       this.isVisible = false;
     },
   },
