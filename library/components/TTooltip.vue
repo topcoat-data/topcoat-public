@@ -1,10 +1,11 @@
 <template>
-  <div ref="tooltipContainer">
-    <div
-      ref="trigger"
-      @mouseleave="handleMouseLeave"
-      @mouseover="handleMouseOver"
-    >
+  <div
+    ref="tooltipContainer"
+    class="relative w-max"
+    @mouseleave="handleMouseLeave"
+    @mouseover="handleMouseOver"
+  >
+    <div ref="trigger">
       <slot name="trigger">
         <help-circle-outline-icon :size="12" />
       </slot>
@@ -12,9 +13,9 @@
 
     <!-- $slots.default is used in cases when the trigger is using v-if on content's div -->
     <transition name="fade">
-      <div class="relative w-0 h-0" :style="{ ...positions.tooltip }">
+      <div class="absolute" :style="{ ...styles.tooltip }">
         <div
-          class="p-2 bg-[#1C1C21] text-white text-sm w-max h-max rounded absolute z-50"
+          class="p-2 bg-[#1C1C21] text-white text-sm w-max h-max rounded relative z-50"
           :style="{ width }"
           ref="tooltip"
           v-show="isVisible && $slots.default"
@@ -24,7 +25,7 @@
           <slot></slot>
           <div
             class="bg-[#1C1C21] w-3 h-3 absolute rotate-45"
-            :style="{ ...positions.arrow }"
+            :style="{ ...styles.arrow }"
           ></div>
         </div>
       </div>
@@ -50,7 +51,7 @@ export default {
     },
   },
   data: () => ({
-    positions: { arrow: {}, tooltip: {} },
+    styles: { arrow: {}, tooltip: {} },
     isVisible: false,
     isTooltipFocused: false, // If cursor is on tooltip.
   }),
@@ -60,35 +61,35 @@ export default {
       const triggerElement = this.$refs.trigger;
       const tooltipElement = this.$refs.tooltip;
 
-      const positions = { ...this.positions };
+      const styles = { ...this.styles };
       if (triggerElement && tooltipElement) {
         if (this.position === "top") {
-          positions.tooltip.bottom =
-            triggerElement.clientHeight +
-            tooltipElement.clientHeight +
-            10 +
-            "px";
-          positions.tooltip.right = "25px";
-          positions.arrow.bottom = "-6px";
-          positions.arrow.left = "25px";
+          styles.tooltip.bottom = triggerElement.clientHeight + "px";
+          styles.tooltip.left = "-25px";
+          styles.tooltip.paddingBottom = "10px";
+          styles.arrow.bottom = "-6px";
+          styles.arrow.left = "25px";
         } else if (this.position === "bottom") {
-          positions.tooltip.top = "12px";
-          positions.tooltip.right = "25px";
-          positions.arrow.top = "-6px";
-          positions.arrow.left = "25px";
+          styles.tooltip.top = triggerElement.clientHeight + "px";
+          styles.tooltip.left = "-25px";
+          styles.tooltip.paddingTop = "10px";
+          styles.arrow.top = "-6px";
+          styles.arrow.left = "25px";
         } else if (this.position === "left") {
-          positions.tooltip.top = "-" + triggerElement.clientHeight + "px";
-          positions.tooltip.right = tooltipElement.clientWidth + 10 + "px";
-          positions.arrow.right = "-6px";
-          positions.arrow.top = "10px";
+          styles.tooltip.top = "0px";
+          styles.tooltip.left = "-" + (tooltipElement.clientWidth + 10) + "px";
+          styles.tooltip.paddingRight = "10px";
+          styles.arrow.right = "-6px";
+          styles.arrow.top = "10px";
         } else {
-          positions.tooltip.top = "-" + triggerElement.clientHeight + "px";
-          positions.tooltip.left = triggerElement.clientWidth + 10 + "px";
-          positions.arrow.left = "-6px";
-          positions.arrow.top = "10px";
+          styles.tooltip.top = "0px";
+          styles.tooltip.left = triggerElement.clientWidth + "px";
+          styles.tooltip.paddingLeft = "10px";
+          styles.arrow.left = "-6px";
+          styles.arrow.top = "10px";
         }
       }
-      this.positions = positions;
+      this.styles = styles;
     },
     handleMouseOver() {
       if (this.isOpen) {
@@ -116,15 +117,13 @@ export default {
         this.placeTooltip();
       });
     },
-    hide: window._.debounce(function () {
-      // Debounce will give user chance to hover to tooltip and keep it open, as long as cursor stays on it.
-      // This is useful when tooltip contains clickable links.
+    hide() {
       if (this.isTooltipFocused) {
         // If user is interacting with tooltip
         return;
       }
       this.isVisible = false;
-    }, 100),
+    },
   },
   watch: {
     // Watcher triggers placement logic as well.
