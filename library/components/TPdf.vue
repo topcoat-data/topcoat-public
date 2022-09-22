@@ -5,7 +5,11 @@
     @mouseleave="showTooltip = false"
   >
     <!-- PDF tooltip -->
-    <t-tooltip position="left" width="400px" :open="showTooltip">
+    <t-tooltip
+      position="left"
+      width="400px"
+      :is-open="is_loading && showTooltip"
+    >
       <button
         class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
         style="height: fit-content"

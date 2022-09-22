@@ -78,6 +78,5 @@ export default {
 <style scoped>
 .tUrl {
   color: rgba(20, 93, 235);
-  text-decoration: underline;
 }
 </style>
