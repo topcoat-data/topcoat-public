@@ -1,7 +1,7 @@
 <template>
   <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
- 
+
       <!-- Title -->
       <div class="tableHeaderContainer">
         <div class="title">
