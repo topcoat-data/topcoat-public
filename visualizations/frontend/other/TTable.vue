@@ -5,7 +5,13 @@
       <!-- Title -->
       <div class="tableHeaderContainer">
         <div class="title">
-            <span v-if="title">{{ title }}</span>
+            <div v-if="title">{{ title }}</div>
+            <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
+              <help-circle-outline-icon slot="trigger" :size="16" />
+              <div class="text-sm leading-[18px] font-normal">
+                {{ tooltip }}
+              </div>
+            </t-tooltip>
         </div>
 
         <div class="tableControls" v-show="!isPdf">
@@ -99,7 +105,7 @@
       </div>
 
       <!-- Data Rows -->
-      <div v-else class="makeGridIgnoreDiv">
+      <div v-else class="makeGridIgnoreDiv tableDataContainer">
         <div
           v-for="(group, gindex) in internalGroups"
           :key="gindex"
@@ -207,6 +213,10 @@ export default {
   name: "TTable",
   props: {
     title: {
+      type: String,
+      default: "",
+    },
+    tooltip:{
       type: String,
       default: "",
     },
@@ -1155,6 +1165,9 @@ export default {
 </script>
 
 <style scoped>
+.tableDataContainer{
+  overflow-x: auto;
+}
 .table-data {
   padding-top: 12px;
   padding-bottom: 17px;
@@ -1169,7 +1182,7 @@ export default {
   max-height: inherit;
   position: relative;
   min-height: 120px;
-  overflow-x: scroll;
+  overflow: visible;
 }
 
 .spinnerOverlay {
@@ -1279,9 +1292,11 @@ highlighting a row on hover etc. */
   font-feature-settings: "tnum" on, "lnum" on;
   padding-top: 15px;
   padding-bottom: 15px;
-  display: inline-block;
 }
 
+.tooltip{
+  margin-left: 5px;
+}
 .snykCell {
   word-break: break-word;
 }
@@ -1289,8 +1304,8 @@ highlighting a row on hover etc. */
 .tableHeaderContainer {
   display: flex;
   justify-content: space-between;
-  white-space: nowrap;
   width: 100%;
+  overflow: visible;
 }
 .tableControls {
   display: flex;
