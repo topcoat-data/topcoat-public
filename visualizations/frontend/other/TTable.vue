@@ -16,16 +16,28 @@
 
         <div class="tableControls" v-show="!isPdf">
           <!-- <div>Future Group By</div> -->
+          <!-- So this is a bit funky. Multiple front end columns can use the same layer column.
+            Multiple layer columns can be used in a front end column. When the user is selecting
+            a front end column to show or hide, they don't care about the layer columns, and the
+            selected front end columns are what needs to be saved as part of the url because there
+            is no way to know for sure which front end column was selected to be shown based on 
+            layer columns. However when filtering in the layer, the layer columns are what matter.
+            This leads to some fun below, in particular the addition of additionalFilters in the
+            csv export that is the layer columns necessary to show the visible front end columns, 
+            and that the url filter != the filter sent to the back end when fetching a layer with
+            modifiable columns. -->
           <t-select-columns
             v-if="modifiableColumns"
             :modifiableColumns="modifiableColumns"
             @updateFilteredColumns="updateFilteredColumns"
+            :urlFilter="modifiableColumnsFilter"
             :t-layer="layer"
           />
           <TCsvExport
             v-if="enableCsvDownload"
             :t-layer="layer"
             :additionalFilters="additionalFilters"
+            class="csvExportButton"
           />
           <TSearch
             v-if="canSearch"
@@ -353,6 +365,7 @@ export default {
       filterableColumnsToShow: [],
       additionalFilters: {},
       internalColumns: [],
+      modifiableColumnsFilter: null,
     };
   },
   computed: {
@@ -451,6 +464,7 @@ export default {
   },
   mounted() {
     this.fetchTotalRows();
+    this.modifiableColumnsFilter = this.getFilterState(`${this.layer}_cols`);
   },
   methods: {
     // internal columns takes any column configurations from the TColumnConfig
@@ -615,7 +629,7 @@ export default {
     },
     onVisualizationInit() {
       const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
-      if(orderByUrlFilter){
+      if(orderByUrlFilter && this.sort){
         this.setTableFilter('orderBy', orderByUrlFilter)
         Vue.set(this.additionalFilters, 'orderBy', orderByUrlFilter)
       }
@@ -1150,7 +1164,7 @@ export default {
     },
     updateFilteredColumns(filterableColumnsToShow) {
       this.filterableColumnsToShow = filterableColumnsToShow;
-      const thisTable = this.$store.state.layers.components[this.tag_unique];
+      
       let allValidColumns = [];
       filterableColumnsToShow.forEach((fcts) => {
         allValidColumns = allValidColumns.concat(fcts.sqlColumns);
@@ -1160,15 +1174,21 @@ export default {
       if(allValidColumns.includes(undefined)){
         console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
       }
+
+      const colsFilterName = `${this.layer}_cols`
       const columnList = JSON.stringify(allValidColumns)
-      Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : null)
-      const tableFilters = thisTable.filters ? {...thisTable.filters} : {}
-      tableFilters.column_list = columnList;
-      this.storeAttribute({
-          target: this.tag_unique,
-          attribute: "filters",
-          value: tableFilters,
-      })
+      if(!this.metadata.filters.output.find((f)=>f.name === colsFilterName)){
+        this.metadata.filters.output.push({name: colsFilterName, urlparam: colsFilterName})
+      }
+      const urlLabels = filterableColumnsToShow.map((fcts) => fcts.label).join("|")
+      // If the urlLabels is empty, the back end will remove the filter, which will make the
+      // TSelectColumns component show the default columns instead of just the columns that
+      // can't be hidden. So the '~`<>' is a hack to keep the back end from removing the filter
+      // while also being extremely unlikely to ever be a valid column label.
+      this.setFilterValue(colsFilterName, urlLabels ? urlLabels : '~`<>');
+      this.setTableFilter('column_list', columnList)
+      Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : [])
+
       if(this.canPageServer){
         this.fetchPagedLayer()
       }else{
@@ -1339,5 +1359,9 @@ highlighting a row on hover etc. */
   display: flex;
   gap: 10px;
   align-items: center;
+}
+
+.csvExportButton{
+  min-width: 130px;
 }
 </style>
