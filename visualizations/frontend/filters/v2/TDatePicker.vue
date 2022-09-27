@@ -12,7 +12,19 @@
       @confirm="handleConfirm"
       @pick="setCustomPreset"
       @open="fetchLayerData"
+      :class="relativePreset && 'w-auto'"
     >
+      <div
+        slot="input"
+        v-if="relativePreset"
+        class="border border-[#C3C2CB] py-1 px-2 bg-white cursor-pointer rounded-[4px] font-medium"
+      >
+        <div class="flex items-center gap-1">
+          <calendar-blank-outline-icon class="text-[16px]" />
+          {{ relativePreset.label }}
+          <menu-down-icon class="text-[20px]" />
+        </div>
+      </div>
       <div class="presets-dropown" slot="sidebar">
         <button
           v-for="preset in presets[mode]"
@@ -27,18 +39,21 @@
         </button>
       </div>
 
+      <!-- To hide default clear icon -->
       <div slot="icon-clear"></div>
-      <div slot="icon-calendar">
+
+      <div slot="icon-calendar" v-if="!relativePreset">
         <div class="flex items-center gap-1">
           <t-loading-spinner position="relative" v-if="loading" />
           <button @click="handleClear">
             <close-icon />
           </button>
-          <span style="color: #1284e7">
-            <calendar-blank-outline-icon />
-          </span>
+          <calendar-blank-outline-icon />
         </div>
       </div>
+
+      <!-- To hide default calendar icon when preset is selected -->
+      <div slot="icon-calendar" v-else></div>
     </base-date-picker>
   </div>
 </template>
@@ -81,6 +96,13 @@ export default {
         return "range";
       }
       return "single";
+    },
+    relativePreset() {
+      const preset = this.getFilterValue("date_preset");
+      if (preset === "custom") {
+        return null;
+      }
+      return this.presets[this.mode].filter((p) => p.key === preset)[0];
     },
   },
   data: () => ({
