@@ -137,18 +137,15 @@
             class="makeGridIgnoreDiv row"
           >
             <!-- Expand/Collapse controls for the details row -->
-            <div v-if="canCollapseDetailRows">
-              <div v-if="row.detailRowOpen" @click="collapseRow(row)">
-                <slot name="expandedDetailRowIcon">
-                  <div class="icon move_up">-</div>
-                </slot>
-              </div>
-              <div v-else @click="expandRow(row)">
-                <slot name="collapsedDetailRowIcon">
-                  <div class="icon move_up">+</div>
-                </slot>
-              </div>
-            </div>
+            <button v-if="canCollapseDetailRows" @click="toggleRow(row)">
+              <span aria-hidden="true">
+                <chevron-down-icon v-if="row.detailRowOpen"  />
+                <chevron-right-icon v-else />
+              </span>
+              <span class="sr-only">
+                {{ row.detailRowOpen ? "collapse row" : "open row" }}
+              </span>
+            </button>
 
             <!-- Radio buttons -->
             <input
@@ -1068,6 +1065,9 @@ export default {
       const index = this.internalRows.indexOf(row);
       this.$set(this.internalRows, index, row);
     },
+    toggleRow(row) {
+      row.detailRowOpen ? this.collapseRow(row) : this.expandRow(row);
+    },
     generateCellClasses({ column, cindex, rindex }) {
       let classes = "row ";
       classes += " cellPadding ";
@@ -1247,21 +1247,6 @@ export default {
   top: 50%;
   left: 50%;
   transform: scale(3);
-}
-.icon {
-  float: left;
-  font-size: large;
-  padding-right: 5px;
-}
-
-.move_up {
-  position: relative;
-  top: -6px;
-}
-
-.move_down {
-  position: relative;
-  top: 5px;
 }
 
 /* Here be magic. This tells browsers to treat this:
