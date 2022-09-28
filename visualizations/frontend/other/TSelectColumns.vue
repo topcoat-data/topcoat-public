@@ -109,6 +109,9 @@ export default {
     TLayer: {
       type: String,
     },
+    urlFilter: {
+      type: String,
+    }
   },
   data: () => ({
     checked: [],
@@ -116,26 +119,20 @@ export default {
     isExpanded: false,
     internalColumns: [],
   }),
-  mounted() {
-    let urlFilter = this.getFilterState(this.urlParamName);
-    const useUrlParams = typeof urlFilter === 'string';
-    if (urlFilter) {
-      urlFilter = urlFilter.split("|");
-    }
-
-    this.modifiableColumns.forEach((col) => {
-      const label = col.displayColumn;
-      const iCol = { label: label, sqlColumns: col.layerColumns };
-      this.internalColumns.push(iCol);
-      if (useUrlParams) {
-        if (urlFilter.includes(label)) this.checked.push(iCol);
-      } else if (col.displayByDefault) {
-        this.checked.push(iCol);
-      }
-    });
-    this.$emit("updateFilteredColumns", this.checked);
-  },
   watch: {
+    urlFilter(){
+      this.modifiableColumns.forEach((col) => {
+        const label = col.displayColumn;
+        const iCol = { label: label, sqlColumns: col.layerColumns };
+        this.internalColumns.push(iCol);
+        if (this.urlFilter && this.urlFilter.length > 0) {
+          if (this.urlFilter.includes(label)) this.checked.push(iCol);
+        } else if (col.displayByDefault) {
+          this.checked.push(iCol);
+        }
+      });
+      this.$emit("updateFilteredColumns", this.checked);
+    },
     checked() {
       this.updateChecked()
     },
