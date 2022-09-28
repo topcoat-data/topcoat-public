@@ -1074,6 +1074,7 @@ export default {
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
+      classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : ""
       classes += " " + this.cellClasses;
       return classes;
     },
