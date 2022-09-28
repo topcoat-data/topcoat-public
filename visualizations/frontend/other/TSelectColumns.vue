@@ -53,7 +53,7 @@
           >
             Select All
           </span>
-          <span v-else @click="deselectAll"> Reset </span>
+          <span v-else @click="reset"> Reset </span>
         </span>
       </div>
       <div class="px-[8px] pt-[4px] pb-[6px] w-full">
@@ -147,8 +147,17 @@ export default {
       this.checked = [...this.internalColumns];
       const visibleColumnlabels = this.checked.map((c) => c.label);
     },
-    deselectAll() {
-      this.checked = [];
+    reset() {
+      this.checked = []
+      this.modifiableColumns.forEach((col) => {
+        const label = col.displayColumn;
+        const iCol = { label: label, sqlColumns: col.layerColumns };
+        this.internalColumns.push(iCol);
+        if (col.displayByDefault) {
+          this.checked.push(iCol);
+        }
+      });
+      this.$emit("updateFilteredColumns", this.checked);
     },
     updateChecked: _.debounce(function(){
       this.$emit("updateFilteredColumns", this.checked);
