@@ -1,11 +1,11 @@
 <template>
-  <div class="rootTableContainer">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
+    <div class="rootTableContainer">
 
       <!-- Title -->
       <div class="tableHeaderContainer">
-        <div class="title">
-            <div v-if="title">{{ title }}</div>
+        <div>
+            <p class="title" v-if="title">{{ title }}</p>
             <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
               <help-circle-outline-icon slot="trigger" :size="16" />
               <div class="text-sm leading-[18px] font-normal">
@@ -1232,7 +1232,9 @@ export default {
 }
 
 .rootTableContainer {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   width: 100%;
   height: 100%;
   max-width: inherit;
@@ -1275,7 +1277,6 @@ export default {
 
 #tableContainer {
   display: grid;
-  margin: 5px;
   position: relative;
 }
 
@@ -1329,11 +1330,7 @@ highlighting a row on hover etc. */
   font-weight: 400;
   font-size: 20px;
   line-height: 23px;
-  display: flex;
-  align-items: center;
   font-feature-settings: "tnum" on, "lnum" on;
-  padding-top: 15px;
-  padding-bottom: 15px;
 }
 
 .tooltip{
@@ -1345,17 +1342,18 @@ highlighting a row on hover etc. */
 
 .tableHeaderContainer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
   overflow: visible;
+  gap: 15px;
 }
 .tableControls {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: flex-end;
 }
 
-.csvExportButton{
-  min-width: 130px;
-}
 </style>
