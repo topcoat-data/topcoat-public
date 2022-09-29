@@ -206,7 +206,7 @@
       </div>
     </div>
 
-    <div v-if="!isPdf" style="margin: 0px auto">
+    <div v-if="!isPdf">
       <SnykPager
         v-if="canPage || canPageServer"
         id="pagingControls"
