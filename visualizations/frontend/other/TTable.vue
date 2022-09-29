@@ -381,11 +381,6 @@ export default {
       isPdf(){
           return window.location.href.includes('/pdf?')
       },
-      allInitializationComplete(){
-        const isPagingInitialized = !this.canPageServer || this.endIndex
-        const isModifiableColumnsInitialized = !this.modifiableColumns || this.$store.state.layers.components[this.tag_unique]?.filters?.column_list !== undefined
-        return isPagingInitialized && isModifiableColumnsInitialized
-      },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
@@ -457,6 +452,12 @@ export default {
       if (this.rows) return this.rows;
       return [];
     },
+    sortFilterName(){
+      return `${this.layer}_sort`
+    },
+    modifiableColumnsFilterName(){
+      return `${this.layer}_cols`
+    },
   },
   watch: {
     internalSelectedItem() {
@@ -473,7 +474,20 @@ export default {
   },
   mounted() {
     this.fetchTotalRows();
-    this.modifiableColumnsFilter = this.getFilterState(`${this.layer}_cols`);
+
+    const modifiableColumnsFilter = this.getFilterState(this.modifiableColumnsFilterName);
+    if(this.modifiableColumns && this.modifiableColumns.length > 0){
+      // Note: this is the front-end columns, the layer filter will be set in initialization
+      this.modifiableColumnsFilter = modifiableColumnsFilter;
+    }
+    const orderByUrlFilter = this.getFilterState(this.sortFilterName);
+    if(orderByUrlFilter && this.sort){
+      this.setLayerFilter('orderBy', orderByUrlFilter)
+    }
+    if(this.canPageServer){
+      this.setLayerFilter('limit', "" + this.rowsPerPage)
+      this.setLayerFilter('offset', "" + this.startIndex)
+    }
   },
   methods: {
     // internal columns takes any column configurations from the TColumnConfig
@@ -625,6 +639,7 @@ export default {
       }
 
       this.internalColumns = cols;
+      this.setOrderByFilters()
     },
     setDisplayRows() {
       let rows = this.filterRowsBySearchValue(
@@ -644,11 +659,6 @@ export default {
       this.columnConfigs = this.columnConfigs.concat(columnConfig);
     },
     onVisualizationInit() {
-      const orderByUrlFilter = this.getFilterState(`${this.layer}_sort`);
-      if(orderByUrlFilter && this.sort){
-        this.setTableFilter('orderBy', orderByUrlFilter)
-        Vue.set(this.additionalFilters, 'orderBy', orderByUrlFilter)
-      }
       if (!this.canPageServer) {
         this.init();
       }
@@ -871,29 +881,25 @@ export default {
       }
 
       if(this.sort === 'sql'){
-        this.setOrderBy();
+        this.setOrderByFilters();
         this.fetchPagedLayer(false);
       }else{
         this.setupInternalRows();
       }
     },
-    setOrderBy(){
-        let sortedColumns = _.reverse(this.getSortedColumns());
-        let orderByFilter= sortedColumns.map((sc) => {
-            return ` ${sc.property} ${sc.sort.direction}, `
-        }).reduce((previous, current) => {
-            return previous + current;
-        }, '');
-        // remove trailing comma
-        if(orderByFilter.length > 1){
-            orderByFilter = orderByFilter.slice(0, -2);
-        }
-  		const sortFilterName = `${this.layer}_sort`
-      if(!this.metadata.filters.output.find((f)=>f.name === sortFilterName)){
-        this.metadata.filters.output.push({name: sortFilterName, urlparam: sortFilterName})
+    setOrderByFilters(){
+      let sortedColumns = _.reverse(this.getSortedColumns());
+      let orderByFilter= sortedColumns.map((sc) => {
+          return ` ${sc.property} ${sc.sort.direction}, `
+      }).reduce((previous, current) => {
+          return previous + current;
+      }, '');
+      // remove trailing comma
+      if(orderByFilter.length > 1){
+          orderByFilter = orderByFilter.slice(0, -2);
       }
-      this.setFilterValue(sortFilterName, orderByFilter);
-      this.setTableFilter('orderBy', orderByFilter)
+      this.setUrlFilter(this.sortFilterName, orderByFilter)
+      this.setLayerFilter('orderBy', orderByFilter)
       Vue.set(this.additionalFilters, 'orderBy', orderByFilter)
     },
     showGroupHeader(group) {
@@ -1104,20 +1110,13 @@ export default {
     updateStartIndex(newStartIndex) {
       this.startIndex = newStartIndex;
       if (this.canPageServer) {
-        this.setTableFilter('limit', "" + this.rowsPerPage)
-        this.setTableFilter('offset', "" + this.startIndex)
+        this.setLayerFilter('limit', "" + this.rowsPerPage)
+        this.setLayerFilter('offset', "" + this.startIndex)
         this.fetchPagedLayer();
         return;
       } else {
         this.setupInternalRows();
       }
-    },
-    setTableFilter(filterName, filterValue) {
-      const thisTable = this.$store.state.layers.components[this.tag_unique];
-      if (!thisTable.filters) {
-        thisTable.filters = {};
-      }
-      Vue.set(thisTable.filters, filterName, filterValue)
     },
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex;
@@ -1132,7 +1131,6 @@ export default {
         });
     },
     fetchPagedLayer(setColumnSort=true) {
-      if(!this.allInitializationComplete) return;
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
@@ -1195,18 +1193,14 @@ export default {
         console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
       }
 
-      const colsFilterName = `${this.layer}_cols`
       const columnList = JSON.stringify(allValidColumns)
-      if(!this.metadata.filters.output.find((f)=>f.name === colsFilterName)){
-        this.metadata.filters.output.push({name: colsFilterName, urlparam: colsFilterName})
-      }
       const urlLabels = filterableColumnsToShow.map((fcts) => fcts.label).join("|")
       // If the urlLabels is empty, the back end will remove the filter, which will make the
       // TSelectColumns component show the default columns instead of just the columns that
       // can't be hidden. So the '~`<>' is a hack to keep the back end from removing the filter
       // while also being extremely unlikely to ever be a valid column label.
-      this.setFilterValue(colsFilterName, urlLabels ? urlLabels : '~`<>');
-      this.setTableFilter('column_list', columnList)
+      this.setUrlFilter(this.modifiableColumnsFilterName, urlLabels ? urlLabels : '~`<>');
+      this.setLayerFilter('column_list', columnList)
       Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : [])
 
       if(this.canPageServer){
@@ -1216,7 +1210,7 @@ export default {
       }
     },
     getUrlSortConfiguration(){
-      const urlFilter = this.getFilterState(`${this.layer}_sort`);
+      const urlFilter = this.getFilterState(this.sortFilterName);
       const useUrlParams = typeof urlFilter === 'string';
       if(useUrlParams){
         const urlSortableColumns =[]
@@ -1227,6 +1221,19 @@ export default {
         return urlSortableColumns;
       }
       return null;
+    },
+    setLayerFilter(filterName, filterValue) {
+      const thisTable = this.$store.state.layers.components[this.tag_unique];
+      if (!thisTable.filters) {
+        thisTable.filters = {};
+      }
+      Vue.set(thisTable.filters, filterName, filterValue)
+    },
+    setUrlFilter(filterName, filterValue) {
+      if(!this.metadata.filters.output.find((f)=>f.name === filterName)){
+        this.metadata.filters.output.push({name: filterName, urlparam: filterName})
+      }
+      this.setFilterValue(filterName, filterValue);
     },
   },
 };
