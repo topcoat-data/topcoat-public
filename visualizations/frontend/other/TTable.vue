@@ -136,16 +136,24 @@
             :key="rindex + row.toString()"
             class="makeGridIgnoreDiv row"
           >
-            <!-- Expand/Collapse controls for the details row -->
-            <button v-if="canCollapseDetailRows" @click="toggleRow(row)">
+          <!-- Expand/Collapse controls for the details row -->
+          <div
+            v-if="canCollapseDetailRows"
+            class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
+          >
+            <button
+              @click="toggleRow(row)"
+              class="focus:outline-none focus-visible:ring"
+            >
               <span aria-hidden="true">
-                <chevron-down-icon v-if="row.detailRowOpen"  />
+                <chevron-down-icon v-if="row.detailRowOpen" />
                 <chevron-right-icon v-else />
               </span>
               <span class="sr-only">
                 {{ row.detailRowOpen ? "collapse row" : "open row" }}
               </span>
             </button>
+          </div>
 
             <!-- Radio buttons -->
             <input
@@ -1074,6 +1082,7 @@ export default {
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
+      classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : ""
       classes += " " + this.cellClasses;
       return classes;
     },
