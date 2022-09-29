@@ -343,6 +343,10 @@ export default {
         return [null, 'ASC', 'DESC'].includes(value)
       }
     },
+    excludeFromSort: {
+      type: Array,
+      default: () => [],
+    },
   },
   emits: {
     "update:selectedItem": null,
@@ -568,6 +572,13 @@ export default {
           sortConfig = sortConfig.concat(sortableColumns)
           sortableColumns = sortConfig
         }
+
+        this.excludeFromSort.forEach((efs) => {
+          let cleanSortableColumns = _.remove(sortableColumns, (sc) => {
+            return !efs.includes(sc.column);
+          });
+          sortableColumns = cleanSortableColumns
+        })
         // Note: the _.reverse here is because when sorting on the front end, lodash uses
         // a stable sort. The increasing order of priority preserves user's previouse sorts.
         // Here the code needs to emulate that first priority sort being the "latest" column
