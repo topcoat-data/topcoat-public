@@ -3,7 +3,7 @@
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
       <!-- Title -->
-      <div class="tableHeaderContainer">
+      <div class="tableHeaderContainer" v-if="title || tooltip  || enableCsvDownload || canSearch || (modifiableColumns && modifiableColumns.length > 0)">
         <div class="title">
             <div v-if="title">{{ title }}</div>
             <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
