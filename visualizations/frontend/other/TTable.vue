@@ -313,7 +313,7 @@ export default {
     cellClasses: {
       type: String,
       default:
-        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell table-data",
+        "border-b border-[#D3D3D9] align-top py-[12px] break-all",
     },
     layerColumnsToHide: {
       type: Array,
@@ -1338,9 +1338,6 @@ highlighting a row on hover etc. */
 
 .tooltip{
   margin-left: 5px;
-}
-.snykCell {
-  word-break: break-word;
 }
 
 .tableHeaderContainer {
