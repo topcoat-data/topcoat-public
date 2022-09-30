@@ -23,7 +23,7 @@
           <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
           <button @click="handleClear">
-            <close-icon />
+            <close-icon title="clear date selection" />
           </button>
           <menu-down-icon class="text-[20px]" />
         </div>
