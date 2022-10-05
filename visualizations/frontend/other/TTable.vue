@@ -1,5 +1,5 @@
 <template>
-  <div class="rootTableContainer">
+  <div class="rootTableContainer" :class="{makeTooltipVisible : tooltip} ">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
       <!-- Title -->
@@ -612,15 +612,6 @@ export default {
         })
       }
 
-      // remove sorting on calculated columns for now.
-      // TODO: figure out if there is a way to get the computed value in each cell slot so that dynamic columns can be sorted
-      const baseColumns = Object.keys(this.rows[0]);
-      cols.forEach((col) => {
-        if (!baseColumns.includes(col.property)) {
-          col.sort = null;
-        }
-      });
-
       // remove hidden columns
       if (this.modifiableColumns) {
         const labelsOfColumnToShow = this.filterableColumnsToShow.map(
@@ -637,6 +628,15 @@ export default {
           return !headerNamesOfColumnsToHide.includes(col.header.toLowerCase());
         });
       }
+
+      // remove sorting on calculated columns for now.
+      // TODO: figure out if there is a way to get the computed value in each cell slot so that dynamic columns can be sorted
+      const baseColumns = Object.keys(this.rows[0]);
+      cols.forEach((col) => {
+        if (!baseColumns.includes(col.property)) {
+          col.sort = null;
+        }
+      });
 
       this.internalColumns = cols;
       this.setOrderByFilters()
@@ -1241,7 +1241,8 @@ export default {
 
 <style scoped>
 .tableDataContainer{
-  overflow-x: auto;
+  max-width: 100%;
+  overflow-x: scroll;
 }
 .table-data {
   padding-top: 12px;
@@ -1253,11 +1254,11 @@ export default {
   display: inline-block;
   width: 100%;
   height: 100%;
-  max-width: inherit;
-  max-height: inherit;
+  max-width: 100%;
+  max-height: 100%;
   position: relative;
   min-height: 120px;
-  overflow: visible;
+  overflow-x: hidden;
 }
 
 .spinnerOverlay {
@@ -1295,6 +1296,8 @@ export default {
   display: grid;
   margin: 5px;
   position: relative;
+  width: 100%;
+  overflow-x: scroll;
 }
 
 .spanAllColumns {
@@ -1375,5 +1378,9 @@ highlighting a row on hover etc. */
 
 .csvExportButton{
   min-width: 130px;
+}
+
+.makeTooltipVisible {
+  overflow: visible;
 }
 </style>
