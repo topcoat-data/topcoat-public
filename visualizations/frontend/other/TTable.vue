@@ -3,7 +3,7 @@
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
       <!-- Title -->
-      <div class="tableHeaderContainer">
+      <div class="tableHeaderContainer" v-if="showTableHeader">
         <div class="title">
             <div v-if="title">{{ title }}</div>
             <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
@@ -180,6 +180,7 @@
               v-for="(column, cindex) in internalColumns"
               :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
+              class="border-b border-[#D3D3D9] align-top py-[12px]"
               :class="generateCellClasses({ column, cindex, rindex })"
             >
               <slot
@@ -199,7 +200,9 @@
               :key="'detailRow' + rindex"
               class="spanAllColumns"
             >
-              <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
+              <div class="px-4">
+                <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
+              </div>
             </div>
           </div>
         </div>
@@ -313,7 +316,7 @@ export default {
     cellClasses: {
       type: String,
       default:
-        "border-b border-[#D3D3D9] align-top pt-[12px] pb-[17px] snykCell table-data",
+        "break-all",
     },
     layerColumnsToHide: {
       type: Array,
@@ -378,9 +381,17 @@ export default {
     };
   },
   computed: {
-      isPdf(){
-          return window.location.href.includes('/pdf?')
-      },
+    isPdf(){
+        return window.location.href.includes('/pdf?')
+    },
+    allInitializationComplete(){
+      const isPagingInitialized = !this.canPageServer || this.endIndex
+      const isModifiableColumnsInitialized = !this.modifiableColumns || this.$store.state.layers.components[this.tag_unique]?.filters?.column_list !== undefined
+      return isPagingInitialized && isModifiableColumnsInitialized
+    },
+    showTableHeader() {
+      return this.title || this.tooltip  || this.enableCsvDownload || this.canSearch || this.modifiableColumns?.length > 0;
+    },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
@@ -1359,9 +1370,6 @@ highlighting a row on hover etc. */
 
 .tooltip{
   margin-left: 5px;
-}
-.snykCell {
-  word-break: break-word;
 }
 
 .tableHeaderContainer {
