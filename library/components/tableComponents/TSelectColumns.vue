@@ -166,11 +166,6 @@ export default {
     updateChecked: _.debounce(function(){
       this.$emit("updateFilteredColumns", this.checked);
       const selectColumnLabels = this.checked.map((c) => c.label);
-      this.setFilter({
-        name: this.urlParamName,
-        value: selectColumnLabels.join("|"),
-        persist: false,
-      });
     }, 750),
   },
 };
