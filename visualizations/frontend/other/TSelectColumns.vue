@@ -121,6 +121,7 @@ export default {
   }),
   watch: {
     urlFilter(){
+      console.log('urlFilter')
       this.modifiableColumns.forEach((col) => {
         const label = col.displayColumn;
         const iCol = { label: label, sqlColumns: col.layerColumns };
@@ -158,6 +159,9 @@ export default {
         }
       });
       this.$emit("updateFilteredColumns", this.checked);
+    },
+    onFiltersUpdated() {
+      console.log('onFiltersUpdated')
     },
     updateChecked: _.debounce(function(){
       this.$emit("updateFilteredColumns", this.checked);
