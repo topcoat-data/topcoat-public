@@ -158,7 +158,7 @@ export default {
       console.log('checkedColumnNames', checkedColumnNames)
 
         this.internalColumns.forEach((ic)=>{
-          if(this.checkedColumnNames.includes(ic.label)){
+          if(checkedColumnNames.includes(ic.label)){
             this.checked.push(ic)
           }
         })
