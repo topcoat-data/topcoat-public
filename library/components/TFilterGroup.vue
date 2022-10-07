@@ -43,7 +43,7 @@
     <t-expandable v-show="false" />
     <!-- Bug: Render functions cannot use t-expandable without this line -->
 
-    <div class="overflow-auto" :style="{ maxWidth, maxHeight }">
+    <div class="overflow-auto" :style="{ width, height }">
       <expansion-wrapper ref="expansionWrapper">
         <slot></slot>
       </expansion-wrapper>
@@ -116,11 +116,11 @@ export default {
       type: String,
       default: "Add filters",
     },
-    maxHeight: {
+    height: {
       type: String,
       default: "300px",
     },
-    maxWidth: {
+    width: {
       type: String,
       default: "400px",
     },
