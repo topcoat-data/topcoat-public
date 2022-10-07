@@ -137,6 +137,10 @@ export default {
     checked() {
       this.updateChecked()
     },
+    filters(value, oldValue) {
+      console.log('filters changed', value, oldValue)
+
+    },
   },
   computed: {
     urlParamName() {
@@ -165,7 +169,6 @@ export default {
     },
     updateChecked: _.debounce(function(){
       this.$emit("updateFilteredColumns", this.checked);
-      const selectColumnLabels = this.checked.map((c) => c.label);
     }, 750),
   },
 };
