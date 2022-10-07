@@ -110,8 +110,8 @@ export default {
             }
           }
         } catch (error) {
-          console.log(error);
-          console.log("Failed to parse tags data");
+          console.error(error);
+          console.error("Failed to parse tags data");
         }
       }
     },
