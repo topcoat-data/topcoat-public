@@ -138,6 +138,11 @@ export default {
       this.assignDatesFromFilters();
       this.handleDefaults();
     },
+    onFiltersUpdated() {
+      this.date = [];
+      this.selectedPreset = {};
+      this.onVisualizationInit;
+    },
     setCustomPreset() {
       this.selectedPreset = this.presets[this.mode].filter(
         (p) => p.key === "custom"

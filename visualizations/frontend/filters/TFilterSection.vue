@@ -79,8 +79,10 @@ export default {
       if (this.filters) {
         for (let key of Object.keys(this.filters)) {
           let value = this.filters[key];
-          console.log(value);
-          if (value.includes("|")) {
+          // Is number
+          if (typeof value === "number") {
+            filters[key] = value;
+          } else if (value.includes("|")) {
             // Multiple values
             filters[key] = value.split("|");
           } else if (value[0] === "{" && value[value.length - 1] === "}") {
