@@ -121,7 +121,7 @@ export default {
   }),
   watch: {
     urlFilter(){
-      console.log('urlFilter')
+      console.log('urlFilter', this.onFiltersUpdated)
       this.modifiableColumns.forEach((col) => {
         const label = col.displayColumn;
         const iCol = { label: label, sqlColumns: col.layerColumns };
