@@ -115,31 +115,55 @@ export default {
   },
   data: () => ({
     checked: [],
-    search: "",
     isExpanded: false,
     internalColumns: [],
+    isFirstLoad: true,
   }),
   watch: {
-    urlFilter(){
-      console.log('urlFilter', this.onFiltersUpdated)
-      this.modifiableColumns.forEach((col) => {
-        const label = col.displayColumn;
-        const iCol = { label: label, sqlColumns: col.layerColumns };
-        this.internalColumns.push(iCol);
-        if (this.urlFilter && this.urlFilter.length > 0) {
-          if (this.urlFilter.includes(label)) this.checked.push(iCol);
-        } else if (col.displayByDefault) {
-          this.checked.push(iCol);
-        }
-      });
-      this.$emit("updateFilteredColumns", this.checked);
-    },
+    // urlFilter(){
+    //   console.log('urlFilter', this.onFiltersUpdated)
+    //   this.modifiableColumns.forEach((col) => {
+    //     const label = col.displayColumn;
+    //     const iCol = { label: label, sqlColumns: col.layerColumns };
+    //     this.internalColumns.push(iCol);
+    //     if (this.urlFilter && this.urlFilter.length > 0) {
+    //       if (this.urlFilter.includes(label)) this.checked.push(iCol);
+    //     } else if (col.displayByDefault) {
+    //       this.checked.push(iCol);
+    //     }
+    //   });
+    //   this.$emit("updateFilteredColumns", this.checked);
+    // },
     checked() {
       this.updateChecked()
     },
     filters(value, oldValue) {
       console.log('filters changed', value, oldValue)
+      if(this.isFirstLoad){
+        this.modifiableColumns.forEach((col) => {
+          const label = col.displayColumn;
+          const iCol = { label: label, sqlColumns: col.layerColumns };
+          this.internalColumns.push(iCol);
+        });
 
+        let checkedColumnNames;
+        // if the filter is set, set the checked columns based on that
+        if(value && value[this.urlParamName]){
+          checkedColumnNames = value[this.urlParamName].split('|')
+        }
+        // otheriwse, set the checked columns based on the defaults
+        else{
+          checkedColumnNames = this.modifiableColumns.filter((mc) => mc.displayByDefault)
+        }
+      console.log('checkedColumnNames', checkedColumnNames)
+
+        this.internalColumns.forEach((ic)=>{
+          if(this.checkedColumnNames.includes(ic.label)){
+            this.checked.push(ic)
+          }
+        })
+        this.isFirstLoad = false;
+      }
     },
   },
   computed: {
