@@ -22,7 +22,7 @@
         <div class="flex items-center gap-1">
           <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
-          <button @click="handleClear">
+          <button @click="handleClear" v-if="!isRequired">
             <close-icon title="clear date selection" />
           </button>
           <menu-down-icon class="text-[20px]" />
@@ -48,7 +48,7 @@
       <div slot="icon-calendar" v-if="!relativePreset">
         <div class="flex items-center gap-1">
           <t-loading-spinner position="relative" v-if="loading" />
-          <button @click="handleClear">
+          <button @click="handleClear" v-if="!isRequired">
             <close-icon />
           </button>
           <calendar-blank-outline-icon />
@@ -88,6 +88,10 @@ export default {
     defaultDatePreset: {
       type: String,
       default: "",
+    },
+    isRequired: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
