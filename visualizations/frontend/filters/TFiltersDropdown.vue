@@ -22,26 +22,25 @@
       </div>
     </div>
 
-    <!-- Filters section  -->
-    <div class="flex flex-col gap-2 px-4 pb-2 tracking-widest roboto-fonts">
+    <div class="flex flex-col gap-2 px-2 pb-2 tracking-widest roboto-fonts">
       <div v-if="!filteredItems.length">No filters found</div>
       <div v-for="(section, index) in filteredItems" :key="section">
-        <div class="py-2 text-xs font-semibold">{{ section.label }}</div>
+        <div class="px-2 py-1 text-xs font-semibold">{{ section.label }}</div>
         <div class="text-sm">
           <div
-            class="pb-2"
-            v-for="filter in expanded.includes(index)
+            class="px-2 py-1 rounded hover:bg-[#F9F8FA]"
+            v-for="item in expanded.includes(index)
               ? section.items
-              : section.items.slice(0, 4)"
-            :key="filter"
-            @click="toggleFilter(filter.url_param)"
+              : section.items.slice(0, itemLimit)"
+            :key="item"
+            @click="toggleFilter(item.filters)"
           >
-            {{ filter.label }}
+            {{ item.label }}
           </div>
         </div>
         <div
           @click="handleExpanded(index)"
-          class="text-[#145DEB] text-sm"
+          class="text-[#145DEB] text-sm px-2 py-1"
           v-if="section.items.length > 4"
         >
           <span v-if="expanded.includes(index)"> Show less </span>
@@ -61,6 +60,10 @@ export default {
       type: Array,
       default: [],
     },
+    itemLimit: {
+      type: Number,
+      default: 4,
+    },
   },
   data: () => ({
     search: "",
@@ -70,34 +73,44 @@ export default {
   computed: {
     filteredItems() {
       // Show filters according to `search` & `filters` variables.
-      let items = [];
-      for (let section of this.items) {
-        let filteredItems = section.items.filter((s) => {
-          return (
-            s.label.toLowerCase().includes(this.search.toLowerCase()) &&
-            !this.filters.hasOwnProperty(s.url_param)
-          );
-        });
+      const items = [];
+      const usedFilters = [];
+
+      for (let key of Object.keys(this.items)) {
+        let filteredItems = [];
+        const section = this.items[key];
+        for (let item of section.items) {
+          // Only include searched items.
+          if (
+            item.label &&
+            !item.label.toLowerCase().includes(this.search.toLowerCase())
+          ) {
+            continue;
+          }
+          filteredItems.push(item);
+        }
+
         if (!filteredItems.length) {
           continue;
         }
+
         items.push({
           label: section.label,
           items: filteredItems,
         });
       }
+
       return items;
     },
   },
   methods: {
-    toggleFilter(name) {
-      if (this.filters[name]) {
-        return this.deleteFilter({ name });
+    toggleFilter(filters) {
+      for (let filter of filters) {
+        this.setFilter({
+          name: filter,
+          value: "",
+        });
       }
-      return this.setFilter({
-        name,
-        value: "",
-      });
     },
     handleExpanded(index) {
       if (this.expanded.includes(index)) {
