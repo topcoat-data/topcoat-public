@@ -76,7 +76,7 @@
         v-for="(column, index) in internalColumns"
         :key="column.header"
         :ref="'headerCell_' + index"
-        class="headerCell"
+        class="headerCell text-[12px]"
         :class="generateHeaderClasses(column.property, index)"
       >
         <div style="display: flex;align-items: center;">
