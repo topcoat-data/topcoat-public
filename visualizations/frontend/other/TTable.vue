@@ -84,7 +84,7 @@
             {{ column.header }} 
           </slot>
 
-          <div v-if="column.sort" @click="updateSort(column)">
+          <div v-if="column.sort" @click="updateSort(column)" class="sortIcon">
             <slot v-if="column.sort.direction === 'ASC'" name="sortAscendingIcon" v-bind="column">
               <chevron-up-icon />
             </slot>
@@ -1251,6 +1251,9 @@ export default {
 </script>
 
 <style scoped>
+.sortIcon{
+  color: #55546375
+}
 .tableDataContainer{
   max-width: 100%;
   overflow-x: scroll;
