@@ -175,7 +175,6 @@ export default {
         if (presetObject.key !== "custom") {
           // If relative date, use the date assigned by preset.
           this.handlePreset(presetObject);
-          this.handleConfirm(this.date);
           return;
         }
       }
