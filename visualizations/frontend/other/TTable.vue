@@ -92,7 +92,7 @@
               <chevron-down-icon />
             </slot>
             <slot v-else name="sortUnsortedIcon" v-bind="column">
-              <unfold-more-horizontal-icon />
+              <unfold-more-horizontal-icon  class="unsortedIcon" />
             </slot>
           </div>
         </div>
@@ -1252,7 +1252,10 @@ export default {
 
 <style scoped>
 .sortIcon{
-  color: #55546375
+  color: #323232;
+}
+.unsortedIcon{
+  opacity: 0.5;
 }
 .tableDataContainer{
   max-width: 100%;
