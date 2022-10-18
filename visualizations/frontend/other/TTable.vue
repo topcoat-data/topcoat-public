@@ -86,13 +86,13 @@
 
           <div v-if="column.sort" @click="updateSort(column)" class="sortIcon">
             <slot v-if="column.sort.direction === 'ASC'" name="sortAscendingIcon" v-bind="column">
-              <chevron-up-icon :size="20" />
+              <menu-up-icon :size="20" />
             </slot>
             <slot v-else-if="column.sort.direction === 'DESC'" name="sortDescendingIcon" v-bind="column">
-              <chevron-down-icon :size="20" />
+              <menu-down-icon :size="20" />
             </slot>
             <slot v-else name="sortUnsortedIcon" v-bind="column">
-              <unfold-more-horizontal-icon  class="unsortedIcon" :size="20"/>
+              <menu-swap-icon :size="20" class="unsortedIcon" />
             </slot>
           </div>
         </div>
