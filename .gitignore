@@ -6,3 +6,4 @@ dbt_gen/*
 *.yml
 .dccache
 .DS_Store
+node_modules
