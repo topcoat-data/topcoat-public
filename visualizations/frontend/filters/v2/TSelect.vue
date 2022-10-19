@@ -1,4 +1,3 @@
-<
 <template>
   <t-dropdown @open="onDropdownOpen">
     <!-- Handle -->
@@ -214,4 +213,3 @@ export default {
   },
 };
 </script>
->
