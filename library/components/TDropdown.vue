@@ -3,7 +3,11 @@
     class="relative w-auto font-sans cursor-pointer dropdown-filter"
     ref="dropdownFilter"
   >
-    <div @click="openPopup" :class="activeClass" class="rounded cursor-pointer">
+    <div
+      @click="openPopup"
+      :class="!disableActiveClass && activeClass"
+      class="rounded cursor-pointer"
+    >
       <slot name="handle"></slot>
     </div>
     <slot name="outside"></slot>
@@ -41,6 +45,10 @@ export default {
       type: Array,
       // Todo: Remove & Replace with a better fix.
       default: () => ["mx-datepicker-popup"],
+    },
+    disableActiveClass: {
+      type: Boolean,
+      default: false,
     },
   },
   data: () => ({

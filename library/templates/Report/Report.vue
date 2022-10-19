@@ -1,6 +1,9 @@
 <template>
   <div>
-    <report-header v-if="hasHeader" />
+    <div class="border-b border-[#E5E7EB] bg-white sticky top-0 m-auto z-50">
+      <report-header v-if="hasHeader" />
+      <t-navigation-dropdown />
+    </div>
     <div class="bg-[#F9F9FA]">
       <div class="flex w-full gap-10 content-block">
         <div class="w-full">

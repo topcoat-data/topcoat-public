@@ -16,9 +16,10 @@
     </div>
     <div class="flex flex-wrap items-center gap-1">
       <component
-        v-for="component in visibleComponents"
-        :key="component"
-        :is="component"
+        v-for="(visible, tag) in filterComponents"
+        :key="tag"
+        :is="tag"
+        v-if="visible"
       />
       <t-filters-dropdown :items="items" />
     </div>
@@ -28,52 +29,63 @@
 <script>
 export default {
   data: () => ({
-    visibleComponents: [],
+    filterComponents: {},
   }),
   computed: {
     items() {
       let items = {};
-      const visibleComponents = [];
-      this.$slots.default.forEach((element, index) => {
-        if (element.data && element.componentOptions) {
-          const attrs = element.data.attrs || {};
-          const label =
-            element?.componentOptions?.propsData?.label || attrs["label"];
-          const type = attrs["dropdown-section"] || "--";
-          let urlParams = [];
-          for (let attribute of Object.keys(attrs)) {
-            if (attribute.includes("t-filter")) {
-              if (this.filters.hasOwnProperty(attrs[attribute])) {
-                const componentTag = `${label}${index}`.replace(/\s/g, "");
-                window.Vue.component(componentTag, {
-                  render: function (c) {
-                    return c("div", {}, [element]);
-                  },
-                });
-                visibleComponents.push(componentTag);
-                urlParams = [];
-                break;
-              }
-              urlParams.push(attrs[attribute]);
-            }
-          }
+      if (this.$slots.default) {
+        this.$slots.default.forEach((element, index) => {
+          if (element.data && element.componentOptions) {
+            const attrs = element.data.attrs || {};
+            const label =
+              element?.componentOptions?.propsData?.label || attrs["label"];
+            const type = attrs["dropdown-section"] || "Ungrouped";
 
-          if (urlParams.length) {
-            if (items[type]) {
-              items[type].items = [
-                ...items[type].items,
-                { label, filters: urlParams },
-              ];
-            } else {
-              items[type] = {
-                label: type,
-                items: [{ label, filters: urlParams }],
-              };
+            // Check active url filters
+            let urlParams = [];
+            let visible = false;
+            for (let attribute of Object.keys(attrs)) {
+              if (attribute.includes("t-filter")) {
+                if (this.filters.hasOwnProperty(attrs[attribute])) {
+                  urlParams = [];
+                  visible = true;
+                  break;
+                }
+                urlParams.push(attrs[attribute]);
+              }
+            }
+
+            // Create component instance
+            const componentTag = `${label}${index}`.replace(/\s/g, "");
+            if (!this.filterComponents.hasOwnProperty(componentTag)) {
+              window.Vue.component(componentTag, {
+                render: function (c) {
+                  return c("div", {}, [element]);
+                },
+              });
+            }
+            // Handle visibility state
+            // If filter is used as url param, show the filter in active section.
+            this.$set(this.filterComponents, componentTag, visible);
+
+            // If filter is not used as url param, show in dropdown.
+            if (urlParams.length) {
+              if (items[type]) {
+                items[type].items = [
+                  ...items[type].items,
+                  { label, filters: urlParams },
+                ];
+              } else {
+                items[type] = {
+                  label: type,
+                  items: [{ label, filters: urlParams }],
+                };
+              }
             }
           }
-        }
-      });
-      this.visibleComponents = visibleComponents;
+        });
+      }
       return items;
     },
   },
