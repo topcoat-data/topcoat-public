@@ -244,7 +244,6 @@ export default {
       for (let key of Object.keys(this.$attrs)) {
         if (key === "t-filter:selected_items") {
           return this.$attrs[key];
-          break;
         }
       }
       return "";

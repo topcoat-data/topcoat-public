@@ -8,10 +8,25 @@
       <div class="pl-1">
         <slot name="icon"></slot>
       </div>
-      <div class="flex items-center">
+      <div class="flex flex-wrap items-center w-max">
         <span>{{ label }}</span>
+        <div v-if="selected.length" class="flex flex-wrap gap-1">
+          <span>:</span>
+          <div
+            v-for="selectedTag of selected"
+            :key="selectedTag"
+            class="bg-[#EAF1FF] rounded flex items-center gap-1 rounded"
+          >
+            <span class="font-semibold" v-if="!isSingleTag">{{
+              selectedTag.key
+            }}</span>
+            <span class="font-normal">
+              {{ selectedTag.value }}
+            </span>
+            <close-icon :size="12" @click.stop="removeTag(selectedTag)" />
+          </div>
+        </div>
       </div>
-
       <t-loading-spinner v-if="loading" position="relative" />
       <menu-down-icon v-else :size="20" />
     </div>
@@ -56,7 +71,10 @@
                 v-for="value of tags[selectedKey]"
                 class="p-1 hover:bg-[#F9F8FA]"
               >
-                <div @click="selectValue(value)" class="p-1 hover:bg-[#F9F8FA]">
+                <div
+                  @click.stop="selectValue(value)"
+                  class="p-1 hover:bg-[#F9F8FA]"
+                >
                   {{ value }}
                 </div>
               </div>
@@ -71,7 +89,7 @@
               >
               <div
                 v-for="key in Object.keys(tags)"
-                @click="selectKey(key)"
+                @click.stop="selectKey(key)"
                 class="p-1 hover:bg-[#F9F8FA]"
               >
                 {{ key }}
@@ -85,9 +103,11 @@
             :key="selectedTag"
             class="bg-[#EAF1FF] rounded p-1 flex items-center gap-1 rounded"
           >
-            <span class="font-semibold">{{ selectedTag.key }}</span>
+            <span class="font-semibold" v-if="!isSingleTag">{{
+              selectedTag.key
+            }}</span>
             {{ selectedTag.value }}
-            <close-icon :size="12" @click="removeTag(selectedTag)" />
+            <close-icon :size="12" @click.stop="removeTag(selectedTag)" />
           </div>
         </div>
         <div v-else class="p-2">No tags selected</div>
@@ -127,6 +147,10 @@ export default {
       default: "",
     },
     isDeletable: {
+      type: Boolean,
+      default: false,
+    },
+    isSingleTag: {
       type: Boolean,
       default: false,
     },
