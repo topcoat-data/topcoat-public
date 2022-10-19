@@ -1,5 +1,10 @@
 <template>
-  <a :href="fullUrl" :class="{ 'tUrl': includeUrlStyle }" :target="openInNewTab ? '_blank' : '_top'" rel="noopener noreferrer">
+  <a
+    :href="fullUrl"
+    :style="styleObject"
+    :target="openInNewTab ? '_blank' : '_top'"
+    rel="noopener noreferrer"
+  >
     <slot></slot>
   </a>
 </template>
@@ -22,7 +27,7 @@ export default {
         return {};
       },
     },
-    openInNewTab:{
+    openInNewTab: {
       type: Boolean,
       default: true,
     },
@@ -36,6 +41,11 @@ export default {
     }
   },
   computed: {
+    styleObject() {
+        return {
+            color: this.includeUrlStyle ? "#145DEB" : "inherit",
+        };
+    },
     fullUrl() {
       let allUrlParams = {};
       const { 'context[org]': org, 'context[group]': group, ...restOfFilters } = this.getFiltersState;
@@ -71,12 +81,8 @@ export default {
 
       return this.url;
     },
-  }
+  },
 };
 </script>
 
-<style scoped>
-.tUrl {
-  color: rgba(20, 93, 235);
-}
-</style>
+<style scoped></style>
