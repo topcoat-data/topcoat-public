@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="pagination-footer flex justify-center relative"
+      class="relative flex justify-center pagination-footer"
       v-if="numberOfItems && numberOfItems > itemsPerPage"
     >
       <ul
@@ -10,13 +10,7 @@
       >
         <li class="pagination-nav-item">
           <button
-            class="
-              h-8
-              minWidth
-              text-[#145DEB] text-[15px]
-              mr-[8px]
-              focus:outline-none
-            "
+            class="h-8 minWidth text-[#145DEB] text-[15px] mr-[8px] focus:outline-none"
             @click="internalPage === 1 ? 1 : internalPage--"
           >
             <i class="fas fa-arrow-left"></i>
@@ -24,14 +18,7 @@
         </li>
         <li v-for="page in pageNumbersToShow" class="pagination-nav-item">
           <button
-            class="
-              h-8
-              minWidth
-              text-[15px]
-              font-medium
-              leading-5
-              focus:outline-none
-            "
+            class="h-8 minWidth text-[15px] font-medium leading-5 focus:outline-none"
             @click="internalPage = page !== '...' ? page : internalPage"
             :class="[
               page === internalPage
@@ -44,15 +31,7 @@
         </li>
         <li class="pagination-nav-item">
           <button
-            class="
-              h-8
-              minWidth
-              text-[#145DEB] text-[15px]
-              ml-[8px]
-              font-medium
-              leading-5
-              focus:outline-none
-            "
+            class="h-8 minWidth text-[#145DEB] text-[15px] ml-[8px] font-medium leading-5 focus:outline-none"
             @click="internalPage === lastPage ? lastPage : internalPage++"
           >
             <i class="fas fa-arrow-right"></i>
@@ -60,14 +39,7 @@
         </li>
       </ul>
       <div
-        class="
-          absolute
-          right-2
-          top-5
-          font-normal
-          text-[#727184] text-[13px]
-          leading-[18px]
-        "
+        class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
       >
         Showing {{ startIndex + 1 }}-{{
           Math.min(startIndex + itemsPerPage, numberOfItems)

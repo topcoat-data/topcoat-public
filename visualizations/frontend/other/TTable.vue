@@ -1,22 +1,22 @@
 <template>
-  <div class="rootTableContainer" :class="{makeTooltipVisible : tooltip} ">
+  <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }">
     <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
 
-      <!-- Title -->
-      <div class="tableHeaderContainer" v-if="showTableHeader">
-        <div class="title">
-            <div v-if="title">{{ title }}</div>
-            <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
-              <help-circle-outline-icon slot="trigger" :size="16" />
-              <div class="text-sm leading-[18px] font-normal">
-                {{ tooltip }}
-              </div>
-            </t-tooltip>
-        </div>
+    <!-- Title -->
+    <div class="tableHeaderContainer" v-if="showTableHeader">
+      <div class="title">
+        <div v-if="title">{{ title }}</div>
+        <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
+          <help-circle-outline-icon slot="trigger" :size="16" />
+          <div class="text-sm leading-[18px] font-normal">
+            {{ tooltip }}
+          </div>
+        </t-tooltip>
+      </div>
 
-        <div class="tableControls" v-show="!isPdf">
-          <!-- <div>Future Group By</div> -->
-          <!-- So this is a bit funky. Multiple front end columns can use the same layer column.
+      <div class="tableControls" v-show="!isPdf">
+        <!-- <div>Future Group By</div> -->
+        <!-- So this is a bit funky. Multiple front end columns can use the same layer column.
             Multiple layer columns can be used in a front end column. When the user is selecting
             a front end column to show or hide, they don't care about the layer columns, and the
             selected front end columns are what needs to be saved as part of the url because there
@@ -26,39 +26,44 @@
             csv export that is the layer columns necessary to show the visible front end columns, 
             and that the url filter != the filter sent to the back end when fetching a layer with
             modifiable columns. -->
-          <t-select-columns
-            v-if="modifiableColumns"
-            :modifiableColumns="modifiableColumns"
-            @updateFilteredColumns="updateFilteredColumns"
-            :urlFilter="modifiableColumnsFilter"
-            :t-layer="layer"
-          />
-          <TCsvExport
-            v-if="enableCsvDownload"
-            :t-layer="layer"
-            :additionalFilters="additionalFilters"
-            class="csvExportButton"
-          />
-          <TSearch
-            v-if="canSearch"
-            ref="easySearch"
-            :highlight-query-selector="
-              enableSearchHighlight ? '#tableContainer' : null
-            "
-            :highlight-options="highlightOptions"
-            @updateSearchTerm="updateSearchTerm"
-          />
-        </div>
+        <t-select-columns
+          v-if="modifiableColumns"
+          :modifiableColumns="modifiableColumns"
+          @updateFilteredColumns="updateFilteredColumns"
+          :urlFilter="modifiableColumnsFilter"
+          :t-layer="layer"
+        />
+        <TCsvExport
+          v-if="enableCsvDownload"
+          :t-layer="layer"
+          :additionalFilters="additionalFilters"
+          class="csvExportButton"
+        />
+        <TSearch
+          v-if="canSearch"
+          ref="easySearch"
+          :highlight-query-selector="
+            enableSearchHighlight ? '#tableContainer' : null
+          "
+          :highlight-options="highlightOptions"
+          @updateSearchTerm="updateSearchTerm"
+        />
       </div>
+    </div>
 
-      <!-- Loading data, showSpinner -->
-      <div v-if="showSpinner">
-        <div class="spinnerOverlay">
-          <base-loading-spinner class="spinner" />
-        </div>
+    <!-- Loading data, showSpinner -->
+    <div v-if="showSpinner">
+      <div class="spinnerOverlay">
+        <base-loading-spinner class="spinner" />
       </div>
+    </div>
 
-    <div v-if="isDataAvailable" id="tableContainer" ref="tableContainer" :style="columnWidthsStyle">
+    <div
+      v-if="isDataAvailable"
+      id="tableContainer"
+      ref="tableContainer"
+      :style="columnWidthsStyle"
+    >
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
       <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
@@ -79,16 +84,27 @@
         class="headerCell"
         :class="generateHeaderClasses(column.property, index)"
       >
-        <div style="display: flex;align-items: center;">
-          <slot :name="generateSlotName('header', column.header)" v-bind="column">
-            {{ column.header }} 
+        <div style="display: flex; align-items: center">
+          <slot
+            :name="generateSlotName('header', column.header)"
+            v-bind="column"
+          >
+            {{ column.header }}
           </slot>
 
           <div v-if="column.sort" @click="updateSort(column)">
-            <slot v-if="column.sort.direction === 'ASC'" name="sortAscendingIcon" v-bind="column">
+            <slot
+              v-if="column.sort.direction === 'ASC'"
+              name="sortAscendingIcon"
+              v-bind="column"
+            >
               <chevron-up-icon />
             </slot>
-            <slot v-else-if="column.sort.direction === 'DESC'" name="sortDescendingIcon" v-bind="column">
+            <slot
+              v-else-if="column.sort.direction === 'DESC'"
+              name="sortDescendingIcon"
+              v-bind="column"
+            >
               <chevron-down-icon />
             </slot>
             <slot v-else name="sortUnsortedIcon" v-bind="column">
@@ -100,15 +116,16 @@
 
       <!-- No table data -->
       <div
-        v-if="!showSpinner && (
-          !internalRows ||
-          internalRows.length === 0 ||
-          !displayRows ||
-          displayRows.length === 0)
+        v-if="
+          !showSpinner &&
+          (!internalRows ||
+            internalRows.length === 0 ||
+            !displayRows ||
+            displayRows.length === 0)
         "
         class="spanAllColumns center_cell"
       >
-        <slot name="no_data" >
+        <slot name="no_data">
           <div><i class="i-fa-solid i-fa-inbox"></i></div>
           <div>{{ noDataMessage }}</div>
         </slot>
@@ -136,24 +153,24 @@
             :key="rindex + row.toString()"
             class="makeGridIgnoreDiv row"
           >
-          <!-- Expand/Collapse controls for the details row -->
-          <div
-            v-if="canCollapseDetailRows"
-            class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
-          >
-            <button
-              @click="toggleRow(row)"
-              class="focus:outline-none focus-visible:ring"
+            <!-- Expand/Collapse controls for the details row -->
+            <div
+              v-if="canCollapseDetailRows"
+              class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
             >
-              <span aria-hidden="true">
-                <chevron-down-icon v-if="row.detailRowOpen" />
-                <chevron-right-icon v-else />
-              </span>
-              <span class="sr-only">
-                {{ row.detailRowOpen ? "collapse row" : "open row" }}
-              </span>
-            </button>
-          </div>
+              <button
+                @click="toggleRow(row)"
+                class="focus:outline-none focus-visible:ring"
+              >
+                <span aria-hidden="true">
+                  <chevron-down-icon v-if="row.detailRowOpen" />
+                  <chevron-right-icon v-else />
+                </span>
+                <span class="sr-only">
+                  {{ row.detailRowOpen ? "collapse row" : "open row" }}
+                </span>
+              </button>
+            </div>
 
             <!-- Radio buttons -->
             <input
@@ -234,7 +251,7 @@ export default {
       type: String,
       default: "",
     },
-    tooltip:{
+    tooltip: {
       type: String,
       default: "",
     },
@@ -315,8 +332,7 @@ export default {
     },
     cellClasses: {
       type: String,
-      default:
-        "break-all",
+      default: "break-all",
     },
     layerColumnsToHide: {
       type: Array,
@@ -329,22 +345,22 @@ export default {
     modifiableColumns: {
       type: Array,
     },
-    sortableColumns:{
+    sortableColumns: {
       type: Array,
     },
-    sort:{
+    sort: {
       type: String,
-      default: 'none',
+      default: "none",
       validator(value) {
-        return ['none', 'sql', 'front'].includes(value)
-      }
+        return ["none", "sql", "front"].includes(value);
+      },
     },
     sortDirection: {
       type: String,
       default: null,
       validator(value) {
-        return [null, 'ASC', 'DESC'].includes(value)
-      }
+        return [null, "ASC", "DESC"].includes(value);
+      },
     },
     excludeFromSort: {
       type: Array,
@@ -381,16 +397,25 @@ export default {
     };
   },
   computed: {
-    isPdf(){
-        return window.location.href.includes('/pdf?')
+    isPdf() {
+      return window.location.href.includes("/pdf?");
     },
-    allInitializationComplete(){
-      const isPagingInitialized = !this.canPageServer || this.endIndex
-      const isModifiableColumnsInitialized = !this.modifiableColumns || this.$store.state.layers.components[this.tag_unique]?.filters?.column_list !== undefined
-      return isPagingInitialized && isModifiableColumnsInitialized
+    allInitializationComplete() {
+      const isPagingInitialized = !this.canPageServer || this.endIndex;
+      const isModifiableColumnsInitialized =
+        !this.modifiableColumns ||
+        this.$store.state.layers.components[this.tag_unique]?.filters
+          ?.column_list !== undefined;
+      return isPagingInitialized && isModifiableColumnsInitialized;
     },
     showTableHeader() {
-      return this.title || this.tooltip  || this.enableCsvDownload || this.canSearch || this.modifiableColumns?.length > 0;
+      return (
+        this.title ||
+        this.tooltip ||
+        this.enableCsvDownload ||
+        this.canSearch ||
+        this.modifiableColumns?.length > 0
+      );
     },
     columnWidthsStyle() {
       if (Array.isArray(this.internalColumns)) {
@@ -463,11 +488,11 @@ export default {
       if (this.rows) return this.rows;
       return [];
     },
-    sortFilterName(){
-      return `${this.layer}_sort`
+    sortFilterName() {
+      return `${this.layer}_sort`;
     },
-    modifiableColumnsFilterName(){
-      return `${this.layer}_cols`
+    modifiableColumnsFilterName() {
+      return `${this.layer}_cols`;
     },
   },
   watch: {
@@ -479,25 +504,27 @@ export default {
       this.$emit("update:selectedItems", this.internalSelectedItems);
       this.$emit("selectedItemsChanged", this.internalSelectedItems);
     },
-    loading(){
-      this.showSpinner = this.loading
-    }
+    loading() {
+      this.showSpinner = this.loading;
+    },
   },
   mounted() {
     this.fetchTotalRows();
 
-    const modifiableColumnsFilter = this.getFilterState(this.modifiableColumnsFilterName);
-    if(this.modifiableColumns && this.modifiableColumns.length > 0){
+    const modifiableColumnsFilter = this.getFilterState(
+      this.modifiableColumnsFilterName
+    );
+    if (this.modifiableColumns && this.modifiableColumns.length > 0) {
       // Note: this is the front-end columns, the layer filter will be set in initialization
       this.modifiableColumnsFilter = modifiableColumnsFilter;
     }
     const orderByUrlFilter = this.getFilterState(this.sortFilterName);
-    if(orderByUrlFilter && this.sort){
-      this.setLayerFilter('orderBy', orderByUrlFilter)
+    if (orderByUrlFilter && this.sort) {
+      this.setLayerFilter("orderBy", orderByUrlFilter);
     }
-    if(this.canPageServer){
-      this.setLayerFilter('limit', "" + this.rowsPerPage)
-      this.setLayerFilter('offset', "" + this.startIndex)
+    if (this.canPageServer) {
+      this.setLayerFilter("limit", "" + this.rowsPerPage);
+      this.setLayerFilter("offset", "" + this.startIndex);
     }
   },
   methods: {
@@ -514,7 +541,7 @@ export default {
     //   {header: 'baz', property:'baz'}
     // ]
     //  plus configurations for sorting etc.
-    setInternalColumns(setColumnSort=true) {
+    setInternalColumns(setColumnSort = true) {
       if (!this.rows || this.rows.length === 0) return [];
       let cols = Object.keys(this.rows[0]);
 
@@ -564,63 +591,66 @@ export default {
       //
       // If the url includes sortable column configuration, use that to determine direction and ignore
       // the default sort direction
-      // 
+      //
       // Any columns in the url sortable configuration that are not in sortableColumns should be ignored
-      // when configuring the sorting 
-      if (setColumnSort && this.sort !== 'none') {
+      // when configuring the sorting
+      if (setColumnSort && this.sort !== "none") {
         let sortableColumns;
         // some columns can be sorted
-        if(this.sortableColumns){
-          sortableColumns = [...this.sortableColumns]
-        } else { // all columns can be sorted
+        if (this.sortableColumns) {
+          sortableColumns = [...this.sortableColumns];
+        } else {
+          // all columns can be sorted
           sortableColumns = cols.map((col) => {
             const sortCol = {
               column: col.property,
-              direction: this.sortDirection
-            }
+              direction: this.sortDirection,
+            };
             return sortCol;
           });
         }
-        const urlSortConfig = this.getUrlSortConfiguration()
+        const urlSortConfig = this.getUrlSortConfiguration();
         // sort this.sortableColumns by order of URL column configs if urlSortConfig is set
         if (urlSortConfig) {
-          let sortConfig = []
+          let sortConfig = [];
           urlSortConfig.forEach((usc) => {
-            if(sortableColumns.find((sc) => sc.column === usc.column)){
-              sortConfig.push(usc)
-              sortableColumns = sortableColumns.filter((sc) => sc.column !== usc.column)
+            if (sortableColumns.find((sc) => sc.column === usc.column)) {
+              sortConfig.push(usc);
+              sortableColumns = sortableColumns.filter(
+                (sc) => sc.column !== usc.column
+              );
             }
-          })
+          });
           // remove the default sort direction of columns not sorted by the url
-          sortableColumns.forEach((sc) => delete sc.direction)
+          sortableColumns.forEach((sc) => delete sc.direction);
           // append remaining sortable but not sorted columns to the configuration
-          sortConfig = sortConfig.concat(sortableColumns)
-          sortableColumns = sortConfig
+          sortConfig = sortConfig.concat(sortableColumns);
+          sortableColumns = sortConfig;
         }
 
         this.excludeFromSort.forEach((efs) => {
           let cleanSortableColumns = _.remove(sortableColumns, (sc) => {
             return !efs.includes(sc.column);
           });
-          sortableColumns = cleanSortableColumns
-        })
+          sortableColumns = cleanSortableColumns;
+        });
         // Note: the _.reverse here is because when sorting on the front end, lodash uses
         // a stable sort. The increasing order of priority preserves user's previouse sorts.
         // Here the code needs to emulate that first priority sort being the "latest" column
         // that is sorted by, same with second etc. So to make the priorities match, the
         // sortable columns need to be reversed so the first column ends up with the largest
-        // sort priority. 
+        // sort priority.
         _.reverse(sortableColumns).forEach((sortableColumn, index) => {
-          const column = cols.find((c) => sortableColumn.column === c.property)
+          const column = cols.find((c) => sortableColumn.column === c.property);
           if (column) {
             column.sort = {
               priority: index,
-              direction: sortableColumn.direction
+              direction: sortableColumn.direction,
             };
           } else {
-            console.warn('Invalid sortable column:', sortableColumn.column)
+            console.warn("Invalid sortable column:", sortableColumn.column);
           }
-        })
+        });
       }
 
       // remove hidden columns
@@ -650,7 +680,7 @@ export default {
       });
 
       this.internalColumns = cols;
-      this.setOrderByFilters()
+      this.setOrderByFilters();
     },
     setDisplayRows() {
       let rows = this.filterRowsBySearchValue(
@@ -829,13 +859,19 @@ export default {
       if (!this.canPageServer) this.totalRows = rows.length;
       return rows;
     },
-    getSortedColumns(){
-      let sortedColumns = this.internalColumns.filter((c)=> c.sort && c.sort.direction)
-      return _.sortBy(sortedColumns, [function(c) { return c.sort.priority; }]);
+    getSortedColumns() {
+      let sortedColumns = this.internalColumns.filter(
+        (c) => c.sort && c.sort.direction
+      );
+      return _.sortBy(sortedColumns, [
+        function (c) {
+          return c.sort.priority;
+        },
+      ]);
     },
     sortRows(rows) {
       sortedColumns = this.getSortedColumns();
-      if (this.sort !== 'sql' && sortedColumns.length > 0) {
+      if (this.sort !== "sql" && sortedColumns.length > 0) {
         let sortedRows = [];
         this.internalGroups.forEach((group) => {
           let rowsInGroup = rows.slice(
@@ -854,7 +890,7 @@ export default {
                 return this.getCellValue(row, sortableColumn);
               },
             ]);
-            if (sortableColumn.sort.direction === "DESC"){
+            if (sortableColumn.sort.direction === "DESC") {
               rowsInGroup = _.reverse(rowsInGroup);
             }
           });
@@ -877,41 +913,47 @@ export default {
         .join(" ");
     },
     updateSort(column) {
-      const sortPriorities = this.internalColumns.filter((c) => c.sort).map((c)=>c.sort.priority);
-      const maxSortPriority = sortPriorities.reduce((previousValue, currentValue) => {
-        return previousValue > currentValue ? previousValue : currentValue
-      });
+      const sortPriorities = this.internalColumns
+        .filter((c) => c.sort)
+        .map((c) => c.sort.priority);
+      const maxSortPriority = sortPriorities.reduce(
+        (previousValue, currentValue) => {
+          return previousValue > currentValue ? previousValue : currentValue;
+        }
+      );
       column.sort.priority = maxSortPriority + 1;
 
       if (column.sort.direction === "ASC") {
         column.sort.direction = "DESC";
       } else if (column.sort.direction === "DESC") {
         column.sort.direction = null;
-      }  else {
+      } else {
         column.sort.direction = "ASC";
       }
 
-      if(this.sort === 'sql'){
+      if (this.sort === "sql") {
         this.setOrderByFilters();
         this.fetchPagedLayer(false);
-      }else{
+      } else {
         this.setupInternalRows();
       }
     },
-    setOrderByFilters(){
+    setOrderByFilters() {
       let sortedColumns = _.reverse(this.getSortedColumns());
-      let orderByFilter= sortedColumns.map((sc) => {
-          return ` ${sc.property} ${sc.sort.direction}, `
-      }).reduce((previous, current) => {
+      let orderByFilter = sortedColumns
+        .map((sc) => {
+          return ` ${sc.property} ${sc.sort.direction}, `;
+        })
+        .reduce((previous, current) => {
           return previous + current;
-      }, '');
+        }, "");
       // remove trailing comma
-      if(orderByFilter.length > 1){
-          orderByFilter = orderByFilter.slice(0, -2);
+      if (orderByFilter.length > 1) {
+        orderByFilter = orderByFilter.slice(0, -2);
       }
-      this.setUrlFilter(this.sortFilterName, orderByFilter)
-      this.setLayerFilter('orderBy', orderByFilter)
-      Vue.set(this.additionalFilters, 'orderBy', orderByFilter)
+      this.setUrlFilter(this.sortFilterName, orderByFilter);
+      this.setLayerFilter("orderBy", orderByFilter);
+      Vue.set(this.additionalFilters, "orderBy", orderByFilter);
     },
     showGroupHeader(group) {
       const anyRowsInRange =
@@ -930,20 +972,22 @@ export default {
         column.property,
         column.default_value
       );
-      return cellValue && typeof cellValue === "object" ? cellValue.value : '';
+      return cellValue && typeof cellValue === "object" ? cellValue.value : "";
     },
     getCellValue(row, column) {
       return column.format
         ? column.format(this.getRenderedCellValue(row, column), row.originalRow)
         : this.getRenderedCellValue(row, column);
     },
-    getRenderedCellValue(row, column){
-        const cellValue = _.get(
+    getRenderedCellValue(row, column) {
+      const cellValue = _.get(
         row.originalRow,
         column.property,
         column.default_value
       );
-      return cellValue && typeof cellValue === "object" ? cellValue.rendered : '';
+      return cellValue && typeof cellValue === "object"
+        ? cellValue.rendered
+        : "";
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
@@ -1110,7 +1154,7 @@ export default {
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
-      classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : ""
+      classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : "";
       classes += " " + this.cellClasses;
       return classes;
     },
@@ -1121,8 +1165,8 @@ export default {
     updateStartIndex(newStartIndex) {
       this.startIndex = newStartIndex;
       if (this.canPageServer) {
-        this.setLayerFilter('limit', "" + this.rowsPerPage)
-        this.setLayerFilter('offset', "" + this.startIndex)
+        this.setLayerFilter("limit", "" + this.rowsPerPage);
+        this.setLayerFilter("offset", "" + this.startIndex);
         this.fetchPagedLayer();
         return;
       } else {
@@ -1141,13 +1185,13 @@ export default {
           this.totalRows = totalRows;
         });
     },
-    fetchPagedLayer(setColumnSort=true) {
+    fetchPagedLayer(setColumnSort = true) {
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) {
           this.init();
-        }else{
+        } else {
           this.setInternalColumns(setColumnSort);
           this.setupInternalRows();
         }
@@ -1193,41 +1237,55 @@ export default {
     },
     updateFilteredColumns(filterableColumnsToShow) {
       this.filterableColumnsToShow = filterableColumnsToShow;
-      
+
       let allValidColumns = [];
       filterableColumnsToShow.forEach((fcts) => {
         allValidColumns = allValidColumns.concat(fcts.sqlColumns);
       });
       // remove duplicate entries
       allValidColumns = [...new Set(allValidColumns)];
-      if(allValidColumns.includes(undefined)){
-        console.error('Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!')
+      if (allValidColumns.includes(undefined)) {
+        console.error(
+          'Modify Column Configuration includes "undefined" value, please check that all layer column names are quoted!'
+        );
       }
 
-      const columnList = JSON.stringify(allValidColumns)
-      const urlLabels = filterableColumnsToShow.map((fcts) => fcts.label).join("|")
+      const columnList = JSON.stringify(allValidColumns);
+      const urlLabels = filterableColumnsToShow
+        .map((fcts) => fcts.label)
+        .join("|");
       // If the urlLabels is empty, the back end will remove the filter, which will make the
       // TSelectColumns component show the default columns instead of just the columns that
       // can't be hidden. So the '~`<>' is a hack to keep the back end from removing the filter
       // while also being extremely unlikely to ever be a valid column label.
-      this.setUrlFilter(this.modifiableColumnsFilterName, urlLabels ? urlLabels : '~`<>');
-      this.setLayerFilter('column_list', columnList)
-      Vue.set(this.additionalFilters, 'column_list', allValidColumns.length > 0 ? columnList  : [])
+      this.setUrlFilter(
+        this.modifiableColumnsFilterName,
+        urlLabels ? urlLabels : "~`<>"
+      );
+      this.setLayerFilter("column_list", columnList);
+      Vue.set(
+        this.additionalFilters,
+        "column_list",
+        allValidColumns.length > 0 ? columnList : []
+      );
 
-      if(this.canPageServer){
-        this.fetchPagedLayer()
-      }else{
+      if (this.canPageServer) {
+        this.fetchPagedLayer();
+      } else {
         this.setInternalColumns();
       }
     },
-    getUrlSortConfiguration(){
+    getUrlSortConfiguration() {
       const urlFilter = this.getFilterState(this.sortFilterName);
-      const useUrlParams = typeof urlFilter === 'string';
-      if(useUrlParams){
-        const urlSortableColumns =[]
-        const urlFilterArray = urlFilter.split(' ').filter((s) => s!== '')
-        for (let i = 0; i < urlFilterArray.length; i+=2) {
-          urlSortableColumns.push({column: urlFilterArray[i], direction: urlFilterArray[i+1].replaceAll(',', '')})
+      const useUrlParams = typeof urlFilter === "string";
+      if (useUrlParams) {
+        const urlSortableColumns = [];
+        const urlFilterArray = urlFilter.split(" ").filter((s) => s !== "");
+        for (let i = 0; i < urlFilterArray.length; i += 2) {
+          urlSortableColumns.push({
+            column: urlFilterArray[i],
+            direction: urlFilterArray[i + 1].replaceAll(",", ""),
+          });
         }
         return urlSortableColumns;
       }
@@ -1238,11 +1296,14 @@ export default {
       if (!thisTable.filters) {
         thisTable.filters = {};
       }
-      Vue.set(thisTable.filters, filterName, filterValue)
+      Vue.set(thisTable.filters, filterName, filterValue);
     },
     setUrlFilter(filterName, filterValue) {
-      if(!this.metadata.filters.output.find((f)=>f.name === filterName)){
-        this.metadata.filters.output.push({name: filterName, urlparam: filterName})
+      if (!this.metadata.filters.output.find((f) => f.name === filterName)) {
+        this.metadata.filters.output.push({
+          name: filterName,
+          urlparam: filterName,
+        });
       }
       this.setFilterValue(filterName, filterValue);
     },
@@ -1251,7 +1312,7 @@ export default {
 </script>
 
 <style scoped>
-.tableDataContainer{
+.tableDataContainer {
   max-width: 100%;
   overflow-x: scroll;
 }
@@ -1368,7 +1429,7 @@ highlighting a row on hover etc. */
   padding-bottom: 15px;
 }
 
-.tooltip{
+.tooltip {
   margin-left: 5px;
 }
 
@@ -1384,7 +1445,7 @@ highlighting a row on hover etc. */
   align-items: center;
 }
 
-.csvExportButton{
+.csvExportButton {
   min-width: 130px;
 }
 
