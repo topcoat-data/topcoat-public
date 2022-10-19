@@ -1,94 +1,62 @@
 <template>
   <t-dropdown
-    :is-active="selected.length ? true : false"
-    @open="fetchLayerData"
+    :disable-handle-class="isExpanded"
+    :is-active="checked.length ? true : false"
   >
     <!-- Handle -->
-    <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
-      <div class="pl-1">
-        <slot name="icon"></slot>
-      </div>
-      <div class="flex items-center">
-        <span>{{ label }}</span>
-      </div>
-
-      <t-loading-spinner v-if="loading" position="relative" />
-      <menu-down-icon v-else :size="20" />
+    <div
+      slot="handle"
+      class="flex items-center gap-1 p-1 text-sm font-medium"
+      v-if="!isExpanded"
+    >
+      <view-column-outline size="20" />
+      <span> Modify Columns </span>
+      <menu-down-icon size="20" />
     </div>
 
     <!-- Popup Contents -->
-    <div class="min-w-[294px] min-h-[200px]">
+    <div class="min-w-[294px]" attrs.slot="outside">
       <div
-        v-if="label"
-        class="px-[12px] pt-[16px] flex justify-between items-center w-full"
+        class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full"
       >
         <h6
-          class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest flex gap-1 items-center"
+          class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest"
         >
-          <filter-variant-icon :size="18" />
-          {{ label }}
+          Columns
         </h6>
-      </div>
-
-      <!-- Input -->
-      <div class="relative w-full p-2">
-        <div class="search-input">
-          <div
-            class="rounded-full border border-[#145DEB] text-[#145DEB] flex items-center"
-            v-if="!showTags"
-          >
-            <plus-icon :size="12" />
-          </div>
-          <input
-            class="bg-transparent outline-none !text-black w-full"
-            v-model="search"
-            @focus="showTags = true"
-            @blue="showTags = false"
-          />
-        </div>
-        <div v-if="Object.keys(tags).length && showTags" class="p-2">
-          <span v-if="Object.keys(selected).length" @click="reset">
-            Reset
-          </span>
-
-          <!-- Show values -->
-          <div v-if="selectedKey" class="flex flex-col gap-1">
-            <span class="font-semibold">Select a {{ selectedKey }}</span>
-            <div
-              v-for="value of tags[selectedKey]"
-              v-if="value.toLowerCase().includes(search.toLowerCase())"
-              @click="selectValue(value)"
-              class="p-1 hover:bg-[#F9F8FA]"
-            >
-              {{ value }}
-            </div>
-          </div>
-
-          <!-- Show keys -->
-          <div v-else class="flex flex-col gap-1">
-            <span class="font-semibold">Select a key</span>
-            <div
-              v-for="key in Object.keys(tags)"
-              v-if="key.toLowerCase().includes(search.toLowerCase())"
-              @click="selectedKey = key"
-              class="p-1 hover:bg-[#F9F8FA]"
-            >
-              {{ key }}
-            </div>
-          </div>
-        </div>
-        <div v-else>No tags selected</div>
-      </div>
-      <div
-        v-if="isDeletable"
-        class="flex justify-end items-center border-t border-[#E4E3E8] p-2"
-      >
-        <div
-          class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
-          @click="removeFilter"
+        <span
+          class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px]"
+          :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
         >
-          ?
-        </div>
+          <span
+            v-if="checked.length < modifiableColumns.length"
+            @click="selectAll"
+          >
+            Select All
+          </span>
+          <span v-else @click="reset"> Reset </span>
+        </span>
+      </div>
+      <div class="px-[8px] pt-[4px] pb-[6px] w-full">
+        <ul class="max-h-[320px] overflow-auto">
+          <li
+            class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
+            v-for="(item, index) in internalColumns"
+            :key="index"
+          >
+            <div
+              class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]"
+            >
+              <base-checkbox
+                class="!min-w-[200px]"
+                :label="item.label"
+                :value="item"
+                v-model="checked"
+              />
+            </div>
+          </li>
+          <small v-if="!modifiableColumns.length"> No items found </small>
+        </ul>
       </div>
     </div>
   </t-dropdown>
@@ -96,64 +64,82 @@
 
 <script>
 export default {
+  name: "TSelectColumns",
   props: {
-    label: {
-      type: String,
-      default: "",
+    modifiableColumns: {
+      type: Array,
+      default() {
+        return [];
+      },
     },
-    tKeyColumn: {
+    TLayer: {
       type: String,
-      default: "KEY",
     },
-    tValueColumn: {
+    urlFilter: {
       type: String,
-      default: "VALUE",
-    },
-    placeholder: {
-      type: String,
-      default: "",
-    },
-    isDeletable: {
-      type: Boolean,
-      default: false,
     },
   },
   data: () => ({
-    selected: [],
+    checked: [],
     search: "",
-    is_filter: true,
-    selectedKey: "",
-    showTags: false,
+    isExpanded: false,
+    internalColumns: [],
   }),
-  computed: {
-    tags() {
-      const tags = {};
-      if (this.rows.length) {
-        for (let row of this.rows) {
-          const key = row[this.tKeyColumn];
-          const value = row[this.tValueColumn];
-
-          if (!tags[key.value]) {
-            tags[key.value] = [value.value];
-          } else {
-            tags[key.value].push(value.value);
-          }
+  watch: {
+    urlFilter() {
+      this.modifiableColumns.forEach((col) => {
+        const label = col.displayColumn;
+        const iCol = { label: label, sqlColumns: col.layerColumns };
+        this.internalColumns.push(iCol);
+        if (this.urlFilter && this.urlFilter.length > 0) {
+          if (this.urlFilter.includes(label)) this.checked.push(iCol);
+        } else if (col.displayByDefault) {
+          this.checked.push(iCol);
         }
-      }
-      const keys = Object.keys(tags);
-      if (keys.length === 1) {
-        this.selectedKey = keys[0];
-      }
-      return tags;
+      });
+      this.$emit("updateFilteredColumns", this.checked);
+    },
+    checked() {
+      this.updateChecked();
+    },
+  },
+  computed: {
+    urlParamName() {
+      return `${this.TLayer}_cols`;
     },
   },
   methods: {
-    reset() {},
-    selectValue(value) {
-      if (Object.keys(this.tags).length > 1) {
-        this.selectedKey = "";
-      }
+    selectAll() {
+      this.checked = [...this.internalColumns];
+      const visibleColumnlabels = this.checked.map((c) => c.label);
     },
+    reset() {
+      this.checked = [];
+      this.modifiableColumns.forEach((col) => {
+        const label = col.displayColumn;
+        const iCol = { label: label, sqlColumns: col.layerColumns };
+        this.internalColumns.push(iCol);
+        if (col.displayByDefault) {
+          this.checked.push(iCol);
+        }
+      });
+      this.$emit("updateFilteredColumns", this.checked);
+    },
+    updateChecked: _.debounce(function () {
+      this.$emit("updateFilteredColumns", this.checked);
+      const selectColumnLabels = this.checked.map((c) => c.label);
+      this.setFilter({
+        name: this.urlParamName,
+        value: selectColumnLabels.join("|"),
+        persist: false,
+      });
+    }, 750),
   },
 };
 </script>
+
+<style>
+.nav-search .vue--search-input__field {
+  @apply !rounded-3xl !bg-white !opacity-[0.5];
+}
+</style>
