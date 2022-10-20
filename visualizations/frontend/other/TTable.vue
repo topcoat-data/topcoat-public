@@ -84,15 +84,15 @@
             {{ column.header }} 
           </slot>
 
-          <div v-if="column.sort" @click="updateSort(column)">
+          <div v-if="column.sort" @click="updateSort(column)" class="sortIcon">
             <slot v-if="column.sort.direction === 'ASC'" name="sortAscendingIcon" v-bind="column">
-              <chevron-up-icon />
+              <menu-up-icon :size="20" />
             </slot>
             <slot v-else-if="column.sort.direction === 'DESC'" name="sortDescendingIcon" v-bind="column">
-              <chevron-down-icon />
+              <menu-down-icon :size="20" />
             </slot>
             <slot v-else name="sortUnsortedIcon" v-bind="column">
-              <unfold-more-horizontal-icon />
+              <menu-swap-icon :size="20" class="unsortedIcon" />
             </slot>
           </div>
         </div>
@@ -311,7 +311,7 @@ export default {
     headerClasses: {
       type: String,
       default:
-        "py-2 border-b border-[#D3D3D9] text-[10px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
+        "py-2 border-b border-[#D3D3D9] text-[12px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
     },
     cellClasses: {
       type: String,
@@ -1251,6 +1251,12 @@ export default {
 </script>
 
 <style scoped>
+.sortIcon{
+  color: #323232;
+}
+.unsortedIcon{
+  opacity: 0.5;
+}
 .tableDataContainer{
   max-width: 100%;
   overflow-x: scroll;
