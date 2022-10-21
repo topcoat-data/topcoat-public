@@ -2,6 +2,7 @@
   <t-dropdown
     :is-expanded="onExpandable"
     :is-active="checked.length ? true : false"
+    :is-open="isOpen"
     @open="onDropdownOpen"
   >
     <!-- Handle -->
@@ -79,17 +80,7 @@
         />
         <small v-if="!menu.length && !loading"> No items found </small>
       </div>
-      <div
-        v-if="isDeletable"
-        class="flex justify-end items-center border-t border-[#E4E3E8] p-2"
-      >
-        <div
-          class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
-          @click="removeFilter"
-        >
-          ?
-        </div>
-      </div>
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
@@ -170,11 +161,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    isDeletable: {
+    canShowSelected: {
       type: Boolean,
       default: false,
     },
-    canShowSelected: {
+    isOpen: {
       type: Boolean,
       default: false,
     },

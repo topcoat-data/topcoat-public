@@ -1,5 +1,5 @@
 <template>
-  <t-dropdown>
+  <t-dropdown :is-open="isOpen" @open="isOpen = true" @close="isOpen = false">
     <!-- Handle button -->
     <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
       <plus-icon :size="18" />
@@ -33,7 +33,7 @@
               ? section.items
               : section.items.slice(0, itemLimit)"
             :key="item"
-            @click="toggleFilter(item.filters)"
+            @click="toggleFilter(item)"
           >
             {{ item.label }}
           </div>
@@ -67,8 +67,8 @@ export default {
   },
   data: () => ({
     search: "",
-    is_filter: true,
     expanded: [],
+    isOpen: false,
   }),
   computed: {
     filteredItems() {
@@ -78,6 +78,7 @@ export default {
       for (let key of Object.keys(this.items)) {
         let filteredItems = [];
         const section = this.items[key];
+
         for (let item of section.items) {
           // Only include searched items.
           if (
@@ -86,11 +87,18 @@ export default {
           ) {
             continue;
           }
+          console.log(item);
+          if (item.is_default) {
+            this.toggleFilter(item);
+            continue;
+          }
+
           filteredItems.push(item);
         }
         if (!filteredItems.length) {
           continue;
         }
+
         items.push({
           label: section.label,
           items: filteredItems,
@@ -100,13 +108,15 @@ export default {
     },
   },
   methods: {
-    toggleFilter(filters) {
-      for (let filter of filters) {
+    toggleFilter(item) {
+      for (let filter of item.filters) {
         this.setFilter({
           name: filter,
           value: "",
         });
       }
+      this.$emit("opened", item.tag);
+      this.isOpen = false;
     },
     handleExpanded(index) {
       if (this.expanded.includes(index)) {

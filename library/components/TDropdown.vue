@@ -4,7 +4,7 @@
     ref="dropdownFilter"
   >
     <div
-      @click="openPopup"
+      @click="handlePopup"
       :class="!disableActiveClass && activeClass"
       class="rounded cursor-pointer"
     >
@@ -50,6 +50,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     alignClass: "",
@@ -74,8 +78,7 @@ export default {
         if (document.querySelector(`.${cl}`)) return;
       }
       if (this.isPopupOpen) {
-        this.isPopupOpen = false;
-        this.$emit("closed");
+        this.closePopup();
       }
     });
   },
@@ -98,15 +101,20 @@ export default {
 
       return (this.alignClass = "");
     },
-    openPopup() {
+    handlePopup() {
       if (this.isPopupOpen) {
-        this.isPopupOpen = false;
-        this.$emit("closed");
+        this.closePopup();
       } else {
-        this.isPopupOpen = true;
-        this.$emit("open");
+        this.openPopup();
       }
-
+    },
+    closePopup() {
+      this.isPopupOpen = false;
+      this.$emit("closed");
+    },
+    openPopup() {
+      this.isPopupOpen = true;
+      this.$emit("open");
       this.$nextTick(() => {
         this.alignPopup();
       });
@@ -115,9 +123,14 @@ export default {
   watch: {
     isExpanded: function (newVal, oldVal) {
       if (newVal) {
-        this.isPopupOpen = true;
-        this.$emit("open");
+        this.openPopup();
       }
+    },
+    isOpen: function (open) {
+      if (open) {
+        return this.openPopup();
+      }
+      return this.closePopup();
     },
   },
 };

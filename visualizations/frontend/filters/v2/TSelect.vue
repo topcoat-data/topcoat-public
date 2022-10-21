@@ -1,5 +1,5 @@
 <template>
-  <t-dropdown @open="onDropdownOpen">
+  <t-dropdown @open="onDropdownOpen" :is-open="isOpen">
     <!-- Handle -->
     <div
       slot="handle"
@@ -73,17 +73,7 @@
           <small v-if="!options.length && !loading"> No items found </small>
         </ul>
       </div>
-      <div
-        v-if="isDeletable"
-        class="flex justify-end items-center border-t border-[#E4E3E8] p-2"
-      >
-        <div
-          class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
-          @click="removeFilter"
-        >
-          ?
-        </div>
-      </div>
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
@@ -119,7 +109,7 @@ export default {
       type: String,
       default: "Search",
     },
-    isDeletable: {
+    isOpen: {
       type: Boolean,
       default: false,
     },

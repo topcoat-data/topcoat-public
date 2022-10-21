@@ -1,5 +1,9 @@
 <template>
-  <t-dropdown @open="fetchLayerData" :is-active="barMinValue && barMaxValue">
+  <t-dropdown
+    @open="fetchLayerData"
+    :is-active="barMinValue && barMaxValue"
+    :is-open="isOpen"
+  >
     <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
       <div class="pl-1">
         <slot name="icon"></slot>
@@ -39,17 +43,7 @@
         :maxValue="barMaxValue"
         @input="update"
       />
-      <div
-        v-if="isDeletable"
-        class="flex justify-end items-center border-t border-[#E4E3E8] p-2"
-      >
-        <div
-          class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
-          @click="removeFilter"
-        >
-          ?
-        </div>
-      </div>
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
@@ -72,7 +66,7 @@ export default {
     step: {
       default: 1,
     },
-    isDeletable: {
+    isOpen: {
       type: Boolean,
       default: false,
     },
@@ -119,7 +113,7 @@ export default {
   },
   methods: {
     update: window._.debounce(function (e) {
-      if (e.minValue === e.min && e.maxValue == e.max && !this.isDeletable) {
+      if (e.minValue === e.min && e.maxValue == e.max) {
         this.removeFilter();
       } else {
         this.barMinValue = e.minValue;
