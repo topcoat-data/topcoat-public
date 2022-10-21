@@ -66,7 +66,7 @@ export default {
             attrs["dropdown-section"] ||
             attrs["dropdownSection"] ||
             "Ungrouped";
-          const unusedFilters = this.getFilters(attrs, false);
+          const unusedFilters = this.getFilters(attrs, true);
           const isDefault = this.isDefault(attrs);
 
           element.isDefault = isDefault;
