@@ -127,7 +127,11 @@ export default {
           values[item.key] = [item.value, ...(values[item.key] || [])];
         }
       }
-      this.setFilterValue("selected_items", JSON.stringify(values));
+      if (Object.keys(values).length) {
+        this.setFilterValue("selected_items", JSON.stringify(values));
+      } else {
+        this.unsetFilterValue("selected_items");
+      }
     },
     handleOpen() {
       this.fetchLayerData();
