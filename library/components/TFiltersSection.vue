@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="border-t border-b border-[#D3D3D9] w-full relative p-5 flex gap-2"
-    style="font-family: 'Roboto'"
-  >
+  <div class="relative flex w-full gap-2 p-5" style="font-family: 'Roboto'">
     <filter-variant-icon class="relative top-[5px]" :size="18" />
-    <div class="flex flex-col gap-2 items-start justify-start">
+    <div class="flex flex-col items-start justify-start gap-2">
       <div class="flex flex-wrap items-center gap-1">
         <component
           v-for="(data, tag) in visibleFilters"
