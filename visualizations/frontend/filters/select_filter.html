@@ -1,68 +1,76 @@
 <template>
-  <div class="relative w-full md:w-56" @mouseleave='showMenu = false'>
-      <div class="relative" @click="showMenu = !showMenu">
-          <div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='metadata.title'>{{ metadata.title }}</div>
-          <div class="h-5" v-else></div>
-          <div class="relative flex items-center w-full px-3 overflow-hidden leading-tight border rounded appearance-none border-filterBorderColor h-9 bg-filterBackgroundColor text-filterFontColor focus:outline-none primaryFilterRadius">
-                <button type="button" class="relative inline-flex w-full py-2 text-left bg-transparent focus:z-10 focus:outline-none primaryFilterRadius">
-                    <div class="flex">
-                        <div class="input-placeholder">
-                            {{ selected_label || "Select..." }}
-                        </div>
-                    </div>
-                </button>
-                <t-loading-spinner position="relative" v-if='loading' />
-                <chevron-down-icon v-else />
-          </div>
-      </div>
+  <div class="relative w-full md:w-56" @mouseleave="showMenu = false">
+    <div class="relative" @click="showMenu = !showMenu">
       <div
-          class="absolute z-50 block w-full overflow-auto leading-tight border rounded shadow-xl appearance-none border-filterBorderColor bg-filterMenuColor text-filterFontColor focus:outline-none max-h-56"
-          v-if="showMenu"
-          @mouseleave="showMenu = false"
+        class="pb-1 text-xs font-semibold text-primaryFontColor"
+        v-if="metadata.title"
       >
-          <button
-              type="button"
-              class="relative inline-flex w-full px-4 py-3 bg-transparent border-b-2 focus:z-10 focus:outline-none border-filterBorderColor focus:text-grayscaleOneColor hover:text-filterFontHighlightColor hover:bg-filterHighlightColor"
-              v-for="item, index in options"
-              :key="index"
-              @click='selectItem(index)'
-          >
-              <div class="menu-label">
-                  {{ labels[index] }}
-              </div>
-          </button>
+        {{ metadata.title }}
       </div>
+      <div class="h-5" v-else></div>
+      <div
+        class="relative flex items-center w-full px-3 overflow-hidden leading-tight border rounded appearance-none border-filterBorderColor h-9 bg-filterBackgroundColor text-filterFontColor focus:outline-none primaryFilterRadius"
+      >
+        <button
+          type="button"
+          class="relative inline-flex w-full py-2 text-left bg-transparent focus:z-10 focus:outline-none primaryFilterRadius"
+        >
+          <div class="flex">
+            <div class="input-placeholder">
+              {{ selected_label || "Select..." }}
+            </div>
+          </div>
+        </button>
+        <t-loading-spinner position="relative" v-if="loading" />
+        <chevron-down-icon v-else />
+      </div>
+    </div>
+    <div
+      class="absolute z-50 block w-full overflow-auto leading-tight border rounded shadow-xl appearance-none border-filterBorderColor bg-filterMenuColor text-filterFontColor focus:outline-none max-h-56"
+      v-if="showMenu"
+      @mouseleave="showMenu = false"
+    >
+      <button
+        type="button"
+        class="relative inline-flex w-full px-4 py-3 bg-transparent border-b-2 focus:z-10 focus:outline-none border-filterBorderColor focus:text-grayscaleOneColor hover:text-filterFontHighlightColor hover:bg-filterHighlightColor"
+        v-for="item, index in options"
+        :key="index"
+        @click="selectItem(index)"
+      >
+        <div class="menu-label">{{ labels[index] }}</div>
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
+  export default {
     data() {
       return {
-          showMenu: false,
-          selected_internal: null,
-          is_filter: true
-      }
+        showMenu: false,
+        selected_internal: null,
+        is_filter: true,
+      };
     },
     computed: {
       selected_label: {
         get() {
-          for(var i=0; i<this.options.length; i++) {
-              if (this.options[i] == this.selected_internal) {
-                return this.labels[i];
-              }
+          for (var i = 0; i < this.options.length; i++) {
+            if (this.options[i] == this.selected_internal) {
+              return this.labels[i];
+            }
           }
           return null;
-        }
+        },
       },
       options() {
-          const column_name = this.findColumnByTag('options');
-          if (column_name) return this.getColumn(column_name);
+        const column_name = this.findColumnByTag("options");
+        if (column_name) return this.getColumn(column_name);
       },
       labels() {
-          const column_name = this.findColumnByTag('labels');
-          if (column_name) return this.getColumn(column_name);
-      }
+        const column_name = this.findColumnByTag("labels");
+        if (column_name) return this.getColumn(column_name);
+      },
     },
     methods: {
       selectItem(index) {
@@ -71,22 +79,22 @@ export default {
         this.showMenu = false;
       },
       onVisualizationInit() {
-          // See if the page was loaded with a url param value
-          const initial_value = this.getFilterValue("dropdown");
-          const option_column = this.findColumnByTag('options');
-          const label_column = this.findColumnByTag('labels');
+        // See if the page was loaded with a url param value
+        const initial_value = this.getFilterValue("dropdown");
+        const option_column = this.findColumnByTag("options");
+        const label_column = this.findColumnByTag("labels");
 
-          if (initial_value) {
-            this.selected_internal = initial_value;
-          } else if (this.config.default_value) {
-            this.selected_internal = this.config.default_value;
-          } else if (this.options.length) {
-            this.selected_internal = this.options[0];
-          } else {
-            return;
-          }
-          this.setFilterValue("dropdown", this.selected_internal, true);
-      }
-    }
-}
+        if (initial_value) {
+          this.selected_internal = initial_value;
+        } else if (this.config.default_value) {
+          this.selected_internal = this.config.default_value;
+        } else if (this.options.length) {
+          this.selected_internal = this.options[0];
+        } else {
+          return;
+        }
+        this.setFilterValue("dropdown", this.selected_internal, true);
+      },
+    },
+  };
 </script>

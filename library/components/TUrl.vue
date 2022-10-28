@@ -1,5 +1,10 @@
 <template>
-  <a :href="fullUrl" :class="{ 'tUrl': includeUrlStyle }" :target="openInNewTab ? '_blank' : '_top'" rel="noopener noreferrer">
+  <a
+    :href="fullUrl"
+    :class="{ tUrl: includeUrlStyle }"
+    :target="openInNewTab ? '_blank' : '_top'"
+    rel="noopener noreferrer"
+  >
     <slot></slot>
   </a>
 </template>
@@ -22,7 +27,7 @@ export default {
         return {};
       },
     },
-    openInNewTab:{
+    openInNewTab: {
       type: Boolean,
       default: true,
     },
@@ -30,28 +35,32 @@ export default {
       type: Boolean,
       default: true,
     },
-    includeContextParam:{
+    includeContextParam: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     fullUrl() {
       let allUrlParams = {};
-      const { 'context[org]': org, 'context[group]': group, ...restOfFilters } = this.getFiltersState;
+      const {
+        "context[org]": org,
+        "context[group]": group,
+        ...restOfFilters
+      } = this.getFiltersState;
 
-      if(this.includeContextParam){
-        if(org){
-          allUrlParams['context[org]'] = org
-        }else if(group){
-          allUrlParams['context[group]'] = group
+      if (this.includeContextParam) {
+        if (org) {
+          allUrlParams["context[org]"] = org;
+        } else if (group) {
+          allUrlParams["context[group]"] = group;
         }
       }
 
-      if (this.includeFilterParams ) {
+      if (this.includeFilterParams) {
         // Sometimes the additional URL params will include the same filter as one of the filters already in the URL
-        // So the order of the url params below is important, any duplicated keys will end up being the last one added. 
-        // 
+        // So the order of the url params below is important, any duplicated keys will end up being the last one added.
+        //
         // example: in the executive summary page there is a filter for project name but in a table each row
         // is for a project, so when the user clicks a link in that row to go to the issues-detail page, the
         // url should go to the page with the issues-details filtered on the row's project, not the page where
@@ -71,7 +80,7 @@ export default {
 
       return this.url;
     },
-  }
+  },
 };
 </script>
 

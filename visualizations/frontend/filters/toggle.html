@@ -1,25 +1,43 @@
 <template>
-  <div class="relative flex-col items-start justify-center w-full md:justify-start text-filterFontColor md:w-28">
-    <div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='metadata.title'>{{ metadata.title }}</div>
-    <div class="h-5" v-else></div>
-    <div class="relative w-12 h-6 transition duration-200 ease-linear rounded-full top-1"
-        :class="[checked_internal ? 'bg-grayscaleThreeColor right-0' : 'bg-grayscaleTwoColor']"
+  <div
+    class="relative flex-col items-start justify-center w-full md:justify-start text-filterFontColor md:w-28"
+  >
+    <div
+      class="pb-1 text-xs font-semibold text-primaryFontColor"
+      v-if="metadata.title"
     >
-        <label v-if='!loading' for="toggle" class="absolute w-6 h-6 transition duration-100 ease-linear transform border border-2 rounded-full cursor-pointer bg-grayscaleOneColor border-grayscaleThreeColor"
-            :class="[checked_internal ? 'bg-grayscaleOneColor right-0' : 'bg-grayscaleOneColor left-0']"></label>
-        <t-loading-spinner position="relative" v-else />
-        <input type="checkbox" id="toggle" name="toggle" class="w-full h-full appearance-none focus:outline-none" v-model='checked'>
+      {{ metadata.title }}
+    </div>
+    <div class="h-5" v-else></div>
+    <div
+      class="relative w-12 h-6 transition duration-200 ease-linear rounded-full top-1"
+      :class="[checked_internal ? 'bg-grayscaleThreeColor right-0' : 'bg-grayscaleTwoColor']"
+    >
+      <label
+        v-if="!loading"
+        for="toggle"
+        class="absolute w-6 h-6 transition duration-100 ease-linear transform border border-2 rounded-full cursor-pointer bg-grayscaleOneColor border-grayscaleThreeColor"
+        :class="[checked_internal ? 'bg-grayscaleOneColor right-0' : 'bg-grayscaleOneColor left-0']"
+      ></label>
+      <t-loading-spinner position="relative" v-else />
+      <input
+        type="checkbox"
+        id="toggle"
+        name="toggle"
+        class="w-full h-full appearance-none focus:outline-none"
+        v-model="checked"
+      />
     </div>
   </div>
 </template>
 
 <script>
-export default {
+  export default {
     data() {
       return {
-          checked_internal: false,
-          is_filter: true,
-      }
+        checked_internal: false,
+        is_filter: true,
+      };
     },
     computed: {
       checked: {
@@ -29,23 +47,22 @@ export default {
         set(value) {
           this.checked_internal = value;
           this.setFilterValue("checkbox", this.checked_internal, true);
-        }
-      }
+        },
+      },
     },
     methods: {
       onVisualizationInit() {
-          // See if the page was loaded with a url param value
-          const initial_value = this.getFilterValue("checkbox");
-          
-          if (initial_value) {
-            this.checked_internal = (initial_value === 'true');
-            this.setFilterValue("checkbox", this.checked_internal, true);
-          } else {
-            this.checked_internal = false;
-            this.setFilterValue("checkbox", false, true);
-          } 
-      }
-    }
-}
-</script>
+        // See if the page was loaded with a url param value
+        const initial_value = this.getFilterValue("checkbox");
 
+        if (initial_value) {
+          this.checked_internal = initial_value === "true";
+          this.setFilterValue("checkbox", this.checked_internal, true);
+        } else {
+          this.checked_internal = false;
+          this.setFilterValue("checkbox", false, true);
+        }
+      },
+    },
+  };
+</script>

@@ -1,31 +1,45 @@
 <template>
-    <nav class="relative z-10 flex flex-wrap items-center justify-between px-8 py-4 shadow-xl bg-primaryColor md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-64 md:px-6">
-        <div class="flex flex-wrap items-center justify-between w-full px-0 mx-auto md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap">
-            <label
-                @click='showMenu = !showMenu'
-                class="flex items-center block px-3 py-2 border rounded cursor-pointer text-secondaryFontColor border-primaryBorderColor lg:hidden md:hidden text-normal"
-                for="menu-toggle"
-            >
-                <menu-icon :size="20" />
-            </label>
+  <nav
+    class="relative z-10 flex flex-wrap items-center justify-between px-8 py-4 shadow-xl bg-primaryColor md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden md:w-64 md:px-6"
+  >
+    <div
+      class="flex flex-wrap items-center justify-between w-full px-0 mx-auto md:flex-col md:items-stretch md:min-h-full md:flex-no-wrap"
+    >
+      <label
+        @click="showMenu = !showMenu"
+        class="flex items-center block px-3 py-2 border rounded cursor-pointer text-secondaryFontColor border-primaryBorderColor lg:hidden md:hidden text-normal"
+        for="menu-toggle"
+      >
+        <menu-icon :size="20" />
+      </label>
 
-            <div class="flex-grow block w-full mb-4 md:hidden" id="menu" v-if='showMenu'>
-                <HarmonyMenuMobile />
-            </div>
-            <img class="sidebarimage" :width="project.logo.width" :src="project.logo.url" >
-            <div class="absolute top-0 left-0 right-0 z-40 items-center flex-1 hidden h-auto overflow-x-hidden overflow-y-auto rounded shadow md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none"
-                id="example-collapse-sidebar">
-                <HarmonyMenu />
-            </div>
-        </div>
-    </nav>
+      <div
+        class="flex-grow block w-full mb-4 md:hidden"
+        id="menu"
+        v-if="showMenu"
+      >
+        <HarmonyMenuMobile />
+      </div>
+      <img
+        class="sidebarimage"
+        :width="project.logo.width"
+        :src="project.logo.url"
+      />
+      <div
+        class="absolute top-0 left-0 right-0 z-40 items-center flex-1 hidden h-auto overflow-x-hidden overflow-y-auto rounded shadow md:flex md:flex-col md:items-stretch md:opacity-100 md:relative md:mt-4 md:shadow-none"
+        id="example-collapse-sidebar"
+      >
+        <HarmonyMenu />
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
-    export default {
-        name: "HarmonySidebar",
-        data: () => ({
-            showMenu: false,
-        })
-    }
+  export default {
+    name: "HarmonySidebar",
+    data: () => ({
+      showMenu: false,
+    }),
+  };
 </script>

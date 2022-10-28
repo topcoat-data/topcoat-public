@@ -1,43 +1,61 @@
 <template>
-    <div class="flex flex-wrap w-full px-8 mx-auto md:px-10 lg:px-10" v-if='!minimal'>
-        <div class="flex-row flex-wrap items-center ml-auto md:flex">
-            <div class="px-5 py-3 rounded-full" :class='position + " " + backgroundColor' v-if="cache_init_time">
-                <div class="relative flex items-center">
-                    <button :class='buttonColors' @click="refreshCache()" class="z-50 px-3 py-2 border-4 border-solid rounded-full shadow-2xl focus:outline-none">
-                        <reload-icon />
-                    </button>
-                    <div class="ml-2 text-xs" :class='textColor' v-if='!noText'>
-                        <div>Last Updated &nbsp;</div>
-                        <div>{{ lastRefresh }}</div>
-                    </div>
-                </div>
-            </div>
+  <div
+    class="flex flex-wrap w-full px-8 mx-auto md:px-10 lg:px-10"
+    v-if="!minimal"
+  >
+    <div class="flex-row flex-wrap items-center ml-auto md:flex">
+      <div
+        class="px-5 py-3 rounded-full"
+        :class='position + " " + backgroundColor'
+        v-if="cache_init_time"
+      >
+        <div class="relative flex items-center">
+          <button
+            :class="buttonColors"
+            @click="refreshCache()"
+            class="z-50 px-3 py-2 border-4 border-solid rounded-full shadow-2xl focus:outline-none"
+          >
+            <reload-icon />
+          </button>
+          <div class="ml-2 text-xs" :class="textColor" v-if="!noText">
+            <div>Last Updated &nbsp;</div>
+            <div>{{ lastRefresh }}</div>
+          </div>
         </div>
+      </div>
     </div>
-    <div v-else>
-        <div class="minimal-cache-container w-max" :class='textColor + " " + position'>
-            <div class="flex">
-                <div class="mt-1">
-                    <div> Last Updated {{ lastRefresh }}.</div>
-                </div>
-                <button @click="refreshCache()" class="flex items-center justify-center w-8 h-8 ml-3 rounded" :class='buttonColors'>
-                    <reload-icon />
-                </button>
-            </div>
+  </div>
+  <div v-else>
+    <div
+      class="minimal-cache-container w-max"
+      :class='textColor + " " + position'
+    >
+      <div class="flex">
+        <div class="mt-1">
+          <div>Last Updated {{ lastRefresh }}.</div>
         </div>
+        <button
+          @click="refreshCache()"
+          class="flex items-center justify-center w-8 h-8 ml-3 rounded"
+          :class="buttonColors"
+        >
+          <reload-icon />
+        </button>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: 'CacheControls',
-        props: {
-            noText: Boolean,
-            minimal: Boolean,
-            position: String,
-            buttonColors: String,
-            backgroundColor: String,
-            textColor: String,
-        }
-    }
+  export default {
+    name: "CacheControls",
+    props: {
+      noText: Boolean,
+      minimal: Boolean,
+      position: String,
+      buttonColors: String,
+      backgroundColor: String,
+      textColor: String,
+    },
+  };
 </script>

@@ -1,14 +1,6 @@
 <template>
   <button
-    class="
-      rounded
-      cursor-pointer
-      border-1 border-[#C3C2CB]
-      text-[#555463]
-      bg-white
-      w-max
-      p-1
-    "
+    class="rounded cursor-pointer border-1 border-[#C3C2CB] text-[#555463] bg-white w-max p-1"
     style="height: fit-content"
     :disabled="is_loading"
     @click="download"
@@ -33,9 +25,9 @@ export default {
       type: String,
       default: "Download CSV",
     },
-    additionalFilters:{
+    additionalFilters: {
       type: Object,
-      default: ()=>{},
+      default: () => {},
     },
   },
   data: () => ({
@@ -48,11 +40,11 @@ export default {
         layer: this.tLayer,
       };
       let filters = this.getFiltersState ? this.getFiltersState : {};
-      
+
       if (this.additionalFilters) {
-        filters = {...filters, ...this.additionalFilters };
+        filters = { ...filters, ...this.additionalFilters };
       }
-      
+
       this.trackExport("csv");
       payload.filters = filters;
       this.$store.dispatch("layers/exportCSV", payload).then((response) => {

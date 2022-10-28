@@ -1,106 +1,104 @@
-{{ config(
-    vars = {
-        "line_colors": [ "lightgray", "lightgray", "lightgray" ],
-        "bar_colors": [ "#fdba74", "#818cf8" ],
-        "fill_colors": [ "#fdba74", "#818cf8" ]
-    }
-)
-}}
+{{ config( vars = { "line_colors": [ "lightgray", "lightgray", "lightgray" ],
+"bar_colors": [ "#fdba74", "#818cf8" ], "fill_colors": [ "#fdba74", "#818cf8" ]
+} ) }}
 <template>
-<div class="flex bg-pageBackgroundColor" > 
+  <div class="flex bg-pageBackgroundColor">
     <ProsperSideBar></ProsperSideBar>
-    
+
     <div class="w-full ml-10 md:ml-auto">
-        <ProsperNavBar></ProsperNavBar>
+      <ProsperNavBar></ProsperNavBar>
 
-        <div class="pl-10 pr-10 mx-auto overflow-hidden h-80 bg-secondaryColor">
-            <CacheControls
-                iconClass='fa fa-redo transform -rotate-45'
-                position='float-right relative top-10'
-                textColor='text-secondaryFontColor'
-                buttonColors='text-secondaryFontColor bg-primaryButtonColor'
-                minimal />
-        </div>     
+      <div class="pl-10 pr-10 mx-auto overflow-hidden h-80 bg-secondaryColor">
+        <CacheControls
+          iconClass="fa fa-redo transform -rotate-45"
+          position="float-right relative top-10"
+          textColor="text-secondaryFontColor"
+          buttonColors="text-secondaryFontColor bg-primaryButtonColor"
+          minimal
+        />
+      </div>
 
-        <div class="container pl-10 pr-10 mx-auto -mt-60">
-            <div class="mb-2 text-sm text-secondaryFontColor">Filters</div>
-            <div class="p-4 rounded bg-pageSectionColor">
-                <div class="flex flex-col flex-wrap gap-4 md:flex-row secondary-fonts">
-                    <slot name="filters"></slot>
-                </div>
-            </div>
+      <div class="container pl-10 pr-10 mx-auto -mt-60">
+        <div class="mb-2 text-sm text-secondaryFontColor">Filters</div>
+        <div class="p-4 rounded bg-pageSectionColor">
+          <div
+            class="flex flex-col flex-wrap gap-4 md:flex-row secondary-fonts"
+          >
+            <slot name="filters"></slot>
+          </div>
+        </div>
 
-            <div class="mt-5">
-                <!-- <div class="grid grid-cols-1 gap-4 py-3 md:grid-cols-2 lg:grid-cols-3 secondary-fonts">
+        <div class="mt-5">
+          <!-- <div class="grid grid-cols-1 gap-4 py-3 md:grid-cols-2 lg:grid-cols-3 secondary-fonts">
                     <slot name='stats'></slot>
                 </div> -->
 
-                <div class="grid grid-cols-1 gap-4 pb-5 mt-5 md:grid-cols-2 secondary-fonts">
-                    <slot></slot>
-                </div>
-            </div>
+          <div
+            class="grid grid-cols-1 gap-4 pb-5 mt-5 md:grid-cols-2 secondary-fonts"
+          >
+            <slot></slot>
+          </div>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-:root {
---primary-color: #FFFFFF; 
---primary-highlight-color: #EFF6FF; 
---primary-border-color: var(--grayscale-one-color); 
---primary-font-color: #3F3F46; 
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+  :root {
+    --primary-color: #ffffff;
+    --primary-highlight-color: #eff6ff;
+    --primary-border-color: var(--grayscale-one-color);
+    --primary-font-color: #3f3f46;
 
---secondary-color: #0F766E; 
---secondary-highlight-color: var(--secondary-color); 
---secondary-border-color: var(--grayscale-two-color); 
---secondary-font-color: var(--primary-color); 
+    --secondary-color: #0f766e;
+    --secondary-highlight-color: var(--secondary-color);
+    --secondary-border-color: var(--grayscale-two-color);
+    --secondary-font-color: var(--primary-color);
 
---grayscale-one-color: #E4E4E7; 
---grayscale-two-color: #71717A;
---grayscale-three-color: #27272A; 
---grayscale-hover-color: #F4F4F5; 
+    --grayscale-one-color: #e4e4e7;
+    --grayscale-two-color: #71717a;
+    --grayscale-three-color: #27272a;
+    --grayscale-hover-color: #f4f4f5;
 
---filter-background-color: #FFFFFF;
---filter-menu-color: var(--filter-background-color);
---filter-highlight-color: var(--primary-highlight-color);
---filter-font-highlight-color: #00bfa5;
---filter-font-color: var(--primary-font-color); 
---filter-border-color: var(--primary-border-color); 
+    --filter-background-color: #ffffff;
+    --filter-menu-color: var(--filter-background-color);
+    --filter-highlight-color: var(--primary-highlight-color);
+    --filter-font-highlight-color: #00bfa5;
+    --filter-font-color: var(--primary-font-color);
+    --filter-border-color: var(--primary-border-color);
 
---page-section-color: var(--primary-color);
---page-background-color: #F4F4F5;
+    --page-section-color: var(--primary-color);
+    --page-background-color: #f4f4f5;
 
---primary-button-color: #3b82f6;
---secondary-button-color: transparent;
+    --primary-button-color: #3b82f6;
+    --secondary-button-color: transparent;
 
---tile-border-color: var(--primary-border-color);
---tile-background-color: var(--primary-color);
-}
+    --tile-border-color: var(--primary-border-color);
+    --tile-background-color: var(--primary-color);
+  }
 
-.primaryFilterRadius {
-@apply rounded;
-}
+  .primaryFilterRadius {
+    @apply rounded;
+  }
 
-.secondaryFilterRadius {
-@apply rounded-3xl;
-}
+  .secondaryFilterRadius {
+    @apply rounded-3xl;
+  }
 
-/* Fonts */
-.primary-fonts {
-font-family: 'Poppins', sans-serif;
-}
+  /* Fonts */
+  .primary-fonts {
+    font-family: "Poppins", sans-serif;
+  }
 
-.secondary-fonts {
-font-family: 'Nunito', sans-serif;
-}
-/* Fonts */
+  .secondary-fonts {
+    font-family: "Nunito", sans-serif;
+  }
+  /* Fonts */
 
-.tileElement {
-@apply border-tileBorderColor bg-tileBackgroundColor rounded;
-}
-
-
+  .tileElement {
+    @apply border-tileBorderColor bg-tileBackgroundColor rounded;
+  }
 </style>
