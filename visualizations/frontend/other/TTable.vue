@@ -1,9 +1,9 @@
 <template>
   <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }">
-    <slot name="columnConfig" :setColumnConfig="setColumnConfig"></slot>
+    <slot name="columnConfig" :set-column-config="setColumnConfig"></slot>
 
     <!-- Title -->
-    <div class="tableHeaderContainer" v-if="showTableHeader">
+    <div v-if="showTableHeader" class="tableHeaderContainer">
       <div class="title">
         <div v-if="title">{{ title }}</div>
         <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
@@ -14,7 +14,7 @@
         </t-tooltip>
       </div>
 
-      <div class="tableControls" v-show="!isPdf">
+      <div v-show="!isPdf" class="tableControls">
         <!-- <div>Future Group By</div> -->
         <!-- So this is a bit funky. Multiple front end columns can use the same layer column.
             Multiple layer columns can be used in a front end column. When the user is selecting
@@ -28,15 +28,15 @@
             modifiable columns. -->
         <t-select-columns
           v-if="modifiableColumns"
-          :modifiableColumns="modifiableColumns"
-          @updateFilteredColumns="updateFilteredColumns"
-          :urlFilter="modifiableColumnsFilter"
+          :modifiable-columns="modifiableColumns"
+          :url-filter="modifiableColumnsFilter"
           :t-layer="layer"
+          @updateFilteredColumns="updateFilteredColumns"
         />
         <TCsvExport
           v-if="enableCsvDownload"
           :t-layer="layer"
-          :additionalFilters="additionalFilters"
+          :additional-filters="additionalFilters"
           class="csvExportButton"
         />
         <TSearch
@@ -92,7 +92,7 @@
             {{ column.header }}
           </slot>
 
-          <div v-if="column.sort" @click="updateSort(column)" class="sortIcon">
+          <div v-if="column.sort" class="sortIcon" @click="updateSort(column)">
             <slot
               v-if="column.sort.direction === 'ASC'"
               name="sortAscendingIcon"
@@ -159,8 +159,8 @@
               class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
             >
               <button
-                @click="toggleRow(row)"
                 class="focus:outline-none focus-visible:ring"
+                @click="toggleRow(row)"
               >
                 <span aria-hidden="true">
                   <chevron-down-icon v-if="row.detailRowOpen" />

@@ -23,7 +23,7 @@
       class="px-2 pt-1"
       :class="expanded ? 'h-max' : 'h-[0px] opacity-0 overflow-y-hidden'"
     >
-      <slot :onExpandable="expanded"></slot>
+      <slot :on-expandable="expanded"></slot>
     </div>
   </div>
 </template>

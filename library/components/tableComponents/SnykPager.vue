@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="pagination-footer flex justify-center relative"
       v-if="numberOfItems && numberOfItems > itemsPerPage"
+      class="pagination-footer flex justify-center relative"
     >
       <ul
-        class="pagination-nav pagination-selector inline-flex pt-[16px]"
         id="pages"
+        class="pagination-nav pagination-selector inline-flex pt-[16px]"
       >
         <li class="pagination-nav-item">
           <button
@@ -19,12 +19,12 @@
         <li v-for="page in pageNumbersToShow" class="pagination-nav-item">
           <button
             class="h-8 minWidth text-[15px] font-medium leading-5 focus:outline-none"
-            @click="internalPage = page !== '...' ? page : internalPage"
             :class="[
               page === internalPage
                 ? 'active border-[#7FA7F5] bg-[#EAF1FF] rounded text-[#145DEB]'
                 : 'text-[#0F47C6]',
             ]"
+            @click="internalPage = page !== '...' ? page : internalPage"
           >
             {{ page }}
           </button>

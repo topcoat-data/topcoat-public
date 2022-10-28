@@ -21,15 +21,15 @@ export default {
       default: "",
     },
   },
+  data: () => ({
+    is_filter: true,
+    value: "",
+  }),
   computed: {
     props() {
       return this.$attrs;
     },
   },
-  data: () => ({
-    is_filter: true,
-    value: "",
-  }),
   methods: {
     onVisualizationInit() {
       const initial_value = this.getFilterValue("query");

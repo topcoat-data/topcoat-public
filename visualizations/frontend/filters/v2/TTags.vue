@@ -4,16 +4,16 @@
     :class="{ 'is-outlined': isOutlined }"
   >
     <div class="flex justify-between gap-1">
-      <div class="font-bold tracking-widest" v-if="label">
+      <div v-if="label" class="font-bold tracking-widest">
         {{ label.toUpperCase() }}
       </div>
-      <div class="px-2 pt-2 nav-search" v-if="isSearchable">
+      <div v-if="isSearchable" class="px-2 pt-2 nav-search">
         <base-search-input
+          v-model="search"
           class="mt-0 mb-3 text-sm search-report !rounded-md"
           :placeholder="searchPlaceholder"
           size="small"
           :clearable="false"
-          v-model="search"
         />
       </div>
     </div>
@@ -27,13 +27,13 @@
       :class="{ 'w-max': !isInline, 'px-3': label }"
     >
       <div>
-        <t-loading-spinner position="relative" v-if="!init || loading" />
+        <t-loading-spinner v-if="!init || loading" position="relative" />
         <div
-          v-else-if="Object.keys(items).length"
           v-for="key in Object.keys(items)"
+          v-else-if="Object.keys(items).length"
           :key="key"
         >
-          <div class="pb-3 font-bold tracking-widest" v-if="!hideLabels">
+          <div v-if="!hideLabels" class="pb-3 font-bold tracking-widest">
             {{ isLabelCapitalized ? key.toUpperCase() : key }}
           </div>
           <div
@@ -47,9 +47,9 @@
             >
               <base-checkbox
                 v-if="value.rendered && value.value"
+                v-model="checked"
                 :label="value.rendered"
                 :value="value.value + '_' + key"
-                v-model="checked"
                 @change="updateUrlParams"
               />
             </div>
@@ -58,11 +58,11 @@
         <small v-else> No data found </small>
       </div>
     </div>
-    <div class="mt-2 text-center" v-if="!isExpanded && init && canBeExpanded">
+    <div v-if="!isExpanded && init && canBeExpanded" class="mt-2 text-center">
       <base-button
         ghost
-        @click="expanded ? collapse() : expand()"
         :disabled="!init || loading"
+        @click="expanded ? collapse() : expand()"
       >
         <span v-if="expanded">Show Less</span>
         <span v-else>Show More</span>
@@ -170,6 +170,13 @@ export default {
       return items;
     },
   },
+  watch: {
+    onExpandable: function (newVal, oldVal) {
+      if (newVal) {
+        this.fetchLayerData();
+      }
+    },
+  },
   methods: {
     collapse() {
       this.containerHeight = this.defaultHeight;
@@ -197,13 +204,6 @@ export default {
     },
     updateUrlParams() {
       this.setFilterValue("selected_items", this.checked.join("|"), true);
-    },
-  },
-  watch: {
-    onExpandable: function (newVal, oldVal) {
-      if (newVal) {
-        this.fetchLayerData();
-      }
     },
   },
 };

@@ -2,33 +2,33 @@
   <div class="relative flex t-date-picker">
     <!-- Date Picker -->
     <base-date-picker
+      ref="datePicker"
+      v-model="date"
       confirm
       confirm-text="Apply"
-      v-model="date"
-      ref="datePicker"
       :range="mode === 'range'"
       :format="dateFormat"
       :range-separator="seperator"
+      :class="relativePreset && 'w-auto'"
       @confirm="handleConfirm"
       @pick="setCustomPreset"
       @open="fetchLayerData"
-      :class="relativePreset && 'w-auto'"
     >
       <div
-        slot="input"
         v-if="relativePreset"
+        slot="input"
         class="border border-[#C3C2CB] py-1 px-2 bg-white cursor-pointer rounded-[4px] font-medium"
       >
         <div class="flex items-center gap-1">
           <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
-          <button @click="handleClear" v-if="!isRequired">
+          <button v-if="!isRequired" @click="handleClear">
             <close-icon title="clear date selection" />
           </button>
           <menu-down-icon class="text-[20px]" />
         </div>
       </div>
-      <div class="presets-dropown" slot="sidebar">
+      <div slot="sidebar" class="presets-dropown">
         <button
           v-for="preset in presets[mode]"
           :key="preset.key"
@@ -45,10 +45,10 @@
       <!-- To hide default clear icon -->
       <div slot="icon-clear"></div>
 
-      <div slot="icon-calendar" v-if="!relativePreset">
+      <div v-if="!relativePreset" slot="icon-calendar">
         <div class="flex items-center gap-1">
-          <t-loading-spinner position="relative" v-if="loading" />
-          <button @click="handleClear" v-if="!isRequired">
+          <t-loading-spinner v-if="loading" position="relative" />
+          <button v-if="!isRequired" @click="handleClear">
             <close-icon />
           </button>
           <calendar-blank-outline-icon />
@@ -56,7 +56,7 @@
       </div>
 
       <!-- To hide default calendar icon when preset is selected -->
-      <div slot="icon-calendar" v-else></div>
+      <div v-else slot="icon-calendar"></div>
     </base-date-picker>
   </div>
 </template>
@@ -94,24 +94,6 @@ export default {
       default: false,
     },
   },
-  computed: {
-    mode() {
-      if (
-        this.$attrs["t-filter:start_date"] &&
-        this.$attrs["t-filter:end_date"]
-      ) {
-        return "range";
-      }
-      return "single";
-    },
-    relativePreset() {
-      const preset = this.getFilterValue("date_preset");
-      if (preset === "custom") {
-        return null;
-      }
-      return this.presets[this.mode].filter((p) => p.key === preset)[0];
-    },
-  },
   data: () => ({
     date: [],
     presets: {
@@ -137,6 +119,24 @@ export default {
     selectedPreset: {},
     is_filter: true,
   }),
+  computed: {
+    mode() {
+      if (
+        this.$attrs["t-filter:start_date"] &&
+        this.$attrs["t-filter:end_date"]
+      ) {
+        return "range";
+      }
+      return "single";
+    },
+    relativePreset() {
+      const preset = this.getFilterValue("date_preset");
+      if (preset === "custom") {
+        return null;
+      }
+      return this.presets[this.mode].filter((p) => p.key === preset)[0];
+    },
+  },
   methods: {
     onVisualizationInit() {
       this.assignDatesFromFilters();

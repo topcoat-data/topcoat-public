@@ -2,14 +2,14 @@
   <div class="relative">
     <t-tooltip position="bottom" width="130px">
       <button
-        class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
-        @click="copy"
-        :class="{ 'bg-[#B4E4D9]': copied }"
         slot="trigger"
+        class="h-[30px] w-[30px] rounded-[4px] flex items-center justify-center border border-[#C3C2CB] p-1 transition-colors"
+        :class="{ 'bg-[#B4E4D9]': copied }"
+        @click="copy"
       >
-        <t-loading-spinner position="relative" v-if="!whoami" />
-        <check-icon :size="18" v-else-if="copied" />
-        <link-icon :size="18" v-else />
+        <t-loading-spinner v-if="!whoami" position="relative" />
+        <check-icon v-else-if="copied" :size="18" />
+        <link-icon v-else :size="18" />
         <span class="visually-hidden">{{
           copied ? "URL Copied" : "Copy URL"
         }}</span>

@@ -20,7 +20,7 @@
         >
           <b>{{ key }}: </b>
           <div class="flex flex-wrap items-center gap-1">
-            <base-chip :text="tItem" v-for="tItem of items[key]" :key="tItem" />
+            <base-chip v-for="tItem of items[key]" :key="tItem" :text="tItem" />
           </div>
         </div>
         <span v-if="truncatedItemsCount" class="text-[#A2A1AF] py-2 text-sm">
@@ -48,9 +48,9 @@
           <b>{{ key }}:</b>
           <div class="flex flex-wrap items-center gap-1">
             <base-chip
-              :text="tItem"
               v-for="(tItem, tIndex) of items[key]"
               :key="tItem"
+              :text="tItem"
             />
           </div>
         </div>

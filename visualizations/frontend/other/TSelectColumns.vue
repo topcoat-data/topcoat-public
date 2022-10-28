@@ -5,9 +5,9 @@
   >
     <!-- Handle -->
     <div
+      v-if="!isExpanded"
       slot="handle"
       class="flex items-center gap-1 p-1 text-sm font-medium"
-      v-if="!isExpanded"
     >
       <view-column-outline size="20" />
       <span> Modify Columns </span>
@@ -40,18 +40,18 @@
       <div class="px-[8px] pt-[4px] pb-[6px] w-full">
         <ul class="max-h-[320px] overflow-auto">
           <li
-            class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
             v-for="(item, index) in internalColumns"
             :key="index"
+            class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
           >
             <div
               class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]"
             >
               <base-checkbox
+                v-model="checked"
                 class="!min-w-[200px]"
                 :label="item.label"
                 :value="item"
-                v-model="checked"
               />
             </div>
           </li>
@@ -85,6 +85,11 @@ export default {
     isExpanded: false,
     internalColumns: [],
   }),
+  computed: {
+    urlParamName() {
+      return `${this.TLayer}_cols`;
+    },
+  },
   watch: {
     urlFilter() {
       this.modifiableColumns.forEach((col) => {
@@ -101,11 +106,6 @@ export default {
     },
     checked() {
       this.updateChecked();
-    },
-  },
-  computed: {
-    urlParamName() {
-      return `${this.TLayer}_cols`;
     },
   },
   methods: {

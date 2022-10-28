@@ -1,6 +1,6 @@
 <template>
   <div class="t-tags-input max-w-max min-w-full min-h-[43px] relative">
-    <div class="pb-2 font-bold tracking-widest" v-if="label">
+    <div v-if="label" class="pb-2 font-bold tracking-widest">
       {{ label.toUpperCase() }}
     </div>
     <base-multiple-value-input
@@ -10,9 +10,9 @@
       :data="tags.length ? tags : tempTags"
       :loading="loading"
       :placeholder="placeholder"
-      @update="handleUpdate"
       display-key="value"
       value-key="value"
+      @update="handleUpdate"
       @opened="handleOpen"
     />
     <base-tags-input

@@ -1,19 +1,19 @@
 <template>
   <div class="flex flex-col overflow-x-hidden">
-    <label class="pb-[7px] text-sm font-medium" v-if="label">
+    <label v-if="label" class="pb-[7px] text-sm font-medium">
       {{ label }}
     </label>
     <div
+      ref="rangeContainer"
       class="h-[30px] max-w-full min-w-[200px] flex items-center"
       @click="handleClick"
       @mousedown="dragging = true"
       @mouseover="handleDragover"
       @mouseup="handleDragend"
-      ref="rangeContainer"
     >
       <div
-        class="w-full border-1 border-[#C3C2CB] bg-[#C3C2CB] relative"
         slot="handle"
+        class="w-full border-1 border-[#C3C2CB] bg-[#C3C2CB] relative"
       >
         <div
           class="border-1 border-[#145DEB]"
@@ -32,12 +32,6 @@
 
 <script>
 export default {
-  data: () => ({
-    dragging: false,
-    is_filter: true,
-    left: 0,
-    value: 0,
-  }),
   props: {
     label: {
       default: "",
@@ -49,6 +43,12 @@ export default {
       default: 0,
     },
   },
+  data: () => ({
+    dragging: false,
+    is_filter: true,
+    left: 0,
+    value: 0,
+  }),
   methods: {
     handleDragover(e) {
       if (this.dragging) {

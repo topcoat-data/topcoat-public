@@ -6,7 +6,7 @@
     @mouseleave="showTooltip = false"
   >
     <div class="relative flex items-center gap-2">
-      <div class="hidden opacity-50 md:block" v-if="$slots.icon">
+      <div v-if="$slots.icon" class="hidden opacity-50 md:block">
         <slot name="icon"></slot>
       </div>
       <span class="text-xs font-semibold leading-4 tracking-widest">
@@ -37,20 +37,20 @@
             </div>
           </t-tooltip>
           <div v-if="previous.value" class="opacity-80">
-            <arrow-up-icon :size="18" v-if="value.value > previous.value" />
+            <arrow-up-icon v-if="value.value > previous.value" :size="18" />
             <arrow-down-icon
-              :size="18"
               v-else-if="value.value < previous.value"
+              :size="18"
             />
-            <div class="opacity-30" v-else>-</div>
+            <div v-else class="opacity-30">-</div>
           </div>
-          <t-loading-spinner position="relative" v-if="loading" />
+          <t-loading-spinner v-if="loading" position="relative" />
         </div>
       </span>
     </div>
     <div v-if="previous.value" class="flex items-center gap-1 mt-3">
-      <t-tooltip position="right" v-if="value.value != previous.value">
-        <div class="font-semibold" slot="trigger">
+      <t-tooltip v-if="value.value != previous.value" position="right">
+        <div slot="trigger" class="font-semibold">
           {{ formatNumber(previous) }}
           <span class="font-normal opacity-80">{{ previousText }}</span>
         </div>

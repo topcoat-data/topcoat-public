@@ -15,8 +15,8 @@
     <template>
       <div class="min-w-[254px]">
         <div
-          class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full"
           v-if="label"
+          class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full"
         >
           <h6
             class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest"
@@ -27,9 +27,9 @@
         <div class="px-[8px] pt-[4px] pb-[6px] w-full">
           <ul class="max-h-[200px] overflow-auto">
             <li
-              class="flex justify-between px-[8px] py-[6px] text-sm cursor-pointer text-[#555463]"
               v-for="(item, index) in menu"
               :key="index"
+              class="flex justify-between px-[8px] py-[6px] text-sm cursor-pointer text-[#555463]"
               @click="selectItem(item)"
             >
               <div
@@ -37,9 +37,9 @@
               >
                 {{ item.title }}
                 <div
+                  v-show="selected_internal === item.value"
                   style="color: #0f47c6"
                   class="relative flex items-center h-1 h-full"
-                  v-show="selected_internal === item.value"
                 >
                   <check-icon />
                 </div>

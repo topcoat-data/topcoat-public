@@ -1,19 +1,23 @@
 <template>
   <base-multiple-value-input
+    v-bind="props"
+    v-model="values"
     class="!min-w-[200px]"
     :data="menu"
     :loading="loading"
-    v-bind="props"
-    v-model="values"
     display-key="name"
     value-key="id"
-    @update="update"
     selection-only
+    @update="update"
   />
 </template>
 
 <script>
 export default {
+  data: () => ({
+    is_filter: true,
+    values: [],
+  }),
   computed: {
     props() {
       return this.$attrs;
@@ -36,10 +40,6 @@ export default {
       return menu;
     },
   },
-  data: () => ({
-    is_filter: true,
-    values: [],
-  }),
   methods: {
     findItems(urlParam) {
       const ids = urlParam.split("|");

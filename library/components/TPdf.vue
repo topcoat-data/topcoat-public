@@ -11,12 +11,12 @@
       :is-open="is_loading && showTooltip"
     >
       <button
+        slot="trigger"
         class="bg-[#145DEB] border-[#145DEB] text-white text-sm px-2 py-[5px] rounded-[4px]"
         style="height: fit-content"
         :disabled="is_loading"
-        @click="downloadPdf"
         :class="is_loading && 'opacity-60'"
-        slot="trigger"
+        @click="downloadPdf"
       >
         <div class="flex items-center gap-1">
           {{ is_loading ? "Generating PDF" : label }}

@@ -25,11 +25,11 @@
 
     <div class="px-2 pt-2 nav-search">
       <base-search-input
+        v-model="search"
         class="mt-0 mb-3 text-sm search-report !rounded-md"
         placeholder="Search Reports"
         size="small"
         :clearable="false"
-        v-model="search"
       />
 
       <small v-if="activeSection === 'all' && !pages.all.length"
@@ -45,11 +45,11 @@
 
       <ul class="px-2 max-h-[200px] overflow-auto">
         <li
-          class="flex justify-between mb-3 text-sm cursor-pointer hover:text-[#1c1c21]"
           v-for="(page, index) in pages[activeSection].filter((p) =>
             p.url.toLowerCase().includes(search)
           )"
           :key="index"
+          class="flex justify-between mb-3 text-sm cursor-pointer hover:text-[#1c1c21]"
           :class="navSelected(page.url, 'text-[#1c1c21]', 'text-[#555463]')"
         >
           <a :href="page.url" class="flex items-center justify-between w-full">
@@ -76,11 +76,6 @@ export default {
       default: "Select",
     },
   },
-  mounted() {
-    if (this.pages) {
-      this.pages.all = this.project.nav;
-    }
-  },
   data: () => ({
     active: false,
     activeSection: "all",
@@ -103,6 +98,11 @@ export default {
     selected() {
       return window.location.pathname.substring(1);
     },
+  },
+  mounted() {
+    if (this.pages) {
+      this.pages.all = this.project.nav;
+    }
   },
 };
 </script>

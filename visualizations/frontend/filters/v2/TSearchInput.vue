@@ -2,15 +2,15 @@
   <base-search-input
     v-bind="props"
     v-model="value"
+    size="small"
+    class="base-search-input"
+    :class="{ 'base-search-input-rounded': rounded }"
     @change="
       () => {
         props.type && props.type === 'date' && updateUrlParam();
       }
     "
     @enter="updateUrlParam"
-    size="small"
-    class="base-search-input"
-    :class="{ 'base-search-input-rounded': rounded }"
   />
 </template>
 
@@ -26,15 +26,15 @@ export default {
       default: true,
     },
   },
+  data: () => ({
+    is_filter: true,
+    value: "",
+  }),
   computed: {
     props() {
       return this.$attrs;
     },
   },
-  data: () => ({
-    is_filter: true,
-    value: "",
-  }),
   methods: {
     onVisualizationInit() {
       const initial_value = this.getFilterValue("query");

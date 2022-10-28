@@ -15,10 +15,10 @@
     <transition name="fade">
       <div class="absolute" :style="{ ...styles.tooltip }">
         <div
+          v-show="isVisible && $slots.default"
+          ref="tooltip"
           class="p-2 bg-[#1C1C21] text-white text-sm w-max h-max rounded relative z-50"
           :style="{ width }"
-          ref="tooltip"
-          v-show="isVisible && $slots.default"
         >
           <slot></slot>
           <div
@@ -52,6 +52,16 @@ export default {
     styles: { arrow: {}, tooltip: {} },
     isVisible: false,
   }),
+  watch: {
+    // Watcher triggers placement logic as well.
+    isOpen(n) {
+      if (n) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    },
+  },
   methods: {
     placeTooltip() {
       // Calculate and place both tooltip and arrow.
@@ -110,16 +120,6 @@ export default {
     },
     hide() {
       this.isVisible = false;
-    },
-  },
-  watch: {
-    // Watcher triggers placement logic as well.
-    isOpen(n) {
-      if (n) {
-        this.show();
-      } else {
-        this.hide();
-      }
     },
   },
 };

@@ -6,9 +6,9 @@
   >
     <!-- Handle -->
     <div
+      v-if="!isExpanded"
       slot="handle"
       class="flex items-center gap-1 p-1 text-sm font-medium"
-      v-if="!isExpanded"
     >
       <div class="pl-1">
         <slot name="icon"></slot>
@@ -34,20 +34,20 @@
           {{ label }}
         </h6>
       </div>
-      <div class="px-2 py-2 flex nav-search" v-if="isSearchable">
+      <div v-if="isSearchable" class="px-2 py-2 flex nav-search">
         <div class="grow-2">
           <base-search-input
+            v-model="search"
             class="mt-0 text-sm search-report !rounded-md"
             :placeholder="searchPlaceholder"
             size="small"
             :clearable="false"
-            v-model="search"
           />
         </div>
         <span
-          @click="selectUnselect"
           class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
           :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
+          @click="selectUnselect"
         >
           <t-loading-spinner v-if="isExpanded && loading" position="relative" />
           <span v-else>
@@ -57,9 +57,9 @@
       </div>
       <span
         v-else
-        @click="selectUnselect"
         class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
         :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
+        @click="selectUnselect"
       >
         <t-loading-spinner v-if="isExpanded && loading" position="relative" />
         <span v-else>
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-const ItemComponent = Vue.component("item-component", {
+const ItemComponent = Vue.component("ItemComponent", {
   props: {
     index: {
       type: Number,
@@ -123,6 +123,9 @@ const ItemComponent = Vue.component("item-component", {
 });
 
 export default {
+  components: {
+    ItemComponent,
+  },
   props: {
     defaultValue: {
       type: String,
@@ -167,9 +170,6 @@ export default {
     search: "",
     itemComponent: ItemComponent,
   }),
-  components: {
-    ItemComponent,
-  },
   computed: {
     names() {
       const column_name = this.tValueColumn
