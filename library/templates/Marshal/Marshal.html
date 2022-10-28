@@ -1,30 +1,26 @@
-{{ config(
-        vars = {
-            "line_colors": [ "rgba(129, 140, 248)", "rgb(37, 42, 102)", "rgb(236, 213, 211)" ],
-            "bar_colors": [ "rgba(129, 140, 248)", "rgb(236, 238, 245)" ],
-            "fill_colors": [ "rgba(16, 185, 129, 1)", "rgb(236, 238, 245)" ]
-        }
-   )
-}}
+{{ config( vars = { "line_colors": [ "rgba(129, 140, 248)", "rgb(37, 42, 102)",
+"rgb(236, 213, 211)" ], "bar_colors": [ "rgba(129, 140, 248)", "rgb(236, 238,
+245)" ], "fill_colors": [ "rgba(16, 185, 129, 1)", "rgb(236, 238, 245)" ] } ) }}
 <template>
-    <section>
+  <section>
+    <!-- Layout -->
+    <MarshalNavbar />
+    <MarshalHeader />
 
-        <!-- Layout -->
-        <MarshalNavbar />
-        <MarshalHeader />
+    <div class="relative">
+      <!-- Filters -->
+      <div
+        class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1"
+        v-if="!noFilters"
+      >
+        <div class="bg-secondaryColor p-4 rounded">
+          <div class="flex flex-wrap md:flex-row flex-col gap-6 primary-fonts">
+            <slot name="filters" />
+          </div>
+        </div>
+      </div>
 
-        <div class="relative">
-
-            <!-- Filters -->
-            <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1" v-if='!noFilters'>
-                <div class="bg-secondaryColor p-4 rounded">
-                    <div class="flex flex-wrap md:flex-row flex-col gap-6 primary-fonts">
-                        <slot name='filters' />
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1">
+      <!-- <div class="container mx-auto h-full max-w-screen-2xl lg:px-9 md:px-6 px-6 pb-1">
                 <div class="mt-9 rounded">
                     <div class="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
                         <slot name='stats' />
@@ -32,82 +28,82 @@
                 </div>
             </div> -->
 
-            <!-- Body -->
-            <div class="container mx-auto h-full max-w-screen-2xl min-h-screen p-9">
-                <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
-                    <slot></slot>
-                </div>
-            </div>
+      <!-- Body -->
+      <div class="container mx-auto h-full max-w-screen-2xl min-h-screen p-9">
+        <div
+          class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts"
+        >
+          <slot></slot>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
-:root {
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Merriweather&display=swap");
+  :root {
     --primary-color: var(--grayscale-three-color);
     --primary-highlight-color: rgba(229, 231, 235);
-    --primary-border-color: #FFFFFF;
+    --primary-border-color: #ffffff;
     --primary-font-color: var(--grayscale-three-color);
 
-    --secondary-color: #10B981;
+    --secondary-color: #10b981;
     --secondary-highlight-color: var(--primary-button-color);
-    --secondary-border-color: #9CA3AF;
+    --secondary-border-color: #9ca3af;
     --secondary-font-color: var(--secondary-border-color);
 
-    --grayscale-one-color: #F3F4F6;
-    --grayscale-two-color: #6B7280; 
-    --grayscale-three-color: #1F2937;
+    --grayscale-one-color: #f3f4f6;
+    --grayscale-two-color: #6b7280;
+    --grayscale-three-color: #1f2937;
     --grayscale-hover-color: var(--grayscale-three-color);
 
-
-    --filter-background-color: #FFFFFF;
+    --filter-background-color: #ffffff;
     --filter-menu-color: var(--filter-background-color);
     --filter-highlight-color: var(--primary-highlight-color);
     --filter-font-highlight-color: #00bfa5;
-    --filter-font-color: #4B5563;
+    --filter-font-color: #4b5563;
     --filter-border-color: var(--primary-border-color);
 
     --page-section-color: var(--secondary-color);
-    --page-background-color: #FFFFFF;
+    --page-background-color: #ffffff;
 
     --primary-button-color: #3b82f6;
     --secondary-button-color: transparent;
 
     --tile-border-color: var(--primary-border-color);
     --tile-background-color: var(--grayscale-one-color);
-}
+  }
 
-    /* Fonts */
-    .primary-fonts {
-        font-family: 'Poppins', sans-serif;
-    }
+  /* Fonts */
+  .primary-fonts {
+    font-family: "Poppins", sans-serif;
+  }
 
-    .secondary-fonts {
-        font-family: 'Merriweather', arial;
-    }
-    /* Fonts */
+  .secondary-fonts {
+    font-family: "Merriweather", arial;
+  }
+  /* Fonts */
 
-    .primaryFilterRadius {
-        @apply rounded;
-    }
+  .primaryFilterRadius {
+    @apply rounded;
+  }
 
-    .secondaryFilterRadius {
-        @apply rounded-3xl;
-    }
+  .secondaryFilterRadius {
+    @apply rounded-3xl;
+  }
 
-    .tileElement {
-        @apply border-tileBorderColor bg-tileBackgroundColor rounded;
-    }
-
+  .tileElement {
+    @apply border-tileBorderColor bg-tileBackgroundColor rounded;
+  }
 </style>
 
 <script>
-    export default {
-        name: "Marshal",
-        props: {
-            noFilters: Boolean
-        },
-    }
+  export default {
+    name: "Marshal",
+    props: {
+      noFilters: Boolean,
+    },
+  };
 </script>

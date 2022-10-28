@@ -1,98 +1,99 @@
 <template>
-    <div id="ch-theme">
+  <div id="ch-theme">
+    <HarmonySidebar />
 
-        <HarmonySidebar />
+    <div class="relative md:ml-64">
+      <HarmonyHeader />
 
-        <div class="relative md:ml-64">
-            <HarmonyHeader />
+      <div class="container mx-auto h-full px-10 pt-10 pb-1">
+        <div class="bg-pageSectionColor p-4">
+          <div
+            class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts"
+          >
+            <slot name="filters"></slot>
+          </div>
+        </div>
+      </div>
 
-            <div class="container mx-auto h-full px-10 pt-10 pb-1">
-                <div class="bg-pageSectionColor p-4">
-                    <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                        <slot name="filters"></slot>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="container mx-auto h-full px-10 pt-10 pb-1">
+      <!-- <div class="container mx-auto h-full px-10 pt-10 pb-1">
                 <div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts">
                     <slot name="stats"></slot>
                 </div>
             </div> -->
 
-            <div class="container mx-auto h-full min-h-screen p-10">
-                <div class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts pb-5">
-                    <slot></slot>
-                </div>
-            </div>
-
-            <CacheControls
-                position='fixed right-3 bottom-3 z-50'
-                buttonColors='bg-primaryColor text-secondaryFontColor border-primaryBorderColor'
-                backgroundColor='bg-secondaryColor text-secondaryFontColor'
-                textColor='text-secondaryFontColor'
-            />
-            <!-- Footer can be used here -->
+      <div class="container mx-auto h-full min-h-screen p-10">
+        <div
+          class="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-4 secondary-fonts pb-5"
+        >
+          <slot></slot>
         </div>
+      </div>
+
+      <CacheControls
+        position="fixed right-3 bottom-3 z-50"
+        buttonColors="bg-primaryColor text-secondaryFontColor border-primaryBorderColor"
+        backgroundColor="bg-secondaryColor text-secondaryFontColor"
+        textColor="text-secondaryFontColor"
+      />
+      <!-- Footer can be used here -->
     </div>
+  </div>
 </template>
 
 <style>
-:root {
-    --primary-color: #1D4ED8;
+  :root {
+    --primary-color: #1d4ed8;
     --primary-highlight-color: rgba(229, 231, 235);
-    --primary-border-color: #F4F4F5;
-    --primary-font-color: #27272A;
+    --primary-border-color: #f4f4f5;
+    --primary-font-color: #27272a;
 
-    --secondary-color: #27272A;
-    --secondary-highlight-color: #2563EB;
-    --secondary-border-color: #A1A1AA;
-    --secondary-font-color: #FFFFFF;
+    --secondary-color: #27272a;
+    --secondary-highlight-color: #2563eb;
+    --secondary-border-color: #a1a1aa;
+    --secondary-font-color: #ffffff;
 
-    --grayscale-one-color: #F4F4F5;
-    --grayscale-two-color: #E5E7EB;
-    --grayscale-three-color: #9CA3AF;
-    --grayscale-hover-color: #FFFFFF;
+    --grayscale-one-color: #f4f4f5;
+    --grayscale-two-color: #e5e7eb;
+    --grayscale-three-color: #9ca3af;
+    --grayscale-hover-color: #ffffff;
 
-    --filter-background-color: #FFFFFF;
+    --filter-background-color: #ffffff;
     --filter-menu-color: var(--filter-background-color);
     --filter-highlight-color: var(--primary-highlight-color);
     --filter-font-highlight-color: #01579b;
-    --filter-font-color: var(--primary-font-color); 
-    --filter-border-color: transparent; 
-    
-    --page-section-color: #F4F4F5;
-    --page-background-color: #FFFFFF;
+    --filter-font-color: var(--primary-font-color);
+    --filter-border-color: transparent;
+
+    --page-section-color: #f4f4f5;
+    --page-background-color: #ffffff;
 
     --primary-button-color: var(--primary-color);
     --secondary-button-color: var(--grayscale-two-color);
 
     --tile-border-color: var(--page-section-color);
     --tile-background-color: var(--page-section-color);
+  }
 
-}
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Merriweather&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&display=swap');
+  .primary-fonts {
+    font-family: "Poppins", sans-serif !important;
+  }
 
-.primary-fonts {
-    font-family: 'Poppins', sans-serif !important;
-}
+  .secondary-fonts {
+    font-family: "Work Sans", sans-serif !important;
+  }
 
-.secondary-fonts {
-    font-family: 'Work Sans', sans-serif !important;
-}
-
-.primaryFilterRadius {
+  .primaryFilterRadius {
     @apply rounded;
-}
+  }
 
-.secondaryFilterRadius {
+  .secondaryFilterRadius {
     @apply rounded;
-}
+  }
 
-.tileElement {
-  @apply border border-tileBorderColor bg-tileBackgroundColor rounded;
-}
-
-</style> 
+  .tileElement {
+    @apply border border-tileBorderColor bg-tileBackgroundColor rounded;
+  }
+</style>

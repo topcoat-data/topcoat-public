@@ -1,56 +1,93 @@
 <template>
   <div>
-      <div class="border-b border-grayscaleThreeColor secondary-fonts">
+    <div class="border-b border-grayscaleThreeColor secondary-fonts">
       <div class="md:px-60 px-10">
-          <div class="flex justify-between items-center h-20">
-              <div class="flex items-center justify-end my-5">
-                  <div class="rounded w-8 h-8 flex justify-center items-center cursor-pointer" @click="refreshCache()">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 22 24">
-                        <path d="M9.791 23.933a10.8 10.8 0 0 1-9.716-9.2C-.685 8.436 4.47 3.077 10.932 3.008V.184a.215.215 0 0 1 .346-.142l6.122 4.27a.174.174 0 0 1 0 .289l-6.126 4.27a.217.217 0 0 1-.346-.142V5.911a7.783 7.783 0 0 0-7.867 8.119 7.857 7.857 0 0 0 7.479 7.07 7.938 7.938 0 0 0 8.43-6.373 1.505 1.505 0 0 1 1.508-1.211 1.463 1.463 0 0 1 1.5 1.647 10.989 10.989 0 0 1-12.187 8.77z"/>
-                      </svg>
-                  </div>
-              </div>
-
-              <div class="flex-shrink-0">
-                  <img :width="project.logo.width" :src="project.logo.url" >
-              </div>
-
-              <div class="hidden md:block">
-                  <a href="/logout" class="bg-secondaryButtonColor hover:text-secondaryHighlightColor">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 23 23">
-                      <g id="Solid" transform="translate(-24 -24)">
-                        <path id="Path_9917" data-name="Path 9917" class="cls-1" d="M137.83,146.308l-4.471-4.471a1.185,1.185,0,1,0-1.676,1.676l2.447,2.447H121.185a1.185,1.185,0,0,0,0,2.371h12.944l-2.447,2.447a1.185,1.185,0,0,0,1.677,1.676l4.471-4.471A1.185,1.185,0,0,0,137.83,146.308Z" transform="translate(-91.177 -111.646)"/>
-                        <path id="Path_9918" data-name="Path 9918" class="cls-1" d="M37.83,42.241a1.188,1.188,0,0,0-1.185,1.19v1.19H26.371V26.379H36.645v1.19a1.185,1.185,0,1,0,2.371,0V25.983A1.979,1.979,0,0,0,37.04,24H25.976A1.979,1.979,0,0,0,24,25.983V45.017A1.979,1.979,0,0,0,25.976,47H37.04a1.979,1.979,0,0,0,1.976-1.983V43.431A1.188,1.188,0,0,0,37.83,42.241Z" transform="translate(0 0)"/>
-                      </g>
-                    </svg>
-                  </a>
-              </div>
-              <div class="text-primaryFontColor block md:hidden" @click="barToggle">
-                  <i class="fa fa-bars text-lg justify-end float-right border cursor-pointer px-2"></i>
-              </div>
+        <div class="flex justify-between items-center h-20">
+          <div class="flex items-center justify-end my-5">
+            <div
+              class="rounded w-8 h-8 flex justify-center items-center cursor-pointer"
+              @click="refreshCache()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="24"
+                viewBox="0 0 22 24"
+              >
+                <path
+                  d="M9.791 23.933a10.8 10.8 0 0 1-9.716-9.2C-.685 8.436 4.47 3.077 10.932 3.008V.184a.215.215 0 0 1 .346-.142l6.122 4.27a.174.174 0 0 1 0 .289l-6.126 4.27a.217.217 0 0 1-.346-.142V5.911a7.783 7.783 0 0 0-7.867 8.119 7.857 7.857 0 0 0 7.479 7.07 7.938 7.938 0 0 0 8.43-6.373 1.505 1.505 0 0 1 1.508-1.211 1.463 1.463 0 0 1 1.5 1.647 10.989 10.989 0 0 1-12.187 8.77z"
+                />
+              </svg>
+            </div>
           </div>
-      </div>
-      </div>
-      <div class="bg-primaryColor text-primaryFontColor px-5 border-b border-secondaryBorderColor md:grid primary-fonts" :class='isVisible ? "block" : "hidden"'>
-          <div
-              class="md:min-h-14 relative left-0 right-0 m-auto w-max items-center grid sm:grid-cols-3 md:grid-cols-4 gap-2"
-              :class="gridRange"
-          >
-              <a
-                  v-for="page in project.nav"
-                  :class="navSelected(page.url, 'text-secondaryFontColor border-secondaryHighlightColor', 'bg-secondaryButtonColor')"
-                  :href="'/' + page.url"
-                  class="min-w-28 border-b border-primaryColor hover:text-primaryFontColor py-4 px-2 font-bold h-full flex items-center justify-center hover:text-secondaryFontColor hover:border-secondaryHighlightColor">
-                  {{ page.title }}
-              </a>
-              <a
-                  href="/logout"
-                  class="w-max border-b border-primaryColor hover:text-primaryFontColor py-4 px-2 font-bold h-full flex items-center justify-center hover:text-secondaryFontColor hover:border-secondaryHighlightColor md:hidden block">
-              <i class="fa fa-user"></i>
-              <span class="pl-2">Log Out</span>
-              </a>
+
+          <div class="flex-shrink-0">
+            <img :width="project.logo.width" :src="project.logo.url" />
           </div>
+
+          <div class="hidden md:block">
+            <a
+              href="/logout"
+              class="bg-secondaryButtonColor hover:text-secondaryHighlightColor"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="23"
+                height="23"
+                viewBox="0 0 23 23"
+              >
+                <g id="Solid" transform="translate(-24 -24)">
+                  <path
+                    id="Path_9917"
+                    data-name="Path 9917"
+                    class="cls-1"
+                    d="M137.83,146.308l-4.471-4.471a1.185,1.185,0,1,0-1.676,1.676l2.447,2.447H121.185a1.185,1.185,0,0,0,0,2.371h12.944l-2.447,2.447a1.185,1.185,0,0,0,1.677,1.676l4.471-4.471A1.185,1.185,0,0,0,137.83,146.308Z"
+                    transform="translate(-91.177 -111.646)"
+                  />
+                  <path
+                    id="Path_9918"
+                    data-name="Path 9918"
+                    class="cls-1"
+                    d="M37.83,42.241a1.188,1.188,0,0,0-1.185,1.19v1.19H26.371V26.379H36.645v1.19a1.185,1.185,0,1,0,2.371,0V25.983A1.979,1.979,0,0,0,37.04,24H25.976A1.979,1.979,0,0,0,24,25.983V45.017A1.979,1.979,0,0,0,25.976,47H37.04a1.979,1.979,0,0,0,1.976-1.983V43.431A1.188,1.188,0,0,0,37.83,42.241Z"
+                    transform="translate(0 0)"
+                  />
+                </g>
+              </svg>
+            </a>
+          </div>
+          <div class="text-primaryFontColor block md:hidden" @click="barToggle">
+            <i
+              class="fa fa-bars text-lg justify-end float-right border cursor-pointer px-2"
+            ></i>
+          </div>
+        </div>
       </div>
+    </div>
+    <div
+      class="bg-primaryColor text-primaryFontColor px-5 border-b border-secondaryBorderColor md:grid primary-fonts"
+      :class='isVisible ? "block" : "hidden"'
+    >
+      <div
+        class="md:min-h-14 relative left-0 right-0 m-auto w-max items-center grid sm:grid-cols-3 md:grid-cols-4 gap-2"
+        :class="gridRange"
+      >
+        <a
+          v-for="page in project.nav"
+          :class="navSelected(page.url, 'text-secondaryFontColor border-secondaryHighlightColor', 'bg-secondaryButtonColor')"
+          :href="'/' + page.url"
+          class="min-w-28 border-b border-primaryColor hover:text-primaryFontColor py-4 px-2 font-bold h-full flex items-center justify-center hover:text-secondaryFontColor hover:border-secondaryHighlightColor"
+        >
+          {{ page.title }}
+        </a>
+        <a
+          href="/logout"
+          class="w-max border-b border-primaryColor hover:text-primaryFontColor py-4 px-2 font-bold h-full flex items-center justify-center hover:text-secondaryFontColor hover:border-secondaryHighlightColor md:hidden block"
+        >
+          <i class="fa fa-user"></i>
+          <span class="pl-2">Log Out</span>
+        </a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,14 +95,14 @@
   export default {
     data: () => ({
       isVisible: false,
-      gridRange: 'lg:grid-cols-8',
+      gridRange: "lg:grid-cols-8",
     }),
     mounted() {
       this.getNavbarGrids();
     },
     methods: {
       barToggle() {
-        this.isVisible = !this.isVisible
+        this.isVisible = !this.isVisible;
       },
       getNavbarGrids() {
         const navItems = this.project.nav;
@@ -74,8 +111,8 @@
           this.gridRange = `lg:grid-cols-${range}`;
           return;
         }
-        this.gridRange = 'lg:grid-cols-8';
-      }
-    }
-  }
+        this.gridRange = "lg:grid-cols-8";
+      },
+    },
+  };
 </script>

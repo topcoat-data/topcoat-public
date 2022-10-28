@@ -1,70 +1,71 @@
-{{ config(
-        vars = {
-            "label_color" : "white",
-            "line_colors": [ "lightgray", "lightgray", "lightgray" ],
-            "bar_colors": [ "#fdba74", "#818cf8" ],
-            "fill_colors": [ "#fdba74", "#818cf8" ]
-        }
-   )
-}}
+{{ config( vars = { "label_color" : "white", "line_colors": [ "lightgray",
+"lightgray", "lightgray" ], "bar_colors": [ "#fdba74", "#818cf8" ],
+"fill_colors": [ "#fdba74", "#818cf8" ] } ) }}
 
 <template>
-    <div class="flex bg-pageBackgroundColor" id="darkTheme"> 
-        <ProsperDarkSideBar></ProsperDarkSideBar>
-        
-        <div class="w-full ml-10 md:ml-auto">
-            <ProsperDarkNavBar></ProsperDarkNavBar>
+  <div class="flex bg-pageBackgroundColor" id="darkTheme">
+    <ProsperDarkSideBar></ProsperDarkSideBar>
 
-            <div class="overflow-hidden h-80 bg-secondaryColor pr-10 pl-10 mx-auto secondary-fonts">
-                <CacheControls
-                    iconClass='fa fa-redo transform -rotate-45'
-                    position='float-right relative top-10'
-                    textColor='text-primaryFontColor'
-                    buttonColors='text-primaryFontColor bg-primaryButtonColor'
-                    minimal />
-            </div>     
+    <div class="w-full ml-10 md:ml-auto">
+      <ProsperDarkNavBar></ProsperDarkNavBar>
 
-            <div class="pr-10 pl-10 mx-auto -mt-60 secondary-fonts">
-                <div class="mb-2 text-sm text-primaryFontColor">Filters</div>
-                <div class="bg-pageSectionColor p-4 rounded">
-                    <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                        <slot name="filters"></slot>
-                    </div>
-                </div>
+      <div
+        class="overflow-hidden h-80 bg-secondaryColor pr-10 pl-10 mx-auto secondary-fonts"
+      >
+        <CacheControls
+          iconClass="fa fa-redo transform -rotate-45"
+          position="float-right relative top-10"
+          textColor="text-primaryFontColor"
+          buttonColors="text-primaryFontColor bg-primaryButtonColor"
+          minimal
+        />
+      </div>
 
-                <div class="mt-5">
-                    <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
+      <div class="pr-10 pl-10 mx-auto -mt-60 secondary-fonts">
+        <div class="mb-2 text-sm text-primaryFontColor">Filters</div>
+        <div class="bg-pageSectionColor p-4 rounded">
+          <div
+            class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts"
+          >
+            <slot name="filters"></slot>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-3 gap-4 secondary-fonts">
                         <slot name='stats'></slot>
                     </div> -->
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
-                        <slot></slot>
-                    </div>
-                </div>
-            </div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5"
+          >
+            <slot></slot>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
 
-:root {
-    --primary-color: #1E293B;
-    --primary-highlight-color: #6B7280;
-    --primary-border-color: #F4F4F5;
-    --primary-font-color: #FFFFFF;
+  :root {
+    --primary-color: #1e293b;
+    --primary-highlight-color: #6b7280;
+    --primary-border-color: #f4f4f5;
+    --primary-font-color: #ffffff;
 
-    --secondary-color: #0F172A;
+    --secondary-color: #0f172a;
     --secondary-highlight-color: #ecb280;
-    --secondary-border-color: #6B7280;
+    --secondary-border-color: #6b7280;
     --secondary-font-color: var(--secondary-border-color);
 
-    --grayscale-one-color: #F3F4F6;
-    --grayscale-two-color: #4B5563;
-    --grayscale-three-color: #9CA3AF;
-    --grayscale-hover-color: #1F2937;
+    --grayscale-one-color: #f3f4f6;
+    --grayscale-two-color: #4b5563;
+    --grayscale-three-color: #9ca3af;
+    --grayscale-hover-color: #1f2937;
 
     --filter-background-color: var(--page-section-color);
     --filter-menu-color: var(--primary-color);
@@ -81,32 +82,31 @@
 
     --tile-border-color: transparent;
     --tile-background-color: var(--primary-color);
-}
+  }
 
-/* Fonts */
-.primary-fonts {
-    font-family: 'Poppins', sans-serif;
-}
+  /* Fonts */
+  .primary-fonts {
+    font-family: "Poppins", sans-serif;
+  }
 
-.secondary-fonts {
-    font-family: 'Nunito', sans-serif;
-}
-/* Fonts */
+  .secondary-fonts {
+    font-family: "Nunito", sans-serif;
+  }
+  /* Fonts */
 
-.primaryFilterRadius {
+  .primaryFilterRadius {
     @apply rounded;
-}
+  }
 
-.secondaryFilterRadius {
+  .secondaryFilterRadius {
     @apply rounded-3xl;
-}
+  }
 
-body {
+  body {
     @apply bg-primaryColor;
-}
+  }
 
-.tileElement {
+  .tileElement {
     @apply border-tileBorderColor bg-tileBackgroundColor rounded text-primaryFontColor;
-}
-
+  }
 </style>

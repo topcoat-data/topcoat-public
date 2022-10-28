@@ -1,35 +1,37 @@
-{{ config(
-        vars = {
-            "label_color" : "white",
-            "line_colors": [ "lightgray", "lightgray", "lightgray" ],
-            "bar_colors": [ "#fdba74", "#818cf8" ],
-            "fill_colors": [ "#fdba74", "#818cf8" ]
-        }
-   )
-}}
+{{ config( vars = { "label_color" : "white", "line_colors": [ "lightgray",
+"lightgray", "lightgray" ], "bar_colors": [ "#fdba74", "#818cf8" ],
+"fill_colors": [ "#fdba74", "#818cf8" ] } ) }}
 
 <template>
   <div class="primary-fonts">
-    <div class="text-primaryFontColor md:items-center px-2 md:px-40">        
-        <div class="flex justify-between items-center h-20">
-          <div class="flex-shrink-0">
-            <img :width="project.logo.width" :src="project.logo.url" >
-          </div>
-          <div>
-            <p class="text-xl text-primaryFontColor">{{ page.title }}</p>
-          </div>
-          <div class="hidden md:block">
-            <a href="/logout" class="hover:text-primaryFontColor">
-              <i class="fa fa-user mr-3"></i>
-              <span>Log Out</span>
-            </a>
-          </div>
-          <div class="text-primaryFontColor block md:hidden p-2" @click="barToggle">
-            <i class="fa fa-bars text-lg justify-end float-right border border-borderPrimaryColor cursor-pointer px-2"></i>
-          </div>
+    <div class="text-primaryFontColor md:items-center px-2 md:px-40">
+      <div class="flex justify-between items-center h-20">
+        <div class="flex-shrink-0">
+          <img :width="project.logo.width" :src="project.logo.url" />
         </div>
+        <div>
+          <p class="text-xl text-primaryFontColor">{{ page.title }}</p>
+        </div>
+        <div class="hidden md:block">
+          <a href="/logout" class="hover:text-primaryFontColor">
+            <i class="fa fa-user mr-3"></i>
+            <span>Log Out</span>
+          </a>
+        </div>
+        <div
+          class="text-primaryFontColor block md:hidden p-2"
+          @click="barToggle"
+        >
+          <i
+            class="fa fa-bars text-lg justify-end float-right border border-borderPrimaryColor cursor-pointer px-2"
+          ></i>
+        </div>
+      </div>
     </div>
-    <div class="bg-pageSectionColor text-primaryFontColor md:py-1 px-5 md:grid" :class='isVisible ? "block" : "hidden"'>
+    <div
+      class="bg-pageSectionColor text-primaryFontColor md:py-1 px-5 md:grid"
+      :class='isVisible ? "block" : "hidden"'
+    >
       <div
         class="md:min-h-14 relative left-0 right-0 m-auto items-center grid sm:grid-cols-3 md:grid-cols-4 gap-1"
         :class="gridRange"
@@ -38,12 +40,17 @@
           v-for="page in project.nav"
           :class="navSelected(page.url, 'bg-primaryHighlightColor', 'bg-secondaryButtonColor')"
           :href="'/' + page.url"
-          class="hover:text-primaryFontColor px-2 py-4 h-full flex items-center justify-center rounded-md hover:bg-primaryHighlightColor">
-
-          <i :class="'icon fas text-primaryFontColor text-base ' + page.icon_class" />
+          class="hover:text-primaryFontColor px-2 py-4 h-full flex items-center justify-center rounded-md hover:bg-primaryHighlightColor"
+        >
+          <i
+            :class="'icon fas text-primaryFontColor text-base ' + page.icon_class"
+          />
           <span class="fonst-small pl-2">{{ page.title }} </span>
         </a>
-        <a href="/logout" class="hover:text-primaryFontColor bg-secondaryButtonColor px-2 py-4 h-full flex items-center justify-center rounded-md hover:bg-primaryHighlightColor md:hidden">
+        <a
+          href="/logout"
+          class="hover:text-primaryFontColor bg-secondaryButtonColor px-2 py-4 h-full flex items-center justify-center rounded-md hover:bg-primaryHighlightColor md:hidden"
+        >
           <i class="fa fa-user"></i>
           <span class="pl-2">Log Out</span>
         </a>
@@ -56,14 +63,14 @@
   export default {
     data: () => ({
       isVisible: false,
-      gridRange: 'lg:grid-cols-8',
+      gridRange: "lg:grid-cols-8",
     }),
     mounted() {
       this.getNavbarGrids();
     },
     methods: {
       barToggle() {
-        this.isVisible = !this.isVisible
+        this.isVisible = !this.isVisible;
       },
       getNavbarGrids() {
         const navItems = this.project.nav;
@@ -73,8 +80,8 @@
           console.log(this.gridRange);
           return;
         }
-        this.gridRange = 'lg:grid-cols-8';
-      }
-    }
-  }
+        this.gridRange = "lg:grid-cols-8";
+      },
+    },
+  };
 </script>

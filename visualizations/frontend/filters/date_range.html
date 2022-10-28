@@ -1,412 +1,444 @@
 <template>
-	<div class="date-filter-container w-max">
-	  <div
-		class="pb-1 text-xs font-semibold text-primaryFontColor"
-		v-if="config.title"
-	  >
-		{{ config.title }}
-	  </div>
-	  <div class="h-5" v-else></div>
-	  <div class="inline-flex w-full h-9">
-		<div v-if="!config.hide_presets">
-		  <a-dropdown
-			class="flex-1 w-40"
-			:trigger="[ 'contextMenu' ]"
-			v-model="pickerOpened"
-		  >
-			<a-menu
-			  v-model="datePresetModel"
-			  @click="presetChange($event, false)"
-			  :style="{ minHeight: '364px' }"
-			  slot="overlay"
-			>
-			  <a-menu-item
-				v-for="preset in presets.range"
-				:key="preset.key"
-			  >
-				{{ preset.label }}
-			  </a-menu-item>
-			</a-menu>
-			<button
-			  class="h-full px-4 rounded-l rounded-r-none outline-none bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor"
-			  @click="pickerOpened = !pickerOpened"
-			>
-			  {{ presetValue }}
-			  <span v-if="!loading">
-				<a-icon v-if="datePreset && !pickerOpened" type="down" />
-				<a-icon v-if="datePreset && pickerOpened" type="up" />
-			  </span>
-			  <a-icon type="loading" v-else />
-			</button>
-		  </a-dropdown>
-		</div>
-		<div
-		  class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9"
-		  :class='{"full-picker": !config.hide_presets}'
-		>
-		  <!-- Range Picker -->
-		  <div class="flex items-center h-full">
-			<div @click="pickerOpened = !pickerOpened" class="h-full">
-			  <a-range-picker
-				class="relative h-full ant-calendar-filter"
-				:allowClear="false"
-				dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20"
-				:open="pickerOpened"
-				:separator="'-'"
-				:format="dateFormat"
-				:value="[ startDate, endDate ]"
-				@change="onDateChange"
-			  >
-				<a-icon
-				  slot="suffixIcon"
-				  type="calendar"
-				  class="text-filterFontColor"
-				/>
-				<template slot="renderExtraFooter">
-					<div style="padding: 2.0rem; padding-right: 1.0rem;">
-                        <span class="flex self-center pr-1" v-if="config.include_previous"
-                            >Compare to previous</span
-                        >
-                        <a-radio-group
-                            class="flex"
-                            v-model="previousMode"
-                            button-style="solid"
-                            v-if="config.include_previous"
-                        >
-                            <a-radio-button
-                                :disabled="datePreset == 'mtd' || datePreset == 'ytd'"
-                                value="period"
-                                class="flex items-center h-full primary-button"
-                            >
-                                Period
-                            </a-radio-button>
-                            <a-radio-button
-                                value="year"
-                                class="flex items-center h-full primary-button"
-                            >
-                                Year
-                            </a-radio-button>
-                        </a-radio-group>
-                        <div
-                            class="flex content-center justify-end h-full gap-1 ml-1"
-                            :class='{"w-full": !config.include_previous}'
-                        >
-                            <a-button style="float:right;" class="h-full py-1 secondary-button" @click="close">
-                                Cancel
-                            </a-button>
-                            <a-button style="float:right;" class="h-full py-1 primary-button" @click="apply">
-                                Apply
-                            </a-button>
-                        </div>
-                    </div>
-				</template>
-			  </a-range-picker>
-			</div>
-		  </div>
-		</div>
-		<div
-		  class="flex inline-block px-3 text-primaryFontColor"
-		  v-if='config.include_previous'
-		>
-		  <div v-if="refStart && refEnd" class="self-center">
-			ref. {{ refStart.format('MM/DD/YYYY ') }} -
-			{{ refEnd.format('MM/DD/YYYY ') }}
-		  </div>
-		</div>
-	  </div>
-	</div>
-  </template>
+  <div class="date-filter-container w-max">
+    <div
+      class="pb-1 text-xs font-semibold text-primaryFontColor"
+      v-if="config.title"
+    >
+      {{ config.title }}
+    </div>
+    <div class="h-5" v-else></div>
+    <div class="inline-flex w-full h-9">
+      <div v-if="!config.hide_presets">
+        <a-dropdown
+          class="flex-1 w-40"
+          :trigger="[ 'contextMenu' ]"
+          v-model="pickerOpened"
+        >
+          <a-menu
+            v-model="datePresetModel"
+            @click="presetChange($event, false)"
+            :style="{ minHeight: '364px' }"
+            slot="overlay"
+          >
+            <a-menu-item v-for="preset in presets.range" :key="preset.key">
+              {{ preset.label }}
+            </a-menu-item>
+          </a-menu>
+          <button
+            class="h-full px-4 rounded-l rounded-r-none outline-none bg-primaryButtonColor border-primaryButtonColor text-grayscaleOneColor"
+            @click="pickerOpened = !pickerOpened"
+          >
+            {{ presetValue }}
+            <span v-if="!loading">
+              <a-icon v-if="datePreset && !pickerOpened" type="down" />
+              <a-icon v-if="datePreset && pickerOpened" type="up" />
+            </span>
+            <a-icon type="loading" v-else />
+          </button>
+        </a-dropdown>
+      </div>
+      <div
+        class="inline-block text-filterFontHighlightColor primaryFilterRadius h-9"
+        :class='{"full-picker": !config.hide_presets}'
+      >
+        <!-- Range Picker -->
+        <div class="flex items-center h-full">
+          <div @click="pickerOpened = !pickerOpened" class="h-full">
+            <a-range-picker
+              class="relative h-full ant-calendar-filter"
+              :allowClear="false"
+              dropdownClassName="wld-date-picker bg-filterBackgroundColor w-20"
+              :open="pickerOpened"
+              :separator="'-'"
+              :format="dateFormat"
+              :value="[ startDate, endDate ]"
+              @change="onDateChange"
+            >
+              <a-icon
+                slot="suffixIcon"
+                type="calendar"
+                class="text-filterFontColor"
+              />
+              <template slot="renderExtraFooter">
+                <div style="padding: 2rem; padding-right: 1rem">
+                  <span
+                    class="flex self-center pr-1"
+                    v-if="config.include_previous"
+                    >Compare to previous</span
+                  >
+                  <a-radio-group
+                    class="flex"
+                    v-model="previousMode"
+                    button-style="solid"
+                    v-if="config.include_previous"
+                  >
+                    <a-radio-button
+                      :disabled="datePreset == 'mtd' || datePreset == 'ytd'"
+                      value="period"
+                      class="flex items-center h-full primary-button"
+                    >
+                      Period
+                    </a-radio-button>
+                    <a-radio-button
+                      value="year"
+                      class="flex items-center h-full primary-button"
+                    >
+                      Year
+                    </a-radio-button>
+                  </a-radio-group>
+                  <div
+                    class="flex content-center justify-end h-full gap-1 ml-1"
+                    :class='{"w-full": !config.include_previous}'
+                  >
+                    <a-button
+                      style="float: right"
+                      class="h-full py-1 secondary-button"
+                      @click="close"
+                    >
+                      Cancel
+                    </a-button>
+                    <a-button
+                      style="float: right"
+                      class="h-full py-1 primary-button"
+                      @click="apply"
+                    >
+                      Apply
+                    </a-button>
+                  </div>
+                </div>
+              </template>
+            </a-range-picker>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex inline-block px-3 text-primaryFontColor"
+        v-if="config.include_previous"
+      >
+        <div v-if="refStart && refEnd" class="self-center">
+          ref. {{ refStart.format('MM/DD/YYYY ') }} - {{
+          refEnd.format('MM/DD/YYYY ') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-  <script>
+<script>
   export default {
-  data() {
-	  return {
-		  startDate: null,
-		  endDate: null,
-		  date: null,
-		  pickerOpened: false,
-		  datePreset: null,
-		  refStart: null,
-		  refEnd: null,
-		  prevDatePreset: null,
-		  previousMode: null,
-		  show: false,
-		  is_filter: true,
-		  showPreviousMode: false,
-		  presets: {
-			  range: [
-				  { key: 'yesterday', label: 'Yesterday' },
-				  { key: 'last7days', label: 'Last 7 Days' },
-				  { key: 'lastmonth', label: 'Last Month' },
-				  { key: 'last30days', label: 'Last 30 Days' },
-				  { key: 'last90days', label: 'Last 90 Days' },
-				  { key: 'mtd', label: 'Month to Date' },
-				  { key: 'ytd', label: 'Year to Date' },
-				  { key: 'custom', label: 'Custom Range' },
-			  ],
-		  }
-	  }
-  },
-  mounted() {
-	  const ref = this;
-	  window.addEventListener('resize', function(event) {
-		  ref.addColSpan();
-	  }, true);
-  },
-  computed: {
-	  presetValue() {
-		  const { presets, datePreset } = this;
-		  if (datePreset) {
-			  const preset = presets.range.filter(p => p.key === datePreset)[0];
-			  if (preset) return preset.label;
-		  }
-		  return '';
-	  },
-	  datePresetModel: {
-		  get() {
-			  if (this.datePreset) return [ this.datePreset ];
-			  else {
-				  var date_preset = this.getFilterValue('date_preset')
-				  if (!date_preset && !this.config.default_preset) {
-					  var dPreset = 'last90days';
-					  this.datePreset = dPreset;
-					  return dPreset;
-				  } else if (!date_preset && this.config.default_preset) {
-					  this.datePreset = this.config.default_preset;
-					  this.setFilterValue("date_preset", this.datePreset, false);
-					  return this.datePreset;
-				  }
-			  }
-		  },
-		  set(value) {
-			  this.datePreset = value[0];
-			  this.setFilterValue("date_preset", this.datePreset, false);
-		  }
-	  },
-	  defaultPreset() {
-		  if (this.config.default_preset) {
-				  return this.config.default_preset;
-		  }
-
-      return 'last90days';
-	  },
-	  dateFormat() {
-		  return this.config.date_format || 'MM/DD/YYYY';
-	  }
-  },
-  methods: {
-	  addColSpan() {
-		  this.$nextTick(() => {
-			  const screenWidth = window.innerWidth;
-			  let col = !this.previousMode ? 'col-span-2' : 'col-span-3';
-			  if (screenWidth < 1024) col = 'col-span-1';
-
-			  const dateFiler = document.querySelector('.date-filter-container');
-			  const steps = 6; // Steps to reach parent
-			  let parent = dateFiler ? dateFiler.parentNode : null;
-			  if (parent) {
-				  for (let index = 1; index < steps; index ++) {
-					  parent = parent.parentNode;
-				  }
-				  parent.classList.add(col);
-				  parent.classList.add('w-full');
-			  }
-			  this.show = true;
-		  });
-	  },
-	  close() {
-		  this.pickerOpened = false;
-
-		  // Reset values
-		  this.previousMode = this.getFilterValue("previous_mode");
-
-		  this.datePreset = this.getFilterValue('date_preset');
-		  this.startDate = Moment(this.getFilterValue('start_date'));
-		  this.endDate = Moment(this.getFilterValue('end_date'));
-		  this.date = Moment(this.getFilterValue('date'));
-
-		  if (this.previousMode == 'period') {
-			  var diff = this.endDate.diff(this.startDate, 'days') + 1;
-			  this.refStart = this.startDate.clone().subtract(diff, 'days');
-			  this.refEnd = this.endDate.clone().subtract(diff, 'days');
-
-		  } else {
-			  this.refStart = this.startDate.clone().subtract(1, 'years');
-			  this.refEnd = this.endDate.clone().subtract(1, 'years');
-		  }
-	  },
-	  apply() {
-		  this.pickerOpened = false;
-
-      this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
-      this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
-
-      var start = this.startDate.clone();
-      var end = this.endDate.clone();
-
-      if (this.previousMode == 'year') {
-        this.refStart = start.subtract(1, 'years');
-        this.refEnd = end.subtract(1, 'years');
-      } else {
-        if (this.datePreset == 'yesterday') {
-          this.refStart = start.subtract(1, 'days');
-          this.refEnd = end.subtract(1, 'days');
-        } else if (this.datePreset == 'last7days') {
-          this.refStart = start.subtract(7, 'days');
-          this.refEnd = end.subtract(7, 'days');
-        } else if (this.datePreset == 'lastmonth') {
-          this.refStart = start.subtract(1, 'months').startOf('month');
-          this.refEnd = end.subtract(1, 'months').endOf('month');
-        } else if (this.datePreset == 'last30days') {
-          this.refStart = start.subtract(30, 'days')
-          this.refEnd = end.subtract(30, 'days')
-        } else if (this.datePreset == 'last90days') {
-          this.refStart = start.subtract(90, 'days')
-          this.refEnd = end.subtract(90, 'days')
-        } else if (this.datePreset == 'custom') {
-          var diff = end.diff(start, 'days') + 1;
-          this.refStart = start.subtract(diff, 'days');
-          this.refEnd = end.subtract(diff, 'days');
+    data() {
+      return {
+        startDate: null,
+        endDate: null,
+        date: null,
+        pickerOpened: false,
+        datePreset: null,
+        refStart: null,
+        refEnd: null,
+        prevDatePreset: null,
+        previousMode: null,
+        show: false,
+        is_filter: true,
+        showPreviousMode: false,
+        presets: {
+          range: [
+            { key: "yesterday", label: "Yesterday" },
+            { key: "last7days", label: "Last 7 Days" },
+            { key: "lastmonth", label: "Last Month" },
+            { key: "last30days", label: "Last 30 Days" },
+            { key: "last90days", label: "Last 90 Days" },
+            { key: "mtd", label: "Month to Date" },
+            { key: "ytd", label: "Year to Date" },
+            { key: "custom", label: "Custom Range" },
+          ],
+        },
+      };
+    },
+    mounted() {
+      const ref = this;
+      window.addEventListener(
+        "resize",
+        function (event) {
+          ref.addColSpan();
+        },
+        true
+      );
+    },
+    computed: {
+      presetValue() {
+        const { presets, datePreset } = this;
+        if (datePreset) {
+          const preset = presets.range.filter((p) => p.key === datePreset)[0];
+          if (preset) return preset.label;
         }
-      }
-      const includePrevious = this.config.include_previous;
-      const prevMode = includePrevious ? this.previousMode : false;
-      const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
-      const prevEndDate = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
-      this.setFilterValue("previous_mode", prevMode, false);
-      this.setFilterValue("prev_start_date", prevStartDate, false);
-      this.setFilterValue("prev_end_date", prevEndDate, true);
-		  this.setFilterValue("date_preset", this.datePreset, false);
-	  },
-	  presetChange(event, first) {
-		  // Remember previous
-		  if (this.datePreset) this.prevDatePreset = this.datePreset;
+        return "";
+      },
+      datePresetModel: {
+        get() {
+          if (this.datePreset) return [this.datePreset];
+          else {
+            var date_preset = this.getFilterValue("date_preset");
+            if (!date_preset && !this.config.default_preset) {
+              var dPreset = "last90days";
+              this.datePreset = dPreset;
+              return dPreset;
+            } else if (!date_preset && this.config.default_preset) {
+              this.datePreset = this.config.default_preset;
+              this.setFilterValue("date_preset", this.datePreset, false);
+              return this.datePreset;
+            }
+          }
+        },
+        set(value) {
+          this.datePreset = value[0];
+          this.setFilterValue("date_preset", this.datePreset, false);
+        },
+      },
+      defaultPreset() {
+        if (this.config.default_preset) {
+          return this.config.default_preset;
+        }
 
-		  this.datePreset = event.key;
-      this.handleRangeDates(first);
-	  },
-	  handleSingleDates() {
-		  const key = this.datePreset;
-		  if (key == 'today') {
-			  this.date = Moment();
-		  } else if (key == 'yesterday') {
-			  this.date = Moment().subtract(1, 'days');
-		  } else if (key == '7DaysAgo') {
-			  this.date = Moment().subtract(7, 'days');
-		  } else if (key == '30DaysAgo') {
-			  this.date = Moment().subtract(30, 'days');
-		  } else if (key == '90DaysAgo') {
-			  this.date = Moment().subtract(90, 'days');
-		  } else if (key == 'yearAgo') {
-			  this.date = Moment().subtract(1, 'year');
-		  }
-	  },
-	  handleRangeDates(first) {
-			  const key = this.datePreset;
-			  if (key == 'yesterday') {
-				  this.startDate = Moment().subtract(1, 'days');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'period';
-			  } else if (key == 'last7days') {
-				  this.startDate = Moment().subtract(7, 'days');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'period';
-			  } else if (key == 'lastmonth') {
-				  this.startDate = Moment().subtract(1, 'months').startOf('month');
-				  this.endDate = Moment().subtract(1, 'months').endOf('month');
-				  if (!first) this.previousMode = 'period';
-			  } else if (key == 'last30days') {
-				  this.startDate = Moment().subtract(30, 'days');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'period';
-			  } else if (key == 'last90days') {
-				  this.startDate = Moment().subtract(90, 'days');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'period';
-			  } else if (key == 'mtd') {
-				  this.startDate = Moment().startOf('month');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'year';
-			  } else if (key == 'ytd') {
-				  this.startDate = Moment().startOf('year');
-				  this.endDate = Moment().subtract(1, 'days');
-				  if (!first) this.previousMode = 'year';
-			  }
-	  },
-	onDateChange(event) {
-		this.startDate = event[0];
-		this.endDate = event[1];
-	  this.datePreset = "custom";
-	},
-	  onVisualizationInit() {
-				  var start_date = this.getFilterValue('start_date');
-				  var end_date = this.getFilterValue('end_date');
-				  var date = this.getFilterValue('date');
+        return "last90days";
+      },
+      dateFormat() {
+        return this.config.date_format || "MM/DD/YYYY";
+      },
+    },
+    methods: {
+      addColSpan() {
+        this.$nextTick(() => {
+          const screenWidth = window.innerWidth;
+          let col = !this.previousMode ? "col-span-2" : "col-span-3";
+          if (screenWidth < 1024) col = "col-span-1";
 
-				  const includePrevious = this.config.include_previous;
-				  this.showPreviousMode = includePrevious;
+          const dateFiler = document.querySelector(".date-filter-container");
+          const steps = 6; // Steps to reach parent
+          let parent = dateFiler ? dateFiler.parentNode : null;
+          if (parent) {
+            for (let index = 1; index < steps; index++) {
+              parent = parent.parentNode;
+            }
+            parent.classList.add(col);
+            parent.classList.add("w-full");
+          }
+          this.show = true;
+        });
+      },
+      close() {
+        this.pickerOpened = false;
 
-				  var date_preset = this.getFilterValue('date_preset');
-				  if (date_preset) {
-					  this.datePreset = date_preset;
-				  } else {
-					  if (!this.config.default_preset) {
-						  this.datePreset = this.defaultPreset;
-						  this.setFilterValue("date_preset", this.datePreset, false);
-					  } else if (!date_preset && this.config.default_preset) {
-						  this.datePreset = this.config.default_preset;
-						  this.setFilterValue("date_preset", this.datePreset, false);
-						  return this.datePreset;
-					  }
-				  }
+        // Reset values
+        this.previousMode = this.getFilterValue("previous_mode");
 
-				  var previous_mode = this.getFilterValue('previous_mode')
-				  if (previous_mode == null) {
-					  if (this.datePreset == 'mtd' || this.datePreset == 'ytd') this.previousMode = 'year'
-					  else this.previousMode = 'period';
-					  const prevMode = includePrevious ? this.previousMode : '';
-					  this.setFilterValue("previous_mode", this.previousMode, false);
-				  } else {
-					  this.previousMode = previous_mode;
-				  }
+        this.datePreset = this.getFilterValue("date_preset");
+        this.startDate = Moment(this.getFilterValue("start_date"));
+        this.endDate = Moment(this.getFilterValue("end_date"));
+        this.date = Moment(this.getFilterValue("date"));
 
-				  if (this.datePreset != 'custom') {
-					  var tmp_event = {
-						  key: this.datePreset
-					  }
-					  this.presetChange(tmp_event, true);
-					  this.apply();
+        if (this.previousMode == "period") {
+          var diff = this.endDate.diff(this.startDate, "days") + 1;
+          this.refStart = this.startDate.clone().subtract(diff, "days");
+          this.refEnd = this.endDate.clone().subtract(diff, "days");
+        } else {
+          this.refStart = this.startDate.clone().subtract(1, "years");
+          this.refEnd = this.endDate.clone().subtract(1, "years");
+        }
+      },
+      apply() {
+        this.pickerOpened = false;
 
-				  } else {
+        this.setFilterValue(
+          "start_date",
+          this.startDate.format("YYYY-MM-DD"),
+          false
+        );
+        this.setFilterValue(
+          "end_date",
+          this.endDate.format("YYYY-MM-DD"),
+          false
+        );
 
-					  this.startDate = Moment(start_date);
-					  this.endDate = Moment(end_date);
-					  this.date = Moment(date);
+        var start = this.startDate.clone();
+        var end = this.endDate.clone();
 
-					  if (this.previousMode == 'period') {
-						  var diff = this.endDate.diff(this.startDate, 'days') + 1;
-						  this.refStart = this.startDate.clone().subtract(diff, 'days');
-						  this.refEnd = this.endDate.clone().subtract(diff, 'days');
+        if (this.previousMode == "year") {
+          this.refStart = start.subtract(1, "years");
+          this.refEnd = end.subtract(1, "years");
+        } else {
+          if (this.datePreset == "yesterday") {
+            this.refStart = start.subtract(1, "days");
+            this.refEnd = end.subtract(1, "days");
+          } else if (this.datePreset == "last7days") {
+            this.refStart = start.subtract(7, "days");
+            this.refEnd = end.subtract(7, "days");
+          } else if (this.datePreset == "lastmonth") {
+            this.refStart = start.subtract(1, "months").startOf("month");
+            this.refEnd = end.subtract(1, "months").endOf("month");
+          } else if (this.datePreset == "last30days") {
+            this.refStart = start.subtract(30, "days");
+            this.refEnd = end.subtract(30, "days");
+          } else if (this.datePreset == "last90days") {
+            this.refStart = start.subtract(90, "days");
+            this.refEnd = end.subtract(90, "days");
+          } else if (this.datePreset == "custom") {
+            var diff = end.diff(start, "days") + 1;
+            this.refStart = start.subtract(diff, "days");
+            this.refEnd = end.subtract(diff, "days");
+          }
+        }
+        const includePrevious = this.config.include_previous;
+        const prevMode = includePrevious ? this.previousMode : false;
+        const prevStartDate = includePrevious
+          ? this.refStart.format("YYYY-MM-DD")
+          : "";
+        const prevEndDate = includePrevious
+          ? this.refEnd.format("YYYY-MM-DD")
+          : "";
+        this.setFilterValue("previous_mode", prevMode, false);
+        this.setFilterValue("prev_start_date", prevStartDate, false);
+        this.setFilterValue("prev_end_date", prevEndDate, true);
+        this.setFilterValue("date_preset", this.datePreset, false);
+      },
+      presetChange(event, first) {
+        // Remember previous
+        if (this.datePreset) this.prevDatePreset = this.datePreset;
 
-					  } else {
-						  this.refStart = this.startDate.clone().subtract(1, 'years');
-						  this.refEnd = this.endDate.clone().subtract(1, 'years');
-					  }
+        this.datePreset = event.key;
+        this.handleRangeDates(first);
+      },
+      handleSingleDates() {
+        const key = this.datePreset;
+        if (key == "today") {
+          this.date = Moment();
+        } else if (key == "yesterday") {
+          this.date = Moment().subtract(1, "days");
+        } else if (key == "7DaysAgo") {
+          this.date = Moment().subtract(7, "days");
+        } else if (key == "30DaysAgo") {
+          this.date = Moment().subtract(30, "days");
+        } else if (key == "90DaysAgo") {
+          this.date = Moment().subtract(90, "days");
+        } else if (key == "yearAgo") {
+          this.date = Moment().subtract(1, "year");
+        }
+      },
+      handleRangeDates(first) {
+        const key = this.datePreset;
+        if (key == "yesterday") {
+          this.startDate = Moment().subtract(1, "days");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "period";
+        } else if (key == "last7days") {
+          this.startDate = Moment().subtract(7, "days");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "period";
+        } else if (key == "lastmonth") {
+          this.startDate = Moment().subtract(1, "months").startOf("month");
+          this.endDate = Moment().subtract(1, "months").endOf("month");
+          if (!first) this.previousMode = "period";
+        } else if (key == "last30days") {
+          this.startDate = Moment().subtract(30, "days");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "period";
+        } else if (key == "last90days") {
+          this.startDate = Moment().subtract(90, "days");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "period";
+        } else if (key == "mtd") {
+          this.startDate = Moment().startOf("month");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "year";
+        } else if (key == "ytd") {
+          this.startDate = Moment().startOf("year");
+          this.endDate = Moment().subtract(1, "days");
+          if (!first) this.previousMode = "year";
+        }
+      },
+      onDateChange(event) {
+        this.startDate = event[0];
+        this.endDate = event[1];
+        this.datePreset = "custom";
+      },
+      onVisualizationInit() {
+        var start_date = this.getFilterValue("start_date");
+        var end_date = this.getFilterValue("end_date");
+        var date = this.getFilterValue("date");
 
-					  this.setFilterValue("start_date", this.startDate.format('YYYY-MM-DD'), false);
-					  this.setFilterValue("end_date", this.endDate.format('YYYY-MM-DD'), false);
-					  this.setFilterValue("date", this.date.format('YYYY-MM-DD'), false);
-					  const prevStartDate = includePrevious ? this.refStart.format('YYYY-MM-DD') : '';
-					  const prevEndDate   = includePrevious ? this.refEnd.format('YYYY-MM-DD') : '';
-					  this.setFilterValue("prev_start_date", prevStartDate, false);
-					  this.setFilterValue("prev_end_date", prevEndDate, true);
-				  }
-		  }
-  }
-  }
-  </script>
+        const includePrevious = this.config.include_previous;
+        this.showPreviousMode = includePrevious;
 
-  <style>
+        var date_preset = this.getFilterValue("date_preset");
+        if (date_preset) {
+          this.datePreset = date_preset;
+        } else {
+          if (!this.config.default_preset) {
+            this.datePreset = this.defaultPreset;
+            this.setFilterValue("date_preset", this.datePreset, false);
+          } else if (!date_preset && this.config.default_preset) {
+            this.datePreset = this.config.default_preset;
+            this.setFilterValue("date_preset", this.datePreset, false);
+            return this.datePreset;
+          }
+        }
+
+        var previous_mode = this.getFilterValue("previous_mode");
+        if (previous_mode == null) {
+          if (this.datePreset == "mtd" || this.datePreset == "ytd")
+            this.previousMode = "year";
+          else this.previousMode = "period";
+          const prevMode = includePrevious ? this.previousMode : "";
+          this.setFilterValue("previous_mode", this.previousMode, false);
+        } else {
+          this.previousMode = previous_mode;
+        }
+
+        if (this.datePreset != "custom") {
+          var tmp_event = {
+            key: this.datePreset,
+          };
+          this.presetChange(tmp_event, true);
+          this.apply();
+        } else {
+          this.startDate = Moment(start_date);
+          this.endDate = Moment(end_date);
+          this.date = Moment(date);
+
+          if (this.previousMode == "period") {
+            var diff = this.endDate.diff(this.startDate, "days") + 1;
+            this.refStart = this.startDate.clone().subtract(diff, "days");
+            this.refEnd = this.endDate.clone().subtract(diff, "days");
+          } else {
+            this.refStart = this.startDate.clone().subtract(1, "years");
+            this.refEnd = this.endDate.clone().subtract(1, "years");
+          }
+
+          this.setFilterValue(
+            "start_date",
+            this.startDate.format("YYYY-MM-DD"),
+            false
+          );
+          this.setFilterValue(
+            "end_date",
+            this.endDate.format("YYYY-MM-DD"),
+            false
+          );
+          this.setFilterValue("date", this.date.format("YYYY-MM-DD"), false);
+          const prevStartDate = includePrevious
+            ? this.refStart.format("YYYY-MM-DD")
+            : "";
+          const prevEndDate = includePrevious
+            ? this.refEnd.format("YYYY-MM-DD")
+            : "";
+          this.setFilterValue("prev_start_date", prevStartDate, false);
+          this.setFilterValue("prev_end_date", prevEndDate, true);
+        }
+      },
+    },
+  };
+</script>
+
+<style>
   .wld-date-picker .ant-calendar-selected-day .ant-calendar-date,
   .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
   .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover,
@@ -415,84 +447,84 @@
   .ant-radio-button-wrapper-checked,
   .ant-radio-button-wrapper-checked:active,
   .ant-radio-group-solid
-	.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
   .ant-dropdown-menu-item-selected,
   .ant-radio-group-solid:active {
-	@apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor !important;
+    @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor !important;
   }
 
   .wld-date-picker .ant-calendar-range .ant-calendar-in-range-cell::before {
-	@apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor opacity-80 !important;
+    @apply bg-primaryButtonColor text-grayscaleOneColor border-primaryButtonColor opacity-80 !important;
   }
 
   .ant-calendar-date {
-	@apply text-filterFontColor !important;
+    @apply text-filterFontColor !important;
   }
 
   .ant-calendar-picker-input.ant-input,
   .ant-calendar-picker-input.ant-input {
-	@apply bg-filterBackgroundColor text-filterFontColor h-full border border-filterBorderColor text-sm text-center;
+    @apply bg-filterBackgroundColor text-filterFontColor h-full border border-filterBorderColor text-sm text-center;
   }
 
   .ant-dropdown-menu {
-	@apply p-0 bottom-1;
+    @apply p-0 bottom-1;
   }
 
   .ant-dropdown-menu,
   .ant-calendar {
-	@apply border-filterBorderColor border bg-filterBackgroundColor text-filterFontColor;
+    @apply border-filterBorderColor border bg-filterBackgroundColor text-filterFontColor;
   }
 
   .ant-dropdown-menu-item,
   .ant-calendar-header .ant-calendar-month-select,
   .ant-calendar-header .ant-calendar-year-select {
-	@apply text-filterFontColor;
+    @apply text-filterFontColor;
   }
 
   .ant-dropdown-menu-item:hover {
-	@apply bg-primaryButtonColor text-grayscaleOneColor opacity-80 !important;
+    @apply bg-primaryButtonColor text-grayscaleOneColor opacity-80 !important;
   }
 
   .ant-calendar-last-month-cell {
-	@apply text-filterFontColor opacity-70;
+    @apply text-filterFontColor opacity-70;
   }
 
   .ant-calendar-in-range-cell .ant-calendar-date {
-	@apply text-grayscaleOneColor !important;
+    @apply text-grayscaleOneColor !important;
   }
 
   .ant-dropdown-trigger:active,
   .ant-dropdown-trigger:focus {
-	@apply outline-none;
+    @apply outline-none;
   }
 
   .date-picker div:first-child {
-	@apply h-full;
+    @apply h-full;
   }
 
   .wld-date-picker .ant-calendar-range,
   .wld-date-picker .ant-calendar-picker-container-content {
-	top: 39px !important;
-	position: absolute;
+    top: 39px !important;
+    position: absolute;
   }
 
   .secondary-button {
-	@apply !bg-transparent !text-primaryButtonColor !border-transparent;
+    @apply !bg-transparent !text-primaryButtonColor !border-transparent;
   }
 
   .primary-button {
-	@apply border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
+    @apply border-primaryButtonColor bg-primaryButtonColor text-grayscaleOneColor hover:bg-primaryButtonColor hover:text-grayscaleOneColor;
   }
 
   .date-filter-container input {
-	@apply outline-none !important;
+    @apply outline-none !important;
   }
 
   .full-picker .ant-calendar-filter .ant-calendar-picker-input {
-	@apply rounded-l-none !important;
+    @apply rounded-l-none !important;
   }
 
   .secondary-button:focus {
-	@apply bg-transparent !important;
+    @apply bg-transparent !important;
   }
-  </style>
+</style>

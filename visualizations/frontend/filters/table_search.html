@@ -1,129 +1,142 @@
 <template>
-    <div class="flex flex-col w-full primaryFilterRadius md:w-56">
-    <div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='metadata.title'>{{ metadata.title }}</div>
+  <div class="flex flex-col w-full primaryFilterRadius md:w-56">
+    <div
+      class="pb-1 text-xs font-semibold text-primaryFontColor"
+      v-if="metadata.title"
+    >
+      {{ metadata.title }}
+    </div>
     <div class="h-5" v-else></div>
-    <div class="flex items-center primaryFilterRadius pr-3 text-filterFontColor bg-filterBackgroundColor border-filterBorderColor h-9">
-        <input
-            type="text"
-            :placeholder="metadata.placeholder || 'Search'"
-            class="flex items-center primaryFilterRadius justify-around w-full pl-4 border h-9 border-none focus:outline-none"
-            v-model='tableQuery'
-            @input='search'
-            @keyup='ifEscapePressed'
-        />
-        <t-loading-spinner position="relative" v-if="loading" />
-        <magnify-icon v-else />
+    <div
+      class="flex items-center primaryFilterRadius pr-3 text-filterFontColor bg-filterBackgroundColor border-filterBorderColor h-9"
+    >
+      <input
+        type="text"
+        :placeholder="metadata.placeholder || 'Search'"
+        class="flex items-center primaryFilterRadius justify-around w-full pl-4 border h-9 border-none focus:outline-none"
+        v-model="tableQuery"
+        @input="search"
+        @keyup="ifEscapePressed"
+      />
+      <t-loading-spinner position="relative" v-if="loading" />
+      <magnify-icon v-else />
     </div>
-    <div 
-        @mouseleave='tableRows = []'
-        v-if='tableRows && tableRows.length'
-        class="absolute left-0 z-50 p-4 mt-2 overflow-auto border rounded shadow-xl search-table bg-filterBackgroundColor border-filterBorderColor text-filterFontColor top-12 max-h-48 w-max">
+    <div
+      @mouseleave="tableRows = []"
+      v-if="tableRows && tableRows.length"
+      class="absolute left-0 z-50 p-4 mt-2 overflow-auto border rounded shadow-xl search-table bg-filterBackgroundColor border-filterBorderColor text-filterFontColor top-12 max-h-48 w-max"
+    >
+      <div
+        class="flex justify-between p-1 rounded cursor-pointer hover:bg-filterHighlightColor hover:text-filterFontHighlightColor w-max"
+        v-for="(row, index) in tableRows"
+        @click="select(row)"
+      >
         <div
-            class="flex justify-between p-1 rounded cursor-pointer hover:bg-filterHighlightColor hover:text-filterFontHighlightColor w-max"
-            v-for='(row, index) in tableRows'
-            @click='select(row)'
+          v-for="(column, colIndex) in columns"
+          class="mx-3 w-36"
+          :key="colIndex"
+          :id='column+"-"+index'
         >
-            <div
-                v-for='(column, colIndex) in columns'
-                class="mx-3 w-36"
-                :key='colIndex'
-                :id='column+"-"+index'
-            >
-                {{ highlightText(row[column].rendered, column+"-"+index) }}
-            </div>
+          {{ highlightText(row[column].rendered, column+"-"+index) }}
         </div>
+      </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
-export default {
+  export default {
     data: () => ({
-        text: '',
-        text_internal: null,
-        tableRows: [],
-        tableQuery: '',
-        is_filter: true,
-        names: '',
-        locations: '',
+      text: "",
+      text_internal: null,
+      tableRows: [],
+      tableQuery: "",
+      is_filter: true,
+      names: "",
+      locations: "",
     }),
     computed: {
-        selected: {
-            get() {
-                return this.text_internal;
-            },
-            set(value) {
-                this.text_internal = encodeURI(value);
-                this.setFilterValue("selected", this.text_internal, true);
-            }
+      selected: {
+        get() {
+          return this.text_internal;
         },
+        set(value) {
+          this.text_internal = encodeURI(value);
+          this.setFilterValue("selected", this.text_internal, true);
+        },
+      },
     },
     methods: {
-        search() {
-            const text = this.tableQuery ? this.tableQuery.toLowerCase() : '';
-            const rows = this.rows;
-            this.tableRows = rows.filter(r => {
-                for (let column of this.columns) {
-                    let value = r[column];
-                    if (value) {
-                        value = value.rendered.toLowerCase();
-                        if (value.includes(text)) {
-                            return true;
-                        }
-                    }
-                }
-            })
-            // this.adjustElement();
-        },
-        adjustElement() {
-            const element = document.querySelector('.search-table');
-            const input = document.querySelector('.table-search-input');
-            if (element) {  
-                const bounds = element.getBoundingClientRect();
-                const inputBound = input.getBoundingClientRect();
-                if (bounds.right > (window.innerWidth || document.documentElement.clientWidth)) {
-                    const leftMargin = inputBound.right;
-                    const width = element.offsetWidth;
-                    if (leftMargin && width) {
-                        element.style.left = `${leftMargin - width}px`;
-                        element.style.top = inputBound.top + 'px';
-                        element.style.position = 'fixed';
-                    }
-                }
+      search() {
+        const text = this.tableQuery ? this.tableQuery.toLowerCase() : "";
+        const rows = this.rows;
+        this.tableRows = rows.filter((r) => {
+          for (let column of this.columns) {
+            let value = r[column];
+            if (value) {
+              value = value.rendered.toLowerCase();
+              if (value.includes(text)) {
+                return true;
+              }
             }
-        },
-        highlightText(text, id) {
-            const element = document.querySelector(`#${id}`);
-            if (element) {
-                const tableQuery = this.tableQuery.toLowerCase();
-                if (tableQuery) {
-                    const highlighted = text.toLowerCase().replace(tableQuery, `<mark>${tableQuery}</mark>`)
-                    return element.innerHTML = highlighted;
-                }
+          }
+        });
+        // this.adjustElement();
+      },
+      adjustElement() {
+        const element = document.querySelector(".search-table");
+        const input = document.querySelector(".table-search-input");
+        if (element) {
+          const bounds = element.getBoundingClientRect();
+          const inputBound = input.getBoundingClientRect();
+          if (
+            bounds.right >
+            (window.innerWidth || document.documentElement.clientWidth)
+          ) {
+            const leftMargin = inputBound.right;
+            const width = element.offsetWidth;
+            if (leftMargin && width) {
+              element.style.left = `${leftMargin - width}px`;
+              element.style.top = inputBound.top + "px";
+              element.style.position = "fixed";
             }
-            return text;
-        },
-        onVisualizationInit() {
-            const initial_value = this.getFilterValue("selected");
-            this.text_internal = initial_value || '';
-            this.setFilterValue("selected", encodeURI(this.text_internal), true);
-            return this.text_internal;
-        },
-        select(row) {
-            const selected = this.selected;
-            const columns = this.columns;
-            if (columns && columns.length) {
-                this.selected = row[this.metadata.url_column].rendered;
-            }
-            this.tableRows = [];
-            this.tableQuery = '';
-        },
-        ifEscapePressed(e) {    
-            if (e.keyCode === 27) {
-                this.tableRows = [];
-                this.tableQuery = '';
-            }
+          }
         }
+      },
+      highlightText(text, id) {
+        const element = document.querySelector(`#${id}`);
+        if (element) {
+          const tableQuery = this.tableQuery.toLowerCase();
+          if (tableQuery) {
+            const highlighted = text
+              .toLowerCase()
+              .replace(tableQuery, `<mark>${tableQuery}</mark>`);
+            return (element.innerHTML = highlighted);
+          }
+        }
+        return text;
+      },
+      onVisualizationInit() {
+        const initial_value = this.getFilterValue("selected");
+        this.text_internal = initial_value || "";
+        this.setFilterValue("selected", encodeURI(this.text_internal), true);
+        return this.text_internal;
+      },
+      select(row) {
+        const selected = this.selected;
+        const columns = this.columns;
+        if (columns && columns.length) {
+          this.selected = row[this.metadata.url_column].rendered;
+        }
+        this.tableRows = [];
+        this.tableQuery = "";
+      },
+      ifEscapePressed(e) {
+        if (e.keyCode === 27) {
+          this.tableRows = [];
+          this.tableQuery = "";
+        }
+      },
     },
-}
+  };
 </script>
