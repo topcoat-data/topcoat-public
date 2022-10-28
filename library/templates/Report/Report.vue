@@ -21,18 +21,8 @@
   </div>
 </template>
 
-<style>
-body {
-  @apply bg-[#F6F7FB];
-}
-</style>
-
 <script>
 export default {
-  data: () => ({
-    is_filter: true,
-    popup: false,
-  }),
   props: {
     // to hide the header use this prop
     // the header is shown only if the report is not shown in an iframe
@@ -45,5 +35,15 @@ export default {
       default: false,
     },
   },
+  data: () => ({
+    is_filter: true,
+    popup: false,
+  }),
 };
 </script>
+
+<style>
+body {
+  @apply bg-[#F6F7FB];
+}
+</style>

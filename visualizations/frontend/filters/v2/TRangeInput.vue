@@ -1,15 +1,15 @@
 <template>
-  <t-loading-spinner position="relative" v-if="loading" />
-  <div class="flex flex-col overflow-x-hidden t-range-slider" v-else>
-    <label class="pb-[7px] px-3 text-sm font-medium" v-if="label">
+  <t-loading-spinner v-if="loading" position="relative" />
+  <div v-else class="flex flex-col overflow-x-hidden t-range-slider">
+    <label v-if="label" class="pb-[7px] px-3 text-sm font-medium">
       {{ label }}
     </label>
     <base-range-slider
       :min="minValue"
       :max="maxValue"
       :step="step"
-      :minValue="barMinValue"
-      :maxValue="barMaxValue"
+      :min-value="barMinValue"
+      :max-value="barMaxValue"
       @input="update"
     />
   </div>
@@ -17,9 +17,6 @@
 
 <script>
 export default {
-  data: () => ({
-    is_filter: true,
-  }),
   props: {
     label: {
       default: "",
@@ -34,6 +31,9 @@ export default {
       default: 1,
     },
   },
+  data: () => ({
+    is_filter: true,
+  }),
   computed: {
     minValue() {
       const item = this.rows.length ? this.rows[0] : null;

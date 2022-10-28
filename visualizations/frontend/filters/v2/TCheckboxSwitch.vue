@@ -12,15 +12,15 @@
 
 <script>
 export default {
+  data: () => ({
+    is_filter: true,
+    value: false,
+  }),
   computed: {
     props() {
       return this.$attrs;
     },
   },
-  data: () => ({
-    is_filter: true,
-    value: false,
-  }),
   methods: {
     onVisualizationInit() {
       const initial_value = this.getFilterValue("checkbox");

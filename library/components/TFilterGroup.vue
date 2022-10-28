@@ -1,9 +1,9 @@
 <template>
   <t-dropdown
     :is-active="activeFilters > 0"
-    @closed="handleClosed"
     z-index="800"
-    :outsideElementClasses="outsideElementClasses"
+    :outside-element-classes="outsideElementClasses"
+    @closed="handleClosed"
   >
     <!-- Handle -->
     <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
@@ -31,10 +31,10 @@
 
     <div class="px-3 pt-2 nav-search">
       <base-search-input
+        v-model="search"
         class="mt-0 mb-3 text-sm !rounded-md"
         placeholder="Search Filters"
         size="small"
-        v-model="search"
         :clearable="false"
         @change="searchFilter"
       />

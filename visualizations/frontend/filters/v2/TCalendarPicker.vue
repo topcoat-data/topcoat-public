@@ -1,23 +1,23 @@
 <template>
   <div class="flex flex-col date-filter-container w-max">
-    <label class="pb-[7px] text-sm font-medium" v-if="label">
+    <label v-if="label" class="pb-[7px] text-sm font-medium">
       {{ label }}
     </label>
     <div class="inline-flex w-max">
       <div v-if="!hidePresets" class="relative">
         <t-dropdown>
           <div
-            @click="openPicker"
-            class="flex items-center justify-center gap-1 p-1 text-sm"
             slot="handle"
+            class="flex items-center justify-center gap-1 p-1 text-sm"
             :style="{ width: pickerMode === 'range' ? '167px' : '155px' }"
+            @click="openPicker"
           >
             {{ presetValue }}
             <t-loading-spinner v-if="loading" position="relative" />
-            <menu-down-icon :size="20" v-else />
+            <menu-down-icon v-else :size="20" />
           </div>
         </t-dropdown>
-        <div class="absolute top-[32px] w-max z-[99999]" v-if="pickerOpened">
+        <div v-if="pickerOpened" class="absolute top-[32px] w-max z-[99999]">
           <base-card
             :condensed="true"
             :style="{
@@ -41,11 +41,11 @@
       <div class="inline-block" :class="{ 'full-picker': !hidePresets }">
         <!-- Range Picker -->
         <div v-if="pickerMode == 'range'" class="flex items-center h-full">
-          <div @click="pickerOpened = !pickerOpened" class="h-full">
+          <div class="h-full" @click="pickerOpened = !pickerOpened">
             <a-range-picker
               class="relative h-full ant-calendar-filter"
-              :allowClear="false"
-              dropdownClassName="wld-date-picker w-20"
+              :allow-clear="false"
+              dropdown-class-name="wld-date-picker w-20"
               :open="pickerOpened"
               :separator="separator"
               :format="dateFormat"
@@ -86,16 +86,16 @@
           v-else-if="pickerMode == 'single'"
           class="flex items-center h-full"
         >
-          <div @click="pickerOpened = !pickerOpened" class="h-full">
+          <div class="h-full" @click="pickerOpened = !pickerOpened">
             <a-date-picker
-              :showToday="false"
+              v-model="date"
+              :show-today="false"
               class="h-full ant-calendar-filter date-picker"
-              :allowClear="false"
-              dropdownClassName="wld-date-picker w-20"
+              :allow-clear="false"
+              dropdown-class-name="wld-date-picker w-20"
               :format="dateFormat"
               :separator="separator"
               :open="pickerOpened"
-              v-model="date"
               @change="onDateChange"
             >
               <template slot="renderExtraFooter">
