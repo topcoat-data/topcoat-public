@@ -2,6 +2,7 @@
   <t-dropdown
     :is-expanded="onExpandable"
     :is-active="checked.length ? true : false"
+    :is-open="isOpen"
     @open="onDropdownOpen"
   >
     <!-- Handle -->
@@ -13,10 +14,30 @@
       <div class="pl-1">
         <slot name="icon"></slot>
       </div>
-      <span v-if="checked.length">
-        {{ checked.length }}
-      </span>
-      <span>{{ label }}</span>
+      <div
+        class="flex items-center"
+        :class="!canShowSelected && 'flex-row-reverse gap-1'"
+      >
+        <span>{{ label }}</span>
+        <div v-if="checked.length">
+          <div v-if="canShowSelected" class="flex items-center font-normal">
+            :
+            <div
+              v-for="item in checked"
+              :key="item"
+              class="flex items-center gap-1 pl-2"
+            >
+              {{ item }}
+              <span v-if="!defaultValue" class="text-[#7FA7F5]">
+                <close-icon :size="14" @click.stop="removeItem(item)" />
+              </span>
+            </div>
+          </div>
+          <div v-else>
+            {{ checked.length }}
+          </div>
+        </div>
+      </div>
 
       <t-loading-spinner v-if="loading" position="relative" />
       <menu-down-icon v-else :size="20" />
@@ -34,30 +55,24 @@
           {{ label }}
         </h6>
       </div>
-      <div v-if="isSearchable" class="px-2 py-2 flex nav-search">
-        <div class="grow-2">
-          <base-search-input
+
+      <!-- Search input -->
+      <div v-if="isSearchable" class="w-full p-2">
+        <div class="search-input">
+          <magnify-icon :size="18" />
+          <input
             v-model="search"
-            class="mt-0 text-sm search-report !rounded-md"
+            class="bg-transparent outline-none !text-black w-full"
             :placeholder="searchPlaceholder"
-            size="small"
-            :clearable="false"
           />
+          <div class="w-5">
+            <close-icon v-if="search" :size="18" @click="search = ''" />
+          </div>
         </div>
-        <span
-          class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
-          :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
-          @click="selectUnselect"
-        >
-          <t-loading-spinner v-if="isExpanded && loading" position="relative" />
-          <span v-else>
-            {{ checked.length < menu.length ? "Select All" : "Reset" }}
-          </span>
-        </span>
       </div>
+
       <span
-        v-else
-        class="text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end px-4 grow-1"
+        class="px-[12px] text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end"
         :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
         @click="selectUnselect"
       >
@@ -66,7 +81,7 @@
           {{ checked.length < menu.length ? "Select All" : "Reset" }}
         </span>
       </span>
-      <div class="px-[8px] pt-[4px] pb-[6px] w-full">
+      <div class="px-[12px] pt-[4px] pb-[6px] w-full">
         <virtual-list
           :style="{
             height: Math.min(menu.length * 30, 320) + 'px',
@@ -80,12 +95,13 @@
         />
         <small v-if="!menu.length && !loading"> No items found </small>
       </div>
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
 
 <script>
-const ItemComponent = Vue.component("ItemComponent", {
+const ItemComponent = window.Vue.component("ItemComponent", {
   props: {
     index: {
       type: Number,
@@ -163,6 +179,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
+    canShowSelected: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     checked: [],
@@ -225,6 +249,9 @@ export default {
       }
       return attrs;
     },
+    urlParam() {
+      return this.$attrs["t-filter:selected_items"] || null;
+    },
   },
   methods: {
     onVisualizationInit() {
@@ -251,10 +278,25 @@ export default {
         this.checked = [...value];
       }
 
+      if (this.urlParam) {
+        // Prevent reset button from removing filter.
+        return this.setFilter({
+          name: this.urlParam,
+          value: this.checked.join("|"),
+        });
+      }
+
       this.setFilterValue("selected_items", this.checked.join("|"));
     },
     onDropdownOpen() {
       this.fetchLayerData();
+    },
+    removeFilter() {
+      this.unsetFilterValue("selected_items");
+    },
+    removeItem(id) {
+      this.checked = this.checked.filter((c) => c !== id);
+      this.updateUrlParam();
     },
   },
 };
