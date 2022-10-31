@@ -1,7 +1,7 @@
 <template>
-  <div class="relative flex w-full gap-2 p-5" style="font-family: 'Roboto'">
+  <div class="w-full relative p-5 flex gap-2" style="font-family: 'Roboto'">
     <filter-variant-icon class="relative top-[5px]" :size="18" />
-    <div class="flex flex-col items-start justify-start gap-2">
+    <div class="flex flex-col gap-2 items-start justify-start">
       <div class="flex flex-wrap items-center gap-1">
         <component
           v-for="(data, tag) in visibleFilters"
@@ -41,9 +41,11 @@ export default {
     visibleFilters: {},
     lastAddedFilter: null,
     defaultFilters: {},
+    selectedFilters: {},
   }),
   mounted() {
-    this.handleItems();
+    this.selectedFilters = this.filters;
+    this.handleItems(true);
   },
   methods: {
     handleItems() {
@@ -95,17 +97,18 @@ export default {
       // this loop is required again.
       let assignedFilters = [];
       const visibleFilters = {};
-      for (let filter in { ...this.filters, ...this.defaultFilters }) {
+      for (let filter in { ...this.selectedFilters, ...this.defaultFilters }) {
         if (assignedFilters.includes(filter)) {
           continue;
         }
 
         this.slotItems.forEach((element, index) => {
           if (element.tag) {
+            const tag = `${element.tag}${index}`;
             const urlFilters = this.getFilters(element.data.attrs);
+            // console.log(urlFilters.includes(filter), this.selectedFilters[filter], element.isDefault)
             if (urlFilters.includes(filter) || element.isDefault) {
               assignedFilters = [...assignedFilters, ...urlFilters];
-              const tag = `${element.tag}${index}`;
               if (!this.initialisedComponents.includes(tag)) {
                 window.Vue.component(tag, {
                   render: (c) => {
@@ -114,6 +117,7 @@ export default {
                 });
                 this.initialisedComponents.push(tag);
               }
+
               visibleFilters[tag] = {
                 filters: urlFilters,
                 isDefault: element.isDefault,
@@ -133,18 +137,25 @@ export default {
         this.addDeleteButton(activeTag);
       }
     },
-    handleFilterOpen(tag) {
-      this.lastAddedFilter = tag;
+    handleFilterOpen(item) {
+      this.lastAddedFilter = item.tag;
+      for (let filter of item.filters) {
+        if (!this.selectedFilters[filter]) {
+          this.selectedFilters[filter] = "";
+        }
+      }
+      this.handleItems();
     },
     getFilters(attrs, unusedOnly = false) {
       let urlFilters = [];
       for (let attribute of Object.keys(attrs)) {
+        const param = attrs[attribute];
         if (attribute.includes("t-filter")) {
-          if (this.filters.hasOwnProperty(attrs[attribute]) && unusedOnly) {
+          if (this.selectedFilters.hasOwnProperty(param) && unusedOnly) {
             urlFilters = [];
             break;
           } else {
-            urlFilters.push(attrs[attribute]);
+            urlFilters.push(param);
           }
         }
       }
@@ -153,7 +164,11 @@ export default {
     removeFilter(urlFilters) {
       for (let filter of urlFilters) {
         this.deleteFilter({ name: filter });
+        if (this.selectedFilters.hasOwnProperty(filter)) {
+          this.$delete(this.selectedFilters, filter);
+        }
       }
+      this.handleItems();
     },
     addDeleteButton(tag) {
       this.$nextTick(() => {
@@ -180,11 +195,6 @@ export default {
   computed: {
     slotItems() {
       return this.$slots.default || [];
-    },
-  },
-  watch: {
-    filters() {
-      this.handleItems();
     },
   },
 };
