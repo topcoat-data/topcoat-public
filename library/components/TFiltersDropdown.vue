@@ -69,7 +69,6 @@ export default {
     search: "",
     expanded: [],
     isOpen: false,
-    is_filter: true,
   }),
   computed: {
     filteredItems() {
