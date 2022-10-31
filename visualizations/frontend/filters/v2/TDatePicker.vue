@@ -19,7 +19,7 @@
         slot="input"
         class="border border-[#C3C2CB] py-1 px-2 bg-white cursor-pointer rounded-[4px] font-medium"
       >
-        <div class="flex items-center gap-1">
+        <div class="flex items-center w-max gap-1">
           <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
           <button v-if="!isRequired" @click="handleClear">
