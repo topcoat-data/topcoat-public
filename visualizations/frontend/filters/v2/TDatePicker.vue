@@ -1,6 +1,9 @@
 <template>
   <div class="relative flex t-date-picker">
     <!-- Date Picker -->
+    <div class="flex items-center text-sm font-medium" v-if="label">
+      {{ label }}: &nbsp;
+    </div>
     <base-date-picker
       ref="datePicker"
       v-model="date"
@@ -19,7 +22,7 @@
         slot="input"
         class="border border-[#C3C2CB] py-1 px-2 bg-white cursor-pointer rounded-[4px] font-medium"
       >
-        <div class="flex items-center w-max gap-1">
+        <div class="flex items-center gap-1 w-max">
           <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
           <button v-if="!isRequired" @click="handleClear">
@@ -93,6 +96,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    label: {
+      type: String,
+      default: "",
+    }
   },
   data: () => ({
     date: [],
