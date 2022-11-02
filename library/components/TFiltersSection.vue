@@ -11,7 +11,7 @@
         >
           <div
             v-if="!data.isDefault"
-            class="flex justify-end items-center border-t border-[#E4E3E8] p-2"
+            class="flex items-center justify-end cursor-pointer"
           >
             <div
               class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
