@@ -25,12 +25,13 @@
             <div
               v-for="item in checked"
               :key="item"
-              class="flex items-center gap-1 pl-2"
+              class="flex items-center pl-1"
             >
               {{ item }}
-              <span v-if="!defaultValue" class="text-[#7FA7F5]">
+              <span v-if="!defaultValue" class="text-[#7FA7F5] pl-1">
                 <close-icon :size="14" @click.stop="removeItem(item)" />
               </span>
+              <span v-else-if="(checked.length - 1) != index">, </span>
             </div>
           </div>
           <div v-else>
