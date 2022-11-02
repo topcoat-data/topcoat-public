@@ -292,7 +292,7 @@ export default {
       this.unsetFilterValue("selected_items");
     },
     open() {
-      if (this.isSingleTag) {
+      if (this.isSingleTag && !this.selectedKey) {
         const tagKeys = Object.keys(this.tags);
         if (tagKeys.length === 1) {
           this.selectedKey = tagKeys[0];
@@ -301,10 +301,12 @@ export default {
       this.showList = true;
     },
     close() {
-      this.selectedKey = "";
       this.search = "";
       this.showList = false;
       this.expanded = [];
+      if (!this.isSingleTag) {
+        this.selectedKey = null;
+      }
     },
     handleExpanded(key) {
       if (!this.expanded.includes(key)) {
