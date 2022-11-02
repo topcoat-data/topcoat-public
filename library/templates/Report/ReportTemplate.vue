@@ -1,15 +1,16 @@
 <template>
   <div>
-    <report-header v-if="hasHeader" />
     <div class="bg-[#F9F9FA]">
       <div class="flex w-full gap-10 content-block">
         <div class="w-full">
+          <slot name="head"></slot>
           <div
+            v-if="$slots['filters']"
             class="flex flex-wrap justify-between items-center w-full py-4 px-6 border-b border-[#E4E3E8] md:flex-row flex-col gap-1"
           >
             <slot name="filters"></slot>
           </div>
-          <div class="w-full px-6 py-5">
+          <div v-if="$slots['mid']" class="w-full px-6 py-5">
             <slot name="mid"></slot>
           </div>
           <div class="py-5 px-6 bg-[#ffffff] border-t border-[#E4E3E8]">
