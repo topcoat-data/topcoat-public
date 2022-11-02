@@ -75,7 +75,11 @@ export default {
       // const urlParamString = new URLSearchParams(allUrlParams).toString();
       const urlParamString = Object.entries(allUrlParams)
         .map(([key, val]) => {
-          return `${key}=${val}`;
+          if (typeof val === "object") {
+            return `${key}=${encodeURIComponent(JSON.stringify(val))}`;
+          } else {
+            return `${key}=${encodeURIComponent(val)}`;
+          }
         }).join("&")
 
       if (urlParamString.length > 0) {
