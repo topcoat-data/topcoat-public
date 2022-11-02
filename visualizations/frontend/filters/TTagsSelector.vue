@@ -51,7 +51,7 @@
 
       <!-- Input -->
       <div class="relative w-full p-2 min-w-[300px]">
-        <div class="search-input" @click="showList = true">
+        <div class="search-input" @click="open">
           <div
             class="rounded-full border border-[#145DEB] text-[#145DEB] flex items-center"
           >
@@ -247,14 +247,6 @@ export default {
       }
       this.selected = selected;
     },
-    onVisualizationUpdated() {
-      if (!this.selectedKey) {
-        const tagKeys = Object.keys(this.tags);
-        if (tagKeys.length === 1) {
-          this.selectedKey = tagKeys[0];
-        }
-      }
-    },
     selectValue(value) {
       this.selected.push({
         key: this.selectedKey,
@@ -298,6 +290,15 @@ export default {
     },
     removeFilter() {
       this.unsetFilterValue("selected_items");
+    },
+    open() {
+      if (this.isSingleTag) {
+        const tagKeys = Object.keys(this.tags);
+        if (tagKeys.length === 1) {
+          this.selectedKey = tagKeys[0];
+        }
+      }
+      this.showList = true;
     },
     close() {
       this.selectedKey = "";
