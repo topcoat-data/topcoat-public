@@ -50,8 +50,9 @@
         class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full"
       >
         <h6
-          class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest"
+        class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest flex gap-1 items-center"
         >
+          <filter-variant-icon :size="18" />
           {{ label }}
         </h6>
       </div>
