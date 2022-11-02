@@ -707,7 +707,8 @@ export default {
     onVisualizationUpdated() {
       this.updateEndIndex(this.rowsPerPage);
       this.updateStartIndex(0);
-      this.pagerResetFunction();
+      if (this.pagerResetFunction)
+        this.pagerResetFunction();
       this.fetchTotalRows();
     },
     init() {
