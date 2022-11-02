@@ -9,6 +9,7 @@
           :is="tag"
           :ref="tag"
         >
+          <slot name="defaultFilter"></slot>
           <div
             v-if="!data.isDefault"
             class="flex items-center justify-end cursor-pointer"
