@@ -23,7 +23,7 @@
           <div v-if="canShowSelected" class="flex items-center font-normal">
             :
             <div
-              v-for="item in checked"
+              v-for="item, index in checked"
               :key="item"
               class="flex items-center pl-1"
             >
