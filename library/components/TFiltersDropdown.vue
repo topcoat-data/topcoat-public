@@ -55,6 +55,7 @@
 
 <script>
 export default {
+  name: "TFiltersDropdown",
   props: {
     items: {
       type: Array,

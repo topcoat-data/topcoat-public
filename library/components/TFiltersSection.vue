@@ -35,6 +35,7 @@
 
 <script>
 export default {
+  name: "TFiltersSection",
   data: () => ({
     initialisedComponents: [],
     menuItems: [],
@@ -106,7 +107,6 @@ export default {
           if (element.tag) {
             const tag = `${element.tag}${index}`;
             const urlFilters = this.getFilters(element.data.attrs);
-            // console.log(urlFilters.includes(filter), this.selectedFilters[filter], element.isDefault)
             if (urlFilters.includes(filter) || element.isDefault) {
               assignedFilters = [...assignedFilters, ...urlFilters];
               if (!this.initialisedComponents.includes(tag)) {
