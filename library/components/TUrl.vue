@@ -72,7 +72,11 @@ export default {
         };
       }
 
-      const urlParamString = new URLSearchParams(allUrlParams).toString();
+      // const urlParamString = new URLSearchParams(allUrlParams).toString();
+      const urlParamString = Object.entries(allUrlParams)
+        .map(([key, val]) => {
+          return `${key}=${val}`;
+        }).join("&")
 
       if (urlParamString.length > 0) {
         return `${this.url}?${urlParamString}`;
