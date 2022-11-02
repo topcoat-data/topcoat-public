@@ -43,7 +43,9 @@
         :max-value="barMaxValue"
         @input="update"
       />
-      <slot name="footer"></slot>
+      <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
+        <slot name="footer"></slot>
+      </div>
     </div>
   </t-dropdown>
 </template>

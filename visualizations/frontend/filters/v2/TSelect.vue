@@ -68,7 +68,9 @@
         </ul>
         <small v-if="!menu.length && !loading"> No items found </small>
       </div>
-      <slot name="footer"></slot>
+      <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
+        <slot name="footer"></slot>
+      </div>
     </div>
   </t-dropdown>
 </template>

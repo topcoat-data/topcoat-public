@@ -60,6 +60,10 @@
 
       <!-- To hide default calendar icon when preset is selected -->
       <div v-else slot="icon-calendar"></div>
+
+      <div v-if="$slots['footer']" slot="footer" class="flex items-center h-max">
+        <slot name="footer"></slot>
+      </div>
     </base-date-picker>
   </div>
 </template>
@@ -277,9 +281,11 @@ export default {
     handleClear() {
       this.date = [];
       this.selectedPreset = {};
-      this.unsetFilterValue("start_date");
-      this.unsetFilterValue("end_date");
-      this.unsetFilterValue("date_preset");
+      for (const [attribute, name] of Object.entries(this.$attrs)) {
+        if (attribute.includes("t-filter:")) {
+          this.deleteFilter({ name })
+        }
+      }
     },
     formatDate(date, format = this.dateFormat) {
       return window.Moment(date).format(format);
