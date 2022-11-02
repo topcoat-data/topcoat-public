@@ -21,7 +21,12 @@
         &#8249;
       </span>
 
-      <input id="pageInput" ref="pageInput" v-model.number="internalPage" class="pageInput" />
+      <input
+        id="pageInput"
+        ref="pageInput"
+        v-model.number="internalPage"
+        class="pageInput"
+      />
 
       <span
         ref="angleRight"
@@ -48,69 +53,69 @@
 
 <script>
 export default {
-  name: 'TPager',
+  name: "TPager",
   // TODO: Prop validation
   props: {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
   },
-  emits: ['updateStartIndex', 'updateEndIndex', 'setResetFunction'],
+  emits: ["updateStartIndex", "updateEndIndex", "setResetFunction"],
   data() {
     return {
       internalPage: 1,
-    }
+    };
   },
   computed: {
     lastPage() {
-      return Math.ceil(this.numberOfItems / this.itemsPerPage)
+      return Math.ceil(this.numberOfItems / this.itemsPerPage);
     },
     startIndex() {
-      return (this.internalPage - 1) * this.itemsPerPage
+      return (this.internalPage - 1) * this.itemsPerPage;
     },
     endIndex() {
-      let endIndex = this.startIndex + this.itemsPerPage
-      if (endIndex > this.numberOfItems) endIndex = this.numberOfItems
-      return endIndex
+      let endIndex = this.startIndex + this.itemsPerPage;
+      if (endIndex > this.numberOfItems) endIndex = this.numberOfItems;
+      return endIndex;
     },
     isValidPage() {
-      return this.validatePage(this.internalPage)
+      return this.validatePage(this.internalPage);
     },
   },
   watch: {
     numberOfItems() {
-      this.internalPage = 1
+      this.internalPage = 1;
     },
     startIndex() {
-      if (this.isValidPage) this.$emit('updateStartIndex', this.startIndex)
+      if (this.isValidPage) this.$emit("updateStartIndex", this.startIndex);
     },
     endIndex() {
-      if (this.isValidPage) this.$emit('updateEndIndex', this.endIndex)
+      if (this.isValidPage) this.$emit("updateEndIndex", this.endIndex);
     },
     internalPage(newval, oldval) {
       // allow users to clear out internalPage input
-      if (newval === '') return
+      if (newval === "") return;
 
-      if (this.validatePage(newval)) this.internalPage = newval
-      else this.internalPage = oldval
+      if (this.validatePage(newval)) this.internalPage = newval;
+      else this.internalPage = oldval;
     },
   },
   created() {
-    this.$emit('updateStartIndex', this.startIndex)
-    this.$emit('updateEndIndex', this.endIndex)
-    this.$emit('setResetFunction', this.reset)
+    this.$emit("updateStartIndex", this.startIndex);
+    this.$emit("updateEndIndex", this.endIndex);
+    this.$emit("setResetFunction", this.reset);
   },
   methods: {
-    reset(){
-      this.internalPage = 1
+    reset() {
+      this.internalPage = 1;
     },
     validatePage(internalPage) {
-      if (!_.isFinite(internalPage)) return false
-      if (internalPage < 1) return false
-      if (internalPage > this.lastPage) return false
-      return true
+      if (!_.isFinite(internalPage)) return false;
+      if (internalPage < 1) return false;
+      if (internalPage > this.lastPage) return false;
+      return true;
     },
   },
-}
+};
 </script>
 
 <style scoped>

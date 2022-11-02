@@ -31,7 +31,7 @@
                 {% else %}
                 "shape": "spline"
                 {% endif %},
-                
+
                 "smoothing": 0.45,
                 "width": 1.45
             },
@@ -82,14 +82,14 @@
             "x": {{ column_data(dimensions[0]) }},
             "y": {{ column_data(measure) }}
         }{% if not loop.last %},{%endif%}
-        {% endfor %}   
+        {% endfor %}
     ],
     "layout" : {
         "hovermode": "x unified",
         "plot_bgcolor" : "rgba(0,0,0,0)",
         "paper_bgcolor" : "rgba(0,0,0,0)",
         "font" : {
-            
+
             {% if font_family %}
              "family" : "{{ font_family }}"
             {% else %}
@@ -101,7 +101,7 @@
             {% else %}
             "color" : "#161F3D"
             {% endif %},
-            
+
             {% if font_size %}
              "size" : "{{ font_size }}"
             {% else %}
@@ -147,13 +147,13 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
                 "size": 11
                 {% endif %}
-              
+
             },
             "color" : "rgba(0, 0, 0, 0.65)",
             "showline" : false,
@@ -208,7 +208,7 @@
             "zeroline" : true
             {% endif %},
 
-            
+
             "linewidth" : 7,
             "linecolor" : "rgba(0,0,0,0)",
             "tickfont" : {
@@ -223,7 +223,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
@@ -282,7 +282,7 @@
             "zeroline" : true
             {% endif %},
 
-            
+
             "linewidth" : 7,
             "linecolor" : "rgba(0,0,0,0)",
             "tickfont" : {
@@ -297,7 +297,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
@@ -375,7 +375,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
@@ -421,7 +421,7 @@
             "bordercolor" : "{{ hover_label_bg }}"
             {% else %}
             "bordercolor" : "rgba(232,230,230,0.7)"
-            {% endif %} 
+            {% endif %}
         },
         "autosize": true,
         "automargin": true,
@@ -433,7 +433,7 @@
         {% else %}
         "showlegend":false
         {% endif %},
-         
+
         "legend" : {
             "x": 0.01,
             "y": 1.1

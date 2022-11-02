@@ -1,143 +1,153 @@
 <template>
-    <Tile :hideBackground='metadata.no_background'>
-        <div class='relative p-4'>
-            <div class="text-sm text-primaryFontColor font-bold mb-3">
-                {{ metadata.title }}
-            </div>
-            <div class="font-light lg:text-4xl md:text-3xl text-2xl my-4 text-primaryFontColor">
-                {{ value || '-' }}
-            </div>
-            <div class="relative flex" v-if='previous'>
-                <div class="text-xl text-primaryFontColor font-bold w-full" v-if='change'>
-                    <span class="border border-secondaryBorderColor text-primaryFontColor text-xs mr-1 py-1 px-3 rounded-full">
-                        <i
-                            class="fas"
-                            :class='iconClass'
-                            :style='{color: arrowColor}'
-                        ></i>
-                    </span>
-                    <span class="opacity-70">
-                        {{ increased ? '+' : '-' }}{{ change }}
-                    </span>
-                </div>
-                <div class="text-xl font-normal text-primaryFontColor opacity-70">
-                    {{ previous || '-' }}
-                </div>
-            </div>
+  <Tile :hideBackground="metadata.no_background">
+    <div class="relative p-4">
+      <div class="text-sm text-primaryFontColor font-bold mb-3">
+        {{ metadata.title }}
+      </div>
+      <div
+        class="font-light lg:text-4xl md:text-3xl text-2xl my-4 text-primaryFontColor"
+      >
+        {{ value || '-' }}
+      </div>
+      <div class="relative flex" v-if="previous">
+        <div
+          class="text-xl text-primaryFontColor font-bold w-full"
+          v-if="change"
+        >
+          <span
+            class="border border-secondaryBorderColor text-primaryFontColor text-xs mr-1 py-1 px-3 rounded-full"
+          >
+            <i class="fas" :class="iconClass" :style="{color: arrowColor}"></i>
+          </span>
+          <span class="opacity-70">
+            {{ increased ? '+' : '-' }}{{ change }}
+          </span>
         </div>
-    </Tile>
+        <div class="text-xl font-normal text-primaryFontColor opacity-70">
+          {{ previous || '-' }}
+        </div>
+      </div>
+    </div>
+  </Tile>
 </template>
 <script>
-    export default {
-        name: 'BigNumber',
-        props: {
-            total: Number,
-            user: Number,
-            label: String,
-            borderLess: Boolean,
-            hideTile: Boolean,
-        },
-        data: () => ({
-            auto_height: true,
-        }),
-        computed: {
-            value() {
-                // Find by tags
-                const column = this.findColumnByTag('value');
-                if (column) {
-                    return this.fetchColumn(column);
-                }
+  export default {
+    name: "BigNumber",
+    props: {
+      total: Number,
+      user: Number,
+      label: String,
+      borderLess: Boolean,
+      hideTile: Boolean,
+    },
+    data: () => ({
+      auto_height: true,
+    }),
+    computed: {
+      value() {
+        // Find by tags
+        const column = this.findColumnByTag("value");
+        if (column) {
+          return this.fetchColumn(column);
+        }
 
-                // Find by default column name.
-                var value = this.fetchColumn('value');
-                return value;
-            },
-            previous() {
-                // Find by tags
-                const column = this.findColumnByTag('previous');
-                if (column) {
-                    return this.fetchColumn(column);
-                }
+        // Find by default column name.
+        var value = this.fetchColumn("value");
+        return value;
+      },
+      previous() {
+        // Find by tags
+        const column = this.findColumnByTag("previous");
+        if (column) {
+          return this.fetchColumn(column);
+        }
 
-                // Find by default column name.
-                var prev = this.fetchColumn('previous');
-                return prev;
-            },
-            change() {
-                // Hide change if show_change = false.
-                if (Object.keys(this.metadata).indexOf('show_change') > -1) {
-                    if (!this.metadata.show_change || this.metadata.show_change === 'false') {
-                        return '';
-                    }
-                }
+        // Find by default column name.
+        var prev = this.fetchColumn("previous");
+        return prev;
+      },
+      change() {
+        // Hide change if show_change = false.
+        if (Object.keys(this.metadata).indexOf("show_change") > -1) {
+          if (
+            !this.metadata.show_change ||
+            this.metadata.show_change === "false"
+          ) {
+            return "";
+          }
+        }
 
-                // Find by tags.
-                const column = this.findColumnByTag('change');
-                if (column) {
-                    return this.fetchColumn(column);
-                }
+        // Find by tags.
+        const column = this.findColumnByTag("change");
+        if (column) {
+          return this.fetchColumn(column);
+        }
 
-                // Find by default column name.
-                var change = this.fetchColumn('change');
-                if (!change) {
-                    // Display the difference between value and previous if no change column is present
-                    return Math.abs(this.valueRaw - this.prevRaw);
-                }
-                return change;
-            },
-            valueRaw() {
-                // This vis always expects one row.
-                const column = this.findColumnByTag('value') || 'value';
-                const row = this.rows[0];
-                return row[column] ? row[column].value : 0;
-            },
-            prevRaw() {
-                // This vis always expects one row.
-                const column = this.findColumnByTag('previous') || 'previous';
-                const row = this.rows[0];
-                return row[column] ? row[column].value : 0;
-            },
-            greenPositive() {
-                // Check if green_positive is present in metadata first.
-                if (Object.keys(this.metadata).indexOf('green_positive') > -1) {
-                    return this.metadata.green_positive || this.metadata.green_positive === 'true';
-                }
-                return true;
-            },
-            increased() {
-                return this.valueRaw > this.prevRaw;
-            },
-            iconClass() {
-                if (this.valueRaw > this.prevRaw) {
-                    return 'fa-chevron-up';
-                } else if (this.valueRaw < this.prevRaw) {
-                    return 'fa-chevron-down';
-                }
+        // Find by default column name.
+        var change = this.fetchColumn("change");
+        if (!change) {
+          // Display the difference between value and previous if no change column is present
+          return Math.abs(this.valueRaw - this.prevRaw);
+        }
+        return change;
+      },
+      valueRaw() {
+        // This vis always expects one row.
+        const column = this.findColumnByTag("value") || "value";
+        const row = this.rows[0];
+        return row[column] ? row[column].value : 0;
+      },
+      prevRaw() {
+        // This vis always expects one row.
+        const column = this.findColumnByTag("previous") || "previous";
+        const row = this.rows[0];
+        return row[column] ? row[column].value : 0;
+      },
+      greenPositive() {
+        // Check if green_positive is present in metadata first.
+        if (Object.keys(this.metadata).indexOf("green_positive") > -1) {
+          return (
+            this.metadata.green_positive ||
+            this.metadata.green_positive === "true"
+          );
+        }
+        return true;
+      },
+      increased() {
+        return this.valueRaw > this.prevRaw;
+      },
+      iconClass() {
+        if (this.valueRaw > this.prevRaw) {
+          return "fa-chevron-up";
+        } else if (this.valueRaw < this.prevRaw) {
+          return "fa-chevron-down";
+        }
 
-                return 'fa-minus';
-            },
-            arrowColor() {
+        return "fa-minus";
+      },
+      arrowColor() {
+        if (this.valueRaw === this.prevRaw) {
+          return "#d1d5db";
+        }
 
-                if (this.valueRaw === this.prevRaw) {
-					return '#d1d5db';
-				}
-
-                if (this.greenPositive && this.increased) {
-                    return "#6EE7B7";
-                } else if (!this.greenPositive && !this.increased) {
-                    return "#6EE7B7";
-                }
-                return "#F87171";
-            }
-        },
-        methods: {
-            fetchColumn(name) {
-                try {
-                    const columnValue = this.getColumn(name);
-                    return columnValue[0];
-                } catch (e) { console.log(e) }
-                return null; // If null then column does not exist.
-            },
-        },
-    }
+        if (this.greenPositive && this.increased) {
+          return "#6EE7B7";
+        } else if (!this.greenPositive && !this.increased) {
+          return "#6EE7B7";
+        }
+        return "#F87171";
+      },
+    },
+    methods: {
+      fetchColumn(name) {
+        try {
+          const columnValue = this.getColumn(name);
+          return columnValue[0];
+        } catch (e) {
+          console.log(e);
+        }
+        return null; // If null then column does not exist.
+      },
+    },
+  };
 </script>

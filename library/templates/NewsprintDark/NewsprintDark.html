@@ -1,46 +1,50 @@
-{{ config(
-        vars = {
-            "label_color" : "white",
-            "line_colors": [ "lightgray", "lightgray", "lightgray" ],
-            "bar_colors": [ "#fdba74", "#818cf8" ],
-            "fill_colors": [ "#fdba74", "#818cf8" ]
-        }
-   )
-}}
+{{ config( vars = { "label_color" : "white", "line_colors": [ "lightgray",
+"lightgray", "lightgray" ], "bar_colors": [ "#fdba74", "#818cf8" ],
+"fill_colors": [ "#fdba74", "#818cf8" ] } ) }}
 
 <template>
-    <div id="dashboard">
+  <div id="dashboard">
     <NewsprintDarkHeader></NewsprintDarkHeader>
     <div class="np-container-width relative left-0 right-0 m-auto">
-        <div class="mt-20 py-5 px-10 bg-pageSectionColor">
-            <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
-                <slot name="filters"></slot>
-            </div>
+      <div class="mt-20 py-5 px-10 bg-pageSectionColor">
+        <div class="flex flex-wrap md:flex-row flex-col gap-3 primary-fonts">
+          <slot name="filters"></slot>
         </div>
+      </div>
     </div>
     <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-3">
-        <div class="text-center text-6xl font-bold text-primaryFontColor secondary-fonts">{{ page.title }}</div>
-        <div class="text-secondaryFontColor text-center pt-5 font-semibold primary-fonts">Last updated {{ lastRefresh }}.</div>
+      <div
+        class="text-center text-6xl font-bold text-primaryFontColor secondary-fonts"
+      >
+        {{ page.title }}
+      </div>
+      <div
+        class="text-secondaryFontColor text-center pt-5 font-semibold primary-fonts"
+      >
+        Last updated {{ lastRefresh }}.
+      </div>
     </div>
     <!-- <div class="mt-14 relative left-0 right-0 m-auto md:w-10/12 w-full py-2 secondary-fonts">
         <div class="grid grid-cols-2">
             <slot name='stats'></slot>
         </div>
     </div> -->
-    <div class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts np-container-width relative left-0 right-0 m-auto">
-        <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
-        <div class="grid grid-cols-1">
-            <slot></slot>
-        </div>
+    <div
+      class="mt-14 relative left-0 right-0 m-auto py-2 secondary-fonts np-container-width relative left-0 right-0 m-auto"
+    >
+      <!-- <div class="text-center text-3xl font-bold text-primaryFontColor">Sales Value</div> -->
+      <div class="grid grid-cols-1">
+        <slot></slot>
+      </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Merriweather&family=Raleway&display=swap');
-:root {
+  @import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Raleway&display=swap");
+  :root {
     --primary-color: #0f172a;
-    --primary-highlight-color: rgba(229, 231, 235, 0.200);
+    --primary-highlight-color: rgba(229, 231, 235, 0.2);
     --primary-border-color: var(--grayscale-two-color);
     --primary-font-color: var(--grayscale-one-color);
 
@@ -69,45 +73,45 @@
 
     --tile-border-color: transparent;
     --tile-background-color: transparent;
-}
+  }
 
-.primaryFilterRadius {
+  .primaryFilterRadius {
     @apply rounded;
-}
+  }
 
-.secondaryFilterRadius {
+  .secondaryFilterRadius {
     @apply rounded;
-}
+  }
 
-/* Fonts */
-.primary-fonts {
-    font-family: 'Raleway', sans-serif;
-}
+  /* Fonts */
+  .primary-fonts {
+    font-family: "Raleway", sans-serif;
+  }
 
-.secondary-fonts {
-    font-family: 'Merriweather', serif;
-}
-/* Fonts */
+  .secondary-fonts {
+    font-family: "Merriweather", serif;
+  }
+  /* Fonts */
 
-svg, path {
+  svg,
+  path {
     @apply fill-current text-primaryFontColor;
-}
-body {
+  }
+  body {
     @apply bg-pageBackgroundColor;
-}
+  }
 
-.tileElement {
+  .tileElement {
     @apply border-tileBorderColor bg-tileBackgroundColor rounded my-3;
-}
+  }
 
-.np-container-width {
+  .np-container-width {
     width: 900px;
-}
+  }
 
-@media (max-width: 900px) {
+  @media (max-width: 900px) {
     .np-container-width {
-        width: 100%;
+      width: 100%;
     }
-}
-
+  }
 </style>

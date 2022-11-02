@@ -1,60 +1,78 @@
 <template>
   <div class="absolute z-50 shadow-2xl md:relative md:shadow-none">
-    <div class="flex-col h-screen min-h-full overflow-auto transition-all duration-100 ease-in-out md:flex bg-primaryColor md:flex-col primary-fonts" :class='isVisible ? "w-full" : "w-16"' >
+    <div
+      class="flex-col h-screen min-h-full overflow-auto transition-all duration-100 ease-in-out md:flex bg-primaryColor md:flex-col primary-fonts"
+      :class='isVisible ? "w-full" : "w-16"'
+    >
       <div
-          class="flex flex-col flex-shrink-0 w-16 w-full lg:w-full text-primaryFontColor"
+        class="flex flex-col flex-shrink-0 w-16 w-full lg:w-full text-primaryFontColor"
       >
-
-      <div class="w-full mx-auto">
-        <nav class="px-0" :class="{'lg:px-3.5': isVisible}">
-          <div class="flex items-center justify-center pt-4 mx-auto" :class="{'lg:justify-between': isVisible, }">
-            <div class="flex-shrink-0 hidden mr-2" :class="{'lg:block': isVisible}">
-              <img :width="project.logo.width" :src="project.logo.url" >
+        <div class="w-full mx-auto">
+          <nav class="px-0" :class="{'lg:px-3.5': isVisible}">
+            <div
+              class="flex items-center justify-center pt-4 mx-auto"
+              :class="{'lg:justify-between': isVisible, }"
+            >
+              <div
+                class="flex-shrink-0 hidden mr-2"
+                :class="{'lg:block': isVisible}"
+              >
+                <img :width="project.logo.width" :src="project.logo.url" />
+              </div>
+              <i
+                class="text-lg cursor-pointer fa fa-bars"
+                @click="barToggle"
+              ></i>
             </div>
-            <i class="text-lg cursor-pointer fa fa-bars" @click="barToggle"></i>
-          </div>
 
-          <div class="pt-6">
-            <ul class="flex flex-col p-0">
-              <a
-                v-for="page in project.nav"
-                class="flex items-center justify-start px-5 py-4 text-center border-l-2 bg-secondaryButtonColor md:px-2 h-14 hover:text-primaryFontColor hover:border-grayscaleTwoColor lg:w-full hover:bg-primaryHighlightColor border-primaryColor text-primaryFontColor opacity-70 hover:opacity-100"
-                :class="navSelected(page.url, 'bg-primaryHighlightColor border-grayscaleTwoColor text-primaryFontColor opacity-100')" :href="'/' + page.url"><i :class="'icon fas text-base ' + page.icon_class  + (isVisible ? '' : ' md:ml-4 ')" /> <span class="pl-2 text-center" :class="isVisible ? 'block' : 'hidden'">{{ page.title }} </span> </a>
-            </ul>
-          </div>
-        </nav>
-
-      </div>
+            <div class="pt-6">
+              <ul class="flex flex-col p-0">
+                <a
+                  v-for="page in project.nav"
+                  class="flex items-center justify-start px-5 py-4 text-center border-l-2 bg-secondaryButtonColor md:px-2 h-14 hover:text-primaryFontColor hover:border-grayscaleTwoColor lg:w-full hover:bg-primaryHighlightColor border-primaryColor text-primaryFontColor opacity-70 hover:opacity-100"
+                  :class="navSelected(page.url, 'bg-primaryHighlightColor border-grayscaleTwoColor text-primaryFontColor opacity-100')"
+                  :href="'/' + page.url"
+                  ><i
+                    :class="'icon fas text-base ' + page.icon_class  + (isVisible ? '' : ' md:ml-4 ')"
+                  />
+                  <span
+                    class="pl-2 text-center"
+                    :class="isVisible ? 'block' : 'hidden'"
+                    >{{ page.title }}
+                  </span>
+                </a>
+              </ul>
+            </div>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-
 <script>
-export default {
-  name: 'sideBar',
-  data: () => ({
-    isVisible: true,
-  }),
-  mounted() {
-    this.adjustSidebar();
-  },
-  methods: {
-    barToggle() {
-      this.isVisible = !this.isVisible
+  export default {
+    name: "sideBar",
+    data: () => ({
+      isVisible: true,
+    }),
+    mounted() {
+      this.adjustSidebar();
     },
-    adjustSidebar() {
-      const ref = this;
-      window.addEventListener('resize', () => {
-        ref.isVisible = false;
-      });
-      const windowSize = window.innerWidth;
-      if (windowSize < 900) {
-        ref.isVisible = false;
-      }
-    }
-  }
-}
+    methods: {
+      barToggle() {
+        this.isVisible = !this.isVisible;
+      },
+      adjustSidebar() {
+        const ref = this;
+        window.addEventListener("resize", () => {
+          ref.isVisible = false;
+        });
+        const windowSize = window.innerWidth;
+        if (windowSize < 900) {
+          ref.isVisible = false;
+        }
+      },
+    },
+  };
 </script>
-

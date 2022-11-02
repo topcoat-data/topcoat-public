@@ -1,50 +1,53 @@
 <template>
-    <div id="elegance" class="bg-pageBackgroundColor">
-        <EleganceHeader></EleganceHeader>
-        <div class="overflow-hidden px-10 mx-auto">
-            <CacheControls
-                iconClass='fa fa-redo transform -rotate-45'
-                position='float-right relative my-5'
-                textColor='text-primaryFontColor'
-                buttonColors='text-secondaryFontColor bg-primaryButtonColor'
-                minimal />
+  <div id="elegance" class="bg-pageBackgroundColor">
+    <EleganceHeader></EleganceHeader>
+    <div class="overflow-hidden px-10 mx-auto">
+      <CacheControls
+        iconClass="fa fa-redo transform -rotate-45"
+        position="float-right relative my-5"
+        textColor="text-primaryFontColor"
+        buttonColors="text-secondaryFontColor bg-primaryButtonColor"
+        minimal
+      />
+    </div>
+    <div class="pr-10 pl-10 mx-auto secondary-fonts">
+      <div class="bg-pageSectionColor p-4 rounded">
+        <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
+          <slot name="filters"></slot>
         </div>
-        <div class="pr-10 pl-10 mx-auto secondary-fonts">
-            <div class="bg-pageSectionColor p-4 rounded">
-                <div class="flex flex-wrap md:flex-row flex-col gap-4 secondary-fonts">
-                    <slot name="filters"></slot>
-                </div>
-            </div>
+      </div>
 
-            <div class="mt-5 secondary-fonts">
-                <!-- <div class="grid md:grid-cols-1 lg:grid-cols-3 py-3 gap-4">
+      <div class="mt-5 secondary-fonts">
+        <!-- <div class="grid md:grid-cols-1 lg:grid-cols-3 py-3 gap-4">
                     <slot name='stats'></slot>
                 </div> -->
 
-                <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5">
-                    <slot></slot>
-                </div>
-            </div>
+        <div
+          class="grid md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5 secondary-fonts pb-5"
+        >
+          <slot></slot>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-:root {
-    --primary-color: #0F172A;
+  @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+  :root {
+    --primary-color: #0f172a;
     --primary-highlight-color: #eff6ff;
     --primary-border-color: #d1d5db;
     --primary-font-color: var(--grayscale-three-color);
 
     --secondary-color: #164e63;
     --secondary-highlight-color: rgba(255, 255, 255, 0.24);
-    --secondary-border-color: #6B7280;
+    --secondary-border-color: #6b7280;
     --secondary-font-color: #f8fafc;
 
-    --grayscale-one-color: #F3F4F6;
-    --grayscale-two-color: #4B5563;
+    --grayscale-one-color: #f3f4f6;
+    --grayscale-two-color: #4b5563;
     --grayscale-three-color: #1f2937;
     --grayscale-hover-color: var(--grayscale-three-color);
 
@@ -63,32 +66,31 @@
 
     --tile-border-color: transparent;
     --tile-background-color: var(--page-section-color);
-}
+  }
 
-/* Fonts */
-.primary-fonts {
-    font-family: 'Open Sans', sans-serif;
-}
+  /* Fonts */
+  .primary-fonts {
+    font-family: "Open Sans", sans-serif;
+  }
 
-.secondary-fonts {
-    font-family: 'Nunito', sans-serif;
-}
-/* Fonts */
+  .secondary-fonts {
+    font-family: "Nunito", sans-serif;
+  }
+  /* Fonts */
 
-.primaryFilterRadius {
+  .primaryFilterRadius {
     @apply rounded;
-}
+  }
 
-.secondaryFilterRadius {
+  .secondaryFilterRadius {
     @apply rounded-3xl;
-}
+  }
 
-body {
+  body {
     @apply bg-pageBackgroundColor;
-}
+  }
 
-.tileElement {
+  .tileElement {
     @apply border-tileBorderColor bg-tileBackgroundColor rounded;
-}
-
+  }
 </style>

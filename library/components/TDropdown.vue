@@ -1,9 +1,9 @@
 <template>
   <div
-    class="relative w-auto font-sans cursor-pointer dropdown-filter"
     ref="dropdownFilter"
+    class="relative w-auto font-sans cursor-pointer dropdown-filter"
   >
-    <div @click="openPopup" :class="activeClass" class="rounded cursor-pointer">
+    <div :class="activeClass" class="rounded cursor-pointer" @click="openPopup">
       <slot name="handle"></slot>
     </div>
     <slot name="outside"></slot>
@@ -57,6 +57,14 @@ export default {
       return "";
     },
   },
+  watch: {
+    isExpanded: function (newVal, oldVal) {
+      if (newVal) {
+        this.isPopupOpen = true;
+        this.$emit("open");
+      }
+    },
+  },
   mounted() {
     onClickOutside(this.$refs.dropdownFilter, (event) => {
       // Temporary solution
@@ -102,14 +110,6 @@ export default {
       this.$nextTick(() => {
         this.alignPopup();
       });
-    },
-  },
-  watch: {
-    isExpanded: function (newVal, oldVal) {
-      if (newVal) {
-        this.isPopupOpen = true;
-        this.$emit("open");
-      }
     },
   },
 };

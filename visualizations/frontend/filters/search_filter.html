@@ -1,60 +1,67 @@
 <template>
-    <div class='relative w-full primaryFilterRadius md:w-56'>
-        <div class="pb-1 text-xs font-semibold text-primaryFontColor" v-if='metadata.title'>{{ metadata.title }}</div>
-        <div class="h-5" v-else></div>
-        <div class="flex items-center primaryFilterRadius pr-3 text-filterFontColor bg-filterBackgroundColor border-filterBorderColor">            
-            <input
-                type="text"
-                :placeholder="metadata.placeholder || 'Search'"
-                class="flex items-center primaryFilterRadius justify-around w-full pl-4 border h-9 border-none focus:outline-none"
-                v-model='queryText'
-                @keyup='onEnter'
-            />
-            <t-loading-spinner position="relative" v-if="loading" />
-            <magnify-icon v-else />
-        </div>
+  <div class="relative w-full primaryFilterRadius md:w-56">
+    <div
+      class="pb-1 text-xs font-semibold text-primaryFontColor"
+      v-if="metadata.title"
+    >
+      {{ metadata.title }}
     </div>
+    <div class="h-5" v-else></div>
+    <div
+      class="flex items-center primaryFilterRadius pr-3 text-filterFontColor bg-filterBackgroundColor border-filterBorderColor"
+    >
+      <input
+        type="text"
+        :placeholder="metadata.placeholder || 'Search'"
+        class="flex items-center primaryFilterRadius justify-around w-full pl-4 border h-9 border-none focus:outline-none"
+        v-model="queryText"
+        @keyup="onEnter"
+      />
+      <t-loading-spinner position="relative" v-if="loading" />
+      <magnify-icon v-else />
+    </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "SearchFilter",
-        data: () => ({
-            text_internal: null,
-            is_filter: true,
-            queryText: '',
-        }),
-        props: ['searchIcon'],
-        computed: {
-            urlParam: {
-                get() {
-                    return this.text_internal;
-                },
-                set(value) {
-                    this.text_internal = value;
-                    this.setFilterValue("query", this.text_internal, true);
-                }
-            },
+  export default {
+    name: "SearchFilter",
+    data: () => ({
+      text_internal: null,
+      is_filter: true,
+      queryText: "",
+    }),
+    props: ["searchIcon"],
+    computed: {
+      urlParam: {
+        get() {
+          return this.text_internal;
         },
-        methods: {
-            onVisualizationInit() {
-                const initial_value = this.getFilterValue("query");
-                
-                if (initial_value) {
-                    this.text_internal = initial_value;
-                } else if (this.config.default_value) {
-                    this.text_internal = this.config.default_value;
-                } else {
-                    return;
-                }
-                this.queryText = this.text_internal;
-                this.setFilterValue("query", this.text_internal, true);
-            },
-            onEnter(e) {
-                if (e.keyCode === 13) {
-                    this.urlParam = this.queryText;
-                }
-            }
+        set(value) {
+          this.text_internal = value;
+          this.setFilterValue("query", this.text_internal, true);
+        },
+      },
+    },
+    methods: {
+      onVisualizationInit() {
+        const initial_value = this.getFilterValue("query");
+
+        if (initial_value) {
+          this.text_internal = initial_value;
+        } else if (this.config.default_value) {
+          this.text_internal = this.config.default_value;
+        } else {
+          return;
         }
-    }
+        this.queryText = this.text_internal;
+        this.setFilterValue("query", this.text_internal, true);
+      },
+      onEnter(e) {
+        if (e.keyCode === 13) {
+          this.urlParam = this.queryText;
+        }
+      },
+    },
+  };
 </script>
