@@ -46,7 +46,7 @@ export default {
   }),
   mounted() {
     this.selectedFilters = this.filters;
-    this.handleItems(true);
+    this.handleItems();
   },
   methods: {
     handleItems() {
