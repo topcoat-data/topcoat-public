@@ -367,4 +367,8 @@ export default {
   justify-content: end;
   gap: 10px;
 }
+
+.mx-datepicker-btn-confirm {
+  border-color: #B3B2BD !important;
+}
 </style>
