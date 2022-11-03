@@ -3,6 +3,7 @@
     <filter-variant-icon class="relative top-[5px]" :size="18" />
     <div class="flex flex-col items-start justify-start gap-2">
       <div class="flex flex-wrap items-center gap-1">
+        <slot name="defaultFilter"></slot>
         <component
           v-for="(data, tag) in visibleFilters"
           :key="tag"
