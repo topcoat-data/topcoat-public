@@ -244,7 +244,7 @@
       name="footer"
       :total-count="totalRows"
       :visible-count="rowsPerPage"
-      :start-ondex="startIndex"
+      :start-index="startIndex"
       :end-index="endIndex"
     ></slot>
   </div>
