@@ -23,7 +23,7 @@
           <div v-if="canShowSelected" class="flex items-center font-normal">
             :
             <div
-              v-for="item, index in checked"
+              v-for="(item, index) in checked"
               :key="item"
               class="flex items-center pl-1"
             >
@@ -31,7 +31,7 @@
               <span v-if="!defaultValue" class="text-[#7FA7F5] pl-1">
                 <close-icon :size="14" @click.stop="removeItem(item)" />
               </span>
-              <span v-else-if="(checked.length - 1) != index">, </span>
+              <span v-else-if="checked.length - 1 != index">, </span>
             </div>
           </div>
           <div v-else>
@@ -51,7 +51,7 @@
         class="px-[12px] pt-[16px] pb-[8px] flex justify-between items-center w-full"
       >
         <h6
-        class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest flex gap-1 items-center"
+          class="text-[10px] text-[#727184] font-semibold uppercase leading-[15px] tracking-widest flex gap-1 items-center"
         >
           <filter-variant-icon :size="18" />
           {{ label }}
@@ -59,7 +59,7 @@
       </div>
 
       <!-- Search input -->
-      <div v-if="isSearchable" class="pt-2 t-multi-nav-search w-full p-2">
+      <div v-if="isSearchable" class="w-full p-2 pt-2 t-multi-nav-search">
         <base-search-input
           v-model="search"
           class="mt-0 text-sm !rounded-md"
@@ -249,9 +249,6 @@ export default {
       }
       return attrs;
     },
-    urlParam() {
-      return this.$attrs["t-filter:selected_items"] || null;
-    },
   },
   methods: {
     onVisualizationInit() {
@@ -276,14 +273,6 @@ export default {
     updateUrlParam(value) {
       if (value) {
         this.checked = [...value];
-      }
-
-      if (this.urlParam) {
-        // Prevent reset button from removing filter.
-        return this.setFilter({
-          name: this.urlParam,
-          value: this.checked.join("|"),
-        });
       }
 
       this.setFilterValue("selected_items", this.checked.join("|"));

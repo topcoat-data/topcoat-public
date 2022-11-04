@@ -220,9 +220,6 @@ export default {
 
       return tags;
     },
-    urlParam() {
-      return this.$attrs["t-filter:selected_items"] || null;
-    },
   },
   methods: {
     onVisualizationInit() {
@@ -270,15 +267,6 @@ export default {
     },
     updateUrlValue() {
       const urlObject = {};
-      if (!this.selected.length) {
-        if (this.urlParam) {
-          // Prevent reset button from removing filter.
-          return this.setFilter({
-            name: this.urlParam,
-            value: "",
-          });
-        }
-      }
       for (let obj of this.selected) {
         if (urlObject[obj.key]) {
           urlObject[obj.key].push(obj.value);
