@@ -32,7 +32,7 @@
           {{ label }}
         </h6>
       </div>
-      <div v-if="isSearchable" class="pt-2 t-select-nav-search w-full p-2 h-[34px]">
+      <div v-if="isSearchable" class="pt-2 t-select-nav-search w-full p-2">
         <base-search-input
           v-model="search"
           class="mt-0 text-sm !rounded-md"
@@ -198,6 +198,6 @@ export default {
 
 <style>
 .t-select-nav-search .vue--search-input__field {
-  @apply !rounded-3xl !bg-white !opacity-[0.5];
+  @apply !rounded-3xl !bg-white !opacity-[0.5] !h-[34px];
 }
 </style>
