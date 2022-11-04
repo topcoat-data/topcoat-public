@@ -55,7 +55,7 @@
           <a :href="page.url" class="flex items-center justify-between w-full">
             {{ page.title }}
             <span
-              v-if="selected === page.url"
+              v-if="selected === 'reporting/'+page.url"
               style="color: #0f47c6"
               class="flex items-center h-full"
             >
