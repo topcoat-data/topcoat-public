@@ -240,7 +240,13 @@
         @setResetFunction="setPagerResetFunction"
       />
     </div>
-    <slot name="footer" :total="totalRows" :visible-count="rowsPerPage"></slot>
+    <slot
+      name="footer"
+      :total-count="totalRows"
+      :visible-count="rowsPerPage"
+      :start-ondex="startIndex"
+      :end-index="endIndex"
+    ></slot>
   </div>
 </template>
 
