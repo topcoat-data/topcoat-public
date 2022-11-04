@@ -20,10 +20,10 @@
             Multiple layer columns can be used in a front end column. When the user is selecting
             a front end column to show or hide, they don't care about the layer columns, and the
             selected front end columns are what needs to be saved as part of the url because there
-            is no way to know for sure which front end column was selected to be shown based on 
+            is no way to know for sure which front end column was selected to be shown based on
             layer columns. However when filtering in the layer, the layer columns are what matter.
             This leads to some fun below, in particular the addition of additionalFilters in the
-            csv export that is the layer columns necessary to show the visible front end columns, 
+            csv export that is the layer columns necessary to show the visible front end columns,
             and that the url filter != the filter sent to the back end when fetching a layer with
             modifiable columns. -->
         <t-select-columns
@@ -240,6 +240,7 @@
         @setResetFunction="setPagerResetFunction"
       />
     </div>
+    <slot name="footer"></slot>
   </div>
 </template>
 
@@ -707,8 +708,7 @@ export default {
     onVisualizationUpdated() {
       this.updateEndIndex(this.rowsPerPage);
       this.updateStartIndex(0);
-      if (this.pagerResetFunction)
-        this.pagerResetFunction();
+      if (this.pagerResetFunction) this.pagerResetFunction();
       this.fetchTotalRows();
     },
     init() {
@@ -1406,7 +1406,7 @@ export default {
   display: block;
 }
 
-/* Note: gap leaves spaces when 
+/* Note: gap leaves spaces when
 highlighting a row on hover etc. */
 .cellPadding {
   padding-left: 5px;
