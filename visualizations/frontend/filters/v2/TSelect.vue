@@ -6,11 +6,13 @@
         <slot name="icon"></slot>
       </div>
 
-      <div class="flex items-center">
-        {{ label }}
-        <span v-if="canShowSelected" class="font-normal"
-          >: {{ selected_internal }}</span
-        >
+      <div class="flex items-center gap-1">
+        <div v-if="label">
+          {{ label }}{{ selected_internal ? ":" : "" }}
+        </div>
+        <div class="font-normal">
+          {{ selected_internal }}
+        </div>
       </div>
 
       <t-loading-spinner v-if="loading" position="relative" />
@@ -103,10 +105,6 @@ export default {
       default: "Search",
     },
     isOpen: {
-      type: Boolean,
-      default: false,
-    },
-    canShowSelected: {
       type: Boolean,
       default: false,
     },
