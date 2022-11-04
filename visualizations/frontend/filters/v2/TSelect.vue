@@ -30,18 +30,14 @@
           {{ label }}
         </h6>
       </div>
-      <div v-if="isSearchable" class="w-full p-2">
-        <div class="search-input">
-          <magnify-icon :size="18" />
-          <input
-            v-model="search"
-            class="bg-transparent outline-none !text-black w-full"
-            :placeholder="searchPlaceholder"
-          />
-          <div class="w-5">
-            <close-icon v-if="search" :size="18" @click="search = ''" />
-          </div>
-        </div>
+      <div v-if="isSearchable" class="pt-2 t-select-nav-search w-full p-2 h-[34px]">
+        <base-search-input
+          v-model="search"
+          class="mt-0 text-sm !rounded-md"
+          :placeholder="searchPlaceholder"
+          size="small"
+          :clearable="false"
+        />
       </div>
       <div class="px-[8px] pt-[4px] pb-[6px] w-full">
         <ul class="max-h-[200px] overflow-auto">
@@ -201,3 +197,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.t-select-nav-search .vue--search-input__field {
+  @apply !rounded-3xl !bg-white !opacity-[0.5];
+}
+</style>
