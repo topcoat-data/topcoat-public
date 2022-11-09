@@ -72,15 +72,9 @@ export default {
         };
       }
 
-      // const urlParamString = new URLSearchParams(allUrlParams).toString();
-      const urlParamString = Object.entries(allUrlParams)
-        .map(([key, val]) => {
-          if (typeof val === "object") {
-            return `${key}=${encodeURIComponent(JSON.stringify(val))}`;
-          } else {
-            return `${key}=${encodeURIComponent(val)}`;
-          }
-        }).join("&")
+      const urlParamString = new URLSearchParams(allUrlParams)
+        .toString()
+        .replace(/\+/g, "%2520");
 
       if (urlParamString.length > 0) {
         return `${this.url}?${urlParamString}`;
