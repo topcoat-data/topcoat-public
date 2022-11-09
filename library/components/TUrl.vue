@@ -39,6 +39,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDoubleEncoded: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     fullUrl() {
@@ -72,7 +76,16 @@ export default {
         };
       }
 
-      const urlParamString = new URLSearchParams(allUrlParams).toString();
+      let urlParamString = new URLSearchParams(allUrlParams).toString();
+
+      if (this.isDoubleEncoded) {
+        const params = new URLSearchParams();
+        for (let key in allUrlParams) {
+          params.set(key, encodeURIComponent(allUrlParams[key]));
+        }
+
+        urlParamString = params.toString();
+      }
 
       if (urlParamString.length > 0) {
         return `${this.url}?${urlParamString}`;
