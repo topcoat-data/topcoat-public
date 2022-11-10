@@ -261,7 +261,7 @@ export default {
         this.setFilterValue("selected_items", this.defaultValue);
       }
     },
-    selectUnselect() {
+    selectUnselect: _.debounce(function () {
       if (this.checked.length === this.menu.length) {
         this.checked = [];
       } else {
@@ -269,7 +269,7 @@ export default {
         this.checked = this.menu.map((i) => i.value);
       }
       this.updateUrlParam();
-    },
+    }, 750),
     updateUrlParam(value) {
       if (value) {
         this.checked = [...value];
