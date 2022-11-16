@@ -1,6 +1,6 @@
 <template>
   <t-dropdown :disable-active-class="$slots.default ? true : false">
-    <slot slot="handle">
+    <slot slot="handle" name="handle">
       <div class="flex items-center gap-1 p-1 text-sm font-medium">
         <span style="color: #145deb" class="pl-1">
           <chart-timeline-variant-shimmer-icon :size="18" />
