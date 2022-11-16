@@ -1,5 +1,5 @@
 <template>
-  <t-dropdown :disable-active-class="$slots.default ? true : false">
+  <t-dropdown :disable-active-class="$slots.handle ? true : false">
     <slot slot="handle" name="handle">
       <div class="flex items-center gap-1 p-1 text-sm font-medium">
         <span style="color: #145deb" class="pl-1">
