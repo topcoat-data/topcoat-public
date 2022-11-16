@@ -1,12 +1,14 @@
 <template>
-  <t-dropdown>
-    <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
-      <span style="color: #145deb" class="pl-1">
-        <chart-timeline-variant-shimmer-icon :size="18" />
-      </span>
-      {{ page.title }}
-      <menu-down-icon :size="20" />
-    </div>
+  <t-dropdown :disable-active-class="$slots.handle ? true : false">
+    <slot slot="handle" name="handle">
+      <div class="flex items-center gap-1 p-1 text-sm font-medium">
+        <span style="color: #145deb" class="pl-1">
+          <chart-timeline-variant-shimmer-icon :size="18" />
+        </span>
+        {{ page.title }}
+        <menu-down-icon :size="20" />
+      </div>
+    </slot>
 
     <div class="px-2 pt-4 pb-2 border-b border-[#E4E3E8]">
       <h6 class="text-xs text-[#727184] tracking-[0.1em]">CHOOSE REPORT</h6>
@@ -55,7 +57,7 @@
           <a :href="page.url" class="flex items-center justify-between w-full">
             {{ page.title }}
             <span
-              v-if="selected === 'reporting/'+page.url"
+              v-if="selected === 'reporting/' + page.url"
               style="color: #0f47c6"
               class="flex items-center h-full"
             >
