@@ -1386,9 +1386,9 @@ export default {
 }
 
 @media print {
-  .tableDataContainer {
+  .row {
     page-break-before: always;
-    background-color:blueviolet;
+    background-color:yellow;
   }
 }
 
