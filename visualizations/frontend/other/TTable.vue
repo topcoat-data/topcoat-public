@@ -209,10 +209,6 @@
               >
                 {{ getCellValue(row, column) }}
               </slot>
-              <div
-                v-if="(cindex + 1) % pageBreakGap == 0"
-                class="table-break"
-              ></div>
             </div>
 
             <!-- Detail row -->
@@ -225,6 +221,11 @@
                 <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
               </div>
             </div>
+
+            <div
+              v-if="(rindex + 1) % pageBreakGap == 0"
+              class="table-break"
+            ></div>
           </div>
         </div>
       </div>
