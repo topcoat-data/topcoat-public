@@ -152,6 +152,7 @@
             v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
             :key="rindex + row.toString()"
             class="makeGridIgnoreDiv row"
+            :class="(rindex + 1) % pageBreakGap == 0 && 'table-break'"
           >
             <!-- Expand/Collapse controls for the details row -->
             <div
@@ -221,10 +222,6 @@
                 <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
               </div>
             </div>
-            <div
-              v-if="(rindex + 1) % pageBreakGap == 0"
-              class="table-break"
-            ></div>
           </div>
         </div>
       </div>
@@ -1476,7 +1473,7 @@ highlighting a row on hover etc. */
 
 @media print {
   .table-break {
-    page-break-before: always;
+    page-break-after: always;
   }
 }
 </style>
