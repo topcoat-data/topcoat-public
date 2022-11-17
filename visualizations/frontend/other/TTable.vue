@@ -1465,4 +1465,11 @@ highlighting a row on hover etc. */
 .makeTooltipVisible {
   overflow: visible;
 }
+
+@media print {
+  #tableContainer {
+    page-break-inside: avoid;
+    background-color: aquamarine;
+  }
+}
 </style>
