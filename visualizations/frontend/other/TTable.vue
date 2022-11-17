@@ -1473,7 +1473,7 @@ highlighting a row on hover etc. */
 
 @media print {
   .table-break {
-    page-break-after: always;
+    page-break-before: always;
   }
 }
 </style>
