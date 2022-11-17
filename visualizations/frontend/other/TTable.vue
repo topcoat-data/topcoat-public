@@ -1386,7 +1386,7 @@ export default {
 }
 
 @media print {
-  #rootTableContainer {
+  .rootTableContainer {
     page-break-before: always;
     background-color:blueviolet;
   }
