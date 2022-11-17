@@ -1387,8 +1387,9 @@ export default {
 
 @media print {
   .row {
+    break-before: always;
     page-break-before: always;
-    background-color:yellow;
+    background-color:orange;
   }
 }
 
