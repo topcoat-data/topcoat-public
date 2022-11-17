@@ -209,6 +209,10 @@
               >
                 {{ getCellValue(row, column) }}
               </slot>
+              <div
+                v-if="(cindex + 1) % pageBreakGap == 0"
+                class="table-break"
+              ></div>
             </div>
 
             <!-- Detail row -->
@@ -372,6 +376,10 @@ export default {
     excludeFromSort: {
       type: Array,
       default: () => [],
+    },
+    pageBreakGap: {
+      type: Number,
+      default: 13,
     },
   },
   emits: {
@@ -1464,5 +1472,11 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
+}
+
+@media print {
+  .table-break {
+    page-break-before: always;
+  }
 }
 </style>
