@@ -1385,6 +1385,13 @@ export default {
   overflow-x: scroll;
 }
 
+@media print {
+  #tableContainer {
+    page-break-before: always;
+    background-color: tomato;
+  }
+}
+
 .spanAllColumns {
   grid-column: 1/-1;
 }
@@ -1464,12 +1471,5 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
-}
-
-@media print {
-  #tableContainer {
-    page-break-inside: avoid;
-    background-color: aquamarine;
-  }
 }
 </style>
