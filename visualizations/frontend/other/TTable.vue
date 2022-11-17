@@ -1385,11 +1385,15 @@ export default {
   overflow-x: scroll;
 }
 
+@page { 
+    margin: 120px 50px 35px 50px; 
+}
+
 @media print {
-  .row {
+  .rootTableContainer {
     break-before: always;
     page-break-before: always;
-    background-color:orange;
+    background-color:cadetblue;
   }
 }
 
