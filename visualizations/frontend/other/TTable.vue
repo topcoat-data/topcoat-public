@@ -152,7 +152,6 @@
             v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
             :key="rindex + row.toString()"
             class="makeGridIgnoreDiv row"
-            :class="(rindex + 1) % pageBreakGap == 0 && 'table-break'"
           >
             <!-- Expand/Collapse controls for the details row -->
             <div
@@ -374,9 +373,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    pageBreakGap: {
+    indexStart: {
       type: Number,
-      default: 13,
+      default: 0,
+    },
+    indexEnd: {
+      type: Number,
+      default: 0,
     },
   },
   emits: {
@@ -393,8 +396,8 @@ export default {
       internalRows: [],
       searchTerm: "",
       totalRows: 0,
-      startIndex: 0,
-      endIndex: 0,
+      startIndex: this.indexStart,
+      endIndex: this.endIndex,
       isDataAvailable: false,
       columnConfigs: [],
       groups: null,
@@ -1469,11 +1472,5 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
-}
-
-@media print {
-  .table-break {
-    page-break-before: always;
-  }
 }
 </style>
