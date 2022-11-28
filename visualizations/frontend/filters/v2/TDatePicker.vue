@@ -61,7 +61,11 @@
       <!-- To hide default calendar icon when preset is selected -->
       <div v-else slot="icon-calendar"></div>
 
-      <div v-if="$slots['footer']" slot="footer" class="flex items-center h-max">
+      <div
+        v-if="$slots['footer']"
+        slot="footer"
+        class="flex items-center h-max"
+      >
         <slot name="footer"></slot>
       </div>
     </base-date-picker>
@@ -103,16 +107,18 @@ export default {
     label: {
       type: String,
       default: "",
-    }
+    },
   },
   data: () => ({
     date: [],
     presets: {
       range: [
+        { key: "today", label: "Today" },
         { key: "last7days", label: "Last 7 Days" },
         { key: "lastmonth", label: "Last Month" },
         { key: "last30days", label: "Last 30 Days" },
         { key: "last90days", label: "Last 90 Days" },
+        { key: "last365days", label: "Last 365 Days" },
         { key: "mtd", label: "Month to Date" },
         { key: "ytd", label: "Year to Date" },
         { key: "custom", label: "Custom Range" },
@@ -242,6 +248,10 @@ export default {
           startDate = startDate.subtract(90, "days");
           break;
 
+        case "last365days":
+          startDate = startDate.subtract(365, "days");
+          break;
+
         case "mtd":
           startDate = startDate.startOf("month");
           break;
@@ -283,7 +293,7 @@ export default {
       this.selectedPreset = {};
       for (const [attribute, name] of Object.entries(this.$attrs)) {
         if (attribute.includes("t-filter:")) {
-          this.deleteFilter({ name })
+          this.deleteFilter({ name });
         }
       }
     },
@@ -369,6 +379,6 @@ export default {
 }
 
 .mx-datepicker-btn-confirm {
-  border-color: #B3B2BD !important;
+  border-color: #b3b2bd !important;
 }
 </style>
