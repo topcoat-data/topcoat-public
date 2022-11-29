@@ -69,16 +69,23 @@
         />
       </div>
 
-      <span
-        class="px-[12px] text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] inline-flex items-center justify-end"
-        :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
-        @click="selectUnselect"
+      <div
+        class="px-[12px] text-[#145DEB] text-[13px] cursor-pointer font-normal leading-[18px] flex justify-between items-center"
       >
-        <t-loading-spinner v-if="isExpanded && loading" position="relative" />
-        <span v-else>
-          {{ checked.length < menu.length ? "Select All" : "Reset" }}
+        <span
+          class="inline-flex items-center justify-end"
+          :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
+          @click="selectUnselect"
+        >
+          <t-loading-spinner v-if="isExpanded && loading" position="relative" />
+          <span v-else>
+            {{ checked.length < menu.length ? "Select All" : "Reset" }}
+          </span>
         </span>
-      </span>
+        <span @click="showSelected = !showSelected">
+          {{ showSelected ? "Show all" : "Show selected" }}
+        </span>
+      </div>
       <div class="px-[12px] pt-[4px] pb-[6px] w-full">
         <virtual-list
           :style="{
@@ -193,6 +200,7 @@ export default {
     is_filter: true,
     search: "",
     itemComponent: ItemComponent,
+    showSelected: false,
   }),
   computed: {
     names() {
@@ -225,7 +233,11 @@ export default {
           const value = columns[ids][index] && columns[ids][index].toString();
           const title = columns[names][index];
 
-          if (!value || !title) {
+          if (
+            !value ||
+            !title ||
+            (this.showSelected && !this.checked.includes(value))
+          ) {
             continue;
           }
           if (
