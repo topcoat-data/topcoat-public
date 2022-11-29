@@ -113,7 +113,6 @@ export default {
     date: [],
     presets: {
       range: [
-        { key: "today", label: "Today" },
         { key: "last7days", label: "Last 7 Days" },
         { key: "lastmonth", label: "Last Month" },
         { key: "last30days", label: "Last 30 Days" },
