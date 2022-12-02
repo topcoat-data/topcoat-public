@@ -5,15 +5,12 @@
       <div class="flex flex-wrap items-center gap-1">
         <slot name="defaultFilter"></slot>
         <component
+          :is="tag"
           v-for="(data, tag) in visibleFilters"
           :key="tag"
-          :is="tag"
           :ref="tag"
         >
-          <div
-            v-if="!data.isDefault"
-            class="flex items-center justify-end cursor-pointer"
-          >
+          <div class="flex items-center justify-end cursor-pointer">
             <div
               class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
               @click="removeFilter(data.filters)"
@@ -42,9 +39,13 @@ export default {
     menuItems: [],
     visibleFilters: {},
     lastAddedFilter: null,
-    defaultFilters: {},
     selectedFilters: {},
   }),
+  computed: {
+    slotItems() {
+      return this.$slots.default || [];
+    },
+  },
   mounted() {
     this.selectedFilters = this.filters;
     this.handleItems();
@@ -60,23 +61,13 @@ export default {
         if (element.data && element.componentOptions) {
           const attrs = element.data.attrs || {};
           const props = element?.componentOptions?.propsData;
-          const label = attrs["item-label"] || attrs["itemLabel"] || props.label;
+          const label =
+            attrs["item-label"] || attrs["itemLabel"] || props.label;
           const type =
             attrs["dropdown-section"] ||
             attrs["dropdownSection"] ||
             "UNGROUPED";
           const unusedFilters = this.getFilters(attrs, true);
-          element.isDefault = this.hasDefaultValue(props);
-
-          if (element.isDefault) {
-            // If has default value, extract all url filters from component.
-            const defaultFilters = unusedFilters.reduce(
-              (a, key) => Object.assign(a, { [key]: "" }),
-              {}
-            );
-            this.defaultFilters = { ...this.defaultFilters, ...defaultFilters };
-            return;
-          }
 
           const tag = `${element.tag}${index}`;
           if (unusedFilters.length) {
@@ -99,7 +90,7 @@ export default {
       // this loop is required again.
       let assignedFilters = [];
       const visibleFilters = {};
-      for (let filter in { ...this.selectedFilters, ...this.defaultFilters }) {
+      for (let filter in this.selectedFilters) {
         if (assignedFilters.includes(filter)) {
           continue;
         }
@@ -112,7 +103,7 @@ export default {
               assignedFilters = [...assignedFilters, ...urlFilters];
               if (!this.initialisedComponents.includes(tag)) {
                 window.Vue.component(tag, {
-                  render: (c) => {
+                  render: () => {
                     return element;
                   },
                 });
@@ -121,7 +112,6 @@ export default {
 
               visibleFilters[tag] = {
                 filters: urlFilters,
-                isDefault: element.isDefault,
               };
             }
           }
@@ -152,7 +142,10 @@ export default {
       for (let attribute of Object.keys(attrs)) {
         const param = attrs[attribute];
         if (attribute.includes("t-filter")) {
-          if (this.selectedFilters.hasOwnProperty(param) && unusedOnly) {
+          if (
+            Object.prototype.hasOwnProperty.call(this.selectedFilters, param) &&
+            unusedOnly
+          ) {
             urlFilters = [];
             break;
           } else {
@@ -165,7 +158,9 @@ export default {
     removeFilter(urlFilters) {
       for (let filter of urlFilters) {
         this.deleteFilter({ name: filter });
-        if (this.selectedFilters.hasOwnProperty(filter)) {
+        if (
+          Object.prototype.hasOwnProperty.call(this.selectedFilters, filter)
+        ) {
           this.$delete(this.selectedFilters, filter);
         }
       }
@@ -182,20 +177,6 @@ export default {
           }
         }
       });
-    },
-    hasDefaultValue(props) {
-      // Better solution?
-      for (let key in props) {
-        if (key.includes("default")) {
-          return true;
-        }
-      }
-      return false;
-    },
-  },
-  computed: {
-    slotItems() {
-      return this.$slots.default || [];
     },
   },
 };
