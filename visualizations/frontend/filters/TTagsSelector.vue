@@ -61,6 +61,7 @@
           <input
             v-model="search"
             class="bg-transparent outline-none !text-black w-full"
+            :class="loading && 'cursor-wait'"
           />
         </div>
         <div v-if="showList" class="p-2">
@@ -130,7 +131,7 @@
             <close-icon :size="12" @click.stop="removeTag(selectedTag)" />
           </div>
         </div>
-        <div v-else class="p-2">No tags selected</div>
+        <div v-else class="p-2">No values selected</div>
       </div>
       <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
         <slot name="footer"></slot>
@@ -189,14 +190,13 @@ export default {
           continue;
         }
 
-        if (
-          !this.selectedKey &&
-          !key.value.toLowerCase().includes(this.search.toLowerCase())
+        if (!this.selectedKey) {
+          if (!key.value.toLowerCase().includes(this.search.toLowerCase())) {
+            continue;
+          }
+        } else if (
+          !value.value.toLowerCase().includes(this.search.toLowerCase())
         ) {
-          continue;
-        }
-
-        if (!value.value.toLowerCase().includes(this.search.toLowerCase())) {
           continue;
         }
 
@@ -280,6 +280,9 @@ export default {
       this.unsetFilterValue("selected_items");
     },
     open() {
+      if (this.loading) {
+        return false;
+      }
       if (this.isSingleTag && !this.selectedKey) {
         const tagKeys = Object.keys(this.tags);
         if (tagKeys.length === 1) {
