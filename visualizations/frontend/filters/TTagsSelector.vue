@@ -274,7 +274,10 @@ export default {
           urlObject[obj.key] = [obj.value];
         }
       }
-      return this.setFilterValue("selected_items", JSON.stringify(urlObject));
+      const urlValue = Object.keys(urlObject).length
+        ? JSON.stringify(urlObject)
+        : "";
+      return this.setFilterValue("selected_items", urlValue);
     },
     removeFilter() {
       this.unsetFilterValue("selected_items");
