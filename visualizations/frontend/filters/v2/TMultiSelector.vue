@@ -23,7 +23,7 @@
           <div v-if="canShowSelected" class="flex items-center font-normal">
             :
             <div
-              v-for="(item, index) in checked"
+              v-for="(item, index) in checked.slice(0, selectedVisibleCount)"
               :key="item"
               class="flex items-center pl-1"
             >
@@ -32,6 +32,13 @@
                 <close-icon :size="14" @click.stop="removeItem(item)" />
               </span>
               <span v-else-if="checked.length - 1 != index">, </span>
+            </div>
+            <div
+              v-if="checked.length > selectedVisibleCount"
+              class="flex items-center gap-2 font-medium pl-1"
+            >
+              <div class="border-r border-[#7FA7F5] py-2"></div>
+              +{{ checked.length - selectedVisibleCount }}
             </div>
           </div>
           <div v-else>
@@ -193,6 +200,10 @@ export default {
     canShowSelected: {
       type: Boolean,
       default: false,
+    },
+    selectedVisibleCount: {
+      type: Number,
+      default: 5,
     },
   },
   data: () => ({
