@@ -15,7 +15,7 @@
         <div v-if="selected.length" class="flex flex-wrap gap-1">
           <span>:</span>
           <div
-            v-for="selectedTag of selected"
+            v-for="selectedTag of selected.slice(0, selectedVisibleCount)"
             :key="selectedTag"
             class="bg-[#EAF1FF] rounded flex items-center gap-1 rounded"
           >
@@ -31,8 +31,17 @@
           </div>
         </div>
       </div>
-      <t-loading-spinner v-if="loading" position="relative" />
-      <menu-down-icon v-else :size="20" />
+      <div class="flex items-center tracking-widest">
+        <div
+          v-if="selected.length > selectedVisibleCount"
+          class="flex items-center gap-2"
+        >
+          <div class="border-r border-[#7FA7F5] py-2"></div>
+          +{{ selected.length - selectedVisibleCount }}
+        </div>
+        <t-loading-spinner v-if="loading" position="relative" />
+        <menu-down-icon v-else :size="20" />
+      </div>
     </div>
 
     <!-- Popup Contents -->
@@ -170,6 +179,10 @@ export default {
     valueLimit: {
       type: Number,
       default: 30,
+    },
+    selectedVisibleCount: {
+      type: Number,
+      default: 5,
     },
   },
   data: () => ({
