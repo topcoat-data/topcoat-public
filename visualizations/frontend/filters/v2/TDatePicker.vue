@@ -1,7 +1,16 @@
 <template>
-  <div class="relative flex t-date-picker">
+  <div
+    class="relative flex t-date-picker flex items-center border rounded cursor-pointer"
+    :class="
+      isActive
+        ? 'border-[#145DEB] text-[#145DEB] bg-[#EAF1FF]'
+        : 'border-[#C3C2CB] hover:border-[#555463] text-[#555463] bg-white'
+    "
+    @click="handleOpen"
+  >
     <!-- Date Picker -->
-    <div class="flex items-center text-sm font-medium" v-if="label">
+    <calendar-blank-outline-icon :size="18" class="pl-2" />
+    <div v-if="label" class="flex items-center text-sm font-medium pl-2">
       {{ label }}: &nbsp;
     </div>
     <base-date-picker
@@ -12,23 +21,16 @@
       :range="mode === 'range'"
       :format="dateFormat"
       :range-separator="seperator"
-      :class="relativePreset && 'w-auto'"
+      :class="typeClass"
+      :editable="false"
+      :open="isOpen"
       @confirm="handleConfirm"
       @pick="setCustomPreset"
-      @open="fetchLayerData"
+      @close="handleClose"
     >
-      <div
-        v-if="relativePreset"
-        slot="input"
-        class="border border-[#C3C2CB] py-1 px-2 bg-white cursor-pointer rounded-[4px] font-medium"
-      >
+      <div v-if="relativePreset" slot="input" class="py-1 cursor-pointer">
         <div class="flex items-center gap-1 w-max">
-          <calendar-blank-outline-icon class="text-[16px]" />
           {{ relativePreset.label }}
-          <button v-if="!isRequired" @click="handleClear">
-            <close-icon title="clear date selection" />
-          </button>
-          <menu-down-icon class="text-[20px]" />
         </div>
       </div>
       <div slot="sidebar" class="presets-dropown">
@@ -48,18 +50,8 @@
       <!-- To hide default clear icon -->
       <div slot="icon-clear"></div>
 
-      <div v-if="!relativePreset" slot="icon-calendar">
-        <div class="flex items-center gap-1">
-          <t-loading-spinner v-if="loading" position="relative" />
-          <button v-if="!isRequired" @click="handleClear">
-            <close-icon />
-          </button>
-          <calendar-blank-outline-icon />
-        </div>
-      </div>
-
       <!-- To hide default calendar icon when preset is selected -->
-      <div v-else slot="icon-calendar"></div>
+      <div slot="icon-calendar"></div>
 
       <div
         v-if="$slots['footer']"
@@ -69,6 +61,19 @@
         <slot name="footer"></slot>
       </div>
     </base-date-picker>
+
+    <div class="flex items-center pl-1">
+      <button
+        v-if="!isRequired"
+        class="relative"
+        :class="isActive && 'text-[#145DEB]'"
+        @click="handleClear"
+      >
+        <close-icon :size="18" />
+      </button>
+      <t-loading-spinner v-if="loading" position="relative" class="pr-1" />
+      <menu-down-icon v-else class="text-[20px]" />
+    </div>
   </div>
 </template>
 
@@ -133,6 +138,7 @@ export default {
       ],
     },
     selectedPreset: {},
+    isOpen: false,
     is_filter: true,
   }),
   computed: {
@@ -151,6 +157,22 @@ export default {
         return null;
       }
       return this.presets[this.mode].filter((p) => p.key === preset)[0];
+    },
+    isActive() {
+      if (Array.isArray(this.date) && this.date.length) {
+        return true;
+      } else if (this.date instanceof Date) {
+        return true;
+      }
+      return false;
+    },
+    typeClass() {
+      if (this.relativePreset) {
+        return "date-picker-relative";
+      } else if (Array.isArray(this.date) && this.date.length) {
+        return "date-picker-range";
+      }
+      return "date-picker-single";
     },
   },
   methods: {
@@ -345,6 +367,14 @@ export default {
         this.selectedPreset = preset;
         this.handleConfirm(this.date);
       }
+      return null;
+    },
+    handleOpen() {
+      this.fetchLayerData();
+      this.isOpen = true;
+    },
+    handleClose() {
+      this.isOpen = false;
     },
   },
 };
@@ -379,5 +409,29 @@ export default {
 
 .mx-datepicker-btn-confirm {
   border-color: #b3b2bd !important;
+}
+
+.mx-datepicker input {
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: #145deb;
+  height: 28px;
+  padding-left: 0px;
+  padding-right: 0px;
+  cursor: pointer !important;
+}
+
+.date-picker-relative {
+  width: auto !important;
+  padding-right: 20px;
+}
+
+.date-picker-single {
+  width: 90px !important;
+}
+
+.date-picker-range {
+  width: 180px !important;
 }
 </style>
