@@ -142,6 +142,6 @@ export default {
 }
 
 .dropdown-filter .in-active {
-  @apply border-[#C3C2CB] text-[#555463] bg-white;
+  @apply border-[#C3C2CB] hover:border-[#555463] text-[#555463] bg-white;
 }
 </style>
