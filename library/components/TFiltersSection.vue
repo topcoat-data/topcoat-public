@@ -11,12 +11,29 @@
           :ref="tag"
         >
           <div class="flex items-center justify-end cursor-pointer">
-            <div
-              class="w-[34px] h-[32px] border border-[#B3B2BD] rounded flex items-center justify-center"
-              @click="removeFilter(data.filters)"
-            >
-              X
-            </div>
+            <t-tooltip position="right" width="100px">
+              <div
+                slot="trigger"
+                class="w-[34px] h-[32px] border border-[#B3B2BD] hover:border-[#555463] rounded flex items-center justify-center"
+                @click="removeFilter(data.filters)"
+              >
+                <!-- Limitation: Using icon component as <delete-icon /> does not work with $slots manipulation -->
+                <!-- Svg of icon is used directly -->
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10.6667 6V12.6667H5.33337V6H10.6667ZM9.66671 2H6.33337L5.66671 2.66667H3.33337V4H12.6667V2.66667H10.3334L9.66671 2ZM12 4.66667H4.00004V12.6667C4.00004 13.4 4.60004 14 5.33337 14H10.6667C11.4 14 12 13.4 12 12.6667V4.66667Z"
+                    fill="#555463"
+                  />
+                </svg>
+              </div>
+              Remove filter
+            </t-tooltip>
           </div>
         </component>
         <t-filters-dropdown :items="menuItems" @opened="handleFilterOpen" />
