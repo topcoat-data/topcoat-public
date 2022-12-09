@@ -370,12 +370,10 @@ export default {
       return null;
     },
     handleOpen() {
-      console.log("open");
       this.fetchLayerData();
       this.isOpen = true;
     },
     handleClose() {
-      console.log("close");
       this.isOpen = false;
     },
   },
