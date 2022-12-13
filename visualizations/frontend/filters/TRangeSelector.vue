@@ -43,6 +43,65 @@
         :max-value="barMaxValue"
         @input="update"
       />
+      <div class="flex items-center justify-between px-2">
+        <small>Min: {{ minValue }}</small>
+        <small>Max: {{ maxValue }}</small>
+      </div>
+      <div class="flex items-center justify-between px-2 gap-2 pb-2">
+        <t-tooltip position="right" width="155px">
+          <div
+            slot="trigger"
+            class="border rounded flex justify-between items-center gap-1"
+            :class="
+              focusedInput === 'min'
+                ? 'border-[#145DEB] text-[#145DEB]'
+                : 'border-[#B3B2BD]'
+            "
+          >
+            <input
+              type="number"
+              class="p-2 border-none outline-none h-full rounded text-[#555463]"
+              :value="barMinValue"
+              @keyup.enter="update($event, 'min')"
+              @focus="focusedInput = 'min'"
+              @blur="focusedInput = null"
+            />
+            <span
+              class="px-2 pt-1"
+              :class="focusedInput === 'min' ? 'opacity-100' : 'opacity-0'"
+              >↵</span
+            >
+          </div>
+          <span>Press enter to confirm</span>
+        </t-tooltip>
+        -
+        <t-tooltip position="left" width="155px">
+          <div
+            slot="trigger"
+            class="border rounded flex justify-between items-center gap-1"
+            :class="
+              focusedInput === 'max'
+                ? 'border-[#145DEB] text-[#145DEB]'
+                : 'border-[#B3B2BD]'
+            "
+          >
+            <input
+              type="number"
+              class="p-2 border-none outline-none h-full rounded text-[#555463]"
+              :value="barMaxValue"
+              @keyup.enter="update($event, 'max')"
+              @focus="focusedInput = 'max'"
+              @blur="focusedInput = null"
+            />
+            <span
+              class="px-2 pt-1"
+              :class="focusedInput === 'max' ? 'opacity-100' : 'opacity-0'"
+              >↵</span
+            >
+          </div>
+          <span>Press enter to confirm</span>
+        </t-tooltip>
+      </div>
       <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
         <slot name="footer"></slot>
       </div>
@@ -76,6 +135,7 @@ export default {
   },
   data: () => ({
     is_filter: true,
+    focusedInput: null,
   }),
   computed: {
     minValue() {
@@ -121,17 +181,39 @@ export default {
     this.fetchLayerData();
   },
   methods: {
-    update: window._.debounce(function (e) {
-      if (e.minValue === e.min && e.maxValue == e.max) {
-        this.removeFilter();
-      } else {
-        this.barMinValue = e.minValue;
-        this.barMaxValue = e.maxValue;
+    update: window._.debounce(function (e, type = null) {
+      if (type) {
+        this.handleInputs(e.target.value, type);
+        return;
       }
+      this.barMinValue = e.minValue;
+      this.barMaxValue = e.maxValue;
     }, 250),
     removeFilter() {
       this.unsetFilterValue("min");
       this.unsetFilterValue("max");
+    },
+    handleInputs(value, type) {
+      if (!["max", "min"].includes(type)) {
+        return;
+      }
+
+      if (type === "min") {
+        if (value >= this.barMaxValue) {
+          value = this.barMaxValue - 1;
+        } else if (value < this.minValue) {
+          value = this.minValue;
+        }
+        this.barMinValue = value;
+        return;
+      }
+
+      if (value <= this.barMinValue) {
+        value = this.barMinValue + 1;
+      } else if (value > this.maxValue) {
+        value = this.maxValue;
+      }
+      this.barMaxValue = value;
     },
   },
 };
@@ -161,5 +243,16 @@ export default {
 }
 .t-range-slider .multi-range-slider .caption {
   bottom: 31px;
+}
+
+/* Hide input number arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>
