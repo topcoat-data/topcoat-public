@@ -26,7 +26,7 @@
             ]"
             @click="internalPage = page !== '...' ? page : internalPage"
           >
-            {{ page }}
+            {{ page.toLocaleString() }}
           </button>
         </li>
         <li class="pagination-nav-item">
@@ -41,10 +41,9 @@
       <div
         class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
       >
-        Showing {{ startIndex + 1 }}-{{
-          Math.min(startIndex + itemsPerPage, numberOfItems)
-        }}
-        of {{ numberOfItems }}
+        Showing {{ startIndex + 1 }}- 
+        {{  Math.min(startIndex + itemsPerPage, numberOfItems) }}
+        of {{ numberOfItems.toLocaleString() }}
       </div>
     </div>
   </div>
