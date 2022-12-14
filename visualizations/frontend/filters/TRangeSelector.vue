@@ -41,17 +41,17 @@
         :step="step"
         :min-value="barMinValue"
         :max-value="barMaxValue"
-        @input="update"
+        @input="handleSlider"
       />
       <div class="flex items-center justify-between px-2">
         <small>Min: {{ minValue }}</small>
         <small>Max: {{ maxValue }}</small>
       </div>
-      <div class="flex items-center justify-between px-2 gap-2 pb-2">
+      <div class="flex items-center justify-between gap-2 px-2 pb-2">
         <t-tooltip position="right" width="155px">
           <div
             slot="trigger"
-            class="border rounded flex justify-between items-center gap-1"
+            class="flex items-center justify-between gap-1 border rounded"
             :class="
               focusedInput === 'min'
                 ? 'border-[#145DEB] text-[#145DEB]'
@@ -78,7 +78,7 @@
         <t-tooltip position="left" width="155px">
           <div
             slot="trigger"
-            class="border rounded flex justify-between items-center gap-1"
+            class="flex items-center justify-between gap-1 border rounded"
             :class="
               focusedInput === 'max'
                 ? 'border-[#145DEB] text-[#145DEB]'
@@ -102,9 +102,9 @@
           <span>Press enter to confirm</span>
         </t-tooltip>
       </div>
-      <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
-        <slot name="footer"></slot>
-      </div>
+    </div>
+    <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
@@ -181,11 +181,17 @@ export default {
     this.fetchLayerData();
   },
   methods: {
+    handleSlider(e, type = null) {
+      this.triggerCaption(true);
+      this.update(e, type);
+    },
     update: window._.debounce(function (e, type = null) {
+      this.triggerCaption();
       if (type) {
         this.handleInputs(e.target.value, type);
         return;
       }
+
       this.barMinValue = e.minValue;
       this.barMaxValue = e.maxValue;
     }, 250),
@@ -214,6 +220,12 @@ export default {
         value = this.maxValue;
       }
       this.barMaxValue = value;
+    },
+    triggerCaption(show = false) {
+      const element = document.querySelectorAll(".multi-range-slider .caption");
+      element.forEach((e) => {
+        e.style.display = show ? "flex" : "none";
+      });
     },
   },
 };
