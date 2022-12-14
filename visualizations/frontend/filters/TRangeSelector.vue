@@ -102,9 +102,9 @@
           <span>Press enter to confirm</span>
         </t-tooltip>
       </div>
-      <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
-        <slot name="footer"></slot>
-      </div>
+    </div>
+    <div v-if="$slots['footer']" class="p-2 border-t border-[#E4E3E8]">
+      <slot name="footer"></slot>
     </div>
   </t-dropdown>
 </template>
