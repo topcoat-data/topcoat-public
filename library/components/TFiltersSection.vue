@@ -39,7 +39,7 @@
         <t-filters-dropdown :items="menuItems" @opened="handleFilterOpen" />
 
 
-        <div class="flex gap-1 hover:text-[#145DEB] cursor-pointer" @click="removeAllFilters">
+        <div class="flex gap-1 text-[#145DEB] cursor-pointer" @click="removeAllFilters">
             <backup-restore-icon :size="18" />
             Reset all filters
         </div>
