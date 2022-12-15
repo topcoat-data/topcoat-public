@@ -37,13 +37,13 @@
           </div>
         </component>
         <t-filters-dropdown :items="menuItems" @opened="handleFilterOpen" />
-      </div>
 
-      <!-- Todo: add reset filters functionality -->
-      <!-- <div class="flex gap-1 hover:text-[#145DEB] cursor-pointer">
-        <backup-restore-icon :size="18" />
-        Reset all filters
-      </div> -->
+
+        <div class="flex gap-1 hover:text-[#145DEB] cursor-pointer" @click="removeAllFilters">
+            <backup-restore-icon :size="18" />
+            Reset all filters
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -173,6 +173,7 @@ export default {
       return urlFilters;
     },
     removeFilter(urlFilters) {
+        console.log('removeFilter', urlFilters)
       for (let filter of urlFilters) {
         this.deleteFilter({ name: filter });
         if (
@@ -182,6 +183,12 @@ export default {
         }
       }
       this.handleItems();
+    },
+    removeAllFilters(){
+        console.log('this.visibleFilters', this.visibleFilters)
+        Object.keys(this.visibleFilters).forEach((vfname)=>{
+            this.removeFilter(this.visibleFilters[vfname].filters)
+        })
     },
     addDeleteButton(tag) {
       this.$nextTick(() => {
