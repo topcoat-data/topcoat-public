@@ -173,7 +173,6 @@ export default {
       return urlFilters;
     },
     removeFilter(urlFilters) {
-        console.log('removeFilter', urlFilters)
       for (let filter of urlFilters) {
         this.deleteFilter({ name: filter });
         if (
@@ -185,7 +184,6 @@ export default {
       this.handleItems();
     },
     removeAllFilters(){
-        console.log('this.visibleFilters', this.visibleFilters)
         Object.keys(this.visibleFilters).forEach((vfname)=>{
             this.removeFilter(this.visibleFilters[vfname].filters)
         })
