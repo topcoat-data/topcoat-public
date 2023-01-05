@@ -352,9 +352,6 @@ export default {
     modifiableColumns: {
       type: Array,
     },
-    sortableColumns: {
-      type: Array,
-    },
     sort: {
       type: String,
       default: "none",
@@ -373,6 +370,18 @@ export default {
       type: Array,
       default: () => [],
     },
+    defaultSort: {
+        type: Array,
+        default: null,
+        validator(sorts) {
+            if(sorts === null) return true;
+            sorts.forEach((sort)=>{
+                if(!sort.column || typeof sort.column !== "string") return false;
+                if(!sort.direction || !["ASC", "DESC"].includes(sort.direction)) return false;
+            })
+            return true;
+        },
+    }
   },
   emits: {
     "update:selectedItem": null,
@@ -592,32 +601,22 @@ export default {
 
       // All computed columns cannot currently be sorted and will be removed from the sorting configuration
       //
-      // Some columns can be configured to be sortable with the sortableColumns prop
-      // All columns will be configured to be sortable if the sort prop is not none
-      // if both sortableColumns and sort are set, sortableColumns is used
-      //
       // If the url includes sortable column configuration, use that to determine direction and ignore
       // the default sort direction
       //
-      // Any columns in the url sortable configuration that are not in sortableColumns should be ignored
+      // Any columns in the url sortable configuration that are not in defaultSort should be ignored
       // when configuring the sorting
       if (setColumnSort && this.sort !== "none") {
-        let sortableColumns;
-        // some columns can be sorted
-        if (this.sortableColumns) {
-          sortableColumns = [...this.sortableColumns];
-        } else {
-          // all columns can be sorted
-          sortableColumns = cols.map((col) => {
+        let sortableColumns = cols.map((col) => {
             const sortCol = {
-              column: col.property,
-              direction: this.sortDirection,
+                column: col.property,
+                direction: this.sortDirection,
             };
             return sortCol;
-          });
-        }
+        });
+
         const urlSortConfig = this.getUrlSortConfiguration();
-        // sort this.sortableColumns by order of URL column configs if urlSortConfig is set
+        // sort sortableColumns by order of URL column configs if urlSortConfig is set
         if (urlSortConfig) {
           let sortConfig = [];
           urlSortConfig.forEach((usc) => {
@@ -628,11 +627,22 @@ export default {
               );
             }
           });
-          // remove the default sort direction of columns not sorted by the url
-          sortableColumns.forEach((sc) => delete sc.direction);
           // append remaining sortable but not sorted columns to the configuration
           sortConfig = sortConfig.concat(sortableColumns);
           sortableColumns = sortConfig;
+        } else if( this.defaultSort){
+            let sortConfig = [];
+            this.defaultSort.forEach((ds) => {
+                if (sortableColumns.find((sc) => sc.column === ds.column)) {
+                sortConfig.push(ds);
+                sortableColumns = sortableColumns.filter(
+                    (sc) => sc.column !== usc.column
+                );
+                }
+            });
+            // append remaining sortable but not sorted columns to the configuration
+            sortConfig = sortConfig.concat(sortableColumns);
+            sortableColumns = sortConfig;
         }
 
         this.excludeFromSort.forEach((efs) => {
