@@ -630,13 +630,13 @@ export default {
           // append remaining sortable but not sorted columns to the configuration
           sortConfig = sortConfig.concat(sortableColumns);
           sortableColumns = sortConfig;
-        } else if( this.defaultSort){
+        } else if(this.defaultSort){
             let sortConfig = [];
             this.defaultSort.forEach((ds) => {
                 if (sortableColumns.find((sc) => sc.column === ds.column)) {
                 sortConfig.push(ds);
                 sortableColumns = sortableColumns.filter(
-                    (sc) => sc.column !== usc.column
+                    (sc) => sc.column !== ds.column
                 );
                 }
             });
