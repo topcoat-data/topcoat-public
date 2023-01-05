@@ -603,9 +603,6 @@ export default {
       //
       // If the url includes sortable column configuration, use that to determine direction and ignore
       // the default sort direction
-      //
-      // Any columns in the url sortable configuration that are not in defaultSort should be ignored
-      // when configuring the sorting
       if (setColumnSort && this.sort !== "none") {
         let sortableColumns = cols.map((col) => {
             const sortCol = {
