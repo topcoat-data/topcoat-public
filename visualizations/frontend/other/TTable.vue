@@ -371,17 +371,18 @@ export default {
       default: () => [],
     },
     defaultSort: {
-        type: Array,
-        default: null,
-        validator(sorts) {
-            if(sorts === null) return true;
-            sorts.forEach((sort)=>{
-                if(!sort.column || typeof sort.column !== "string") return false;
-                if(!sort.direction || !["ASC", "DESC"].includes(sort.direction)) return false;
-            })
-            return true;
-        },
-    }
+      type: Array,
+      default: null,
+      validator(sorts) {
+        if (sorts === null) return true;
+        sorts.forEach((sort) => {
+          if (!sort.column || typeof sort.column !== "string") return false;
+          if (!sort.direction || !["ASC", "DESC"].includes(sort.direction))
+            return false;
+        });
+        return true;
+      },
+    },
   },
   emits: {
     "update:selectedItem": null,
@@ -605,11 +606,11 @@ export default {
       // the default sort direction
       if (setColumnSort && this.sort !== "none") {
         let sortableColumns = cols.map((col) => {
-            const sortCol = {
-                column: col.property,
-                direction: this.sortDirection,
-            };
-            return sortCol;
+          const sortCol = {
+            column: col.property,
+            direction: this.sortDirection,
+          };
+          return sortCol;
         });
 
         const urlSortConfig = this.getUrlSortConfiguration();
@@ -627,19 +628,19 @@ export default {
           // append remaining sortable but not sorted columns to the configuration
           sortConfig = sortConfig.concat(sortableColumns);
           sortableColumns = sortConfig;
-        } else if(this.defaultSort){
-            let sortConfig = [];
-            this.defaultSort.forEach((ds) => {
-                if (sortableColumns.find((sc) => sc.column === ds.column)) {
-                sortConfig.push(ds);
-                sortableColumns = sortableColumns.filter(
-                    (sc) => sc.column !== ds.column
-                );
-                }
-            });
-            // append remaining sortable but not sorted columns to the configuration
-            sortConfig = sortConfig.concat(sortableColumns);
-            sortableColumns = sortConfig;
+        } else if (this.defaultSort) {
+          let sortConfig = [];
+          this.defaultSort.forEach((ds) => {
+            if (sortableColumns.find((sc) => sc.column === ds.column)) {
+              sortConfig.push(ds);
+              sortableColumns = sortableColumns.filter(
+                (sc) => sc.column !== ds.column
+              );
+            }
+          });
+          // append remaining sortable but not sorted columns to the configuration
+          sortConfig = sortConfig.concat(sortableColumns);
+          sortableColumns = sortConfig;
         }
 
         this.excludeFromSort.forEach((efs) => {
