@@ -374,12 +374,14 @@ export default {
       type: Array,
       default: null,
       validator(sorts) {
-        if (sorts === null) return true;
-        sorts.forEach((sort) => {
-          if (!sort.column || typeof sort.column !== "string") return false;
-          if (!sort.direction || !["ASC", "DESC"].includes(sort.direction))
-            return false;
-        });
+        const directionList = ["ASC", "DESC"];
+        if (sorts) {
+          return sorts.every(
+            (sort) =>
+              directionList.includes(sort?.direction) &&
+              typeof sort?.column === "string"
+          );
+        }
         return true;
       },
     },
