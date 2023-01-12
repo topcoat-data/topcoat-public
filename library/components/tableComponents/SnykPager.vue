@@ -32,10 +32,10 @@
                 >
                   <div
                     v-if="itemsPerPageOption === itemsPerPage"
-                    class="text-[#1f2937]"
+                    class="text-[#1f2937] selected-items-per-page"
                   >
                     {{ itemsPerPageOption.toLocaleString() }}
-                    <check-icon class="text-[#145DEB] ml-[8px]" />
+                    <check-icon class="text-[#145DEB] ml-[8px]" size="20" />
                   </div>
                   <div v-else>
                     {{ itemsPerPageOption.toLocaleString() }}
@@ -208,5 +208,9 @@ export default {
 
 #pages {
   z-index: 2;
+}
+
+.selected-items-per-page {
+  display: flex;
 }
 </style>
