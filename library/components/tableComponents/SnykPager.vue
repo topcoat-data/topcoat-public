@@ -30,11 +30,16 @@
                 <div
                   class="flex items-center justify-between w-full leading-[16.41px]"
                 >
-                  {{ itemsPerPageOption.toLocaleString() }}
-                  <check-icon
+                  <div
                     v-if="itemsPerPageOption === itemsPerPage"
-                    class="text-[#145DEB] ml-[8px]"
-                  />
+                    class="text-[#1C1C21]"
+                  >
+                    {{ itemsPerPageOption.toLocaleString() }}
+                    <check-icon class="text-[#145DEB] ml-[8px]" />
+                  </div>
+                  <div v-else>
+                    {{ itemsPerPageOption.toLocaleString() }}
+                  </div>
                 </div>
               </li>
             </ul>
