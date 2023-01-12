@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="numberOfItems && numberOfItems > itemsPerPage"
-      class="pagination-footer flex justify-center relative"
+      class="pagination-footer flex justify-center relative h-8"
     >
       <!-- Rows Per Page -->
       <t-dropdown
