@@ -5,7 +5,10 @@
       class="pagination-footer flex justify-center relative"
     >
       <!-- Rows Per Page -->
-      <t-dropdown :disable-active-class="true">
+      <t-dropdown
+        :disable-active-class="true"
+        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-medium"
+      >
         <!-- Handle -->
         <div
           slot="handle"
