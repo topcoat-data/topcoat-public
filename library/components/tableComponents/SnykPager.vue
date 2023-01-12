@@ -5,7 +5,7 @@
       class="pagination-footer flex justify-center relative"
     >
       <!-- Rows Per Page -->
-      <t-dropdown>
+      <t-dropdown :disable-active-class="true">
         <!-- Handle -->
         <div
           slot="handle"
@@ -18,9 +18,9 @@
         <!-- Popup Contents -->
         <div class="min-w-[294px]" attrs.slot="outside">
           <div class="px-[8px] pt-[4px] pb-[6px] w-full">
-            <ul class="max-h-[320px] overflow-auto">
+            <ul class="max-h-[320px] max-w-[320px] overflow-auto">
               <li
-                v-for="itemsPerPageOption in [10, 50, 100, 500, 1000]"
+                v-for="itemsPerPageOption in [10, 50, 100, 500, '1,000']"
                 :key="itemsPerPageOption"
                 class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
               >

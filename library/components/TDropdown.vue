@@ -97,6 +97,7 @@ export default {
   },
   methods: {
     alignPopup() {
+      return (this.alignClass = "top-0");
       const element = this.$refs.popup;
 
       if (element) {
