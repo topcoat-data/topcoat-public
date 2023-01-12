@@ -7,21 +7,21 @@
       <!-- Rows Per Page -->
       <t-dropdown
         :disable-active-class="true"
-        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-medium mr-[8px] pt-[16px]"
+        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-large"
       >
         <!-- Handle -->
         <div
           slot="handle"
-          class="flex items-center gap-1 p-1 text-sm font-medium"
+          class="flex items-center gap-1 p-1 text-sm font-large"
         >
           <span>{{ itemsPerPage }} Per Page </span>
           <menu-down-icon size="20" />
         </div>
 
         <!-- Popup Contents -->
-        <div class="min-w-[294px]" attrs.slot="outside">
+        <div attrs.slot="outside">
           <div class="px-[8px] pt-[4px] pb-[6px] w-full">
-            <ul class="max-h-[320px] max-w-[100px] overflow-auto">
+            <ul class="max-h-[320px] overflow-auto">
               <li
                 v-for="itemsPerPageOption in [10, 50, 100, 500, '1,000']"
                 :key="itemsPerPageOption"
@@ -38,6 +38,7 @@
         </div>
       </t-dropdown>
 
+      <!-- controls -->
       <ul
         id="pages"
         class="pagination-nav pagination-selector inline-flex pt-[16px]"
@@ -76,6 +77,8 @@
           </button>
         </li>
       </ul>
+
+      <!-- totals -->
       <div
         class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
       >
