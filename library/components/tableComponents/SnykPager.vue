@@ -12,7 +12,7 @@
         <!-- Handle -->
         <div
           slot="handle"
-          class="flex items-center gap-1 p-1 text-sm font-large"
+          class="flex items-center gap-1 p-1 text-medium font-large"
         >
           <span>{{ itemsPerPage }} Per Page </span>
           <menu-down-icon size="20" />
@@ -25,7 +25,7 @@
               <li
                 v-for="itemsPerPageOption in [10, 50, 100, 500, 1000]"
                 :key="itemsPerPageOption"
-                class="flex justify-between px-[8px] pb-[1px] text-sm cursor-pointer text-[#555463]"
+                class="flex justify-between px-[8px] pb-[1px] text-medium cursor-pointer text-[#555463]"
               >
                 <div
                   class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]"
