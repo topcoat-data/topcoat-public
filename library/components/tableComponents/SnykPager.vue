@@ -25,15 +25,15 @@
               <li
                 v-for="itemsPerPageOption in [10, 50, 100, 500, 1000]"
                 :key="itemsPerPageOption"
-                class="flex justify-between m-[8px] text-medium cursor-pointer text-[#555463]"
+                class="flex justify-between m-[16px] text-medium cursor-pointer text-[#145DEB]"
               >
                 <div
-                  class="flex items-center justify-between w-full hover:text-[#1C1C21] leading-[16.41px]"
+                  class="flex items-center justify-between w-full leading-[16.41px]"
                 >
                   {{ itemsPerPageOption.toLocaleString() }}
                   <check-icon
                     v-if="itemsPerPageOption === itemsPerPage"
-                    class="text-[#145DEB] mr-[8px]"
+                    class="text-[#145DEB] ml-[8px]"
                   />
                 </div>
               </li>
