@@ -18,7 +18,7 @@
         <!-- Popup Contents -->
         <div class="min-w-[294px]" attrs.slot="outside">
           <div class="px-[8px] pt-[4px] pb-[6px] w-full">
-            <ul class="max-h-[320px] max-w-[320px] overflow-auto">
+            <ul class="max-h-[320px] max-w-[100px] overflow-auto">
               <li
                 v-for="itemsPerPageOption in [10, 50, 100, 500, '1,000']"
                 :key="itemsPerPageOption"
