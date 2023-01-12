@@ -56,7 +56,7 @@ export default {
     },
   },
   data: () => ({
-    alignClass: "top-0 right-0",
+    alignClass: " top-20 right-20 ",
     isPopupOpen: false,
   }),
   computed: {
