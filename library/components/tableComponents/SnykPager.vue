@@ -7,7 +7,7 @@
       <!-- Rows Per Page -->
       <t-dropdown
         :disable-active-class="true"
-        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-medium"
+        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-medium mr-[8px] pt-[16px]"
       >
         <!-- Handle -->
         <div
