@@ -16,7 +16,7 @@
           slot="handle"
           class="flex items-center gap-1 p-1 text-medium font-large"
         >
-          <span>{{ itemsPerPage }} Per Page </span>
+          <span>{{ itemsPerPage }} Per Page</span>
           <menu-down-icon size="20" />
         </div>
 
@@ -25,12 +25,13 @@
           <div class="px-[8px] pt-[4px] pb-[6px] w-full">
             <ul class="max-h-[320px] overflow-auto">
               <li
-                v-for="itemsPerPageOption in [10, 50, 100, 500, 1000]"
+                v-for="itemsPerPageOption in itemsPerPageOptions"
                 :key="itemsPerPageOption"
                 class="flex justify-between m-[16px] text-medium cursor-pointer text-[#4B5563]"
               >
                 <div
                   class="flex items-center justify-between w-full leading-[16.41px]"
+                  @click="$emit('updateItemsPerPage', itemsPerPageOption)"
                 >
                   <div
                     v-if="itemsPerPageOption === itemsPerPage"
@@ -107,8 +108,17 @@ export default {
   props: {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
+    itemsPerPageOptions: {
+      type: Array,
+      default: () => [10, 50, 100, 500, 1000],
+    },
   },
-  emits: ["updateStartIndex", "updateEndIndex", "setResetFunction"],
+  emits: [
+    "updateStartIndex",
+    "updateEndIndex",
+    "setResetFunction",
+    "updateItemsPerPage",
+  ],
   data() {
     return {
       internalPage: 1,
