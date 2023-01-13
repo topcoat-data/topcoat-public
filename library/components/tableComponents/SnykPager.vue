@@ -8,6 +8,8 @@
       <t-dropdown
         :disable-active-class="true"
         class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-large"
+        :align-popup-above="true"
+        :align-popup-right="true"
       >
         <!-- Handle -->
         <div
@@ -19,7 +21,7 @@
         </div>
 
         <!-- Popup Contents -->
-        <div attrs.slot="outside" style="transform: translateY(-190px)">
+        <div attrs.slot="outside">
           <div class="px-[8px] pt-[4px] pb-[6px] w-full">
             <ul class="max-h-[320px] overflow-auto">
               <li

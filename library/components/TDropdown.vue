@@ -4,6 +4,7 @@
     class="relative w-auto font-sans cursor-pointer dropdown-filter"
   >
     <div
+      ref="handle"
       class="rounded cursor-pointer"
       :class="!disableActiveClass && activeClass"
       @click="handlePopup"
@@ -54,6 +55,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    alignPopupAbove: {
+      type: Boolean,
+      default: false,
+    },
+    alignPopupRight: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     alignClass: "",
@@ -94,12 +103,26 @@ export default {
         this.closePopup();
       }
     });
+    return "";
   },
   methods: {
     alignPopup() {
       const element = this.$refs.popup;
 
       if (element) {
+        if (this.alignPopupAbove) {
+          const handleElement = this.$refs.handle;
+          const heightOfDropdown = handleElement
+            ? handleElement.offsetHeight
+            : 0;
+          const moveUpAmount = element.offsetHeight + heightOfDropdown;
+          element.style.transform = `translateY(-${moveUpAmount}px)`;
+        }
+
+        if (this.alignPopupRight) {
+          return (this.alignClass = "right-0");
+        }
+
         const bounding = element.getBoundingClientRect();
         const availableWidth = window.innerWidth;
 
