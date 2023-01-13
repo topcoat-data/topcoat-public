@@ -6,6 +6,7 @@
     >
       <!-- Rows Per Page -->
       <t-dropdown
+        v-if="!!itemsPerPageOptions && itemsPerPageOptions.length > 1"
         :disable-active-class="true"
         class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-large"
         :align-popup-above="true"
