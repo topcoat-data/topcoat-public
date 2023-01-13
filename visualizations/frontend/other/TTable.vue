@@ -537,7 +537,12 @@ export default {
   mounted() {
     this.fetchTotalRows();
 
-    this.internalRowsPerPage = this.rowsPerPage;
+    const tableRowsPerPageFilter = this.getFilterState("tableRowsPerPage");
+    if (tableRowsPerPageFilter) {
+      this.internalRowsPerPage = tableRowsPerPageFilter;
+    } else {
+      this.internalRowsPerPage = this.rowsPerPage;
+    }
 
     const modifiableColumnsFilter = this.getFilterState(
       this.modifiableColumnsFilterName
@@ -1198,6 +1203,7 @@ export default {
     },
     updateItemsPerPage(newItemsPerPage) {
       this.internalRowsPerPage = newItemsPerPage;
+      this.setUrlFilter("tableRowsPerPage", newItemsPerPage);
       // avoid confusion and issues when the currently selected page is larger than
       // the total number of pages when internalRowsPerPage is increased
       this.startIndex = 0;
