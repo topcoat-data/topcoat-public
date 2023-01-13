@@ -235,6 +235,7 @@
         class="pagingControls"
         :number-of-items="totalRows"
         :items-per-page="internalRowsPerPage"
+        :items-per-page-options="rowsPerPageOptions"
         @updateItemsPerPage="updateItemsPerPage"
         @updateStartIndex="updateStartIndex"
         @updateEndIndex="updateEndIndex"
@@ -310,6 +311,10 @@ export default {
     rowsPerPage: {
       type: Number,
       default: 10,
+    },
+    rowsPerPageOptions: {
+      type: Array,
+      default: () => [10],
     },
     groupByColumn: {
       type: String,
