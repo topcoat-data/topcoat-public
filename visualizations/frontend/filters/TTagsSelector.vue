@@ -184,6 +184,10 @@ export default {
       type: Number,
       default: 5,
     },
+    searchFields: {
+      type: Array,
+      default: null,
+    },
   },
   data: () => ({
     selected: [],
@@ -310,14 +314,24 @@ export default {
       return (this.expanded = this.expanded.filter((k) => k !== key));
     },
     searchInObject(searchTerm, obj) {
-      for (const val of Object.values(obj)) {
+      const lowercaseSearchFields = this.searchFields
+        ? this.searchFields.map((field) => field.toLowerCase())
+        : null;
+      for (const key of Object.keys(obj)) {
         if (
-          val?.value
-            ?.toString()
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
+          !this.searchFields ||
+          lowercaseSearchFields.includes(key.toLowerCase()) ||
+          key.toLowerCase() === "value"
         ) {
-          return true;
+          const val = obj[key];
+          if (
+            val?.value
+              ?.toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return true;
+          }
         }
       }
       return false;
