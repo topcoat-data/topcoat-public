@@ -87,11 +87,13 @@ export default {
         urlParamString = params.toString();
       }
 
+      const url = new URL(this.url, window.location.origin).href;
+
       if (urlParamString.length > 0) {
-        return `${this.url}?${urlParamString}`;
+        return `${url}?${urlParamString}`;
       }
 
-      return this.url;
+      return url;
     },
   },
 };
