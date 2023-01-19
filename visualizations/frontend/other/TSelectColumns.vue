@@ -128,9 +128,14 @@ export default {
     updateChecked: _.debounce(function () {
       this.$emit("updateFilteredColumns", this.checked);
       const selectColumnLabels = this.checked.map((c) => c.label);
+      const defaultColumns = this?.modifiableColumns
+        .filter((mc) => mc.displayByDefault)
+        .map((mc)=> mc.displayColumn)
       this.setFilterValue(
         this.urlParamName,
         selectColumnLabels.join("|"),
+        defaultColumns,
+        true,
       );
     }, 750),
   },
