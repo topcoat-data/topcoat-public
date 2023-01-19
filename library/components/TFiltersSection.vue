@@ -39,7 +39,7 @@
         <t-filters-dropdown :items="menuItems" @opened="handleFilterOpen" />
 
 
-        <div class="flex gap-1 text-[#145DEB] cursor-pointer" @click="removeAllFilters">
+        <div class="flex gap-1 text-[#145DEB] cursor-pointer" @click="resetAllFilters">
             <backup-restore-icon :size="18" />
             Reset all filters
         </div>
@@ -183,10 +183,11 @@ export default {
       }
       this.handleItems();
     },
-    removeAllFilters(){
+    resetAllFilters(){
         Object.keys(this.visibleFilters).forEach((vfname)=>{
             this.removeFilter(this.visibleFilters[vfname].filters)
         })
+        this.resetAllFilters
     },
     addDeleteButton(tag) {
       this.$nextTick(() => {
