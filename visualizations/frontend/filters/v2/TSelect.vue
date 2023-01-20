@@ -7,9 +7,7 @@
       </div>
 
       <div class="flex items-center gap-1">
-        <div v-if="label">
-          {{ label }}{{ selected_internal ? ":" : "" }}
-        </div>
+        <div v-if="label">{{ label }}{{ selected_internal ? ":" : "" }}</div>
         <div class="font-normal">
           {{ selected_internal }}
         </div>
@@ -187,7 +185,7 @@ export default {
         this.selected_internal = item.value;
       }
 
-      this.setFilterValue("dropdown", this.selected_internal, true);
+      this.setFilterValue("dropdown", this.selected_internal);
     },
     onDropdownOpen() {
       this.fetchLayerData();

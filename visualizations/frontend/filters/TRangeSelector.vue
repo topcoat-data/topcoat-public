@@ -162,7 +162,7 @@ export default {
         return minInternal ? parseInt(minInternal) : this.minValue;
       },
       set(val) {
-        this.setFilterValue("min", val, true);
+        this.setFilterValue("min", val);
         return val;
       },
     },
@@ -172,7 +172,7 @@ export default {
         return maxInternal ? parseInt(maxInternal) : this.maxValue;
       },
       set(val) {
-        this.setFilterValue("max", val, true);
+        this.setFilterValue("max", val);
         return val;
       },
     },

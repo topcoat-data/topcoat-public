@@ -25,11 +25,11 @@ export default {
     onVisualizationInit() {
       const initial_value = this.getFilterValue("checkbox");
       this.value = initial_value === "true";
-      this.setFilterValue("checkbox", this.value, true);
+      this.setFilterValue("checkbox", this.value);
     },
     toggled(value) {
       this.value = value;
-      this.setFilterValue("checkbox", this.value, true);
+      this.setFilterValue("checkbox", this.value);
     },
   },
 };
