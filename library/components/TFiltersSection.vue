@@ -64,6 +64,9 @@ export default {
     slotItems() {
       return this.$slots.default || [];
     },
+    defaultFilterSlotItems() {
+      return this.$slots.defaultFilter || [];
+    },
   },
   mounted() {
     this.selectedFilters = this.filters;
@@ -186,6 +189,9 @@ export default {
       this.handleItems();
     },
     resetAllFilters() {
+      this.defaultFilterSlotItems.forEach((dfsi) => {
+        dfsi?.componentInstance?.reset();
+      });
       Object.keys(this.visibleFilters).forEach((vfname) => {
         this.removeFilter(this.visibleFilters[vfname].filters);
       });

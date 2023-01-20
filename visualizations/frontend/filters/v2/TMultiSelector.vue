@@ -82,12 +82,15 @@
         <span
           class="inline-flex items-center justify-end"
           :class="checked.length ? 'text-[#145DEB]' : 'text-[#727184]'"
-          @click="selectUnselect"
         >
           <t-loading-spinner v-if="isExpanded && loading" position="relative" />
-          <span v-else>
-            {{ checked.length < menu.length ? "Select All" : "Reset" }}
+          <span
+            v-else-if="checked.length < menu.length"
+            @click="selectUnselect"
+          >
+            Select All
           </span>
+          <span v-else @click="reset"> Reset </span>
         </span>
         <span @click="showSelected = !showSelected">
           {{ showSelected ? "Show all" : "Only show selected" }}
@@ -297,6 +300,18 @@ export default {
       }
       this.updateUrlParam();
     }, 750),
+    reset() {
+      if (this.defaultValue) {
+        this.checked = this.defaultValue.split("|");
+      } else {
+        this.checked = [];
+      }
+      this.setFilterValue(
+        "selected_items",
+        this.checked.join("|"),
+        this.defaultValue
+      );
+    },
     updateUrlParam(value) {
       if (value) {
         this.checked = [...value];
