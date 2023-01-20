@@ -111,7 +111,6 @@ export default {
   methods: {
     selectAll() {
       this.checked = [...this.internalColumns];
-      const visibleColumnlabels = this.checked.map((c) => c.label);
     },
     reset() {
       this.checked = [];
@@ -126,21 +125,18 @@ export default {
       this.$emit("updateFilteredColumns", this.checked);
     },
     updateChecked: _.debounce(function () {
-        console.log('updateChecked')
       this.$emit("updateFilteredColumns", this.checked);
       const selectColumnLabels = this.checked.map((c) => c.label);
       const defaultColumns = this?.modifiableColumns
         .filter((mc) => mc.displayByDefault)
-        .map((mc)=> mc.displayColumn)
-        console.log('updateChecked defaultColumns', defaultColumns)
-
-      this.setFilterValue(
-        this.urlParamName,
-        selectColumnLabels.join("|"),
-        defaultColumns,
-        true,
-      );
-        console.log('updateChecked passed')
+        .map((mc) => mc.displayColumn);
+      this.setFilter({
+        name: this.urlParamName,
+        value: selectColumnLabels.join("|"),
+        defaultValue: defaultColumns.join("|"),
+        persist: false,
+        skipOnReset: true,
+      });
     }, 750),
   },
 };
