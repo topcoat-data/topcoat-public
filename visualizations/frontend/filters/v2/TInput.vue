@@ -36,7 +36,7 @@ export default {
       if (initial_value) {
         // Value from url param.
         this.value = initial_value;
-      } else if (this.config.default_value) {
+      } else if (this.config?.default_value) {
         // Default value from layer
         this.value = this.config.default_value;
         this.setFilterValue("query", this.value, this.defaultValue);
@@ -50,6 +50,10 @@ export default {
     },
     updateUrlParam() {
       this.setFilterValue("query", this.value, this.defaultValue);
+    },
+    reset() {
+      this.value = this.defaultValue;
+      this.updateUrlParam();
     },
   },
 };
