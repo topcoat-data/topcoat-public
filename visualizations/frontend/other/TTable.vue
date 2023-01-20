@@ -1322,7 +1322,7 @@ export default {
           urlparam: filterName,
         });
       }
-      this.setFilterValue(filterName, filterValue);
+      this.setFilterValue(filterName, filterValue, undefined, true);
     },
   },
 };
