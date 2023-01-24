@@ -28,8 +28,11 @@ export default {
     url() {
       if (this.parentUrl) {
         this.parentUrl.searchParams.set("context[page]", this.page.url);
-        for (const [filter, value] of Object.entries(this.filters)) {
-          this.parentUrl.searchParams.set(filter, encodeURIComponent(value));
+        for (const filter of this.filtersNew) {
+          this.parentUrl.searchParams.set(
+            filter.name,
+            encodeURIComponent(filter.value)
+          );
         }
         return this.parentUrl.toString();
       }
