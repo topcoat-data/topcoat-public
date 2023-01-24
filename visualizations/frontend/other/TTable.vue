@@ -537,12 +537,7 @@ export default {
   mounted() {
     this.fetchTotalRows();
 
-    const tableRowsPerPageFilter = this.getFilterState("tableRowsPerPage");
-    if (tableRowsPerPageFilter) {
-      this.internalRowsPerPage = tableRowsPerPageFilter;
-    } else {
-      this.internalRowsPerPage = this.rowsPerPage;
-    }
+    this.internalRowsPerPage = this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
 
     const modifiableColumnsFilter = this.getFilterState(
       this.modifiableColumnsFilterName
