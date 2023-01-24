@@ -2,8 +2,56 @@
   <div>
     <div
       v-if="numberOfItems && numberOfItems > itemsPerPage"
-      class="pagination-footer flex justify-center relative"
+      class="pagination-footer flex justify-center relative h-8"
     >
+      <!-- Rows Per Page -->
+      <t-dropdown
+        v-if="!!itemsPerPageOptions && itemsPerPageOptions.length > 1"
+        :disable-active-class="true"
+        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-large"
+        :align-popup-above="true"
+        :align-popup-right="true"
+      >
+        <!-- Handle -->
+        <div
+          slot="handle"
+          class="flex items-center gap-1 p-1 text-medium font-large"
+        >
+          <span>{{ itemsPerPage }} Per Page</span>
+          <menu-down-icon size="20" />
+        </div>
+
+        <!-- Popup Contents -->
+        <div attrs.slot="outside">
+          <div class="px-[8px] pt-[4px] pb-[6px] w-full">
+            <ul class="max-h-[320px] overflow-auto">
+              <li
+                v-for="itemsPerPageOption in itemsPerPageOptions"
+                :key="itemsPerPageOption"
+                class="flex justify-between m-[16px] text-medium cursor-pointer text-[#4B5563]"
+              >
+                <div
+                  class="flex items-center justify-between w-full leading-[16.41px]"
+                  @click="$emit('updateItemsPerPage', itemsPerPageOption)"
+                >
+                  <div
+                    v-if="itemsPerPageOption === itemsPerPage"
+                    class="text-[#1f2937] selected-items-per-page"
+                  >
+                    {{ itemsPerPageOption.toLocaleString() }}
+                    <check-icon class="text-[#145DEB] ml-[8px]" size="20" />
+                  </div>
+                  <div v-else>
+                    {{ itemsPerPageOption.toLocaleString() }}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </t-dropdown>
+
+      <!-- controls -->
       <ul
         id="pages"
         class="pagination-nav pagination-selector inline-flex pt-[16px]"
@@ -16,7 +64,11 @@
             <i class="fas fa-arrow-left"></i>
           </button>
         </li>
-        <li v-for="page in pageNumbersToShow" class="pagination-nav-item">
+        <li
+          v-for="page in pageNumbersToShow"
+          :key="page"
+          class="pagination-nav-item"
+        >
           <button
             class="h-8 minWidth text-[15px] font-medium leading-5 focus:outline-none"
             :class="[
@@ -38,11 +90,13 @@
           </button>
         </li>
       </ul>
+
+      <!-- totals -->
       <div
         class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
       >
-        Showing {{ startIndex + 1 }}- 
-        {{  Math.min(startIndex + itemsPerPage, numberOfItems) }}
+        Showing {{ startIndex + 1 }}-
+        {{ Math.min(startIndex + itemsPerPage, numberOfItems) }}
         of {{ numberOfItems.toLocaleString() }}
       </div>
     </div>
@@ -55,8 +109,17 @@ export default {
   props: {
     numberOfItems: { type: Number, required: true },
     itemsPerPage: { type: Number, default: 10 },
+    itemsPerPageOptions: {
+      type: Array,
+      default: () => [10, 50, 100, 500, 1000],
+    },
   },
-  emits: ["updateStartIndex", "updateEndIndex", "setResetFunction"],
+  emits: [
+    "updateStartIndex",
+    "updateEndIndex",
+    "setResetFunction",
+    "updateItemsPerPage",
+  ],
   data() {
     return {
       internalPage: 1,
@@ -64,7 +127,7 @@ export default {
   },
   computed: {
     pageNumbersToShow() {
-      pageNumbersToShow = [];
+      let pageNumbersToShow = [];
       let pageToAdd = this.internalPage;
       let numberOfPagesAdded = 0;
 
@@ -158,5 +221,9 @@ export default {
 
 #pages {
   z-index: 2;
+}
+
+.selected-items-per-page {
+  display: flex;
 }
 </style>
