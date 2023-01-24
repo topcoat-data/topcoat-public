@@ -1500,4 +1500,8 @@ highlighting a row on hover etc. */
 .makeTooltipVisible {
   overflow: visible;
 }
+
+.pagingControls {
+  height: 54px;
+}
 </style>
