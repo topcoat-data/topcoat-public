@@ -160,21 +160,22 @@ export default {
       this.handleItems();
     },
     getFilters(attrs, unusedOnly = false) {
+      console.log("getFilters", attrs, this.selectedFilters);
       let urlFilters = [];
-      for (let attribute of Object.keys(attrs)) {
-        const param = attrs[attribute];
-        if (attribute.includes("t-filter")) {
-          if (
-            Object.prototype.hasOwnProperty.call(this.selectedFilters, param) &&
-            unusedOnly
-          ) {
-            urlFilters = [];
-            break;
-          } else {
-            urlFilters.push(param);
-          }
-        }
-      }
+      //   for (let attribute of Object.keys(attrs)) {
+      //     const param = attrs[attribute];
+      //     if (attribute.includes("t-filter")) {
+      //       if (
+      //         Object.prototype.hasOwnProperty.call(this.selectedFilters, param) &&
+      //         unusedOnly
+      //       ) {
+      //         urlFilters = [];
+      //         break;
+      //       } else {
+      //         urlFilters.push(param);
+      //       }
+      //     }
+      //   }
       return urlFilters;
     },
     removeFilter(urlFilters) {
