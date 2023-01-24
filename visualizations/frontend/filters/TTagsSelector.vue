@@ -313,19 +313,22 @@ export default {
       }
       return (this.expanded = this.expanded.filter((k) => k !== key));
     },
-    searchInObject(searchTerm, obj) {
+    searchInObject(searchTerm, row) {
+      const COLUMN_VALUE = "value";
       const lowercaseSearchFields = this.searchFields
         ? this.searchFields.map((field) => field.toLowerCase())
-        : null;
-      for (const key of Object.keys(obj)) {
+        : [];
+
+      for (const column of Object.keys(row)) {
         if (
           !this.searchFields ||
-          lowercaseSearchFields.includes(key.toLowerCase()) ||
-          key.toLowerCase() === "value"
+          lowercaseSearchFields.includes(column.toLowerCase()) ||
+          column.toLowerCase() === COLUMN_VALUE
         ) {
-          const val = obj[key];
+          const data = row[column];
+
           if (
-            val?.value
+            data?.value
               ?.toString()
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
