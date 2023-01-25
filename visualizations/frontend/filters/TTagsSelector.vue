@@ -187,6 +187,7 @@ export default {
     defaultValue: {
       type: Array,
       default: () => [],
+    },
     searchFields: {
       type: Array,
       default: null,

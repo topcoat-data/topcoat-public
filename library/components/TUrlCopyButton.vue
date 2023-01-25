@@ -28,7 +28,7 @@ export default {
     url() {
       if (this.parentUrl) {
         this.parentUrl.searchParams.set("context[page]", this.page.url);
-        for (const filter of this.filtersNew) {
+        for (const filter of this.filters) {
           this.parentUrl.searchParams.set(
             filter.name,
             encodeURIComponent(filter.value)

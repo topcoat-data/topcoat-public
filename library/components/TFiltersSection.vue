@@ -15,7 +15,7 @@
               <div
                 slot="trigger"
                 class="w-[34px] h-[32px] border border-[#B3B2BD] hover:border-[#555463] rounded flex items-center justify-center"
-                @click="removeFilter(data.filters)"
+                @click="removeFilter(data.filters, tag)"
               >
                 <!-- Limitation: Using icon component as <delete-icon /> does not work with $slots manipulation -->
                 <!-- Svg of icon is used directly -->
@@ -58,7 +58,7 @@ export default {
     menuItems: [],
     visibleFilters: {},
     lastAddedFilter: null,
-    selectedFilters: {},
+    selectedFilters: [],
   }),
   computed: {
     slotItems() {
@@ -90,7 +90,6 @@ export default {
             attrs["dropdownSection"] ||
             "UNGROUPED";
           const unusedFilters = this.getFilters(attrs, true);
-
           const tag = `${element.tag}${index}`;
           if (unusedFilters.length) {
             let itemObject = { label, filters: unusedFilters, tag };
@@ -111,9 +110,9 @@ export default {
       // To preserve original add order for filter
       // this loop is required again.
       let assignedFilters = [];
-      const visibleFilters = {};
-      for (let filter in this.selectedFilters) {
-        if (assignedFilters.includes(filter)) {
+      for (let filterIndex in this.selectedFilters) {
+        const filterName = this.selectedFilters[filterIndex].name;
+        if (assignedFilters.includes(filterName)) {
           continue;
         }
 
@@ -121,7 +120,7 @@ export default {
           if (element.tag) {
             const tag = `${element.tag}${index}`;
             const urlFilters = this.getFilters(element.data.attrs);
-            if (urlFilters.includes(filter) || element.isDefault) {
+            if (urlFilters.includes(filterName) || element.isDefault) {
               assignedFilters = [...assignedFilters, ...urlFilters];
               if (!this.initialisedComponents.includes(tag)) {
                 window.Vue.component(tag, {
@@ -132,14 +131,11 @@ export default {
                 this.initialisedComponents.push(tag);
               }
 
-              visibleFilters[tag] = {
-                filters: urlFilters,
-              };
+              this.$set(this.visibleFilters, tag, { filters: urlFilters });
             }
           }
         });
       }
-      this.visibleFilters = visibleFilters;
 
       // Better approach?
       // This is the only way (so far) to avoid glitched and broken behaviour.
@@ -152,51 +148,58 @@ export default {
     },
     handleFilterOpen(item) {
       this.lastAddedFilter = item.tag;
-      for (let filter of item.filters) {
-        if (!this.selectedFilters[filter]) {
-          this.selectedFilters[filter] = "";
+      for (let filterName of item.filters) {
+        if (
+          !this.selectedFilters.find((f) => {
+            f.name === filterName;
+          })
+        ) {
+          this.selectedFilters.push({ name: filterName, value: "" });
         }
       }
       this.handleItems();
     },
     getFilters(attrs, unusedOnly = false) {
-      console.log("getFilters", attrs, this.selectedFilters);
       let urlFilters = [];
-      //   for (let attribute of Object.keys(attrs)) {
-      //     const param = attrs[attribute];
-      //     if (attribute.includes("t-filter")) {
-      //       if (
-      //         Object.prototype.hasOwnProperty.call(this.selectedFilters, param) &&
-      //         unusedOnly
-      //       ) {
-      //         urlFilters = [];
-      //         break;
-      //       } else {
-      //         urlFilters.push(param);
-      //       }
-      //     }
-      //   }
-      return urlFilters;
-    },
-    removeFilter(urlFilters) {
-      for (let filter of urlFilters) {
-        this.deleteFilter({ name: filter });
-        if (
-          Object.prototype.hasOwnProperty.call(this.selectedFilters, filter)
-        ) {
-          this.$delete(this.selectedFilters, filter);
+      for (let attribute of Object.keys(attrs)) {
+        const param = attrs[attribute];
+        if (attribute.includes("t-filter")) {
+          if (
+            unusedOnly &&
+            this.selectedFilters.find(
+              (sf) => sf.name.toLowerCase() === param.toLowerCase()
+            )
+          ) {
+            urlFilters = [];
+            break;
+          } else {
+            urlFilters.push(param);
+          }
         }
       }
-      this.handleItems();
+      return urlFilters;
+    },
+    removeFilter(urlFilters, vfname) {
+      for (let filterName of urlFilters) {
+        const filterIndex = this.selectedFilters.findIndex(
+          (f) => f.name === filterName
+        );
+        if (filterIndex > -1) {
+          this.selectedFilters.splice(filterIndex, 1);
+        }
+        this.deleteFilter({ name: filterName });
+        this.filters = this.filters.filter((sf) => sf.name !== filterName);
+      }
+      this.$delete(this.visibleFilters, vfname);
+      this.handleMenuItems();
     },
     resetAllFilters() {
       this.defaultFilterSlotItems.forEach((dfsi) => {
         dfsi?.componentInstance?.reset();
       });
       Object.keys(this.visibleFilters).forEach((vfname) => {
-        this.removeFilter(this.visibleFilters[vfname].filters);
+        this.removeFilter(this.visibleFilters[vfname].filters, vfname);
       });
-      this.resetAllFilters;
     },
     addDeleteButton(tag) {
       this.$nextTick(() => {
