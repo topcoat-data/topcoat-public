@@ -234,7 +234,9 @@
         :end-index="endIndex"
         class="pagingControls"
         :number-of-items="totalRows"
-        :items-per-page="rowsPerPage"
+        :items-per-page="internalRowsPerPage"
+        :items-per-page-options="rowsPerPageOptions"
+        @updateItemsPerPage="updateItemsPerPage"
         @updateStartIndex="updateStartIndex"
         @updateEndIndex="updateEndIndex"
         @setResetFunction="setPagerResetFunction"
@@ -243,7 +245,7 @@
     <slot
       name="footer"
       :total-count="totalRows"
-      :visible-count="rowsPerPage"
+      :visible-count="internalRowsPerPage"
       :start-index="startIndex"
       :end-index="endIndex"
     ></slot>
@@ -309,6 +311,10 @@ export default {
     rowsPerPage: {
       type: Number,
       default: 10,
+    },
+    rowsPerPageOptions: {
+      type: Array,
+      default: () => [10],
     },
     groupByColumn: {
       type: String,
@@ -398,6 +404,7 @@ export default {
       internalSelectedItems: [],
       internalGroups: [],
       internalRows: [],
+      internalRowsPerPage: 10,
       searchTerm: "",
       totalRows: 0,
       startIndex: 0,
@@ -530,6 +537,8 @@ export default {
   mounted() {
     this.fetchTotalRows();
 
+    this.internalRowsPerPage = this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+
     const modifiableColumnsFilter = this.getFilterState(
       this.modifiableColumnsFilterName
     );
@@ -542,7 +551,7 @@ export default {
       this.setLayerFilter("orderBy", orderByUrlFilter);
     }
     if (this.canPageServer) {
-      this.setLayerFilter("limit", "" + this.rowsPerPage);
+      this.setLayerFilter("limit", "" + this.internalRowsPerPage);
       this.setLayerFilter("offset", "" + this.startIndex);
     }
   },
@@ -722,7 +731,7 @@ export default {
       }
     },
     onVisualizationUpdated() {
-      this.updateEndIndex(this.rowsPerPage);
+      this.updateEndIndex(this.internalRowsPerPage);
       this.updateStartIndex(0);
       if (this.pagerResetFunction) this.pagerResetFunction();
       this.fetchTotalRows();
@@ -980,7 +989,7 @@ export default {
       return group.displayHeader && anyRowsInRange && hasRows;
     },
     indexInPagedRows(index) {
-      if (!this.rowsPerPage) return true;
+      if (!this.internalRowsPerPage) return true;
       return index >= this.startIndex && index < this.endIndex;
     },
     getRawCellValue(row, column) {
@@ -1182,10 +1191,19 @@ export default {
     updateStartIndex(newStartIndex) {
       this.startIndex = newStartIndex;
       if (this.canPageServer) {
-        this.setLayerFilter("limit", "" + this.rowsPerPage);
-        this.setLayerFilter("offset", "" + this.startIndex);
         this.fetchPagedLayer();
-        return;
+      } else {
+        this.setupInternalRows();
+      }
+    },
+    updateItemsPerPage(newItemsPerPage) {
+      this.internalRowsPerPage = newItemsPerPage;
+      this.setUrlFilter("tableRowsPerPage", newItemsPerPage);
+      // avoid confusion and issues when the currently selected page is larger than
+      // the total number of pages when internalRowsPerPage is increased
+      this.startIndex = 0;
+      if (this.canPageServer) {
+        this.fetchPagedLayer();
       } else {
         this.setupInternalRows();
       }
@@ -1203,6 +1221,8 @@ export default {
         });
     },
     fetchPagedLayer(setColumnSort = true) {
+      this.setLayerFilter("limit", "" + this.internalRowsPerPage);
+      this.setLayerFilter("offset", "" + this.startIndex);
       const payload = this.createRequestPayload();
       this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
@@ -1474,5 +1494,9 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
+}
+
+.pagingControls {
+  height: 54px;
 }
 </style>

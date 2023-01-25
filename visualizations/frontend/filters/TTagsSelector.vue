@@ -187,6 +187,9 @@ export default {
     defaultValue: {
       type: Array,
       default: () => [],
+    searchFields: {
+      type: Array,
+      default: null,
     },
   },
   data: () => ({
@@ -203,19 +206,7 @@ export default {
       for (let row of this.rows) {
         const key = row[this.tKeyColumn];
         const value = row[this.tValueColumn];
-        if (!key.value || !value.value) {
-          continue;
-        }
-
-        if (!this.selectedKey) {
-          if (!key.value.toLowerCase().includes(this.search.toLowerCase())) {
-            continue;
-          }
-        } else if (
-          !value.value.toLowerCase().includes(this.search.toLowerCase())
-        ) {
-          continue;
-        }
+        if (this.search && !this.searchInObject(this.search, row)) continue;
 
         const selected = this.selected.filter((s) => {
           if (s.key === key.value) {
@@ -331,6 +322,32 @@ export default {
     reset() {
       this.selected = [...this.defaultValue];
       this.updateUrlValue();
+    },
+    searchInObject(searchTerm, row) {
+      const COLUMN_VALUE = "value";
+      const lowercaseSearchFields = this.searchFields
+        ? this.searchFields.map((field) => field.toLowerCase())
+        : [];
+
+      for (const column of Object.keys(row)) {
+        if (
+          !this.searchFields ||
+          lowercaseSearchFields.includes(column.toLowerCase()) ||
+          column.toLowerCase() === COLUMN_VALUE
+        ) {
+          const data = row[column];
+
+          if (
+            data?.value
+              ?.toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
   },
 };
