@@ -537,7 +537,15 @@ export default {
   mounted() {
     this.fetchTotalRows();
 
-    this.internalRowsPerPage = this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+    this.internalRowsPerPage =
+      this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+    console.log("this.internalRowsPerPage ", this.internalRowsPerPage);
+    console.log("this.rowsPerPageOptions ", this.rowsPerPageOptions);
+    // Only allow valid rows per pages regardless of the url value or prop
+    if (!this.rowsPerPageOptions.includes(this.internalRowsPerPage)) {
+      this.internalRowsPerPage = this.rowsPerPageOptions[0];
+      this.setUrlFilter("tableRowsPerPage", this.internalRowsPerPage);
+    }
 
     const modifiableColumnsFilter = this.getFilterState(
       this.modifiableColumnsFilterName
