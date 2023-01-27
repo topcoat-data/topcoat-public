@@ -20,10 +20,10 @@
             class="bg-[#EAF1FF] rounded flex items-center gap-1 rounded"
           >
             <span v-if="!isSingleTag" class="font-semibold">
-              {{ selectedTag.key }}
+              {{ selectedTag?.KEY?.value }}
             </span>
             <span class="font-normal">
-              {{ selectedTag.value }}
+              {{ selectedTag?.VALUE?.value }}
             </span>
             <span class="text-[#7FA7F5]">
               <close-icon :size="14" @click.stop="removeTag(selectedTag)" />
@@ -84,17 +84,20 @@
               </span>
               <div v-if="tags[selectedKey] && tags[selectedKey].length">
                 <div
-                  v-for="value of expanded.includes(selectedKey)
+                  v-for="option of expanded.includes(selectedKey)
                     ? tags[selectedKey]
                     : tags[selectedKey].slice(0, valueLimit)"
-                  :key="value"
+                  :key="option.key"
                   class="p-1 hover:bg-[#F9F8FA]"
                 >
                   <div
                     class="p-1 hover:bg-[#F9F8FA]"
-                    @click.stop="selectValue(value)"
+                    @click.stop="selectValue(option)"
                   >
-                    {{ displayValue(value) }}
+                    <span v-if="option.DISPLAYVALUE">
+                      {{ option.DISPLAYVALUE.value }}
+                    </span>
+                    <span v-else> {{ option.VALUE?.value }} </span>
                   </div>
                 </div>
                 <div
@@ -119,12 +122,15 @@
                 Select a key
               </span>
               <div
-                v-for="key in Object.keys(tags)"
-                :key="key"
+                v-for="option in Object.keys(tags)"
+                :key="option.key"
                 class="p-1 hover:bg-[#F9F8FA]"
-                @click.stop="selectKey(key)"
+                @click.stop="selectKey(option)"
               >
-                {{ displayValue(null, key) }}
+                <span v-if="option.DISPLAYVALUE">
+                  {{ option.DISPLAYVALUE.value }}
+                </span>
+                <span v-else> {{ option.VALUE?.value }} </span>
               </div>
             </div>
           </div>
@@ -136,9 +142,9 @@
             class="bg-[#EAF1FF] rounded p-1 flex items-center gap-1 rounded"
           >
             <span v-if="!isSingleTag" class="font-semibold">
-              {{ selectedTag.key }}
+              {{ selectedTag?.KEY?.value }}
             </span>
-            {{ selectedTag.value }}
+            {{ selectedTag?.VALUE?.value }}
             <close-icon :size="12" @click.stop="removeTag(selectedTag)" />
           </div>
         </div>
@@ -201,47 +207,52 @@ export default {
   }),
   computed: {
     tags() {
-      const tags = {};
+      const displayTags = {};
       for (let row of this.rows) {
         const key = row[this.tKeyColumn];
         const value = row[this.tValueColumn];
-        if (this.search && !this.searchInObject(this.search, row)) continue;
 
-        const selected = this.selected.filter((s) => {
-          if (s.key === key.value) {
-            return s.value === value.value;
-          }
-          return false;
-        })[0];
-
-        if (selected) {
+        if (this.search && !this.searchInObject(this.search, row)) {
           continue;
         }
+        // if (this.isSelectedValue(key, value)) {
+        //   continue;
+        // }
 
-        if (!tags[key.value]) {
-          tags[key.value] = [value.value];
+        if (!displayTags[key.value]) {
+          displayTags[key.value] = [row];
         } else {
-          tags[key.value].push(value.value);
+          displayTags[key.value].push(row);
         }
       }
 
-      return tags;
+      return displayTags;
     },
   },
   methods: {
     onVisualizationInit() {
-      const initial_value = this.getFilterValue("selected_items");
+      //   const initial_value = this.getFilterValue("selected_items");
+      const initial_value = '{"CWE":["CWE-1023"]}';
       let selected = [];
       if (initial_value) {
         try {
           const urlTags = JSON.parse(initial_value);
           for (const [key, value] of Object.entries(urlTags)) {
-            let tags = value.map((v) => {
-              return {
-                key,
-                value: v,
-              };
-            });
+            console.log("onVisualizationInit: rows", JSON.stringify(this.rows));
+            console.log("onVisualizationInit: key, value", key, value);
+            const tags = [
+              this.rows.find((r) => {
+                const v = r[this.tValueColumn];
+                console.log("onVisualizationInit: v", v);
+                return v?.value === value[0];
+              }),
+            ];
+            // let tags = value.map((v) => {
+            //   return {
+            //     key,
+            //     value: v,
+            //   };
+            // });
             selected = [...tags, ...selected];
           }
         } catch (error) {
@@ -251,15 +262,14 @@ export default {
       }
       this.selected = selected;
     },
-    selectValue(value) {
-      this.selected.push({
-        key: this.selectedKey,
-        value,
-      });
+    selectValue(row) {
+      console.log("selectValue", row);
+      this.selected.push(row);
       this.close();
       this.updateUrlValue();
     },
     selectKey(key) {
+      console.log("selectKey", key);
       this.selectedKey = key;
       this.search = "";
     },
@@ -273,6 +283,7 @@ export default {
       this.updateUrlValue();
     },
     updateUrlValue() {
+      console.log("updateUrlValue", this.selected);
       const urlObject = {};
       for (let obj of this.selected) {
         if (urlObject[obj.key]) {
@@ -341,20 +352,13 @@ export default {
       }
       return false;
     },
-    displayValue(value, key) {
-      const row = this.rows.find((r) => {
-        if (value) {
-          const v = r[this.tValueColumn];
-          return v.value === value;
-        } else {
-          const k = r[this.tKeyColumn];
-          return k.value === key;
+    isSelectedValue(key, value) {
+      return this.selected.filter((s) => {
+        if (s.key === key.value) {
+          return s.value === value.value;
         }
-      });
-      if (row?.DISPLAYVALUE) {
-        return row.DISPLAYVALUE.value;
-      }
-      return value ? value : key;
+        return false;
+      })[0];
     },
   },
 };
