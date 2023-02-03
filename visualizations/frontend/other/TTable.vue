@@ -537,7 +537,17 @@ export default {
   mounted() {
     this.fetchTotalRows();
 
-    this.internalRowsPerPage = this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+    if (this.isPdf) {
+      this.internalRowsPerPage = 50;
+    } else {
+      this.internalRowsPerPage =
+        this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+      // Only allow valid rows per pages regardless of the url value or prop
+      if (!this.rowsPerPageOptions.includes(this.internalRowsPerPage)) {
+        this.internalRowsPerPage = this.rowsPerPageOptions[0];
+        this.setUrlFilter("tableRowsPerPage", this.internalRowsPerPage);
+      }
+    }
 
     const modifiableColumnsFilter = this.getFilterState(
       this.modifiableColumnsFilterName
