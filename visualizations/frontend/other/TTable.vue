@@ -1251,7 +1251,6 @@ export default {
           columns,
           dimensions,
           filters,
-          is_iframe,
           layers,
           load_phase,
           measures,

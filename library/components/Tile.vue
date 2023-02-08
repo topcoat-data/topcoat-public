@@ -7,7 +7,7 @@
       </div>
     </div>
     <div v-else>
-      <div :style="{ height: is_iframe ? 'inherit' : height - 2 + 'px' }">
+      <div :style="{ height: height - 2 + 'px' }">
         <slot></slot>
       </div>
     </div>
