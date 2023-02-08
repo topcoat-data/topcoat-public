@@ -341,7 +341,7 @@ export default {
       }
       return false;
     },
-    displayValue(value, defaultValue = "") {
+    displayValue(value) {
       if (!value) {
         return "";
       }
@@ -351,10 +351,10 @@ export default {
         return columnValue.value === value;
       });
 
-      return row?.DISPLAYVALUE?.value || defaultValue;
+      return row?.DISPLAYVALUE?.value || value;
     },
 
-    displayKey(key, defaultKey = "") {
+    displayKey(key) {
       if (!key) {
         return "";
       }
@@ -364,7 +364,7 @@ export default {
         return columnKey.value === key;
       });
 
-      return row?.DISPLAYKEY?.value || defaultKey;
+      return row?.DISPLAYKEY?.value || key;
     },
   },
 };
