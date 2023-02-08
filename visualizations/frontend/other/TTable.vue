@@ -542,6 +542,7 @@ export default {
     } else {
       this.internalRowsPerPage =
         this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
+      this.internalRowsPerPage = parseInt(this.internalRowsPerPage, 10);
       // Only allow valid rows per pages regardless of the url value or prop
       if (!this.rowsPerPageOptions.includes(this.internalRowsPerPage)) {
         this.internalRowsPerPage = this.rowsPerPageOptions[0];
