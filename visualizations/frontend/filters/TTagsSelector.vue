@@ -124,7 +124,7 @@
                 class="p-1 hover:bg-[#F9F8FA]"
                 @click.stop="selectKey(key)"
               >
-                {{ displayValue(null, key) }}
+                {{ displayKey(key) }}
               </div>
             </div>
           </div>
@@ -341,20 +341,30 @@ export default {
       }
       return false;
     },
-    displayValue(value, key) {
-      const row = this.rows.find((r) => {
-        if (value) {
-          const v = r[this.tValueColumn];
-          return v.value === value;
-        } else {
-          const k = r[this.tKeyColumn];
-          return k.value === key;
-        }
-      });
-      if (row?.DISPLAYVALUE) {
-        return row.DISPLAYVALUE.value;
+    displayValue(value, defaultValue = "") {
+      if (!value) {
+        return "";
       }
-      return value ? value : key;
+
+      const row = this.rows.find((row) => {
+        const columnValue = row[this.tValueColumn];
+        return columnValue.value === value;
+      });
+
+      return row?.DISPLAYVALUE?.value || defaultValue;
+    },
+
+    displayKey(key, defaultKey = "") {
+      if (!key) {
+        return "";
+      }
+
+      const row = this.rows.find((row) => {
+        const columnKey = row[this.tKeyColumn];
+        return columnKey.value === key;
+      });
+
+      return row?.DISPLAYKEY?.value || defaultKey;
     },
   },
 };
