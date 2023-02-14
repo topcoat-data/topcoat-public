@@ -284,11 +284,12 @@ export default {
       const urlValue = Object.keys(urlObject).length
         ? JSON.stringify(urlObject)
         : "";
-      return this.setFilterValue("selected_items", urlValue);
+      return _.debounce(this.setFilterValue("selected_items", urlValue), 750);
     },
     removeFilter() {
-      this.unsetFilterValue("selected_items");
+      return _.debounce(this.unsetFilterValue("selected_items"), 750);
     },
+
     open() {
       if (this.loading) {
         return false;
