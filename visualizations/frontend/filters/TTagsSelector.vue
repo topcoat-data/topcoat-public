@@ -272,7 +272,7 @@ export default {
       });
       this.updateUrlValue();
     },
-    updateUrlValue() {
+    updateUrlValue: _.debounce(function () {
       const urlObject = {};
       for (let obj of this.selected) {
         if (urlObject[obj.key]) {
@@ -284,8 +284,8 @@ export default {
       const urlValue = Object.keys(urlObject).length
         ? JSON.stringify(urlObject)
         : "";
-      return _.debounce(this.setFilterValue("selected_items", urlValue), 750);
-    },
+      return this.setFilterValue("selected_items", urlValue);
+    }, 750),
     open() {
       if (this.loading) {
         return false;
