@@ -286,10 +286,6 @@ export default {
         : "";
       return _.debounce(this.setFilterValue("selected_items", urlValue), 750);
     },
-    removeFilter() {
-      return _.debounce(this.unsetFilterValue("selected_items"), 750);
-    },
-
     open() {
       if (this.loading) {
         return false;
