@@ -1,5 +1,5 @@
 <template>
-  <t-dropdown :is-open="isOpen" @open="isOpen = true" @close="isOpen = false">
+  <t-dropdown :is-open="isOpen" @open="handleOpen" @close="isOpen = false">
     <!-- Handle button -->
     <div slot="handle" class="flex items-center gap-1 p-1 text-sm font-medium">
       <plus-icon :size="18" />
@@ -15,6 +15,8 @@
           class="bg-transparent outline-none !text-black"
           placeholder="Filters by..."
           v-model="search"
+          ref="filtersSearchInput"
+          @focus="$event.target.select()"
         />
         <div class="w-5">
           <close-icon v-if="search" :size="18" @click="search = ''" />
@@ -117,6 +119,11 @@ export default {
         return (this.expanded = this.expanded.filter((e) => e !== index));
       }
       return this.expanded.push(index);
+    },
+    handleOpen() {
+      this.isOpen = true;
+      const searchInput = this.$refs.filtersSearchInput;
+      searchInput.focus();
     },
   },
 };
