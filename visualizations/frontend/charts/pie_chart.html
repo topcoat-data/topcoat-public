@@ -30,6 +30,12 @@
             "labels": {{ column_data(dimensions[0]) }},
             "values": {{ column_data(measures[0]) }},
 
+            {% if config.text_info %}
+            "textinfo" : "{{ config.text_info }}"            
+            {% else %}
+            "textinfo" : "none"
+            {% endif %},
+
             {% if config.rotate_chart %}
             "rotation" : "{{ config.rotate_chart }}"            
             {% else %}
