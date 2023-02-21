@@ -175,9 +175,15 @@ export default {
           const metadata = componentInstance.metadata;
           const filters =
             metadata && metadata.filters ? metadata.filters.output : [];
+          console.log("handleActiveFilters filters", filters);
 
           for (let filter of filters) {
             const value = this.getFiltersState[filter.urlparam];
+            console.log(
+              "handleActiveFilters value",
+              value,
+              this.getFiltersState
+            );
 
             if (value) {
               const obj = setFilters[componentInstance.tag_unique];
