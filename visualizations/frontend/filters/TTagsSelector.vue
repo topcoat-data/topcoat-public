@@ -285,7 +285,7 @@ export default {
         ? JSON.stringify(urlObject)
         : "";
       return this.setFilterValue("selected_items", urlValue);
-    }, 750),
+    }, 250),
     open() {
       if (this.loading) {
         return false;
