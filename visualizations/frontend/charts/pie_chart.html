@@ -8,6 +8,10 @@
         {
             "type" : "pie",
             "marker" : {
+                {% set colors = var('marker_colors') %}
+                {% if colors and colors|length %}
+                "colors" : {{ colors | tojson }},
+                {% endif %}
                 "line": {    
                    {% if config.line_width %}
                    "width": "{{ config.line_width }}"
@@ -20,11 +24,6 @@
                    "color" : "#161F3D"
                    {% endif %}
                 }
-                <!-- {% set colors = var('marker_colors') %}
-                {% if colors and colors|length %}
-                "colors" : {{ colors | tojson }}
-                {% endif %} -->
-                
             },
 
             "labels": {{ column_data(dimensions[0]) }},
