@@ -19,9 +19,9 @@
             :key="selectedTag"
             class="bg-[#EAF1FF] rounded flex items-center gap-1 rounded"
           >
-            <span v-if="!isSingleTag" class="font-semibold">{{
-              selectedTag.key
-            }}</span>
+            <span v-if="!isSingleTag" class="font-semibold">
+              {{ selectedTag.key }}
+            </span>
             <span class="font-normal">
               {{ selectedTag.value }}
             </span>
@@ -79,8 +79,9 @@
             <div v-if="selectedKey" class="flex flex-col gap-1">
               <span
                 class="sticky top-0 left-0 w-full m-auto font-semibold text-left bg-white"
-                >Select a {{ selectedKey }}</span
               >
+                Select a {{ selectedKey }}
+              </span>
               <div v-if="tags[selectedKey] && tags[selectedKey].length">
                 <div
                   v-for="value of expanded.includes(selectedKey)
@@ -93,7 +94,7 @@
                     class="p-1 hover:bg-[#F9F8FA]"
                     @click.stop="selectValue(value)"
                   >
-                    {{ value }}
+                    {{ displayValue(value) }}
                   </div>
                 </div>
                 <div
@@ -114,15 +115,16 @@
             <div v-else class="flex flex-col gap-1">
               <span
                 class="sticky top-0 left-0 w-full m-auto font-semibold text-left bg-white"
-                >Select a key</span
               >
+                Select a key
+              </span>
               <div
                 v-for="key in Object.keys(tags)"
                 :key="key"
                 class="p-1 hover:bg-[#F9F8FA]"
                 @click.stop="selectKey(key)"
               >
-                {{ key }}
+                {{ displayKey(key) }}
               </div>
             </div>
           </div>
@@ -133,9 +135,9 @@
             :key="selectedTag"
             class="bg-[#EAF1FF] rounded p-1 flex items-center gap-1 rounded"
           >
-            <span v-if="!isSingleTag" class="font-semibold">{{
-              selectedTag.key
-            }}</span>
+            <span v-if="!isSingleTag" class="font-semibold">
+              {{ selectedTag.key }}
+            </span>
             {{ selectedTag.value }}
             <close-icon :size="12" @click.stop="removeTag(selectedTag)" />
           </div>
@@ -349,6 +351,31 @@ export default {
         }
       }
       return false;
+    },
+    displayValue(value) {
+      if (!value) {
+        return "";
+      }
+
+      const row = this.rows.find((row) => {
+        const columnValue = row[this.tValueColumn];
+        return columnValue.value === value;
+      });
+
+      return row?.DISPLAYVALUE?.value || value;
+    },
+
+    displayKey(key) {
+      if (!key) {
+        return "";
+      }
+
+      const row = this.rows.find((row) => {
+        const columnKey = row[this.tKeyColumn];
+        return columnKey.value === key;
+      });
+
+      return row?.DISPLAYKEY?.value || key;
     },
   },
 };

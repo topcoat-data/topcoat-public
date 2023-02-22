@@ -15,7 +15,11 @@
           class="flex items-center gap-1 font-normal"
         >
           : {{ barMinValue }}-{{ barMaxValue }}
-          <close-icon :size="12" @click="removeFilter" />
+          <reload-icon
+            :size="12"
+            @click="removeFilter"
+            v-if="isReloadIconVisible"
+          />
         </div>
       </div>
       <t-loading-spinner v-if="loading" position="relative" />
@@ -175,6 +179,15 @@ export default {
         this.setFilterValue("max", val);
         return val;
       },
+    },
+    isReloadIconVisible() {
+      if (
+        this.barMinValue != this.minValue ||
+        this.barMaxValue != this.maxValue
+      ) {
+        return true;
+      }
+      return false;
     },
   },
   mounted() {
