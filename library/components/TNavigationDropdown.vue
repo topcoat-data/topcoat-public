@@ -54,10 +54,14 @@
           class="flex justify-between mb-3 text-sm cursor-pointer hover:text-[#1c1c21]"
           :class="navSelected(page.url, 'text-[#1c1c21]', 'text-[#555463]')"
         >
-          <a :href="page.url" class="flex items-center justify-between w-full">
+          <a
+            :href="page.url"
+            class="flex items-center justify-between w-full"
+            @click.prevent="redirectToPage($event, page)"
+          >
             {{ page.title }}
             <span
-              v-if="selected === 'reporting/' + page.url"
+              v-if="selected === 'reporting/' + page.main_url"
               style="color: #0f47c6"
               class="flex items-center h-full"
             >
@@ -83,10 +87,6 @@ export default {
     activeSection: "all",
     alignClass: "",
     favorites: [],
-    pages: {
-      all: [],
-      favorites: [],
-    },
     panes: [
       {
         label: "All",
@@ -100,11 +100,36 @@ export default {
     selected() {
       return window.location.pathname.substring(1);
     },
+    pages() {
+      const parentContextUrl = this.whoami?.context?.parent;
+      const pages = [];
+      for (let page of this.project.nav) {
+        page.main_url = page.url; // Common parameter for 'active page' check.
+        if (parentContextUrl) {
+          // If iframe, use parent url.
+          page.url = `${parentContextUrl}?context[page]=${page.url}`;
+        }
+        pages.push(page);
+      }
+
+      // Todo: favorites and recent.
+      return {
+        all: pages,
+        favorites: [],
+        recents: [],
+      };
+    },
   },
-  mounted() {
-    if (this.pages) {
-      this.pages.all = this.project.nav;
-    }
+  methods: {
+    redirectToPage(e, page) {
+      if (e.metaKey || e.ctrlKey) {
+        window.open(page.url, "_blank");
+      } else if (e.shiftKey) {
+        window.open(page.url);
+      } else {
+        window.open(page.main_url, "_self");
+      }
+    },
   },
 };
 </script>
