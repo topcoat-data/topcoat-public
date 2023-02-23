@@ -391,6 +391,10 @@ export default {
         return true;
       },
     },
+    cellCssFunction: {
+      type: Function,
+      default: null,
+    },
   },
   emits: {
     "update:selectedItem": null,
@@ -1192,6 +1196,12 @@ export default {
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
       classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : "";
+      if (
+        this.cellCssFunction !== null &&
+        this.cellCssFunction instanceof Function
+      ) {
+        classes += " " + this.cellCssFunction(column, cindex, rindex) + " ";
+      }
       classes += " " + this.cellClasses;
       return classes;
     },
