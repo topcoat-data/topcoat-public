@@ -26,6 +26,19 @@
                 }
             },
 
+            "domain" : {
+                {% if config.grid_domain_x %}
+                "x": {{ config.grid_domain_x }}
+                {% else %}
+                "x" : [0,1]
+                {% endif %},
+                {% if config.grid_domain_y %}
+                "y": {{ config.grid_domain_y }}
+                {% else %}
+                "y" : [0,1]
+                {% endif %}
+            },
+
             "labels": {{ column_data(dimensions[0]) }},
             "values": {{ column_data(measures[0]) }},
 
