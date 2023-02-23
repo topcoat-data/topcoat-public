@@ -198,7 +198,7 @@
               :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
               class="border-b border-[#D3D3D9] align-top py-[12px]"
-              :class="generateCellClasses({ column, cindex, rindex })"
+              :class="generateCellClasses({ column, cindex, row, rindex })"
             >
               <slot
                 :name="column.property"
@@ -1189,7 +1189,7 @@ export default {
     toggleRow(row) {
       row.detailRowOpen ? this.collapseRow(row) : this.expandRow(row);
     },
-    generateCellClasses({ column, cindex, rindex }) {
+    generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
       classes += " cellPadding ";
       classes += _.camelCase(column.property);
@@ -1200,7 +1200,8 @@ export default {
         this.cellCssFunction !== null &&
         this.cellCssFunction instanceof Function
       ) {
-        classes += " " + this.cellCssFunction(column, cindex, rindex) + " ";
+        classes +=
+          " " + this.cellCssFunction(column, cindex, row, rindex) + " ";
       }
       classes += " " + this.cellClasses;
       return classes;
