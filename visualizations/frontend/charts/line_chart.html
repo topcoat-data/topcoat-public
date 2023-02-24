@@ -70,8 +70,8 @@
     
                 "xaxis": "x2",
                 "marker" : {
-                    {% if line_colors %}
-                    "color" : "{{ line_colors[loop.index-1] }}",
+                    {% if config.line_colors %}
+                    "color" : "{{ config.line_colors[loop.index-1] }}",
                     {% else %}
                     "color" : "rgba(29, 34, 96,1)",
                     {% endif %}
