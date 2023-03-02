@@ -25,13 +25,13 @@
                     {% if config.line_smoothing %}
                     "smoothing": "{{ config.line_smoothing }}"
                     {% else %}
-                    "smoothing": 0.0
+                    "smoothing": 0.45
                     {% endif %},
     
                     {% if config.line_width %}
-                    "shape": "{{ config.line_width }}"
+                    "width": "{{ config.line_width }}"
                     {% else %}
-                    "width": 0.0
+                    "width": 1.5
                     {% endif %}
                 },
                 "connectgaps": true,
