@@ -973,12 +973,15 @@ export default {
       }
 
       if (this.sort === "sql") {
-        this.setOrderByFilters();
-        this.fetchPagedLayer(false);
+        this.fetchLayerOnSort();
       } else {
         this.setupInternalRows();
       }
     },
+    fetchLayerOnSort: _.debounce(function () {
+      this.setOrderByFilters();
+      this.fetchPagedLayer(false);
+    }, 500),
     setOrderByFilters() {
       let sortedColumns = _.reverse(this.getSortedColumns());
       let orderByFilter = sortedColumns
