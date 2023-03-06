@@ -82,7 +82,12 @@
         }   
     ],
     "layout" : {
-        "hovermode": "x unified",
+        {% if config.hover_mode %}
+        "hovermode" : "{{ config.hover_mode }}"
+        {% else %}
+        "hovermode" : "x unified"
+        {% endif %},
+        
         "plot_bgcolor" : "rgba(0,0,0,0)",
         "paper_bgcolor" : "rgba(0,0,0,0)",
         "title" : {
@@ -149,7 +154,14 @@
         },
         "autosize": true,
         "automargin": true,
-        "hovermode": "x unified",
+
+        {% if config.legend=='show' %}
+        "showlegend": true
+        {% elif config.legend=='hide' %}
+        "showlegend": false
+        {% else %}
+        "showlegend":false
+        {% endif %},
         "legend" : {
             {% if config.legend_x %}
             "x" : "{{ config.legend_x }}"
