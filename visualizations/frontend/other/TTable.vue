@@ -757,7 +757,6 @@ export default {
       if (!validProps) return;
       if (!this.rows) return;
 
-      this.setInternalColumns();
       this.setupInternalRows();
 
       // Handle radio buttons setup
@@ -821,6 +820,8 @@ export default {
           detailRowOpen: !this.canCollapseDetailRows,
         };
       });
+
+      this.setInternalColumns();
       this.setDisplayRows();
       this.showSpinner = false;
     },
@@ -1232,7 +1233,9 @@ export default {
     },
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex;
-      if (!this.canPageServer) this.setupInternalRows();
+      if (!this.canPageServer) {
+        this.setupInternalRows();
+      }
     },
     fetchTotalRows() {
       const payload = this.createRequestPayload();
