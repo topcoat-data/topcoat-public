@@ -2,6 +2,7 @@
   <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }">
     <slot name="columnConfig" :set-column-config="setColumnConfig"></slot>
 
+    <slot name="testSlot">test slot</slot>
     <!-- Title -->
     <div v-if="showTableHeader" class="tableHeaderContainer">
       <div class="title">
