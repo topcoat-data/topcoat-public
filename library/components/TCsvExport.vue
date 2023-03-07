@@ -41,10 +41,9 @@ export default {
       };
       let filters = this.getFiltersState() ? this.getFiltersState() : [];
 
-      let formattedFilters = {};
-      filters.forEach(
-        (filter) => (formattedFilters[filter.name] = filter.value)
-      );
+  const formattedFilters = filters.reduce((acc, filter) => {
+    return {...acc, [filter.name]: filter.value}
+  }, {});
 
       if (this.additionalFilters) {
         filters = { ...formattedFilters, ...this.additionalFilters };
