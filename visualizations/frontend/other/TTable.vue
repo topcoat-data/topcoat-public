@@ -89,7 +89,8 @@
             :name="generateSlotName('header', column.header)"
             v-bind="column"
           >
-            {{ column.header }}
+            <!-- {{ column.header }} -->
+            {{ generateSlotName("header", column.header) }}
           </slot>
 
           <div v-if="column.sort" class="sortIcon" @click="updateSort(column)">
