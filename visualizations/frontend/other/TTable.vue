@@ -199,6 +199,10 @@
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
               class="border-b border-[#D3D3D9] align-top py-[12px]"
               :class="generateCellClasses({ column, cindex, row, rindex })"
+              @click="
+                ($event) =>
+                  handleCellClick(getCellValue(row, column), row, column)
+              "
             >
               <slot
                 :name="column.property"
@@ -392,6 +396,10 @@ export default {
       },
     },
     cellCssFunction: {
+      type: Function,
+      default: null,
+    },
+    onCellClick: {
       type: Function,
       default: null,
     },
@@ -750,6 +758,16 @@ export default {
       this.updateStartIndex(0);
       if (this.pagerResetFunction) this.pagerResetFunction();
       this.fetchTotalRows();
+    },
+    handleCellClick(cellValue, row, column) {
+      if (this.onCellClick !== null && this.onCellClick instanceof Function) {
+        this.onCellClick({
+          cellValue,
+          row,
+          column,
+          table: this,
+        });
+      }
     },
     init() {
       // Error checking
