@@ -167,7 +167,7 @@ export default {
           if (
             unusedOnly &&
             this.selectedFilters.find(
-              (sf) => sf.name.toLowerCase() === param.toLowerCase()
+              (selectedFilter) => selectedFilter.name.toLowerCase() === param.toLowerCase()
             )
           ) {
             urlFilters = [];
