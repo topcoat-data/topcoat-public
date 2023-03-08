@@ -199,6 +199,10 @@
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
               class="border-b border-[#D3D3D9] align-top py-[12px]"
               :class="generateCellClasses({ column, cindex, row, rindex })"
+              @click="
+                ($event) =>
+                  handleCellClick(getCellValue(row, column), row, column)
+              "
             >
               <slot
                 :name="column.property"
@@ -392,6 +396,10 @@ export default {
       },
     },
     cellCssFunction: {
+      type: Function,
+      default: null,
+    },
+    onCellClick: {
       type: Function,
       default: null,
     },
@@ -751,13 +759,22 @@ export default {
       if (this.pagerResetFunction) this.pagerResetFunction();
       this.fetchTotalRows();
     },
+    handleCellClick(cellValue, row, column) {
+      if (this.onCellClick !== null && this.onCellClick instanceof Function) {
+        this.onCellClick({
+          cellValue,
+          row,
+          column,
+          table: this,
+        });
+      }
+    },
     init() {
       // Error checking
       let validProps = this.errorPropValidations();
       if (!validProps) return;
       if (!this.rows) return;
 
-      this.setInternalColumns();
       this.setupInternalRows();
 
       // Handle radio buttons setup
@@ -821,6 +838,8 @@ export default {
           detailRowOpen: !this.canCollapseDetailRows,
         };
       });
+
+      this.setInternalColumns();
       this.setDisplayRows();
       this.showSpinner = false;
     },
@@ -973,12 +992,15 @@ export default {
       }
 
       if (this.sort === "sql") {
-        this.setOrderByFilters();
-        this.fetchPagedLayer(false);
+        this.fetchLayerOnSort();
       } else {
         this.setupInternalRows();
       }
     },
+    fetchLayerOnSort: _.debounce(function () {
+      this.setOrderByFilters();
+      this.fetchPagedLayer(false);
+    }, 500),
     setOrderByFilters() {
       let sortedColumns = _.reverse(this.getSortedColumns());
       let orderByFilter = sortedColumns
@@ -1232,7 +1254,9 @@ export default {
     },
     updateEndIndex(newEndIndex) {
       this.endIndex = newEndIndex;
-      if (!this.canPageServer) this.setupInternalRows();
+      if (!this.canPageServer) {
+        this.setupInternalRows();
+      }
     },
     fetchTotalRows() {
       const payload = this.createRequestPayload();
