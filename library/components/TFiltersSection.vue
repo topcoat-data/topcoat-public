@@ -110,8 +110,8 @@ export default {
       // To preserve original add order for filter
       // this loop is required again.
       let assignedFilters = [];
-      for (let filterIndex in this.selectedFilters) {
-        const filterName = this.selectedFilters[filterIndex].name;
+      for (const filter of this.selectedFilters) {
+        const filterName = filter.name;
         if (assignedFilters.includes(filterName)) {
           continue;
         }
@@ -167,7 +167,8 @@ export default {
           if (
             unusedOnly &&
             this.selectedFilters.find(
-              (selectedFilter) => selectedFilter.name.toLowerCase() === param.toLowerCase()
+              (selectedFilter) =>
+                selectedFilter.name.toLowerCase() === param.toLowerCase()
             )
           ) {
             urlFilters = [];
