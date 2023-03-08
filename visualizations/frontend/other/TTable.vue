@@ -761,6 +761,12 @@ export default {
     },
     handleCellClick(cellValue, row, column) {
       if (this.onCellClick !== null && this.onCellClick instanceof Function) {
+        console.log({
+          cellValue,
+          row,
+          column,
+          table: this,
+        });
         this.onCellClick({
           cellValue,
           row,
