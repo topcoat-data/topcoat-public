@@ -90,7 +90,7 @@
           >
             Select All
           </span>
-          <span v-else @click="reset"> Reset </span>
+          <button v-else @click="reset">Reset</button>
         </span>
         <span @click="showSelected = !showSelected">
           {{ showSelected ? "Show all" : "Only show selected" }}
