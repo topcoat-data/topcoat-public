@@ -47,8 +47,9 @@ export default {
   computed: {
     fullUrl() {
       let allUrlParams = {};
-      const allFilters = {};
-      this.filters.forEach((f) => (allFilters[f.name] = f.value));
+      const allFilters = this.getFiltersState.reduce((acc, filter) => {
+        return { ...acc, [filter.name]: filter.value };
+      }, {});
       const {
         "context[org]": org,
         "context[group]": group,
