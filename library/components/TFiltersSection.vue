@@ -189,7 +189,6 @@ export default {
           this.selectedFilters.splice(filterIndex, 1);
         }
         this.deleteFilter({ name: filterName });
-        this.filters = this.filters.filter((sf) => sf.name !== filterName);
       }
       this.$delete(this.visibleFilters, visibleFilterName);
       this.handleMenuItems();
