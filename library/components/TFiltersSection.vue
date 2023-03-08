@@ -180,7 +180,7 @@ export default {
       }
       return urlFilters;
     },
-    removeFilter(urlFilters, vfname) {
+    removeFilter(urlFilters, visibleFilterName) {
       for (let filterName of urlFilters) {
         const filterIndex = this.selectedFilters.findIndex(
           (f) => f.name === filterName
@@ -191,7 +191,7 @@ export default {
         this.deleteFilter({ name: filterName });
         this.filters = this.filters.filter((sf) => sf.name !== filterName);
       }
-      this.$delete(this.visibleFilters, vfname);
+      this.$delete(this.visibleFilters, visibleFilterName);
       this.handleMenuItems();
     },
     resetAllFilters() {
