@@ -182,12 +182,12 @@ export default {
     },
     removeFilter(urlFilters, visibleFilterName) {
       for (let filterName of urlFilters) {
-        const filterIndex = this.selectedFilters.findIndex(
-          (f) => f.name === filterName
-        );
-        if (filterIndex > -1) {
-          this.selectedFilters.splice(filterIndex, 1);
-        }
+        // const filterIndex = this.selectedFilters.findIndex(
+        //   (f) => f.name === filterName
+        // );
+        // if (filterIndex > -1) {
+        //   this.selectedFilters.splice(filterIndex, 1);
+        // }
         this.deleteFilter({ name: filterName });
       }
       this.$delete(this.visibleFilters, visibleFilterName);
