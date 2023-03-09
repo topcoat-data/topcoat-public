@@ -58,7 +58,6 @@ export default {
     menuItems: [],
     visibleFilters: {},
     lastAddedFilter: null,
-    selectedFilters: [],
   }),
   computed: {
     slotItems() {
@@ -69,7 +68,6 @@ export default {
     },
   },
   mounted() {
-    this.selectedFilters = this.filters;
     this.handleItems();
   },
   methods: {
@@ -110,7 +108,7 @@ export default {
       // To preserve original add order for filter
       // this loop is required again.
       let assignedFilters = [];
-      for (const filter of this.selectedFilters) {
+      for (const filter of this.getFiltersState) {
         const filterName = filter.name;
         if (assignedFilters.includes(filterName)) {
           continue;
@@ -150,11 +148,11 @@ export default {
       this.lastAddedFilter = item.tag;
       for (let filterName of item.filters) {
         if (
-          !this.selectedFilters.find((f) => {
+          !this.getFiltersState.find((f) => {
             f.name === filterName;
           })
         ) {
-          this.selectedFilters.push({ name: filterName, value: "" });
+          this.getFiltersState.push({ name: filterName, value: "" });
         }
       }
       this.handleItems();
@@ -166,7 +164,7 @@ export default {
         if (attribute.includes("t-filter")) {
           if (
             unusedOnly &&
-            this.selectedFilters.find(
+            this.getFiltersState.find(
               (selectedFilter) =>
                 selectedFilter.name.toLowerCase() === param.toLowerCase()
             )
@@ -182,12 +180,6 @@ export default {
     },
     removeFilter(urlFilters, visibleFilterName) {
       for (let filterName of urlFilters) {
-        // const filterIndex = this.selectedFilters.findIndex(
-        //   (f) => f.name === filterName
-        // );
-        // if (filterIndex > -1) {
-        //   this.selectedFilters.splice(filterIndex, 1);
-        // }
         this.deleteFilter({ name: filterName });
       }
       this.$delete(this.visibleFilters, visibleFilterName);
