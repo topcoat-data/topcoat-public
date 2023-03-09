@@ -41,9 +41,9 @@ export default {
       };
       let filters = this.getFiltersState() ? this.getFiltersState() : [];
 
-  const formattedFilters = filters.reduce((acc, filter) => {
-    return {...acc, [filter.name]: filter.value}
-  }, {});
+      const formattedFilters = filters.reduce((acc, filter) => {
+        return { ...acc, [filter.name]: filter.value };
+      }, {});
 
       if (this.additionalFilters) {
         filters = { ...formattedFilters, ...this.additionalFilters };
