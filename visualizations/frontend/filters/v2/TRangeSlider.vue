@@ -57,13 +57,13 @@ export default {
     },
     handleDragend(e) {
       this.dragging = false;
-      this.setFilterValue("value", this.value);
+      this.setFilterValue("value", this.value, true);
     },
     handleClick(e) {
       this.dragging = true;
       this.handlePlacement(e.clientX);
       this.dragging = false;
-      this.setFilterValue("value", this.value);
+      this.setFilterValue("value", this.value, true);
     },
     handlePlacement(clickPos) {
       const container = this.$refs.rangeContainer;
@@ -88,7 +88,7 @@ export default {
         !internalValue || internalValue < this.min ? this.min : internalValue;
       const pos = ((this.value - this.min) * 100) / (this.max - this.min);
       this.left = pos;
-      this.setFilterValue("value", this.value);
+      this.setFilterValue("value", this.value, true);
     },
   },
 };

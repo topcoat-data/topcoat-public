@@ -175,6 +175,7 @@ export default {
           const metadata = componentInstance.metadata;
           const filters =
             metadata && metadata.filters ? metadata.filters.output : [];
+
           for (let filter of filters) {
             const value = this.getFiltersState[filter.urlparam];
 

@@ -75,7 +75,7 @@
     methods: {
       selectItem(index) {
         this.selected_internal = this.options[index];
-        this.setFilterValue("dropdown", this.selected_internal);
+        this.setFilterValue("dropdown", this.selected_internal, true);
         this.showMenu = false;
       },
       onVisualizationInit() {
@@ -93,7 +93,7 @@
         } else {
           return;
         }
-        this.setFilterValue("dropdown", this.selected_internal);
+        this.setFilterValue("dropdown", this.selected_internal, true);
       },
     },
   };

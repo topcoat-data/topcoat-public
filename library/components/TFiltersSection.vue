@@ -15,7 +15,7 @@
               <div
                 slot="trigger"
                 class="w-[34px] h-[32px] border border-[#B3B2BD] hover:border-[#555463] rounded flex items-center justify-center"
-                @click="removeFilter(data.filters, tag)"
+                @click="removeFilter(data.filters)"
               >
                 <!-- Limitation: Using icon component as <delete-icon /> does not work with $slots manipulation -->
                 <!-- Svg of icon is used directly -->
@@ -37,15 +37,13 @@
           </div>
         </component>
         <t-filters-dropdown :items="menuItems" @opened="handleFilterOpen" />
-
-        <div
-          class="flex gap-1 text-[#145DEB] cursor-pointer"
-          @click="resetAllFilters"
-        >
-          <backup-restore-icon :size="18" />
-          Reset all filters
-        </div>
       </div>
+
+      <!-- Todo: add reset filters functionality -->
+      <!-- <div class="flex gap-1 hover:text-[#145DEB] cursor-pointer">
+        <backup-restore-icon :size="18" />
+        Reset all filters
+      </div> -->
     </div>
   </div>
 </template>
@@ -58,16 +56,15 @@ export default {
     menuItems: [],
     visibleFilters: {},
     lastAddedFilter: null,
+    selectedFilters: {},
   }),
   computed: {
     slotItems() {
       return this.$slots.default || [];
     },
-    defaultFilterSlotItems() {
-      return this.$slots.defaultFilter || [];
-    },
   },
   mounted() {
+    this.selectedFilters = this.filters;
     this.handleItems();
   },
   methods: {
@@ -88,6 +85,7 @@ export default {
             attrs["dropdownSection"] ||
             "UNGROUPED";
           const unusedFilters = this.getFilters(attrs, true);
+
           const tag = `${element.tag}${index}`;
           if (unusedFilters.length) {
             let itemObject = { label, filters: unusedFilters, tag };
@@ -108,9 +106,9 @@ export default {
       // To preserve original add order for filter
       // this loop is required again.
       let assignedFilters = [];
-      for (const filter of this.getFiltersState) {
-        const filterName = filter.name;
-        if (assignedFilters.includes(filterName)) {
+      const visibleFilters = {};
+      for (let filter in this.selectedFilters) {
+        if (assignedFilters.includes(filter)) {
           continue;
         }
 
@@ -118,7 +116,7 @@ export default {
           if (element.tag) {
             const tag = `${element.tag}${index}`;
             const urlFilters = this.getFilters(element.data.attrs);
-            if (urlFilters.includes(filterName) || element.isDefault) {
+            if (urlFilters.includes(filter) || element.isDefault) {
               assignedFilters = [...assignedFilters, ...urlFilters];
               if (!this.initialisedComponents.includes(tag)) {
                 window.Vue.component(tag, {
@@ -129,11 +127,14 @@ export default {
                 this.initialisedComponents.push(tag);
               }
 
-              this.$set(this.visibleFilters, tag, { filters: urlFilters });
+              visibleFilters[tag] = {
+                filters: urlFilters,
+              };
             }
           }
         });
       }
+      this.visibleFilters = visibleFilters;
 
       // Better approach?
       // This is the only way (so far) to avoid glitched and broken behaviour.
@@ -146,13 +147,9 @@ export default {
     },
     handleFilterOpen(item) {
       this.lastAddedFilter = item.tag;
-      for (let filterName of item.filters) {
-        if (
-          !this.getFiltersState.find((f) => {
-            f.name === filterName;
-          })
-        ) {
-          this.getFiltersState.push({ name: filterName, value: "" });
+      for (let filter of item.filters) {
+        if (!this.selectedFilters[filter]) {
+          this.selectedFilters[filter] = "";
         }
       }
       this.handleItems();
@@ -163,11 +160,8 @@ export default {
         const param = attrs[attribute];
         if (attribute.includes("t-filter")) {
           if (
-            unusedOnly &&
-            this.getFiltersState.find(
-              (selectedFilter) =>
-                selectedFilter.name.toLowerCase() === param.toLowerCase()
-            )
+            Object.prototype.hasOwnProperty.call(this.selectedFilters, param) &&
+            unusedOnly
           ) {
             urlFilters = [];
             break;
@@ -178,20 +172,16 @@ export default {
       }
       return urlFilters;
     },
-    removeFilter(urlFilters, visibleFilterName) {
-      for (let filterName of urlFilters) {
-        this.deleteFilter({ name: filterName });
+    removeFilter(urlFilters) {
+      for (let filter of urlFilters) {
+        this.deleteFilter({ name: filter });
+        if (
+          Object.prototype.hasOwnProperty.call(this.selectedFilters, filter)
+        ) {
+          this.$delete(this.selectedFilters, filter);
+        }
       }
-      this.$delete(this.visibleFilters, visibleFilterName);
-      this.handleMenuItems();
-    },
-    resetAllFilters() {
-      this.defaultFilterSlotItems.forEach((dfsi) => {
-        dfsi?.componentInstance?.reset();
-      });
-      Object.keys(this.visibleFilters).forEach((vfname) => {
-        this.removeFilter(this.visibleFilters[vfname].filters, vfname);
-      });
+      this.handleItems();
     },
     addDeleteButton(tag) {
       this.$nextTick(() => {

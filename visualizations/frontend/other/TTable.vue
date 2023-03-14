@@ -1387,7 +1387,7 @@ export default {
           urlparam: filterName,
         });
       }
-      this.setFilterValue(filterName, filterValue, undefined, true);
+      this.setFilterValue(filterName, filterValue);
     },
   },
 };

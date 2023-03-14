@@ -200,12 +200,20 @@ export default {
     apply() {
       this.pickerOpened = false;
       if (this.pickerMode == "single") {
-        this.setFilterValue("date", this.date.format("YYYY-MM-DD"));
+        this.setFilterValue("date", this.date.format("YYYY-MM-DD"), false);
       } else {
-        this.setFilterValue("start_date", this.startDate.format("YYYY-MM-DD"));
-        this.setFilterValue("end_date", this.endDate.format("YYYY-MM-DD"));
+        this.setFilterValue(
+          "start_date",
+          this.startDate.format("YYYY-MM-DD"),
+          false
+        );
+        this.setFilterValue(
+          "end_date",
+          this.endDate.format("YYYY-MM-DD"),
+          false
+        );
       }
-      this.setFilterValue("date_preset", this.datePreset);
+      this.setFilterValue("date_preset", this.datePreset, false);
     },
     presetChange(event) {
       this.datePreset = event.key;
