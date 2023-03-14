@@ -62,7 +62,7 @@
         },
         set(value) {
           this.text_internal = encodeURI(value);
-          this.setFilterValue("selected", this.text_internal);
+          this.setFilterValue("selected", this.text_internal, true);
         },
       },
     },
@@ -119,7 +119,7 @@
       onVisualizationInit() {
         const initial_value = this.getFilterValue("selected");
         this.text_internal = initial_value || "";
-        this.setFilterValue("selected", encodeURI(this.text_internal));
+        this.setFilterValue("selected", encodeURI(this.text_internal), true);
         return this.text_internal;
       },
       select(row) {

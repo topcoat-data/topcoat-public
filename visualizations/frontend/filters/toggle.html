@@ -46,7 +46,7 @@
         },
         set(value) {
           this.checked_internal = value;
-          this.setFilterValue("checkbox", this.checked_internal);
+          this.setFilterValue("checkbox", this.checked_internal, true);
         },
       },
     },
@@ -57,10 +57,10 @@
 
         if (initial_value) {
           this.checked_internal = initial_value === "true";
-          this.setFilterValue("checkbox", this.checked_internal);
+          this.setFilterValue("checkbox", this.checked_internal, true);
         } else {
           this.checked_internal = false;
-          this.setFilterValue("checkbox", false);
+          this.setFilterValue("checkbox", false, true);
         }
       },
     },

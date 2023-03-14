@@ -36,17 +36,13 @@ export default {
   methods: {
     download() {
       this.is_loading = true;
-      const payload = {
+      payload = {
         layer: this.tLayer,
       };
-      let filters = this.getFiltersState() ? this.getFiltersState() : [];
-
-      const formattedFilters = filters.reduce((acc, filter) => {
-        return { ...acc, [filter.name]: filter.value };
-      }, {});
+      let filters = this.getFiltersState ? this.getFiltersState : {};
 
       if (this.additionalFilters) {
-        filters = { ...formattedFilters, ...this.additionalFilters };
+        filters = { ...filters, ...this.additionalFilters };
       }
 
       this.trackExport("csv");

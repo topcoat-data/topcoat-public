@@ -271,7 +271,7 @@ export default {
       set(value) {
         this.text_internal = value;
         // Todo: Remove this when spa is live
-        this.setFilterValue("query", this.text_internal);
+        this.setFilterValue("query", this.text_internal, true);
         // Todo: Use this when spa is live
         // this.setFilterValue({ filterName: 'query', filterValue: this.text_internal, notify: true })
       },
@@ -300,7 +300,7 @@ export default {
       }
       this.value = this.text_internal;
       // Todo: Remove this when spa is live
-      this.setFilterValue("query", this.text_internal);
+      this.setFilterValue("query", this.text_internal, true);
       // Todo: Use this when spa is live
       // this.setFilterValue({ filterName: 'query', filterValue: this.text_internal, notify: true })
     },

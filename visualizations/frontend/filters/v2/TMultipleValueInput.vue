@@ -71,10 +71,10 @@ export default {
           .filter((id) => this.values.indexOf(id) > -1)
           .join("|");
       }
-      this.setFilterValue("selected_items", urlParams);
+      this.setFilterValue("selected_items", urlParams, true);
     },
     update(item) {
-      this.setFilterValue("selected_items", item.join("|"));
+      this.setFilterValue("selected_items", item.join("|"), true);
     },
   },
 };
