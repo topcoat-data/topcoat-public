@@ -47,14 +47,11 @@ export default {
   computed: {
     fullUrl() {
       let allUrlParams = {};
-      const allFilters = this.getFiltersState.reduce((acc, filter) => {
-        return { ...acc, [filter.name]: filter.value };
-      }, {});
       const {
         "context[org]": org,
         "context[group]": group,
         ...restOfFilters
-      } = allFilters;
+      } = this.getFiltersState;
 
       if (this.includeContextParam) {
         if (org) {

@@ -166,7 +166,7 @@ export default {
         return minInternal ? parseInt(minInternal) : this.minValue;
       },
       set(val) {
-        this.setFilterValue("min", val);
+        this.setFilterValue("min", val, true);
         return val;
       },
     },
@@ -176,7 +176,7 @@ export default {
         return maxInternal ? parseInt(maxInternal) : this.maxValue;
       },
       set(val) {
-        this.setFilterValue("max", val);
+        this.setFilterValue("max", val, true);
         return val;
       },
     },

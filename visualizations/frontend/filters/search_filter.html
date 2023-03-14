@@ -39,7 +39,7 @@
         },
         set(value) {
           this.text_internal = value;
-          this.setFilterValue("query", this.text_internal);
+          this.setFilterValue("query", this.text_internal, true);
         },
       },
     },
@@ -55,7 +55,7 @@
           return;
         }
         this.queryText = this.text_internal;
-        this.setFilterValue("query", this.text_internal);
+        this.setFilterValue("query", this.text_internal, true);
       },
       onEnter(e) {
         if (e.keyCode === 13) {
