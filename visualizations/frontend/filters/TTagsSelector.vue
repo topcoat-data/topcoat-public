@@ -186,6 +186,10 @@ export default {
       type: Number,
       default: 5,
     },
+    defaultValue: {
+      type: Array,
+      default: () => [],
+    },
     searchFields: {
       type: Array,
       default: null,
@@ -248,8 +252,11 @@ export default {
           console.error(error);
           console.error("Failed to parse tags data");
         }
+      } else if (this.defaultValue) {
+        selected = [...this.defaultValue];
       }
       this.selected = selected;
+      this.updateUrlValue();
     },
     selectValue(value) {
       this.selected.push({
@@ -311,6 +318,10 @@ export default {
         return this.expanded.push(key);
       }
       return (this.expanded = this.expanded.filter((k) => k !== key));
+    },
+    reset() {
+      this.selected = [...this.defaultValue];
+      this.updateUrlValue();
     },
     searchInObject(searchTerm, row) {
       const COLUMN_VALUE = "value";

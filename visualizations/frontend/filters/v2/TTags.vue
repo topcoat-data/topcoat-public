@@ -203,7 +203,7 @@ export default {
       this.init = true;
     },
     updateUrlParams() {
-      this.setFilterValue("selected_items", this.checked.join("|"), true);
+      this.setFilterValue("selected_items", this.checked.join("|"));
     },
   },
 };

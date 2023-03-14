@@ -106,8 +106,7 @@
         }
         return this.setFilterValue(
           "selected_items",
-          this.selected_internal,
-          true
+          this.selected_internal
         );
       },
       handleMenuMargin() {
@@ -149,7 +148,7 @@
           this.handleMenuMargin();
           const selected = value.map((item) => item.id).join("|");
           this.selected_internal = selected;
-          this.setFilterValue("selected_items", selected, true);
+          this.setFilterValue("selected_items", selected);
           if (!value || !value.length) {
             this.unsetFilterValue("selected_items", true);
           }
