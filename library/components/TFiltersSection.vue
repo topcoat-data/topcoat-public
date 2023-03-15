@@ -43,7 +43,7 @@
           @click="resetAllFilters"
         >
           <backup-restore-icon :size="18" />
-          Reset all filters
+          Reset filters
         </div>
       </div>
     </div>
