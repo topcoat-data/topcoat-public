@@ -146,13 +146,11 @@
 
         this.setFilterValue(
           "start_date",
-          this.startDate.format("YYYY-MM-DD"),
-          false
+          this.startDate.format("YYYY-MM-DD")
         );
         this.setFilterValue(
           "end_date",
-          this.endDate.format("YYYY-MM-DD"),
-          false
+          this.endDate.format("YYYY-MM-DD")
         );
 
         var start = this.startDate.clone();
@@ -184,17 +182,15 @@
           }
         }
 
-        this.setFilterValue("date_preset", this.datePreset, false);
-        this.setFilterValue("previous_mode", this.previousMode, false);
+        this.setFilterValue("date_preset", this.datePreset);
+        this.setFilterValue("previous_mode", this.previousMode);
         this.setFilterValue(
           "prev_start_date",
-          this.refStart.format("YYYY-MM-DD"),
-          false
+          this.refStart.format("YYYY-MM-DD")
         );
         this.setFilterValue(
           "prev_end_date",
           this.refEnd.format("YYYY-MM-DD"),
-          true
         );
         console.log("Set values");
       },
@@ -248,7 +244,7 @@
         var date_preset = this.getFilterValue("date_preset");
         if (date_preset == null) {
           this.datePreset = "last90days";
-          this.setFilterValue("date_preset", this.datePreset, false);
+          this.setFilterValue("date_preset", this.datePreset);
         } else {
           this.datePreset = date_preset;
         }
@@ -258,7 +254,7 @@
           if (this.datePreset == "mtd" || this.datePreset == "ytd")
             this.previousMode = "year";
           else this.previousMode = "period";
-          this.setFilterValue("previous_mode", this.previousMode, false);
+          this.setFilterValue("previous_mode", this.previousMode);
         } else {
           this.previousMode = previous_mode;
         }
@@ -284,23 +280,19 @@
 
           this.setFilterValue(
             "start_date",
-            this.startDate.format("YYYY-MM-DD"),
-            false
+            this.startDate.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "end_date",
-            this.endDate.format("YYYY-MM-DD"),
-            false
+            this.endDate.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "prev_start_date",
-            this.refStart.format("YYYY-MM-DD"),
-            false
+            this.refStart.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "prev_end_date",
-            this.refEnd.format("YYYY-MM-DD"),
-            true
+            this.refEnd.format("YYYY-MM-DD")
           );
         }
       },

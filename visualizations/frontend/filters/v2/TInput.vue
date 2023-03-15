@@ -36,20 +36,24 @@ export default {
       if (initial_value) {
         // Value from url param.
         this.value = initial_value;
-      } else if (this.config.default_value) {
+      } else if (this.config?.default_value) {
         // Default value from layer
         this.value = this.config.default_value;
-        this.setFilterValue("query", this.value, true);
+        this.setFilterValue("query", this.value, this.defaultValue);
       } else if (this.defaultValue) {
         // Default value from prop
         this.value = this.defaultValue;
-        this.setFilterValue("query", this.value, true);
+        this.setFilterValue("query", this.value, this.defaultValue);
       } else {
         return;
       }
     },
     updateUrlParam() {
-      this.setFilterValue("query", this.value, true);
+      this.setFilterValue("query", this.value, this.defaultValue);
+    },
+    reset() {
+      this.value = this.defaultValue;
+      this.updateUrlParam();
     },
   },
 };

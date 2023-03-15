@@ -295,17 +295,15 @@
       apply() {
         this.pickerOpened = false;
         if (this.pickerMode == "single") {
-          this.setFilterValue("date", this.date.format("YYYY-MM-DD"), false);
+          this.setFilterValue("date", this.date.format("YYYY-MM-DD"));
         } else {
           this.setFilterValue(
             "start_date",
-            this.startDate.format("YYYY-MM-DD"),
-            false
+            this.startDate.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "end_date",
-            this.endDate.format("YYYY-MM-DD"),
-            false
+            this.endDate.format("YYYY-MM-DD")
           );
 
           var start = this.startDate.clone();
@@ -346,17 +344,17 @@
             ? this.refEnd.format("YYYY-MM-DD")
             : "";
           if (this.prevMode) {
-            this.setFilterValue("previous_mode", prevMode, false);
+            this.setFilterValue("previous_mode", prevMode);
           }
           if (this.prevStartDate) {
-            this.setFilterValue("prev_start_date", prevStartDate, false);
+            this.setFilterValue("prev_start_date", prevStartDate);
           }
           if (this.prevEndDate) {
-            this.setFilterValue("prev_end_date", prevEndDate, true);
+            this.setFilterValue("prev_end_date", prevEndDate);
           }
         }
         console.log(this.datePreset);
-        this.setFilterValue("date_preset", this.datePreset, false);
+        this.setFilterValue("date_preset", this.datePreset);
       },
       presetChange(event, first) {
         // Remember previous
@@ -453,7 +451,7 @@
         } else {
           if (!date_preset && defaultPreset) {
             this.datePreset = defaultPreset;
-            this.setFilterValue("date_preset", defaultPreset, false);
+            this.setFilterValue("date_preset", defaultPreset);
           }
         }
 
@@ -463,7 +461,7 @@
             this.previousMode = "year";
           else this.previousMode = "period";
           const prevMode = includePrevious ? this.previousMode : "";
-          this.setFilterValue("previous_mode", this.previousMode, false);
+          this.setFilterValue("previous_mode", this.previousMode);
         } else {
           this.previousMode = previous_mode;
         }
@@ -490,23 +488,21 @@
 
           this.setFilterValue(
             "start_date",
-            this.startDate.format("YYYY-MM-DD"),
-            false
+            this.startDate.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "end_date",
-            this.endDate.format("YYYY-MM-DD"),
-            false
+            this.endDate.format("YYYY-MM-DD")
           );
-          this.setFilterValue("date", this.date.format("YYYY-MM-DD"), false);
+          this.setFilterValue("date", this.date.format("YYYY-MM-DD"));
           const prevStartDate = includePrevious
             ? this.refStart.format("YYYY-MM-DD")
             : "";
           const prevEndDate = includePrevious
             ? this.refEnd.format("YYYY-MM-DD")
             : "";
-          this.setFilterValue("prev_start_date", prevStartDate, false);
-          this.setFilterValue("prev_end_date", prevEndDate, true);
+          this.setFilterValue("prev_start_date", prevStartDate);
+          this.setFilterValue("prev_end_date", prevEndDate);
         }
       },
       openPicker() {

@@ -184,14 +184,14 @@
               return dPreset;
             } else if (!date_preset && this.config.default_preset) {
               this.datePreset = this.config.default_preset;
-              this.setFilterValue("date_preset", this.datePreset, false);
+              this.setFilterValue("date_preset", this.datePreset);
               return this.datePreset;
             }
           }
         },
         set(value) {
           this.datePreset = value[0];
-          this.setFilterValue("date_preset", this.datePreset, false);
+          this.setFilterValue("date_preset", this.datePreset);
         },
       },
       defaultPreset() {
@@ -250,13 +250,11 @@
 
         this.setFilterValue(
           "start_date",
-          this.startDate.format("YYYY-MM-DD"),
-          false
+          this.startDate.format("YYYY-MM-DD")
         );
         this.setFilterValue(
           "end_date",
-          this.endDate.format("YYYY-MM-DD"),
-          false
+          this.endDate.format("YYYY-MM-DD")
         );
 
         var start = this.startDate.clone();
@@ -295,10 +293,10 @@
         const prevEndDate = includePrevious
           ? this.refEnd.format("YYYY-MM-DD")
           : "";
-        this.setFilterValue("previous_mode", prevMode, false);
-        this.setFilterValue("prev_start_date", prevStartDate, false);
-        this.setFilterValue("prev_end_date", prevEndDate, true);
-        this.setFilterValue("date_preset", this.datePreset, false);
+        this.setFilterValue("previous_mode", prevMode);
+        this.setFilterValue("prev_start_date", prevStartDate);
+        this.setFilterValue("prev_end_date", prevEndDate);
+        this.setFilterValue("date_preset", this.datePreset);
       },
       presetChange(event, first) {
         // Remember previous
@@ -374,10 +372,10 @@
         } else {
           if (!this.config.default_preset) {
             this.datePreset = this.defaultPreset;
-            this.setFilterValue("date_preset", this.datePreset, false);
+            this.setFilterValue("date_preset", this.datePreset);
           } else if (!date_preset && this.config.default_preset) {
             this.datePreset = this.config.default_preset;
-            this.setFilterValue("date_preset", this.datePreset, false);
+            this.setFilterValue("date_preset", this.datePreset);
             return this.datePreset;
           }
         }
@@ -388,7 +386,7 @@
             this.previousMode = "year";
           else this.previousMode = "period";
           const prevMode = includePrevious ? this.previousMode : "";
-          this.setFilterValue("previous_mode", this.previousMode, false);
+          this.setFilterValue("previous_mode", this.previousMode);
         } else {
           this.previousMode = previous_mode;
         }
@@ -415,23 +413,21 @@
 
           this.setFilterValue(
             "start_date",
-            this.startDate.format("YYYY-MM-DD"),
-            false
+            this.startDate.format("YYYY-MM-DD")
           );
           this.setFilterValue(
             "end_date",
-            this.endDate.format("YYYY-MM-DD"),
-            false
+            this.endDate.format("YYYY-MM-DD")
           );
-          this.setFilterValue("date", this.date.format("YYYY-MM-DD"), false);
+          this.setFilterValue("date", this.date.format("YYYY-MM-DD"));
           const prevStartDate = includePrevious
             ? this.refStart.format("YYYY-MM-DD")
             : "";
           const prevEndDate = includePrevious
             ? this.refEnd.format("YYYY-MM-DD")
             : "";
-          this.setFilterValue("prev_start_date", prevStartDate, false);
-          this.setFilterValue("prev_end_date", prevEndDate, true);
+          this.setFilterValue("prev_start_date", prevStartDate);
+          this.setFilterValue("prev_end_date", prevEndDate);
         }
       },
     },
