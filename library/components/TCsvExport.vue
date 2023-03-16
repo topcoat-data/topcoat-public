@@ -39,7 +39,7 @@ export default {
       const payload = {
         layer: this.tLayer,
       };
-      let filters = this.getFiltersState() ? this.getFiltersState() : [];
+      let filters = this.getFiltersState ? this.getFiltersState() : [];
 
       const formattedFilters = filters.reduce((acc, filter) => {
         return { ...acc, [filter.name]: filter.value };
