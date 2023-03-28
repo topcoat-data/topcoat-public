@@ -5,6 +5,7 @@
     <!-- Title -->
     <div v-if="showTableHeader" class="tableHeaderContainer">
       <div class="title">
+        <div class="title__prefix"><slot name="titlePrefix"></slot></div>
         <div v-if="title">{{ title }}</div>
         <t-tooltip v-if="tooltip" position="top" class="tooltip" width="260px">
           <help-circle-outline-icon slot="trigger" :size="16" />
@@ -1515,6 +1516,7 @@ highlighting a row on hover etc. */
   font-feature-settings: "tnum" on, "lnum" on;
   padding-top: 15px;
   padding-bottom: 15px;
+  gap: 10px;
 }
 
 .tooltip {
