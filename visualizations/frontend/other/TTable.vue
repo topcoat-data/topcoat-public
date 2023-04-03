@@ -59,6 +59,8 @@
       </div>
     </div>
 
+    <slot name="head"></slot>
+
     <div
       v-if="isDataAvailable"
       id="tableContainer"
