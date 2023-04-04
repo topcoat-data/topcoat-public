@@ -32,7 +32,7 @@
               >
                 <div
                   class="flex items-center justify-between w-full leading-[16.41px]"
-                  @click="$emit('updateItemsPerPage', itemsPerPageOption)"
+                  @click="updateItemsPerPage(itemsPerPageOption)"
                 >
                   <div
                     v-if="itemsPerPageOption === itemsPerPage"
@@ -95,8 +95,10 @@
       <div
         class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
       >
-        Showing {{ startIndex + 1 }}-
-        {{ Math.min(startIndex + itemsPerPage, numberOfItems) }}
+        Showing {{ (startIndex + 1).toLocaleString() }} -
+        {{
+          Math.min(startIndex + itemsPerPage, numberOfItems).toLocaleString()
+        }}
         of {{ numberOfItems.toLocaleString() }}
       </div>
     </div>
@@ -208,6 +210,10 @@ export default {
       if (internalPage < 1) return false;
       if (internalPage > this.lastPage) return false;
       return true;
+    },
+    updateItemsPerPage(itemsPerPageOption) {
+      this.reset();
+      this.$emit("updateItemsPerPage", itemsPerPageOption);
     },
   },
 };
