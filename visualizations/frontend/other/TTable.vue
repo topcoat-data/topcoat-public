@@ -59,6 +59,14 @@
       </div>
     </div>
 
+    <slot
+      name="head"
+      :total-count="totalRows"
+      :visible-count="internalRowsPerPage"
+      :start-index="startIndex"
+      :end-index="endIndex"
+    ></slot>
+
     <div
       v-if="isDataAvailable"
       id="tableContainer"
