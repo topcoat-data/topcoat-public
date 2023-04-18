@@ -72,6 +72,7 @@
       id="tableContainer"
       ref="tableContainer"
       :style="columnWidthsStyle"
+      :class="extraClass"
     >
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
@@ -363,6 +364,10 @@ export default {
     layerColumnsToHide: {
       type: Array,
       default: () => [],
+    },
+    extraClass: {
+      type: String,
+      default: "",
     },
     enableCsvDownload: {
       type: Boolean,
