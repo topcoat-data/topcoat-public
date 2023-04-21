@@ -1,5 +1,5 @@
 <template>
-    <plotly />
+    <plotly :height="$props.height" />
 </template>
 
 <figure>
@@ -12,7 +12,7 @@
                 {% if colors and colors|length %}
                 "colors" : {{ colors | tojson }},
                 {% endif %}
-                "line": {    
+                "line": {
                    {% if config.line_width %}
                    "width": "{{ config.line_width }}"
                    {% else %}
@@ -43,31 +43,31 @@
             "values": {{ column_data(measures[0]) }},
 
             {% if config.text_info %}
-            "textinfo" : "{{ config.text_info }}"            
+            "textinfo" : "{{ config.text_info }}"
             {% else %}
             "textinfo" : "none"
             {% endif %},
 
             {% if config.rotate_chart %}
-            "rotation" : "{{ config.rotate_chart }}"            
+            "rotation" : "{{ config.rotate_chart }}"
             {% else %}
             "rotation" : 0.0
             {% endif %},
 
             {% if config.hole_size %}
-            "hole" : "{{ config.hole_size }}"            
+            "hole" : "{{ config.hole_size }}"
             {% else %}
             "hole" : 0.0
             {% endif %},
 
             {% if config.pull_sectors %}
-            "pull" : "{{ config.pull_sectors }}"            
+            "pull" : "{{ config.pull_sectors }}"
             {% else %}
             "pull" : 0.0
             {% endif %},
 
             {% if config.chart_direction %}
-            "direction" : "{{ config.chart_direction }}"            
+            "direction" : "{{ config.chart_direction }}"
             {% else %}
             "direction" : "counterclockwise"
             {% endif %},
@@ -79,7 +79,7 @@
             {% else %}
             "sort": true
             {% endif %}
-        }   
+        }
     ],
     "layout" : {
         {% if config.hover_mode %}
@@ -87,7 +87,7 @@
         {% else %}
         "hovermode" : "x unified"
         {% endif %},
-        
+
         "plot_bgcolor" : "rgba(0,0,0,0)",
         "paper_bgcolor" : "rgba(0,0,0,0)",
         "title" : {
@@ -174,7 +174,7 @@
             {% else %}
             "y" : "1.1"
             {% endif %},
-            
+
             {% if config.legend_orientation %}
             "orientation" : "{{ config.legend_orientation }}"
             {% else %}

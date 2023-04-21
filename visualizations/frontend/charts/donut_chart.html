@@ -1,5 +1,5 @@
 <template>
-    <plotly />
+    <plotly :height="$props.height" />
 </template>
 
 <figure>
@@ -16,7 +16,7 @@
             "labels": {{ column_data(dimensions[0]) }},
             "values": {{ column_data(measures[0]) }},
             "hole": 0.4
-        }   
+        }
     ],
     "layout" : {
         "hovermode": "x unified",

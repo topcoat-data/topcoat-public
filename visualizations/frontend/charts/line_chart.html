@@ -1,5 +1,5 @@
 <template>
-    <plotly />
+    <plotly :height="$props.height" />
 </template>
 
 <figure>
@@ -15,19 +15,19 @@
                     {% else %}
                     "color" : "rgba(29, 34, 96,1)",
                     {% endif %}
-    
+
                     {% if config.line_type %}
                     "shape": "{{ config.line_type }}"
                     {% else %}
                     "shape": "spline"
                     {% endif %},
-    
+
                     {% if config.line_smoothing %}
                     "smoothing": "{{ config.line_smoothing }}"
                     {% else %}
                     "smoothing": 0.45
                     {% endif %},
-    
+
                     {% if config.line_width %}
                     "width": "{{ config.line_width }}"
                     {% else %}
@@ -35,9 +35,9 @@
                     {% endif %}
                 },
                 "connectgaps": true,
-    
+
                 {% if not config.stacked %}
-    
+
                 {% if config.fill_type=='no fill' %}
                 "fill" : "none"
                 {% elif config.fill_type=='x fill' %}
@@ -51,23 +51,23 @@
                 {% else %}
                 "fill" : "tozeroy"
                 {% endif %},
-    
+
                 {% else %}
                 "stackgroup": "one",
                 {% endif %}
-    
+
                 {% if config.fill_colors %}
                 "fillcolor": "{{ config.fill_colors[loop.index-1] }}",
                 {% else %}
                 "fillcolor": "rgb(236, 238, 245)",
                 {% endif %}
-    
+
                 {% if column_tag(measure, 'yaxis_right') %}
                 "yaxis": "y2",
                 {% else %}
                 "yaxis": "y1",
                 {% endif %}
-    
+
                 "xaxis": "x2",
                 "marker" : {
                     {% if config.line_colors %}
@@ -126,13 +126,13 @@
                 {% else %}
                 "family": "Open Sans"
                 {% endif %},
-    
+
                 {% if config.font_color %}
                  "color" : "{{ config.font_color }}"
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-                
+
                 {% if config.font_size %}
                  "size" : "{{ config.font_size }}"
                 {% else %}
@@ -147,7 +147,7 @@
                 {% else %}
                 "showgrid": false
                 {% endif %},
-    
+
                 {% if config.x_labels=='hide' %}
                 "showticklabels": false
                 {% elif config.x_labels=='show' %}
@@ -155,7 +155,7 @@
                 {% else %}
                 "showticklabels": true
                 {% endif %},
-    
+
                 {% if config.x_axis=='hide' %}
                 "zeroline" : false
                 {% elif config.x_axis=='show' %}
@@ -163,7 +163,7 @@
                 {% else %}
                 "zeroline" : true
                 {% endif %},
-    
+
                 "linewidth" : 7,
                 "linecolor" : "rgba(0,0,0,0)",
                 "tickfont" : {
@@ -172,19 +172,19 @@
                     {% else %}
                     "family": "Open Sans"
                     {% endif %},
-    
+
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
                     "color" : "#161F3D"
                     {% endif %},
-    
+
                     {% if config.tickfont_size %}
                     "size" : "{{ config.tickfont_size }}"
                     {% else %}
                     "size": 11
                     {% endif %}
-    
+
                 },
                 "color" : "rgba(0, 0, 0, 0.65)",
                 "showline" : false,
@@ -212,7 +212,7 @@
                         {% endif %}
                     }
                 }
-    
+
             },
             "xaxis2": {
                 {% if config.x_grid=='hide' %}
@@ -222,7 +222,7 @@
                 {% else %}
                 "showgrid": false
                 {% endif %},
-    
+
                 {% if config.x_labels=='hide' %}
                 "showticklabels": false
                 {% elif config.x_labels=='show' %}
@@ -230,7 +230,7 @@
                 {% else %}
                 "showticklabels": true
                 {% endif %},
-    
+
                 {% if config.x_axis=='hide' %}
                 "zeroline" : false
                 {% elif config.x_axis=='show' %}
@@ -238,8 +238,8 @@
                 {% else %}
                 "zeroline" : true
                 {% endif %},
-    
-    
+
+
                 "linewidth" : 7,
                 "linecolor" : "rgba(0,0,0,0)",
                 "tickfont" : {
@@ -248,13 +248,13 @@
                     {% else %}
                     "family": "Open Sans"
                     {% endif %},
-    
+
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
                     "color" : "#161F3D"
                     {% endif %},
-    
+
                     {% if config.tickfont_size %}
                     "size" : "{{ config.tickfont_size }}"
                     {% else %}
@@ -288,7 +288,7 @@
             },
             "yaxis" : {
                 "overlaying": "y2",
-    
+
                 {% if config.y_grid=='hide' %}
                 "showgrid": false
                 {% elif config.y_grid=='show' %}
@@ -296,7 +296,7 @@
                 {% else %}
                 "showgrid": false
                 {% endif %},
-    
+
                 {% if config.y_labels=='hide' %}
                 "showticklabels": false
                 {% elif config.y_labels=='show' %}
@@ -304,7 +304,7 @@
                 {% else %}
                 "showticklabels": true
                 {% endif %},
-    
+
                 {% if config.y_axis=='hide' %}
                 "zeroline" : false
                 {% elif config.y_axis=='show' %}
@@ -312,8 +312,8 @@
                 {% else %}
                 "zeroline" : true
                 {% endif %},
-    
-    
+
+
                 "linewidth" : 7,
                 "linecolor" : "rgba(0,0,0,0)",
                 "tickfont" : {
@@ -322,13 +322,13 @@
                     {% else %}
                     "family": "Open Sans"
                     {% endif %},
-    
+
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
                     "color" : "#161F3D"
                     {% endif %},
-    
+
                     {% if config.tickfont_size %}
                     "size" : "{{ config.tickfont_size }}"
                     {% else %}
@@ -366,7 +366,7 @@
             },
             "yaxis2" : {
                 "showgrid": false,
-    
+
                 {% if config.y_grid=='hide' %}
                 "showgrid": false
                 {% elif config.y_grid=='show' %}
@@ -374,7 +374,7 @@
                 {% else %}
                 "showgrid": false
                 {% endif %},
-    
+
                 {% if config.y_labels=='hide' %}
                 "showticklabels": false
                 {% elif config.y_labels=='show' %}
@@ -382,7 +382,7 @@
                 {% else %}
                 "showticklabels": true
                 {% endif %},
-    
+
                 {% if config.y_axis=='hide' %}
                 "zeroline" : false
                 {% elif config.y_axis=='show' %}
@@ -390,7 +390,7 @@
                 {% else %}
                 "zeroline" : true
                 {% endif %},
-    
+
                 "side": "right",
                 "linewidth" : 7,
                 "linecolor" : "rgba(0,0,0,0)",
@@ -400,13 +400,13 @@
                     {% else %}
                     "family": "Open Sans"
                     {% endif %},
-    
+
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
                     "color" : "#161F3D"
                     {% endif %},
-    
+
                     {% if config.tickfont_size %}
                     "size" : "{{ config.tickfont_size }}"
                     {% else %}
@@ -447,13 +447,13 @@
                 {% else %}
                 "bgcolor" : "rgba(232,230,230,0.7)"
                 {% endif %},
-    
+
                 {% if config.hover_label_border %}
                 "bordercolor" : "{{ config.hover_label_border }}"
                 {% else %}
                 "bordercolor" : "rgba(232,230,230,0.7)"
                 {% endif %},
-    
+
                 "font": {
                     {% if config.hover_font_family %}
                     "family" : "{{ config.hover_font_family }}"
@@ -474,7 +474,7 @@
             },
             "autosize": true,
             "automargin": true,
-    
+
             {% if config.legend=='show' %}
             "showlegend": true
             {% elif config.legend=='hide' %}
@@ -482,7 +482,7 @@
             {% else %}
             "showlegend":false
             {% endif %},
-    
+
             "legend" : {
                 {% if config.legend_x %}
                 "x" : "{{ config.legend_x }}"
@@ -494,7 +494,7 @@
                 {% else %}
                 "y" : "1.1"
                 {% endif %},
-                
+
                 {% if config.legend_orientation %}
                 "orientation" : "{{ config.legend_orientation }}"
                 {% else %}
@@ -523,7 +523,7 @@
                     {% endif %}
                 }
             },
-    
+
             {% if config.margin =='small' %}
             "margin" : {
               "l" : 10,

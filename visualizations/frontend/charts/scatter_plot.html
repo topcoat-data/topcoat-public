@@ -1,5 +1,5 @@
 <template>
-    <plotly />
+    <plotly :height="$props.height" />
 </template>
 
 <figure>
@@ -40,7 +40,7 @@
             "x": {{ column_data(dimensions[0]) }},
             "y": {{ column_data(measure) }}
         }{% if not loop.last %},{%endif%}
-        {% endfor %}   
+        {% endfor %}
     ],
     "layout" : {
         "hovermode": "x unified",
@@ -58,7 +58,7 @@
             {% else %}
             "color" : "#161F3D"
             {% endif %},
-            
+
             {% if font_size %}
              "size" : "{{ font_size }}"
             {% else %}
@@ -78,7 +78,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
@@ -136,7 +136,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if tickfont_size %}
                 "size" : "{{ tickfont_size }}"
                 {% else %}
@@ -173,7 +173,7 @@
             "color" : "rgba(0, 0, 0, 0.65)",
             "zerolinecolor" : "#eee",
             "gridcolor" : "#eee",
-           
+
             "title" : {
                 {% if config.y_title %}
                 "text": "{{ config.y_title }}"
@@ -195,7 +195,7 @@
             "bordercolor" : "{{ hover_label_bg }}"
             {% else %}
             "bordercolor" : "rgba(232,230,230,0.7)"
-            {% endif %} 
+            {% endif %}
         },
         {% if config.legend=='show' %}
         "showlegend": true
@@ -210,7 +210,7 @@
              "x": 0.01,
             "y": 1.1
         },
-        
+
         {% if config.margin =='small' %}
         "margin" : {
           "l" : 10,
