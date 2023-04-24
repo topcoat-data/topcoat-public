@@ -63,7 +63,7 @@
       </t-tooltip>
       <div v-else class="opacity-80">No change</div>
     </div>
-    <slot name="bigNumFooter"></slot>
+    <slot name="footer"></slot>
   </div>
 </template>
 
