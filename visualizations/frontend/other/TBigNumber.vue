@@ -9,7 +9,10 @@
       <div v-if="$slots.icon" class="hidden opacity-50 md:block">
         <slot name="icon"></slot>
       </div>
-      <span class="text-xs font-semibold leading-4 tracking-widest">
+      <span
+        v-if="label"
+        class="text-xs font-semibold leading-4 tracking-widest"
+      >
         {{ label || "--" }}
       </span>
 
@@ -60,6 +63,7 @@
       </t-tooltip>
       <div v-else class="opacity-80">No change</div>
     </div>
+    <slot name="footer"></slot>
   </div>
 </template>
 
