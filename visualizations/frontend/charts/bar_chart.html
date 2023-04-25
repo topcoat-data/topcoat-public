@@ -1,5 +1,5 @@
 <template>
-    <plotly />
+    <plotly :height="$props.height" />
 </template>
 
 <figure>
@@ -30,7 +30,7 @@
             "orientation": "v"
             {% endif %}
         }{% if not loop.last %},{%endif%}
-        {% endfor %}   
+        {% endfor %}
     ],
     "layout" : {
         {% if config.hover_mode %}
@@ -52,7 +52,7 @@
             {% else %}
             "color" : "#161F3D"
             {% endif %},
-            
+
             {% if config.font_size %}
              "size" : "{{ config.font_size }}"
             {% else %}
@@ -72,14 +72,14 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if config.tickfont_size %}
                 "size" : "{{ config.tickfont_size }}"
                 {% else %}
                 "size": 11
                 {% endif %}
             },
-            
+
             {% if config.x_grid=='show' %}
             "showgrid": true
             {% elif config.x_grid=='hide' %}
@@ -150,7 +150,7 @@
                 {% else %}
                 "color" : "#161F3D"
                 {% endif %},
-            
+
                 {% if config.tickfont_size %}
                 "size" : "{{ config.tickfont_size }}"
                 {% else %}
@@ -188,7 +188,7 @@
             "color" : "rgba(0, 0, 0, 0.65)",
             "zerolinecolor" : "#eee",
             "gridcolor" : "#eee",
-           
+
             "title" : {
                 {% if config.y_title %}
                 "text": "{{ config.y_title }}"
@@ -214,7 +214,7 @@
                 }
             }
         },
-        
+
         "hoverlabel": {
             {% if config.hover_label_bg %}
             "bgcolor" : "{{ config.hover_label_bg }}"
@@ -263,7 +263,7 @@
         "bargroupgap" : "{{ config.bar_group_gap }}"
         {% else %}
         "bargroupgap" : "0.1"
-        {% endif %}, 
+        {% endif %},
 
         "autosize": true,
         "automargin": true,
@@ -287,7 +287,7 @@
             {% else %}
             "y" : "1.1"
             {% endif %},
-            
+
             {% if config.legend_orientation %}
             "orientation" : "{{ config.legend_orientation }}"
             {% else %}
@@ -316,7 +316,7 @@
                 {% endif %}
             }
         },
-        
+
         {% if config.margin =='small' %}
         "margin" : {
           "l" : 10,
