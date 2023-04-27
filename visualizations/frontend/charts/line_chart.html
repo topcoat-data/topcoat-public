@@ -8,7 +8,11 @@
             {% for measure in measures %}
             {
                 "type": "scatter",
-                "mode": "lines",
+                {% if config.chart_mode %}
+                "mode": "{{ config.chart_mode }}",
+                {% else %}
+                "mode" : "lines",
+                {% endif %}
                 "line": {
                     {% if config.line_colors %}
                     "color": "{{ config.line_colors[loop.index-1] }}",
@@ -75,7 +79,11 @@
                     {% else %}
                     "color" : "rgba(29, 34, 96,1)",
                     {% endif %}
-                    "size": 3
+                    {% if config.marker_size %}
+                    "size" : "{{ config.marker_size }}"
+                    {% else %}
+                    "size": 6
+                    {% endif %}
                 },
                 "name": "{{ column_metadata(measure,'label') }}",
                 "x": {{ column_data(dimensions[0]) }},
