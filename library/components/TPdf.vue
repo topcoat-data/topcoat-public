@@ -18,9 +18,15 @@
         :class="is_loading && 'opacity-60'"
         @click="downloadPdf"
       >
-        <div class="flex items-center gap-1">
-          {{ is_loading ? "Generating PDF" : label }}
-          <t-loading-spinner v-if="is_loading" position="relative" />
+        <div
+          slot="handle"
+          class="flex items-center gap-1 p-1 text-sm font-medium"
+        >
+          <slot name="icon"></slot>
+          <div class="flex items-center gap-1">
+            {{ is_loading ? "Generating PDF" : label }}
+            <t-loading-spinner v-if="is_loading" position="relative" />
+          </div>
         </div>
       </button>
       <div v-if="is_loading && showTooltip">
