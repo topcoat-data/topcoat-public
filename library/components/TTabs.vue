@@ -1,9 +1,6 @@
 <template>
-  <div class="flex w-full" :class="!isVertical && 'flex-col'">
-    <div
-      class="flex items-center gap-2 bg-[#F9F8FA] px-6"
-      :class="isVertical && 'flex-col'"
-    >
+  <div class="flex flex-col w-full">
+    <div class="flex items-center gap-2 bg-[#F9F8FA] px-6">
       <div
         v-for="tab in tabs"
         :key="tab"
@@ -31,15 +28,16 @@ export default {
       type: Array,
       default: () => [],
     },
-    isVertical: {
-      type: Boolean,
-      default: false,
-    },
   },
   data: () => ({
     activeTab: null,
     is_filter: true,
   }),
+  mounted() {
+    if (!this.layer && this.tabs.length && !this.activeTab) {
+      this.switchTab(this.tabs[0]);
+    }
+  },
   methods: {
     switchTab(tab) {
       this.activeTab = tab.slot;
