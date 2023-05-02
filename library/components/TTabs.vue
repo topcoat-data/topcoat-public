@@ -1,7 +1,7 @@
 <template>
   <div class="flex w-full" :class="!isVertical && 'flex-col'">
     <div
-      class="flex items-center gap-2 bg-[#F9F8FA] px-4"
+      class="flex items-center gap-2 bg-[#F9F8FA] px-6"
       :class="isVertical && 'flex-col'"
     >
       <div
