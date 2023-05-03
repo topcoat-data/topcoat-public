@@ -18,10 +18,7 @@
         :class="is_loading && 'opacity-60'"
         @click="downloadPdf"
       >
-        <div
-          slot="handle"
-          class="flex items-center gap-1 p-1 text-sm font-medium"
-        >
+        <div slot="handle" class="flex items-center gap-1 text-sm font-normal">
           <slot name="icon"></slot>
           <div class="flex items-center gap-1">
             {{ is_loading ? "Generating PDF" : label }}
