@@ -1,5 +1,5 @@
 <template>
-    <plotly :height="$props.height" />
+    <plotly v-if="!loading" :height="$props.height" />
 </template>
 
 <figure>
@@ -215,3 +215,9 @@
     }
 }
 </figure>
+
+<style>
+    .vue--card--legacy {
+        box-shadow: none !important;
+    }
+</style>
