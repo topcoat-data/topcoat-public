@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col w-full relative">
     <div class="flex items-center gap-2 bg-[#F9F8FA] px-6">
       <div
         v-for="tab in tabs"
@@ -17,7 +17,9 @@
         </slot>
       </div>
     </div>
-    <slot v-if="activeTab" :name="activeTab"></slot>
+    <div :key="activeTab">
+      <slot v-if="activeTab" :name="activeTab"></slot>
+    </div>
   </div>
 </template>
 
