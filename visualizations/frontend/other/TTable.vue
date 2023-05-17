@@ -142,7 +142,11 @@
       </div>
 
       <!-- Data Rows -->
-      <div v-else class="makeGridIgnoreDiv tableDataContainer">
+      <div
+        v-else
+        :key="tableDataKey"
+        class="makeGridIgnoreDiv tableDataContainer"
+      >
         <div
           v-for="(group, gindex) in internalGroups"
           :key="gindex"
@@ -446,6 +450,7 @@ export default {
       additionalFilters: {},
       internalColumns: [],
       modifiableColumnsFilter: null,
+      tableDataKey: 0,
     };
   },
   computed: {
@@ -1292,6 +1297,8 @@ export default {
           this.setInternalColumns(setColumnSort);
           this.setupInternalRows();
         }
+        this.tableDataKey = Math.random() * this.startIndex;
+        // For plotly: Any type of random key can force reload the data div on page, resulting in plotly to re-adjust itself.
       });
     },
     createRequestPayload() {
