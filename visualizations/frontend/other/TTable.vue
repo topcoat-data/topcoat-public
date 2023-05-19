@@ -91,7 +91,7 @@
         v-for="(column, index) in internalColumns"
         :key="column.header"
         :ref="'headerCell_' + index"
-        class="headerCell"
+        class="headerCell cellPadding"
         :class="generateHeaderClasses(column.property, index)"
       >
         <div style="display: flex; align-items: center">
@@ -211,7 +211,7 @@
               v-for="(column, cindex) in internalColumns"
               :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-              class="border-b border-[#D3D3D9] align-top py-[12px]"
+              class="border-b border-[#D3D3D9] align-top"
               :class="generateCellClasses({ column, cindex, row, rindex })"
               @click="
                 ($event) =>
@@ -356,6 +356,7 @@ export default {
         return {};
       },
     },
+    // Do we need this? Can we get rid of it?
     headerClasses: {
       type: String,
       default:
@@ -369,6 +370,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    // When all the tables look the same, we won't need this prop
     extraClass: {
       type: String,
       default: "",
@@ -379,6 +381,7 @@ export default {
     },
     modifiableColumns: {
       type: Array,
+      default: () => [],
     },
     sort: {
       type: String,
@@ -413,6 +416,7 @@ export default {
         return true;
       },
     },
+    // I think cellCssFunction is not used. Verify and remove
     cellCssFunction: {
       type: Function,
       default: null,
@@ -1073,7 +1077,6 @@ export default {
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
-      classes += " cellPadding ";
       classes += " " + _.camelCase("header " + header);
       classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += " " + this.headerClasses;
@@ -1232,6 +1235,7 @@ export default {
     },
     generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
+      // I'd like to just apply this without going through the function
       classes += " cellPadding ";
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
@@ -1475,10 +1479,16 @@ export default {
 
 #tableContainer {
   display: grid;
-  margin: 5px;
+  /* removing this helps with the right border being hidden on the issuesdetail report */
+  /* margin: 5px; */
   position: relative;
   width: 100%;
   overflow-x: scroll;
+  /* this */
+  border-radius: 6px;
+  /* beware. We need a way to make sure a sub-table does not have a border */
+  /* The styles could be controlled with 'border'/'no-border' */
+  border: 1px solid pink;
 }
 
 .spanAllColumns {
@@ -1510,9 +1520,12 @@ export default {
 
 /* Note: gap leaves spaces when
 highlighting a row on hover etc. */
+/* Centralizing padding may keep things in sync between header and cells*/
 .cellPadding {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .headerCell,
@@ -1564,6 +1577,10 @@ highlighting a row on hover etc. */
 }
 
 .pagingControls {
+  /* this creates an empty space under a sub-table in a grouped table */
+  /* even when the pager does not get shown */
+  /* It should probably move to the SnykPager */
+  /* component */
   height: 54px;
 }
 </style>
