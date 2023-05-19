@@ -280,6 +280,8 @@ export default {
     onVisualizationInit() {
       const initial_value = this.getFilterValue("selected_items");
 
+      this.checked = [];
+
       if (initial_value) {
         this.checked = initial_value.split("|");
       } else if (this.defaultValue) {
@@ -332,6 +334,9 @@ export default {
     removeItem(id) {
       this.checked = this.checked.filter((c) => c !== id);
       this.updateUrlParam();
+    },
+    onFiltersUpdated() {
+      this.onVisualizationInit();
     },
   },
 };
