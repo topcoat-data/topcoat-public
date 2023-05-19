@@ -333,6 +333,13 @@ export default {
       this.checked = this.checked.filter((c) => c !== id);
       this.updateUrlParam();
     },
+    onFiltersUpdated() {
+      if (this.getFilterValue("selected_items")) {
+        this.onVisualizationInit();
+      } else {
+        this.reset();
+      }
+    },
   },
 };
 </script>
