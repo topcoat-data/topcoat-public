@@ -70,6 +70,7 @@
     <div
       v-if="isDataAvailable"
       id="tableContainer"
+      :class="[withBorder ? 'border border-[#D3D3D9]' : '']"
       ref="tableContainer"
       :style="columnWidthsStyle"
     >
@@ -272,6 +273,10 @@
 export default {
   name: "TTable",
   props: {
+    withBorder: {
+      type: Boolean,
+      default: false,
+    },
     title: {
       type: String,
       default: "",
@@ -1472,16 +1477,10 @@ export default {
 
 #tableContainer {
   display: grid;
-  /* removing this helps with the right border being hidden on the issuesdetail report */
-  /* margin: 5px; */
   position: relative;
   width: 100%;
   overflow-x: scroll;
-  /* this */
   border-radius: 6px;
-  /* beware. We need a way to make sure a sub-table does not have a border */
-  /* The styles could be controlled with 'border'/'no-border' */
-  border: 1px solid pink;
 }
 
 .spanAllColumns {
