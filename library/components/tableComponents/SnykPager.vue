@@ -5,48 +5,50 @@
       class="pagination-footer flex justify-between p-[12px] items-center"
     >
       <!-- Rows Per Page -->
-      <t-dropdown
-        v-if="!!itemsPerPageOptions && itemsPerPageOptions.length > 1"
-        :disable-active-class="true"
-        class="text-[15px] text-[#145DEB]"
-        :align-popup-above="true"
-        :align-popup-right="true"
-      >
-        <!-- Handle -->
-        <div slot="handle" class="flex items-center gap-1 text-medium">
-          <span>{{ itemsPerPage }} Per Page</span>
-          <menu-down-icon size="20" />
-        </div>
+      <div>
+        <t-dropdown
+          v-if="!!itemsPerPageOptions && itemsPerPageOptions.length > 1"
+          :disable-active-class="true"
+          class="text-[15px] text-[#145DEB]"
+          :align-popup-above="true"
+          :align-popup-right="true"
+        >
+          <!-- Handle -->
+          <div slot="handle" class="flex items-center gap-1 text-medium">
+            <span>{{ itemsPerPage }} Per Page</span>
+            <menu-down-icon size="20" />
+          </div>
 
-        <!-- Popup Contents -->
-        <div attrs.slot="outside">
-          <div class="px-[8px] pt-[4px] pb-[6px] w-full">
-            <ul class="max-h-[320px] overflow-auto">
-              <li
-                v-for="itemsPerPageOption in itemsPerPageOptions"
-                :key="itemsPerPageOption"
-                class="flex justify-between m-[16px] text-medium cursor-pointer text-[#4B5563]"
-              >
-                <div
-                  class="flex items-center justify-between w-full leading-[16.41px]"
-                  @click="updateItemsPerPage(itemsPerPageOption)"
+          <!-- Popup Contents -->
+          <div attrs.slot="outside">
+            <div class="px-[8px] pt-[4px] pb-[6px] w-full">
+              <ul class="max-h-[320px] overflow-auto">
+                <li
+                  v-for="itemsPerPageOption in itemsPerPageOptions"
+                  :key="itemsPerPageOption"
+                  class="flex justify-between m-[16px] text-medium cursor-pointer text-[#4B5563]"
                 >
                   <div
-                    v-if="itemsPerPageOption === itemsPerPage"
-                    class="text-[#1f2937] selected-items-per-page"
+                    class="flex items-center justify-between w-full leading-[16.41px]"
+                    @click="updateItemsPerPage(itemsPerPageOption)"
                   >
-                    {{ itemsPerPageOption.toLocaleString() }}
-                    <check-icon class="text-[#145DEB] ml-[8px]" size="20" />
+                    <div
+                      v-if="itemsPerPageOption === itemsPerPage"
+                      class="text-[#1f2937] selected-items-per-page"
+                    >
+                      {{ itemsPerPageOption.toLocaleString() }}
+                      <check-icon class="text-[#145DEB] ml-[8px]" size="20" />
+                    </div>
+                    <div v-else>
+                      {{ itemsPerPageOption.toLocaleString() }}
+                    </div>
                   </div>
-                  <div v-else>
-                    {{ itemsPerPageOption.toLocaleString() }}
-                  </div>
-                </div>
-              </li>
-            </ul>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </t-dropdown>
+        </t-dropdown>
+      </div>
 
       <!-- controls -->
       <ul id="pages" class="pagination-nav pagination-selector inline-flex">

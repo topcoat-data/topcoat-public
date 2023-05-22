@@ -211,7 +211,7 @@
               v-for="(column, cindex) in internalColumns"
               :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-              class="border-b border-[#D3D3D9] align-top"
+              class="border-b border-[#D3D3D9] align-top cellPadding"
               :class="generateCellClasses({ column, cindex, row, rindex })"
               @click="
                 ($event) =>
@@ -1233,8 +1233,6 @@ export default {
     },
     generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
-      // I'd like to just apply this without going through the function
-      classes += " cellPadding ";
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
