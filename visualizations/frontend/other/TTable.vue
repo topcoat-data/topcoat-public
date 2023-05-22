@@ -242,24 +242,24 @@
           </div>
         </div>
       </div>
+      <div v-if="!isPdf" class="spanAllColumns">
+        <SnykPager
+          v-if="canPage || canPageServer"
+          id="pagingControls"
+          :start-index="startIndex"
+          :end-index="endIndex"
+          class="pagingControls"
+          :number-of-items="totalRows"
+          :items-per-page="internalRowsPerPage"
+          :items-per-page-options="rowsPerPageOptions"
+          @updateItemsPerPage="updateItemsPerPage"
+          @updateStartIndex="updateStartIndex"
+          @updateEndIndex="updateEndIndex"
+          @setResetFunction="setPagerResetFunction"
+        />
+      </div>
     </div>
 
-    <div v-if="!isPdf" style="margin: 0px auto">
-      <SnykPager
-        v-if="canPage || canPageServer"
-        id="pagingControls"
-        :start-index="startIndex"
-        :end-index="endIndex"
-        class="pagingControls"
-        :number-of-items="totalRows"
-        :items-per-page="internalRowsPerPage"
-        :items-per-page-options="rowsPerPageOptions"
-        @updateItemsPerPage="updateItemsPerPage"
-        @updateStartIndex="updateStartIndex"
-        @updateEndIndex="updateEndIndex"
-        @setResetFunction="setPagerResetFunction"
-      />
-    </div>
     <slot
       name="footer"
       :total-count="totalRows"
