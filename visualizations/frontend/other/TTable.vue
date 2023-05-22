@@ -248,7 +248,6 @@
           id="pagingControls"
           :start-index="startIndex"
           :end-index="endIndex"
-          class="pagingControls"
           :number-of-items="totalRows"
           :items-per-page="internalRowsPerPage"
           :items-per-page-options="rowsPerPageOptions"
@@ -1574,13 +1573,5 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
-}
-
-.pagingControls {
-  /* this creates an empty space under a sub-table in a grouped table */
-  /* even when the pager does not get shown */
-  /* It should probably move to the SnykPager */
-  /* component */
-  height: 54px;
 }
 </style>

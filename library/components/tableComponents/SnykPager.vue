@@ -2,21 +2,18 @@
   <div>
     <div
       v-if="numberOfItems && numberOfItems > itemsPerPage"
-      class="pagination-footer flex justify-center relative h-8"
+      class="pagination-footer flex justify-between p-[12px] items-center"
     >
       <!-- Rows Per Page -->
       <t-dropdown
         v-if="!!itemsPerPageOptions && itemsPerPageOptions.length > 1"
         :disable-active-class="true"
-        class="absolute left-2 top-5 text-[15px] text-[#145DEB] font-large"
+        class="text-[15px] text-[#145DEB]"
         :align-popup-above="true"
         :align-popup-right="true"
       >
         <!-- Handle -->
-        <div
-          slot="handle"
-          class="flex items-center gap-1 p-1 text-medium font-large"
-        >
+        <div slot="handle" class="flex items-center gap-1 text-medium">
           <span>{{ itemsPerPage }} Per Page</span>
           <menu-down-icon size="20" />
         </div>
@@ -52,10 +49,7 @@
       </t-dropdown>
 
       <!-- controls -->
-      <ul
-        id="pages"
-        class="pagination-nav pagination-selector inline-flex pt-[16px]"
-      >
+      <ul id="pages" class="pagination-nav pagination-selector inline-flex">
         <li class="pagination-nav-item">
           <button
             class="h-8 minWidth text-[#145DEB] text-[15px] mr-[8px] focus:outline-none"
@@ -70,7 +64,7 @@
           class="pagination-nav-item"
         >
           <button
-            class="h-8 minWidth text-[15px] font-medium leading-5 focus:outline-none"
+            class="h-8 minWidth text-[15px] font-medium leading-5"
             :class="[
               page === internalPage
                 ? 'active border-[#7FA7F5] bg-[#EAF1FF] rounded text-[#145DEB]'
@@ -92,15 +86,13 @@
       </ul>
 
       <!-- totals -->
-      <div
-        class="absolute right-2 top-5 font-normal text-[#727184] text-[13px] leading-[18px]"
-      >
+      <p class="font-normal text-[#727184] text-[13px] leading-[18px]">
         Showing {{ (startIndex + 1).toLocaleString() }} -
         {{
           Math.min(startIndex + itemsPerPage, numberOfItems).toLocaleString()
         }}
         of {{ numberOfItems.toLocaleString() }}
-      </div>
+      </p>
     </div>
   </div>
 </template>
