@@ -246,9 +246,8 @@
           </div>
         </div>
       </div>
-      <div v-if="!isPdf" class="spanAllColumns">
+      <div v-if="!isPdf && (canPage || canPageServer)" class="spanAllColumns">
         <SnykPager
-          v-if="canPage || canPageServer"
           id="pagingControls"
           :start-index="startIndex"
           :end-index="endIndex"
