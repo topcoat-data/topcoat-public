@@ -70,8 +70,8 @@
     <div
       v-if="isDataAvailable"
       id="tableContainer"
-      :class="[withBorder ? 'border border-[#D3D3D9]' : '']"
       ref="tableContainer"
+      :class="[{ 'border border-[#D3D3D9]': !isBorderless }]"
       :style="columnWidthsStyle"
     >
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
@@ -236,7 +236,11 @@
               class="spanAllColumns"
             >
               <div class="px-4">
-                <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
+                <slot
+                  class="detail-row-slot"
+                  name="detail_row_slot"
+                  v-bind="row.originalRow"
+                ></slot>
               </div>
             </div>
           </div>
@@ -273,7 +277,7 @@
 export default {
   name: "TTable",
   props: {
-    withBorder: {
+    isBorderless: {
       type: Boolean,
       default: false,
     },
