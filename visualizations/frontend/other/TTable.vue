@@ -71,8 +71,8 @@
       v-if="isDataAvailable"
       id="tableContainer"
       ref="tableContainer"
+      :class="[{ 'border border-[#D3D3D9]': !isBorderless }]"
       :style="columnWidthsStyle"
-      :class="extraClass"
     >
       <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
       <div v-if="canCollapseDetailRows"></div>
@@ -91,7 +91,7 @@
         v-for="(column, index) in internalColumns"
         :key="column.header"
         :ref="'headerCell_' + index"
-        class="headerCell"
+        class="headerCell cellPadding"
         :class="generateHeaderClasses(column.property, index)"
       >
         <div style="display: flex; align-items: center">
@@ -211,7 +211,7 @@
               v-for="(column, cindex) in internalColumns"
               :key="column.property"
               :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-              class="border-b border-[#D3D3D9] align-top py-[12px]"
+              class="border-b border-[#D3D3D9] align-top cellPadding"
               :class="generateCellClasses({ column, cindex, row, rindex })"
               @click="
                 ($event) =>
@@ -236,30 +236,32 @@
               class="spanAllColumns"
             >
               <div class="px-4">
-                <slot name="detail_row_slot" v-bind="row.originalRow"></slot>
+                <slot
+                  class="detail-row-slot"
+                  name="detail_row_slot"
+                  v-bind="row.originalRow"
+                ></slot>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div v-if="!isPdf && (canPage || canPageServer)" class="spanAllColumns">
+        <SnykPager
+          id="pagingControls"
+          :start-index="startIndex"
+          :end-index="endIndex"
+          :number-of-items="totalRows"
+          :items-per-page="internalRowsPerPage"
+          :items-per-page-options="rowsPerPageOptions"
+          @updateItemsPerPage="updateItemsPerPage"
+          @updateStartIndex="updateStartIndex"
+          @updateEndIndex="updateEndIndex"
+          @setResetFunction="setPagerResetFunction"
+        />
+      </div>
     </div>
 
-    <div v-if="!isPdf" style="margin: 0px auto">
-      <SnykPager
-        v-if="canPage || canPageServer"
-        id="pagingControls"
-        :start-index="startIndex"
-        :end-index="endIndex"
-        class="pagingControls"
-        :number-of-items="totalRows"
-        :items-per-page="internalRowsPerPage"
-        :items-per-page-options="rowsPerPageOptions"
-        @updateItemsPerPage="updateItemsPerPage"
-        @updateStartIndex="updateStartIndex"
-        @updateEndIndex="updateEndIndex"
-        @setResetFunction="setPagerResetFunction"
-      />
-    </div>
     <slot
       name="footer"
       :total-count="totalRows"
@@ -274,6 +276,10 @@
 export default {
   name: "TTable",
   props: {
+    isBorderless: {
+      type: Boolean,
+      default: false,
+    },
     title: {
       type: String,
       default: "",
@@ -356,6 +362,7 @@ export default {
         return {};
       },
     },
+    // Do we need this? Can we get rid of it?
     headerClasses: {
       type: String,
       default:
@@ -369,16 +376,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    extraClass: {
-      type: String,
-      default: "",
-    },
     enableCsvDownload: {
       type: Boolean,
       default: true,
     },
     modifiableColumns: {
       type: Array,
+      default: () => [],
     },
     sort: {
       type: String,
@@ -413,6 +417,7 @@ export default {
         return true;
       },
     },
+    // I think cellCssFunction is not used. Verify and remove
     cellCssFunction: {
       type: Function,
       default: null,
@@ -1073,7 +1078,6 @@ export default {
     },
     generateHeaderClasses(header, index) {
       let classes = _.camelCase(header);
-      classes += " cellPadding ";
       classes += " " + _.camelCase("header " + header);
       classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += " " + this.headerClasses;
@@ -1232,7 +1236,6 @@ export default {
     },
     generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
-      classes += " cellPadding ";
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
@@ -1475,10 +1478,10 @@ export default {
 
 #tableContainer {
   display: grid;
-  margin: 5px;
   position: relative;
   width: 100%;
   overflow-x: scroll;
+  border-radius: 6px;
 }
 
 .spanAllColumns {
@@ -1510,9 +1513,12 @@ export default {
 
 /* Note: gap leaves spaces when
 highlighting a row on hover etc. */
+/* Centralizing padding may keep things in sync between header and cells*/
 .cellPadding {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .headerCell,
@@ -1561,9 +1567,5 @@ highlighting a row on hover etc. */
 
 .makeTooltipVisible {
   overflow: visible;
-}
-
-.pagingControls {
-  height: 54px;
 }
 </style>
