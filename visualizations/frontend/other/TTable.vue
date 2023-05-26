@@ -344,7 +344,7 @@ export default {
     },
     canPage: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     canPageServer: {
       type: Boolean,
