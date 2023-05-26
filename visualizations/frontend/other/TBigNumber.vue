@@ -151,6 +151,10 @@ export default {
   }),
   computed: {
     row() {
+      if (!this.rows) {
+        return null;
+      }
+      
       return this.rows.length ? this.rows[0] : null;
     },
     value() {
