@@ -1255,6 +1255,16 @@ export default {
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
       classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : "";
+
+      if (!this.canCollapseDetailRows || this.isBorderless) {
+        if (cindex === this.internalColumns.length - 1) {
+          classes += " mr-[12px]";
+        }
+        if (cindex === 0) {
+          classes += " ml-[12px]";
+        }
+      }
+
       if (
         this.cellCssFunction !== null &&
         this.cellCssFunction instanceof Function
