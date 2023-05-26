@@ -67,7 +67,7 @@
       :end-index="endIndex"
     ></slot>
     <!-- outermost div has border -->
-    <div c:class="[{ 'border rounded-[6px] border-[#D3D3D9]': !isBorderless }]">
+    <div :class="[{ 'border rounded-[6px] border-[#D3D3D9]': !isBorderless }]">
       <div
         v-if="isDataAvailable"
         id="tableContainer"
@@ -105,7 +105,7 @@
               {{ column.header }}
             </slot>
 
-            <div
+            <button
               v-if="column.sort"
               class="sortIcon"
               @click="updateSort(column)"
@@ -127,7 +127,7 @@
               <slot v-else name="sortUnsortedIcon" v-bind="column">
                 <menu-swap-icon :size="20" class="unsortedIcon" />
               </slot>
-            </div>
+            </button>
           </div>
         </div>
 
