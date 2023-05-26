@@ -67,7 +67,14 @@
       :end-index="endIndex"
     ></slot>
     <!-- outermost div has border -->
-    <div :class="[{ 'border rounded-[6px] border-[#D3D3D9]': !isBorderless }]">
+    <div
+      :class="[
+        {
+          'border rounded-[6px] border-[#D3D3D9] overflow-hidden':
+            !isBorderless,
+        },
+      ]"
+    >
       <div
         v-if="isDataAvailable"
         id="tableContainer"
@@ -89,7 +96,6 @@
         <!-- Headings -->
         <!-- header div; padding -->
         <!-- content div; padding -->
-        <!-- pagination container div -->
         <div
           v-for="(column, index) in internalColumns"
           :key="column.header"
@@ -1433,16 +1439,9 @@ export default {
 .unsortedIcon {
   opacity: 0.5;
 }
-.tableDataContainer {
-  max-width: 100%;
-  overflow-x: scroll;
-}
-.table-data {
-  padding-top: 12px;
-  padding-bottom: 17px;
-  border-bottom: 1px solid #d3d3d9;
-}
 
+/* TODO: find out if rootTableContainer are still needed, for empty
+state, for example  */
 .rootTableContainer {
   display: inline-block;
   width: 100%;
@@ -1451,7 +1450,6 @@ export default {
   max-height: 100%;
   position: relative;
   min-height: 120px;
-  overflow-x: hidden;
 }
 
 .spinnerOverlay {
@@ -1561,7 +1559,6 @@ highlighting a row on hover etc. */
   display: flex;
   justify-content: space-between;
   width: 100%;
-  overflow: visible;
 }
 .tableControls {
   display: flex;
@@ -1574,6 +1571,7 @@ highlighting a row on hover etc. */
 }
 
 .makeTooltipVisible {
+  /* TODO: find out if this can go */
   overflow: visible;
 }
 </style>
