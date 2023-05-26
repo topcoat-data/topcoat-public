@@ -82,7 +82,7 @@
         :style="columnWidthsStyle"
       >
         <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
-        <div v-if="canCollapseDetailRows"></div>
+        <div v-if="canCollapseDetailRows" :class="headerClasses"></div>
         <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
         <div v-if="showRadioButtons"></div>
         <!-- Toggle all of the check boxes  -->
@@ -183,7 +183,8 @@
               <!-- Expand/Collapse controls for the details row -->
               <div
                 v-if="canCollapseDetailRows"
-                class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
+                class="bg-[#F9F8FA] pt-[12px]"
+                :class="generateBorderClasses(rindex)"
               >
                 <button
                   class="focus:outline-none focus-visible:ring"
@@ -224,7 +225,7 @@
                 v-for="(column, cindex) in internalColumns"
                 :key="column.property"
                 :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-                class="border-b border-[#D3D3D9] align-top cellPadding"
+                class="align-top cellPadding"
                 :class="generateCellClasses({ column, cindex, row, rindex })"
                 @click="
                   ($event) =>
@@ -261,19 +262,21 @@
         </div>
       </div>
       <!-- Pagination  -->
-      <div v-if="!isPdf && (canPage || canPageServer)" class="paginationYo">
-        <SnykPager
-          id="pagingControls"
-          :start-index="startIndex"
-          :end-index="endIndex"
-          :number-of-items="totalRows"
-          :items-per-page="internalRowsPerPage"
-          :items-per-page-options="rowsPerPageOptions"
-          @updateItemsPerPage="updateItemsPerPage"
-          @updateStartIndex="updateStartIndex"
-          @updateEndIndex="updateEndIndex"
-          @setResetFunction="setPagerResetFunction"
-        />
+      <div v-if="!isPdf && (canPage || canPageServer)">
+        <div class="border-t border-[#D3D3D9]">
+          <SnykPager
+            id="pagingControls"
+            :start-index="startIndex"
+            :end-index="endIndex"
+            :number-of-items="totalRows"
+            :items-per-page="internalRowsPerPage"
+            :items-per-page-options="rowsPerPageOptions"
+            @updateItemsPerPage="updateItemsPerPage"
+            @updateStartIndex="updateStartIndex"
+            @updateEndIndex="updateEndIndex"
+            @setResetFunction="setPagerResetFunction"
+          />
+        </div>
       </div>
     </div>
 
@@ -1249,12 +1252,20 @@ export default {
     toggleRow(row) {
       row.detailRowOpen ? this.collapseRow(row) : this.expandRow(row);
     },
+    generateBorderClasses(rowIndex) {
+      if (rowIndex > 0) {
+        return " border-t border-[#D3D3D9]";
+      } else {
+        return " ";
+      }
+    },
     generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
       classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : "";
+      classes += this.generateBorderClasses(rindex);
 
       if (!this.canCollapseDetailRows || this.isBorderless) {
         if (cindex === this.internalColumns.length - 1) {
