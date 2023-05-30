@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="numberOfItems && numberOfItems > itemsPerPage"
-      class="pagination-footer flex justify-between p-[12px] items-center"
-    >
+    <div class="pagination-footer flex justify-between p-[12px] items-center">
       <!-- Rows Per Page -->
       <div>
         <t-dropdown

@@ -262,21 +262,22 @@
         </div>
       </div>
       <!-- Pagination  -->
-      <div v-if="!isPdf && (canPage || canPageServer)">
-        <div class="border-t border-[#D3D3D9]">
-          <SnykPager
-            id="pagingControls"
-            :start-index="startIndex"
-            :end-index="endIndex"
-            :number-of-items="totalRows"
-            :items-per-page="internalRowsPerPage"
-            :items-per-page-options="rowsPerPageOptions"
-            @updateItemsPerPage="updateItemsPerPage"
-            @updateStartIndex="updateStartIndex"
-            @updateEndIndex="updateEndIndex"
-            @setResetFunction="setPagerResetFunction"
-          />
-        </div>
+      <div
+        v-if="!isPdf && totalRows > internalRowsPerPage"
+        class="border-t border-[#D3D3D9]"
+      >
+        <SnykPager
+          id="pagingControls"
+          :start-index="startIndex"
+          :end-index="endIndex"
+          :number-of-items="totalRows"
+          :items-per-page="internalRowsPerPage"
+          :items-per-page-options="rowsPerPageOptions"
+          @updateItemsPerPage="updateItemsPerPage"
+          @updateStartIndex="updateStartIndex"
+          @updateEndIndex="updateEndIndex"
+          @setResetFunction="setPagerResetFunction"
+        />
       </div>
     </div>
 
