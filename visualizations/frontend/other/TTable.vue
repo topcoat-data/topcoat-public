@@ -113,7 +113,7 @@
 
             <button
               v-if="column.sort"
-              class="sortIcon"
+              class="sortIcon focus:outline-none focus-visible:ring"
               @click="updateSort(column)"
             >
               <slot
