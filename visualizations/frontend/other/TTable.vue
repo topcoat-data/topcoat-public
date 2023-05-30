@@ -1593,7 +1593,6 @@ highlighting a row on hover etc. */
 }
 
 .makeTooltipVisible {
-  /* TODO: find out if this can go */
   overflow: visible;
 }
 </style>
