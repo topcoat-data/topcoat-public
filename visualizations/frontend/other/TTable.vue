@@ -1003,6 +1003,7 @@ export default {
         .join(" ");
     },
     updateSort(column) {
+      this.showSpinner = true;
       const sortPriorities = this.internalColumns
         .filter((c) => c.sort)
         .map((c) => c.sort.priority);
@@ -1315,7 +1316,6 @@ export default {
       this.setLayerFilter("limit", "" + this.internalRowsPerPage);
       this.setLayerFilter("offset", "" + this.startIndex);
       const payload = this.createRequestPayload();
-      this.showSpinner = true;
       this.$store.dispatch("layers/fetchPagedLayer", payload).then(() => {
         if (!this.isDataAvailable) {
           this.init();
