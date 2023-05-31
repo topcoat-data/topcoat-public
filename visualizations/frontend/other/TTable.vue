@@ -103,7 +103,9 @@
           class="headerCell cellPadding"
           :class="generateHeaderClasses(column.property, index)"
         >
-          <div style="display: flex; align-items: center">
+          <button
+            class="focus:outline-none focus-visible:ring flex align-center"
+          >
             <slot
               :name="generateSlotName('header', column.header)"
               v-bind="column"
@@ -111,7 +113,7 @@
               {{ column.header }}
             </slot>
 
-            <button
+            <span
               v-if="column.sort"
               class="sortIcon focus:outline-none focus-visible:ring"
               @click="updateSort(column)"
@@ -133,8 +135,8 @@
               <slot v-else name="sortUnsortedIcon" v-bind="column">
                 <menu-swap-icon :size="20" class="unsortedIcon" />
               </slot>
-            </button>
-          </div>
+            </span>
+          </button>
         </div>
 
         <!-- No table data -->
