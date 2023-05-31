@@ -94,13 +94,11 @@
           :indeterminate.prop="someChecked"
         />
         <!-- Headings -->
-        <!-- header div; padding -->
-        <!-- content div; padding -->
         <button
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
-          class="cellPadding focus:outline-none focus-visible:ring flex align-center"
+          class="cellPadding border-b border-[#D3D3D9] focus:outline-none focus-visible:ring flex align-center leading-[15px] text-[12px] text-[#555463] font-semibold tracking-[0.12em] uppercase"
           :class="generateHeaderClasses(column.property, index)"
           @click="updateSort(column)"
         >
@@ -375,12 +373,6 @@ export default {
       default() {
         return {};
       },
-    },
-    // Do we need this? Can we get rid of it?
-    headerClasses: {
-      type: String,
-      default:
-        "border-b border-[#D3D3D9] text-[12px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
     },
     cellClasses: {
       type: String,
@@ -1094,7 +1086,6 @@ export default {
       let classes = _.camelCase(header);
       classes += " " + _.camelCase("header " + header);
       classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
-      classes += " " + this.headerClasses;
       if (this.isHeaderFixed) classes += " isHeaderFixed";
       return classes;
     },
