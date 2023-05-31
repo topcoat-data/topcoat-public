@@ -96,48 +96,41 @@
         <!-- Headings -->
         <!-- header div; padding -->
         <!-- content div; padding -->
-        <div
+        <button
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
-          class="headerCell cellPadding"
+          class="headerCell cellPadding focus:outline-none focus-visible:ring flex align-center"
           :class="generateHeaderClasses(column.property, index)"
+          @click="updateSort(column)"
         >
-          <button
-            class="focus:outline-none focus-visible:ring flex align-center"
+          <slot
+            :name="generateSlotName('header', column.header)"
+            v-bind="column"
           >
+            {{ column.header }}
+          </slot>
+
+          <span v-if="column.sort" class="sortIcon">
             <slot
-              :name="generateSlotName('header', column.header)"
+              v-if="column.sort.direction === 'ASC'"
+              name="sortAscendingIcon"
               v-bind="column"
             >
-              {{ column.header }}
+              <menu-up-icon :size="20" />
             </slot>
-
-            <span
-              v-if="column.sort"
-              class="sortIcon focus:outline-none focus-visible:ring"
-              @click="updateSort(column)"
+            <slot
+              v-else-if="column.sort.direction === 'DESC'"
+              name="sortDescendingIcon"
+              v-bind="column"
             >
-              <slot
-                v-if="column.sort.direction === 'ASC'"
-                name="sortAscendingIcon"
-                v-bind="column"
-              >
-                <menu-up-icon :size="20" />
-              </slot>
-              <slot
-                v-else-if="column.sort.direction === 'DESC'"
-                name="sortDescendingIcon"
-                v-bind="column"
-              >
-                <menu-down-icon :size="20" />
-              </slot>
-              <slot v-else name="sortUnsortedIcon" v-bind="column">
-                <menu-swap-icon :size="20" class="unsortedIcon" />
-              </slot>
-            </span>
-          </button>
-        </div>
+              <menu-down-icon :size="20" />
+            </slot>
+            <slot v-else name="sortUnsortedIcon" v-bind="column">
+              <menu-swap-icon :size="20" class="unsortedIcon" />
+            </slot>
+          </span>
+        </button>
 
         <!-- No table data -->
         <div
