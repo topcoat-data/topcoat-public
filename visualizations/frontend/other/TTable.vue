@@ -380,7 +380,7 @@ export default {
     headerClasses: {
       type: String,
       default:
-        "py-2 border-b border-[#D3D3D9] text-[12px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
+        "border-b border-[#D3D3D9] text-[12px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
     },
     cellClasses: {
       type: String,
