@@ -100,7 +100,7 @@
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
-          class="headerCell cellPadding focus:outline-none focus-visible:ring flex align-center"
+          class="cellPadding focus:outline-none focus-visible:ring flex align-center"
           :class="generateHeaderClasses(column.property, index)"
           @click="updateSort(column)"
         >
@@ -1518,11 +1518,6 @@ state, for example  */
   background-color: var(--page-background-color);
 }
 
-.headerCell {
-  font-weight: 700;
-  font-size: 1.2em;
-}
-
 .row.groupHeader {
   text-align: left;
   font-size: 1.1em;
@@ -1544,7 +1539,6 @@ highlighting a row on hover etc. */
   padding-bottom: 12px;
 }
 
-.headerCell,
 .row {
   margin: 0px 0;
 }
