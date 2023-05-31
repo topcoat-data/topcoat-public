@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="numberOfItems && numberOfItems > itemsPerPage"
-      class="pagination-footer flex justify-between p-[12px] items-center"
-    >
+    <div class="pagination-footer flex justify-between p-[12px] items-center">
       <!-- Rows Per Page -->
       <div>
         <t-dropdown
@@ -54,7 +51,7 @@
       <ul id="pages" class="pagination-nav pagination-selector inline-flex">
         <li class="pagination-nav-item">
           <button
-            class="h-8 minWidth text-[#145DEB] text-[15px] mr-[8px] focus:outline-none"
+            class="h-8 minWidth text-[#145DEB] text-[15px] mr-[8px]"
             @click="internalPage === 1 ? 1 : internalPage--"
           >
             <i class="fas fa-arrow-left"></i>
@@ -79,7 +76,7 @@
         </li>
         <li class="pagination-nav-item">
           <button
-            class="h-8 minWidth text-[#145DEB] text-[15px] ml-[8px] font-medium leading-5 focus:outline-none"
+            class="h-8 minWidth text-[#145DEB] text-[15px] ml-[8px] font-medium leading-5"
             @click="internalPage === lastPage ? lastPage : internalPage++"
           >
             <i class="fas fa-arrow-right"></i>

@@ -66,187 +66,206 @@
       :start-index="startIndex"
       :end-index="endIndex"
     ></slot>
-
+    <!-- outermost div has border -->
     <div
-      v-if="isDataAvailable"
-      id="tableContainer"
-      ref="tableContainer"
-      :class="[{ 'border border-[#D3D3D9]': !isBorderless }]"
-      :style="columnWidthsStyle"
+      :class="[
+        {
+          'border rounded-[6px] border-[#D3D3D9] overflow-hidden':
+            !isBorderless,
+        },
+      ]"
     >
-      <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
-      <div v-if="canCollapseDetailRows"></div>
-      <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
-      <div v-if="showRadioButtons"></div>
-      <!-- Toggle all of the check boxes  -->
-      <input
-        v-if="showCheckboxes"
-        ref="checkAll"
-        v-model="allChecked"
-        type="checkbox"
-        :indeterminate.prop="someChecked"
-      />
-      <!-- Headings -->
       <div
-        v-for="(column, index) in internalColumns"
-        :key="column.header"
-        :ref="'headerCell_' + index"
-        class="headerCell cellPadding"
-        :class="generateHeaderClasses(column.property, index)"
+        v-if="isDataAvailable"
+        id="tableContainer"
+        ref="tableContainer"
+        :style="columnWidthsStyle"
       >
-        <div style="display: flex; align-items: center">
-          <slot
-            :name="generateSlotName('header', column.header)"
-            v-bind="column"
-          >
-            {{ column.header }}
-          </slot>
-
-          <div v-if="column.sort" class="sortIcon" @click="updateSort(column)">
-            <slot
-              v-if="column.sort.direction === 'ASC'"
-              name="sortAscendingIcon"
-              v-bind="column"
-            >
-              <menu-up-icon :size="20" />
-            </slot>
-            <slot
-              v-else-if="column.sort.direction === 'DESC'"
-              name="sortDescendingIcon"
-              v-bind="column"
-            >
-              <menu-down-icon :size="20" />
-            </slot>
-            <slot v-else name="sortUnsortedIcon" v-bind="column">
-              <menu-swap-icon :size="20" class="unsortedIcon" />
-            </slot>
-          </div>
-        </div>
-      </div>
-
-      <!-- No table data -->
-      <div
-        v-if="
-          !showSpinner &&
-          (!internalRows ||
-            internalRows.length === 0 ||
-            !displayRows ||
-            displayRows.length === 0)
-        "
-        class="spanAllColumns center_cell"
-      >
-        <slot name="no_data">
-          <div><i class="i-fa-solid i-fa-inbox"></i></div>
-          <div>{{ noDataMessage }}</div>
-        </slot>
-      </div>
-
-      <!-- Data Rows -->
-      <div
-        v-else
-        :key="tableDataKey"
-        class="makeGridIgnoreDiv tableDataContainer"
-      >
+        <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
+        <div v-if="canCollapseDetailRows" :class="headerClasses"></div>
+        <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
+        <div v-if="showRadioButtons"></div>
+        <!-- Toggle all of the check boxes  -->
+        <input
+          v-if="showCheckboxes"
+          ref="checkAll"
+          v-model="allChecked"
+          type="checkbox"
+          :indeterminate.prop="someChecked"
+        />
+        <!-- Headings -->
+        <!-- header div; padding -->
+        <!-- content div; padding -->
         <div
-          v-for="(group, gindex) in internalGroups"
-          :key="gindex"
-          class="makeGridIgnoreDiv"
+          v-for="(column, index) in internalColumns"
+          :key="column.header"
+          :ref="'headerCell_' + index"
+          class="headerCell cellPadding"
+          :class="generateHeaderClasses(column.property, index)"
         >
-          <!-- Group Header -->
-          <div
-            v-if="showGroupHeader(group)"
-            class="spanAllColumns groupHeader row"
-          >
-            <slot name="group_header" v-bind="group.originalGroup">
-              {{ group.header }}
-            </slot>
-          </div>
-
-          <div
-            v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
-            :key="rindex + row.toString()"
-            class="makeGridIgnoreDiv row"
-          >
-            <!-- Expand/Collapse controls for the details row -->
-            <div
-              v-if="canCollapseDetailRows"
-              class="bg-[#F9F8FA] border-b border-[#d3d3d9] pt-[12px]"
+          <div style="display: flex; align-items: center">
+            <slot
+              :name="generateSlotName('header', column.header)"
+              v-bind="column"
             >
-              <button
-                class="focus:outline-none focus-visible:ring"
-                @click="toggleRow(row)"
-              >
-                <span aria-hidden="true">
-                  <chevron-down-icon v-if="row.detailRowOpen" />
-                  <chevron-right-icon v-else />
-                </span>
-                <span class="sr-only">
-                  {{ row.detailRowOpen ? "collapse row" : "open row" }}
-                </span>
-              </button>
-            </div>
+              {{ column.header }}
+            </slot>
 
-            <!-- Radio buttons -->
-            <input
-              v-if="showRadioButtons"
-              :id="rindex"
-              :ref="'radio_' + rindex"
-              v-model="internalSelectedItem"
-              type="radio"
-              :value="row.originalRow"
-            />
-
-            <!-- Check boxes -->
-            <input
-              v-if="showCheckboxes"
-              :id="rindex"
-              :ref="'check_' + rindex"
-              v-model="internalSelectedItems"
-              type="checkbox"
-              :value="row.originalRow"
-            />
-
-            <!-- Columns for the row -->
-            <div
-              v-for="(column, cindex) in internalColumns"
-              :key="column.property"
-              :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-              class="border-b border-[#D3D3D9] align-top cellPadding"
-              :class="generateCellClasses({ column, cindex, row, rindex })"
-              @click="
-                ($event) =>
-                  handleCellClick(getCellValue(row, column), row, column)
-              "
+            <button
+              v-if="column.sort"
+              class="sortIcon focus:outline-none focus-visible:ring"
+              @click="updateSort(column)"
             >
               <slot
-                :name="column.property"
-                :row="row.originalRow"
-                :value="getRawCellValue(row, column)"
-                :rendered_value="getCellValue(row, column)"
-                :rendered="getRenderedCellValue(row, column)"
+                v-if="column.sort.direction === 'ASC'"
+                name="sortAscendingIcon"
+                v-bind="column"
               >
-                {{ getCellValue(row, column) }}
+                <menu-up-icon :size="20" />
+              </slot>
+              <slot
+                v-else-if="column.sort.direction === 'DESC'"
+                name="sortDescendingIcon"
+                v-bind="column"
+              >
+                <menu-down-icon :size="20" />
+              </slot>
+              <slot v-else name="sortUnsortedIcon" v-bind="column">
+                <menu-swap-icon :size="20" class="unsortedIcon" />
+              </slot>
+            </button>
+          </div>
+        </div>
+
+        <!-- No table data -->
+        <div
+          v-if="
+            !showSpinner &&
+            (!internalRows ||
+              internalRows.length === 0 ||
+              !displayRows ||
+              displayRows.length === 0)
+          "
+          class="spanAllColumns center_cell"
+        >
+          <slot name="no_data">
+            <div><i class="i-fa-solid i-fa-inbox"></i></div>
+            <div>{{ noDataMessage }}</div>
+          </slot>
+        </div>
+
+        <!-- Data Rows -->
+        <div
+          v-else
+          :key="tableDataKey"
+          class="makeGridIgnoreDiv tableDataContainer"
+        >
+          <div
+            v-for="(group, gindex) in internalGroups"
+            :key="gindex"
+            class="makeGridIgnoreDiv"
+          >
+            <!-- Group Header -->
+            <div
+              v-if="showGroupHeader(group)"
+              class="spanAllColumns groupHeader row"
+            >
+              <slot name="group_header" v-bind="group.originalGroup">
+                {{ group.header }}
               </slot>
             </div>
 
-            <!-- Detail row -->
             <div
-              v-if="!canCollapseDetailRows || row.detailRowOpen"
-              :key="'detailRow' + rindex"
-              class="spanAllColumns"
+              v-for="(row, rindex) in filterDisplayRowsInGroup(group)"
+              :key="rindex + row.toString()"
+              class="makeGridIgnoreDiv row"
             >
-              <div class="px-4">
+              <!-- Expand/Collapse controls for the details row -->
+              <div
+                v-if="canCollapseDetailRows"
+                class="bg-[#F9F8FA] pt-[12px]"
+                :class="generateBorderClasses(rindex)"
+              >
+                <button
+                  class="focus:outline-none focus-visible:ring"
+                  @click="toggleRow(row)"
+                >
+                  <span aria-hidden="true">
+                    <chevron-down-icon v-if="row.detailRowOpen" />
+                    <chevron-right-icon v-else />
+                  </span>
+                  <span class="sr-only">
+                    {{ row.detailRowOpen ? "collapse row" : "open row" }}
+                  </span>
+                </button>
+              </div>
+
+              <!-- Radio buttons -->
+              <input
+                v-if="showRadioButtons"
+                :id="rindex"
+                :ref="'radio_' + rindex"
+                v-model="internalSelectedItem"
+                type="radio"
+                :value="row.originalRow"
+              />
+
+              <!-- Check boxes -->
+              <input
+                v-if="showCheckboxes"
+                :id="rindex"
+                :ref="'check_' + rindex"
+                v-model="internalSelectedItems"
+                type="checkbox"
+                :value="row.originalRow"
+              />
+
+              <!-- Columns for the row -->
+              <div
+                v-for="(column, cindex) in internalColumns"
+                :key="column.property"
+                :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
+                class="align-top cellPadding"
+                :class="generateCellClasses({ column, cindex, row, rindex })"
+                @click="
+                  ($event) =>
+                    handleCellClick(getCellValue(row, column), row, column)
+                "
+              >
                 <slot
-                  class="detail-row-slot"
-                  name="detail_row_slot"
-                  v-bind="row.originalRow"
-                ></slot>
+                  :name="column.property"
+                  :row="row.originalRow"
+                  :value="getRawCellValue(row, column)"
+                  :rendered_value="getCellValue(row, column)"
+                  :rendered="getRenderedCellValue(row, column)"
+                >
+                  {{ getCellValue(row, column) }}
+                </slot>
+              </div>
+
+              <!-- Detail row -->
+              <div
+                v-if="!canCollapseDetailRows || row.detailRowOpen"
+                :key="'detailRow' + rindex"
+                class="spanAllColumns"
+              >
+                <div class="px-4">
+                  <slot
+                    class="detail-row-slot"
+                    name="detail_row_slot"
+                    v-bind="row.originalRow"
+                  ></slot>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="!isPdf && (canPage || canPageServer)" class="spanAllColumns">
+      <!-- Pagination  -->
+      <div
+        v-if="!isPdf && totalRows > internalRowsPerPage"
+        class="border-t border-[#D3D3D9]"
+      >
         <SnykPager
           id="pagingControls"
           :start-index="startIndex"
@@ -326,7 +345,7 @@ export default {
     },
     canPage: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     canPageServer: {
       type: Boolean,
@@ -1234,12 +1253,30 @@ export default {
     toggleRow(row) {
       row.detailRowOpen ? this.collapseRow(row) : this.expandRow(row);
     },
+    generateBorderClasses(rowIndex) {
+      if (rowIndex > 0) {
+        return " border-t border-[#D3D3D9]";
+      } else {
+        return " ";
+      }
+    },
     generateCellClasses({ column, cindex, row, rindex }) {
       let classes = "row ";
       classes += _.camelCase(column.property);
       classes += cindex % 2 === 0 ? " evenColumn" : " oddColumn";
       classes += rindex % 2 === 0 ? " evenRow" : " oddRow";
       classes += this.canCollapseDetailRows ? " bg-[#F9F8FA]" : "";
+      classes += this.generateBorderClasses(rindex);
+
+      if (!this.canCollapseDetailRows || this.isBorderless) {
+        if (cindex === this.internalColumns.length - 1) {
+          classes += " mr-[12px]";
+        }
+        if (cindex === 0) {
+          classes += " ml-[12px]";
+        }
+      }
+
       if (
         this.cellCssFunction !== null &&
         this.cellCssFunction instanceof Function
@@ -1424,16 +1461,9 @@ export default {
 .unsortedIcon {
   opacity: 0.5;
 }
-.tableDataContainer {
-  max-width: 100%;
-  overflow-x: scroll;
-}
-.table-data {
-  padding-top: 12px;
-  padding-bottom: 17px;
-  border-bottom: 1px solid #d3d3d9;
-}
 
+/* TODO: find out if rootTableContainer are still needed, for empty
+state, for example  */
 .rootTableContainer {
   display: inline-block;
   width: 100%;
@@ -1442,7 +1472,6 @@ export default {
   max-height: 100%;
   position: relative;
   min-height: 120px;
-  overflow-x: hidden;
 }
 
 .spinnerOverlay {
@@ -1481,7 +1510,6 @@ export default {
   position: relative;
   width: 100%;
   overflow-x: scroll;
-  border-radius: 6px;
 }
 
 .spanAllColumns {
@@ -1553,7 +1581,6 @@ highlighting a row on hover etc. */
   display: flex;
   justify-content: space-between;
   width: 100%;
-  overflow: visible;
 }
 .tableControls {
   display: flex;
