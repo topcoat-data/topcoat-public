@@ -94,48 +94,41 @@
           :indeterminate.prop="someChecked"
         />
         <!-- Headings -->
-        <!-- header div; padding -->
-        <!-- content div; padding -->
-        <div
+        <button
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
-          class="headerCell cellPadding"
+          class="cellPadding border-b border-[#D3D3D9] focus:outline-none focus-visible:ring flex items-center leading-[15px] text-[12px] text-[#555463] font-semibold tracking-[0.12em] uppercase"
           :class="generateHeaderClasses(column.property, index)"
+          @click="updateSort(column)"
         >
-          <div style="display: flex; align-items: center">
+          <slot
+            :name="generateSlotName('header', column.header)"
+            v-bind="column"
+          >
+            {{ column.header }}
+          </slot>
+
+          <span v-if="column.sort" class="sortIcon">
             <slot
-              :name="generateSlotName('header', column.header)"
+              v-if="column.sort.direction === 'ASC'"
+              name="sortAscendingIcon"
               v-bind="column"
             >
-              {{ column.header }}
+              <menu-up-icon :size="20" />
             </slot>
-
-            <button
-              v-if="column.sort"
-              class="sortIcon focus:outline-none focus-visible:ring"
-              @click="updateSort(column)"
+            <slot
+              v-else-if="column.sort.direction === 'DESC'"
+              name="sortDescendingIcon"
+              v-bind="column"
             >
-              <slot
-                v-if="column.sort.direction === 'ASC'"
-                name="sortAscendingIcon"
-                v-bind="column"
-              >
-                <menu-up-icon :size="20" />
-              </slot>
-              <slot
-                v-else-if="column.sort.direction === 'DESC'"
-                name="sortDescendingIcon"
-                v-bind="column"
-              >
-                <menu-down-icon :size="20" />
-              </slot>
-              <slot v-else name="sortUnsortedIcon" v-bind="column">
-                <menu-swap-icon :size="20" class="unsortedIcon" />
-              </slot>
-            </button>
-          </div>
-        </div>
+              <menu-down-icon :size="20" />
+            </slot>
+            <slot v-else name="sortUnsortedIcon" v-bind="column">
+              <menu-swap-icon :size="20" class="unsortedIcon" />
+            </slot>
+          </span>
+        </button>
 
         <!-- No table data -->
         <div
@@ -380,12 +373,6 @@ export default {
       default() {
         return {};
       },
-    },
-    // Do we need this? Can we get rid of it?
-    headerClasses: {
-      type: String,
-      default:
-        "py-2 border-b border-[#D3D3D9] text-[12px] text-[#555463] font-semibold leading-[15px] tracking-[0.12em] uppercase",
     },
     cellClasses: {
       type: String,
@@ -1099,7 +1086,6 @@ export default {
       let classes = _.camelCase(header);
       classes += " " + _.camelCase("header " + header);
       classes += index % 2 === 0 ? " evenColumn" : " oddColumn";
-      classes += " " + this.headerClasses;
       if (this.isHeaderFixed) classes += " isHeaderFixed";
       return classes;
     },
@@ -1523,11 +1509,6 @@ state, for example  */
   background-color: var(--page-background-color);
 }
 
-.headerCell {
-  font-weight: 700;
-  font-size: 1.2em;
-}
-
 .row.groupHeader {
   text-align: left;
   font-size: 1.1em;
@@ -1549,7 +1530,6 @@ highlighting a row on hover etc. */
   padding-bottom: 12px;
 }
 
-.headerCell,
 .row {
   margin: 0px 0;
 }
