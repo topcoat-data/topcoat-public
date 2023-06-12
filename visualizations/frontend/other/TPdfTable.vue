@@ -2,30 +2,32 @@
   <div class="relative overflow-auto">
     <t-loading-spinner v-if="loading" position="relative" />
     <slot name="header" :loading="loading"></slot>
-    <table class="w-full table-fixed" :class="containerClass">
-      <thead>
-        <th v-for="column in columns" :key="column" :class="columnsClass">
-          <slot :name="'col-' + column" :column="column">
-            {{ column }}
-          </slot>
-        </th>
-      </thead>
-      <tbody>
-        <tr v-for="(row, index) in rows" :key="'row-' + index">
-          <td
-            v-for="column in columns"
-            :key="column"
-            class="break-all"
-            :class="rowsClass"
-          >
-            <slot :name="'row-' + column" :row="row">
-              {{ row[column] ? row[column].rendered : "" }}
+    <div :class="containerClass">
+      <table class="w-full table-fixed">
+        <thead>
+          <th v-for="column in columns" :key="column" :class="columnsClass">
+            <slot :name="'col-' + column" :column="column">
+              {{ column }}
             </slot>
-          </td>
-        </tr>
-      </tbody>
-      <div v-if="!loading && !rows.length" class="text-center">No Data</div>
-    </table>
+          </th>
+        </thead>
+        <tbody>
+          <tr v-for="(row, index) in rows" :key="'row-' + index">
+            <td
+              v-for="column in columns"
+              :key="column"
+              class="break-all"
+              :class="rowsClass"
+            >
+              <slot :name="'row-' + column" :row="row">
+                {{ row[column] ? row[column].rendered : "" }}
+              </slot>
+            </td>
+          </tr>
+        </tbody>
+        <div v-if="!loading && !rows.length" class="text-center">No Data</div>
+      </table>
+    </div>
     <slot
       name="footer"
       :rows-limit="rowsLimit"
