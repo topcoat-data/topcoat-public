@@ -2,9 +2,9 @@
   <div class="relative overflow-auto">
     <t-loading-spinner v-if="loading" position="relative" />
     <slot name="header" :loading="loading"></slot>
-    <table class="w-full table-fixed" :class="tableClasses">
+    <table class="w-full table-fixed" :class="containerClass">
       <thead>
-        <th v-for="column in columns" :key="column">
+        <th v-for="column in columns" :key="column" :class="columnsClass">
           <slot :name="'col-' + column" :column="column">
             {{ column }}
           </slot>
@@ -12,7 +12,12 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in rows" :key="'row-' + index">
-          <td v-for="column in columns" :key="column" class="break-all">
+          <td
+            v-for="column in columns"
+            :key="column"
+            class="break-all"
+            :class="rowsClass"
+          >
             <slot :name="'row-' + column" :row="row">
               {{ row[column] ? row[column].rendered : "" }}
             </slot>
@@ -27,7 +32,7 @@
       :rows-total="rowsTotal"
       :loading="loading"
     >
-      <div v-if="rowsTotal > rowsLimit" class="pt-4 text-right">
+      <div class="pt-4 text-right">
         Showing {{ rowsLimit }} of {{ rowsTotal }}
       </div>
     </slot>
@@ -53,7 +58,15 @@ export default {
       type: Number,
       default: 5,
     },
-    tableClasses: {
+    containerClass: {
+      type: String,
+      default: "",
+    },
+    columnsClass: {
+      type: String,
+      default: "",
+    },
+    rowsClass: {
       type: String,
       default: "",
     },
@@ -62,9 +75,6 @@ export default {
     is_filter: true,
     rowsTotal: 0,
   }),
-  created() {
-    this.fetchOnMounted = false;
-  },
   computed: {
     columns() {
       const columns = this.rows.length ? Object.keys(this.rows[0]) : [];
@@ -90,6 +100,9 @@ export default {
         )[0] || {};
       return urlParam.value ? urlParam.value.split("|") : [];
     },
+  },
+  created() {
+    this.fetchOnMounted = false;
   },
   mounted() {
     this.prepareFilters();
