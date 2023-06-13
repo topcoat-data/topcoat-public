@@ -102,6 +102,15 @@ export default {
         )[0] || {};
       return urlParam.value ? urlParam.value.split("|") : [];
     },
+    requestPayload() {
+      return {
+        render: {
+          visualization: this.tag,
+        },
+        target: this.tag_unique,
+        layer: this.layer,
+      };
+    },
   },
   created() {
     this.fetchOnMounted = false;
@@ -123,26 +132,18 @@ export default {
     },
     fetchRowsCount() {
       this.$store
-        .dispatch("layers/fetchLayerCount", this.createRequestPayload())
+        .dispatch("layers/fetchLayerCount", this.requestPayload)
         .then((rowsTotal) => {
           this.rowsTotal = rowsTotal;
         });
     },
-    createRequestPayload() {
-      return {
-        render: {
-          visualization: this.tag,
-        },
-        target: this.tag_unique,
-        layer: this.layer,
-      };
-    },
     setLayerFilter(filterName, filterValue) {
-      const table = this.$store.state.layers.components[this.tag_unique];
-      if (!table.filters) {
-        table.filters = {};
-      }
-      window.Vue.set(table.filters, filterName, filterValue);
+      this.tableFilters = { ...this.tableFilters, [filterName]: filterValue };
+      this.storeAttribute({
+        target: this.tag_unique,
+        attribute: "filters",
+        value: this.tableFilters,
+      });
     },
   },
 };
