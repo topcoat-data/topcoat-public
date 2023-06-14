@@ -82,7 +82,7 @@
         :style="columnWidthsStyle"
       >
         <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
-        <div v-if="canCollapseDetailRows" :class="headerClasses"></div>
+        <div v-if="canCollapseDetailRows"></div>
         <!-- Empty div to keep the headers lined up with their columns when there are radio buttons  -->
         <div v-if="showRadioButtons"></div>
         <!-- Toggle all of the check boxes  -->
