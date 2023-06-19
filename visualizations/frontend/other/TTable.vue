@@ -486,7 +486,11 @@ export default {
       );
     },
     columnWidthsStyle() {
-      if (Array.isArray(this.internalColumns)) {
+      if (
+        Array.isArray(this.internalColumns) &&
+        this.internalRows?.length > 0 &&
+        this.displayRows?.length > 0
+      ) {
         let columnsWidths = "grid-template-columns:";
         if (this.showRadioButtons) {
           columnsWidths += " 2em";
