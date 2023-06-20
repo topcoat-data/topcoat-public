@@ -514,7 +514,7 @@ export default {
           if (
             !(this.internalRows?.length > 0 && this.displayRows?.length > 0)
           ) {
-            columnsWidths += "auto";
+            columnsWidths += " auto";
           }
         }
 
