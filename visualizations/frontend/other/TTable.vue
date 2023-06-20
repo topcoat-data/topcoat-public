@@ -493,11 +493,7 @@ export default {
       );
     },
     columnWidthsStyle() {
-      if (
-        Array.isArray(this.internalColumns) &&
-        this.internalRows?.length > 0 &&
-        this.displayRows?.length > 0
-      ) {
+      if (Array.isArray(this.internalColumns)) {
         let columnsWidths = "grid-template-columns:";
         if (this.showRadioButtons) {
           columnsWidths += " 2em";
@@ -505,7 +501,11 @@ export default {
         if (this.showCheckboxes) {
           columnsWidths += " 2em";
         }
-        if (this.canCollapseDetailRows) {
+        if (
+          this.canCollapseDetailRows &&
+          this.internalRows?.length > 0 &&
+          this.displayRows?.length > 0
+        ) {
           columnsWidths += " 2em";
         }
 
