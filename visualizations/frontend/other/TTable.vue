@@ -510,6 +510,12 @@ export default {
         }
         if (this.canCollapseDetailRows) {
           columnsWidths += " 2em";
+
+          if (
+            !(this.internalRows?.length > 0 && this.displayRows?.length > 0)
+          ) {
+            columnsWidths += "auto";
+          }
         }
 
         this.internalColumns.forEach((column) => {
