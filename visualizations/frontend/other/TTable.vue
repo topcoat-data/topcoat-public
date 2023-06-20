@@ -296,7 +296,7 @@ export default {
       type: String,
       default: "",
     },
-    height: {
+    defaultHeight: {
       type: String,
       default: "",
     },
@@ -470,7 +470,7 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.height && !this.isDataAvailable ? `${this.height}px` : "auto";
+      return this.defaultHeight && !this.isDataAvailable ? `${this.defaultHeight}px` : "auto";
     },
     isPdf() {
       return window.location.href.includes("/pdf?");
