@@ -1,5 +1,9 @@
 <template>
-  <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }" :style="{height: computedHeight}">
+  <div
+    class="rootTableContainer"
+    :class="{ makeTooltipVisible: tooltip }"
+    :style="{ height: computedHeight }"
+  >
     <slot name="columnConfig" :set-column-config="setColumnConfig"></slot>
 
     <!-- Title -->
@@ -141,6 +145,9 @@
           "
           class="spanAllColumns center_cell"
         >
+          <!-- Empty div to keep the headers lined up with their columns when there are exapnd/collapse buttons  -->
+          <div v-if="canCollapseDetailRows"></div>
+
           <slot name="no_data">
             <div><i class="i-fa-solid i-fa-inbox"></i></div>
             <div>{{ noDataMessage }}</div>
@@ -501,11 +508,7 @@ export default {
         if (this.showCheckboxes) {
           columnsWidths += " 2em";
         }
-        if (
-          this.canCollapseDetailRows &&
-          this.internalRows?.length > 0 &&
-          this.displayRows?.length > 0
-        ) {
+        if (this.canCollapseDetailRows) {
           columnsWidths += " 2em";
         }
 
