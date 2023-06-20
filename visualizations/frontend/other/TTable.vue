@@ -1,5 +1,5 @@
 <template>
-  <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }">
+  <div class="rootTableContainer" :class="{ makeTooltipVisible: tooltip }" :style="{height: computedHeight}">
     <slot name="columnConfig" :set-column-config="setColumnConfig"></slot>
 
     <!-- Title -->
@@ -256,7 +256,7 @@
       </div>
       <!-- Pagination  -->
       <div
-        v-if="!isPdf && totalRows > internalRowsPerPage"
+        v-if="!isPdf && totalRows > internalRowsPerPage && isDataAvailable"
         class="border-t border-[#D3D3D9]"
       >
         <SnykPager
@@ -293,6 +293,10 @@ export default {
       default: false,
     },
     title: {
+      type: String,
+      default: "",
+    },
+    height: {
       type: String,
       default: "",
     },
@@ -465,6 +469,9 @@ export default {
     };
   },
   computed: {
+    computedHeight() {
+      return this.height && !this.isDataAvailable ? `${this.height}px` : "auto";
+    },
     isPdf() {
       return window.location.href.includes("/pdf?");
     },
@@ -1317,6 +1324,7 @@ export default {
         });
     },
     fetchPagedLayer(setColumnSort = true) {
+      this.showSpinner = true;
       this.setLayerFilter("limit", "" + this.internalRowsPerPage);
       this.setLayerFilter("offset", "" + this.startIndex);
       const payload = this.createRequestPayload();
