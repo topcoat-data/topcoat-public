@@ -12,18 +12,27 @@
           </th>
         </thead>
         <tbody>
-          <tr v-for="(row, index) in rows" :key="'row-' + index">
-            <td
-              v-for="column in columns"
-              :key="column"
-              class="break-all"
-              :class="rowsClass"
-            >
-              <slot :name="'row-' + column" :row="row">
-                {{ row[column] ? row[column].rendered : "" }}
-              </slot>
-            </td>
-          </tr>
+          <!-- Table rows are exposed using row-INDEX for slot name, can be used to target specific row by index. -->
+          <slot
+            v-for="(row, index) in rows"
+            :key="'row-' + index"
+            :name="'row-' + index"
+            :row="row"
+            :columns="columns"
+          >
+            <tr>
+              <td
+                v-for="column in columns"
+                :key="column"
+                class="break-all"
+                :class="rowsClass"
+              >
+                <slot :name="'row-' + column" :row="row">
+                  {{ row[column] ? row[column].rendered : "" }}
+                </slot>
+              </td>
+            </tr>
+          </slot>
         </tbody>
         <div v-if="!loading && !rows.length" class="text-center">No Data</div>
       </table>
