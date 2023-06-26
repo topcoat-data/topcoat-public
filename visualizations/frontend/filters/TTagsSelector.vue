@@ -80,7 +80,7 @@
               <span
                 class="sticky top-0 left-0 w-full m-auto font-semibold text-left bg-white"
               >
-                Select a {{ selectedKey }}
+                Select a {{ itemValueLabel || selectedKey }}
               </span>
               <div v-if="tags[selectedKey] && tags[selectedKey].length">
                 <div
@@ -193,6 +193,10 @@ export default {
     searchFields: {
       type: Array,
       default: null,
+    },
+    itemValueLabel: {
+      type: String,
+      default: "",
     },
   },
   data: () => ({
