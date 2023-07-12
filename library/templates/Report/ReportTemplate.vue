@@ -1,3 +1,4 @@
+<!-- migrated  -->
 <template>
   <div>
     <div class="bg-[#F9F9FA]">

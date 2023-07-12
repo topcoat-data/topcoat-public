@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div>
     <div
@@ -22,7 +23,7 @@
       M
     </div>
     <div
-      v-else-if="['Low', 1].includes(severity) "
+      v-else-if="['Low', 1].includes(severity)"
       class="text-[11px] bg-[#8e8d92] w-[20px] h-[20px] text-[#ffffff] inline-flex items-center justify-center rounded-[2px]"
       title="Low Issues"
     >
@@ -39,7 +40,9 @@ export default {
       type: [String, Number],
       required: true,
       validator: function (value) {
-        return ["Critical", "High", "Medium", "Low", 1, 2, 3, 4].includes(value);
+        return ["Critical", "High", "Medium", "Low", 1, 2, 3, 4].includes(
+          value
+        );
       },
     },
   },

@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-08 -->
 <script>
 export default {
   name: "TColumnConfig",

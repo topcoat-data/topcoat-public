@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <a
     :href="fullUrl"

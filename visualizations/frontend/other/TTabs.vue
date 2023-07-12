@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-08 -->
 <template>
   <div class="flex flex-col w-full relative">
     <div class="flex items-center gap-2 bg-[#F9F8FA] px-6">

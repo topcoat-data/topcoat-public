@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <t-dropdown :is-open="isOpen" @open="onDropdownOpen">
     <!-- Handle -->

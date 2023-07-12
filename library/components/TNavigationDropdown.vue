@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <t-dropdown :disable-active-class="$slots.handle ? true : false">
     <slot slot="handle" name="handle">

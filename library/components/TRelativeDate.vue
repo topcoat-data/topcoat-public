@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-29 -->
 <template>
   <div class="flex gap-1 items-center justify-start">
     Updated {{ relativeDateTime }}
@@ -6,19 +7,19 @@
 
 <script>
 const SECOND_IN_MS = 1000;
-const MINUTE_IN_MS = 60 * SECOND_IN_MS;     // 60000 ms
-const HOUR_IN_MS = 60 * MINUTE_IN_MS;       // 3600000 ms
-const DAY_IN_MS = 24 * HOUR_IN_MS;          // 86400000 ms
+const MINUTE_IN_MS = 60 * SECOND_IN_MS; // 60000 ms
+const HOUR_IN_MS = 60 * MINUTE_IN_MS; // 3600000 ms
+const DAY_IN_MS = 24 * HOUR_IN_MS; // 86400000 ms
 const MONTH_IN_MS = (365 * DAY_IN_MS) / 12; // 2628000000 ms
-const YEAR_IN_MS = 365 * DAY_IN_MS;         // 31536000000 ms
+const YEAR_IN_MS = 365 * DAY_IN_MS; // 31536000000 ms
 
 const UNITS = [
-    { unit: "year", ms: YEAR_IN_MS },
-    { unit: "month", ms: MONTH_IN_MS },
-    { unit: "day", ms: DAY_IN_MS },
-    { unit: "hour", ms: HOUR_IN_MS },
-    { unit: "minute", ms: MINUTE_IN_MS },
-    { unit: "second", ms: SECOND_IN_MS },
+  { unit: "year", ms: YEAR_IN_MS },
+  { unit: "month", ms: MONTH_IN_MS },
+  { unit: "day", ms: DAY_IN_MS },
+  { unit: "hour", ms: HOUR_IN_MS },
+  { unit: "minute", ms: MINUTE_IN_MS },
+  { unit: "second", ms: SECOND_IN_MS },
 ];
 
 const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
@@ -30,10 +31,10 @@ const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
  * @return {string} - the language-sensitive relative time message
  */
 function relativeTimeFromDates(relative, pivot = new Date()) {
-    if (!relative) return "";
-    const elapsed = relative.getTime() - pivot.getTime();
-    return relativeTimeFromElapsed(elapsed);
-};
+  if (!relative) return "";
+  const elapsed = relative.getTime() - pivot.getTime();
+  return relativeTimeFromElapsed(elapsed);
+}
 
 /**
  * Get language-sensitive relative time message from elapsed time.
@@ -41,17 +42,17 @@ function relativeTimeFromDates(relative, pivot = new Date()) {
  * @return {string} - the language-sensitive relative time message
  */
 function relativeTimeFromElapsed(elapsed) {
-    for (const { unit, ms } of UNITS) {
-        if (Math.abs(elapsed) >= ms || unit === "second") {
-            return rtf.format(Math.round(elapsed / ms), unit);
-        }
+  for (const { unit, ms } of UNITS) {
+    if (Math.abs(elapsed) >= ms || unit === "second") {
+      return rtf.format(Math.round(elapsed / ms), unit);
     }
-    return "";
-};
+  }
+  return "";
+}
 
 /**
  * Examples, relative to 1691424920213 (Mon Aug 07 2023 18:15:20 GMT+0200):
- * 
+ *
  * "467074800000 ms" 20/10/1984 00:00:00 (Relative to now) → 39 years ago
  * "1445292000000 ms" 20/10/2015 00:00:00 (Relative to now) → 8 years ago
  * "1659888920213 ms" 07/08/2022 18:15:20 (Relative to now) → last year

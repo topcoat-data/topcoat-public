@@ -1,3 +1,4 @@
+<!-- only used by TFilterGroup. Do not migrate -->
 <template>
   <div class="relative p-2 border-[#E4E3E8] border-t">
     <div

@@ -1,4 +1,5 @@
 <!----------------------- begin global tiles ----------------------->
+<!-- migrated -->
 <template>
   <base-card legacy>
     <div v-if="loading && !nospinner">

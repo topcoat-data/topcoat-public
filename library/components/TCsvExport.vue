@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <button
     class="rounded cursor-pointer border-1 border-[#C3C2CB] text-[#555463] bg-white w-max p-1"

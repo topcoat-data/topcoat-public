@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div class="centerIssueStatusIndicator center">
     <div class="text-[10px] text-normal leading-[17px]">

@@ -1,3 +1,4 @@
+<!-- not used. Do not migrate -->
 <template>
   <div>
     <span :class="value ? 'text-[#2D9283]' : 'text-[#ba1515]'" class="mr-[6px]">

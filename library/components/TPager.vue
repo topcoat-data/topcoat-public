@@ -1,3 +1,4 @@
+<!-- not used? Do not migrate -->
 <template>
   <div>
     <div v-if="numberOfItems > itemsPerPage" class="center">

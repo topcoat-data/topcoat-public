@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div
     class="relative"
