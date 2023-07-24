@@ -38,7 +38,7 @@ export default {
     },
     created() {
         if (this.datum && this.datum.length) {
-            this.fixedData = Array.isArray(this.datum) ? this.datum : JSON.parse(this.datum);
+            this.assignData();
         }
     },
     mounted() {
@@ -146,6 +146,9 @@ export default {
             this.$nextTick(() => {
                 this.createSparkline();
             });
+        },
+        assignData() {
+            this.fixedData = Array.isArray(this.datum) ? this.datum : JSON.parse(this.datum);
         },
         xAccessor(d) {
             return d.x;
@@ -282,6 +285,14 @@ export default {
             });
         }
     },
+    watch: {
+        datum(value, oldValue) {
+            if (value !== oldValue) {
+                this.assignData();
+                this.createSparkline();
+            }
+        }
+    }
 };
 </script>
 
