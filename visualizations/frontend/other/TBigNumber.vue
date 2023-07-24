@@ -154,7 +154,7 @@ export default {
       if (!this.rows) {
         return null;
       }
-      
+
       return this.rows.length ? this.rows[0] : null;
     },
     value() {
@@ -215,14 +215,13 @@ export default {
       };
     },
     formatNumber({ value, rendered }) {
-      // If number is greater than 6 digits, format it.
       if (value > this.numberFormatLimit) {
-        let formatter = Intl.NumberFormat("en", { notation: "compact" });
-        return formatter.format(value);
+        return Intl.NumberFormat("en", { notation: "compact" }).format(
+          rendered
+        );
       }
 
-      // Else return default rendered value from sql.
-      return rendered;
+      return Intl.NumberFormat("en").format(rendered);
     },
   },
 };
