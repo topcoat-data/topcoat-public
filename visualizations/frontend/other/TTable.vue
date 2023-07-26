@@ -98,7 +98,8 @@
           :indeterminate.prop="someChecked"
         />
         <!-- Headings -->
-        <button
+        <component
+          :is="column.sort ? 'button' : 'div'"
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
@@ -132,7 +133,7 @@
               <menu-swap-icon :size="20" class="unsortedIcon" />
             </slot>
           </span>
-        </button>
+        </component>
 
         <!-- No table data -->
         <div
@@ -477,7 +478,9 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.defaultHeight && !this.isDataAvailable ? `${this.defaultHeight}px` : "auto";
+      return this.defaultHeight && !this.isDataAvailable
+        ? `${this.defaultHeight}px`
+        : "auto";
     },
     isPdf() {
       return window.location.href.includes("/pdf?");
