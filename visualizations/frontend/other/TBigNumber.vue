@@ -33,7 +33,11 @@
         <div class="flex items-center gap-2">
           <t-tooltip position="right">
             <span slot="trigger" :style="{ color: numberTextColor }">
-              {{ formatNumber(value) }} {{ valueText }}
+              <t-formatted-number
+                :value="value.value"
+                :truncation-limit="numberFormatLimit"
+              />
+              {{ valueText }}
             </span>
             <div v-if="value.value > numberFormatLimit" class="text-sm">
               {{ value.rendered }}
@@ -54,7 +58,10 @@
     <div v-if="previous.value" class="flex items-center gap-1 mt-3">
       <t-tooltip v-if="value.value != previous.value" position="right">
         <div slot="trigger" class="font-semibold">
-          {{ formatNumber(previous) }}
+          <t-formatted-number
+            :value="previous.value"
+            :truncation-limit="numberFormatLimit"
+          />
           <span class="font-normal opacity-80">{{ previousText }}</span>
         </div>
         <div v-if="previous.value > numberFormatLimit" class="text-sm">
@@ -129,7 +136,7 @@ export default {
     },
     numberFormatLimit: {
       type: Number,
-      default: 999999,
+      default: null,
     },
     numberTextColor: {
       type: String,
@@ -154,7 +161,7 @@ export default {
       if (!this.rows) {
         return null;
       }
-      
+
       return this.rows.length ? this.rows[0] : null;
     },
     value() {
@@ -213,16 +220,6 @@ export default {
         value: 0,
         rendered: "--",
       };
-    },
-    formatNumber({ value, rendered }) {
-      // If number is greater than 6 digits, format it.
-      if (value > this.numberFormatLimit) {
-        let formatter = Intl.NumberFormat("en", { notation: "compact" });
-        return formatter.format(value);
-      }
-
-      // Else return default rendered value from sql.
-      return rendered;
     },
   },
 };
