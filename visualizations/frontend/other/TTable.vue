@@ -105,7 +105,7 @@
           :ref="'headerCell_' + index"
           class="cellPadding border-b border-[#D3D3D9] focus:outline-none focus-visible:ring flex items-center leading-[15px] text-[12px] text-[#555463] font-semibold tracking-[0.12em] uppercase"
           :class="generateHeaderClasses(column.property, index)"
-          @click="updateSort(column)"
+          v-on="column.sort ? { click: () => updateSort(column) } : {}"
         >
           <slot
             :name="generateSlotName('header', column.header)"
