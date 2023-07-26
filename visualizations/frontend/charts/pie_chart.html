@@ -38,7 +38,30 @@
                 "y" : [0,1]
                 {% endif %}
             },
+            "insidetextfont": {
+                {% if config.insidetextfont_family %}
+                "family" : "{{ config.insidetextfont_family }}"
+                {% else %}
+                "family": "Open Sans"
+                {% endif %},
+                {% if config.insidetextfont_color %}
+                "color" : "{{ config.insidetextfont_color }}"
+                {% else %}
+                "color" : "#161F3D"
+                {% endif %},
+                {% if config.insidetextfont_size %}
+                "size" : "{{ config.insidetextfont_size }}"
+                {% else %}
+                "size": 11
+                {% endif %}
+            },
 
+            {% if config.inside_text_orientation %}
+            "insidetextorientation" : "{{ config.inside_text_orientation }}"
+            {% else %}
+            "insidetextorientation" : "auto"
+            {% endif %},
+  
             "labels": {{ column_data(dimensions[0]) }},
             "values": {{ column_data(measures[0]) }},
 
@@ -46,6 +69,30 @@
             "textinfo" : "{{ config.text_info }}"
             {% else %}
             "textinfo" : "none"
+            {% endif %},
+
+            "textfont": {
+                {% if config.textfont_family %}
+                "family" : "{{ config.textfont_family }}"
+                {% else %}
+                "family": "Open Sans"
+                {% endif %},
+                {% if config.textfont_color %}
+                "color" : "{{ config.textfont_color }}"
+                {% else %}
+                "color" : "#161F3D"
+                {% endif %},
+                {% if config.textfont_size %}
+                "size" : "{{ config.textfont_size }}"
+                {% else %}
+                "size": 11
+                {% endif %}
+            },
+
+            {% if config.text_position %}
+            "textposition" : "{{ config.text_position }}"
+            {% else %}
+            "textposition" : "auto"
             {% endif %},
 
             {% if config.rotate_chart %}
@@ -85,7 +132,7 @@
         {% if config.hover_mode %}
         "hovermode" : "{{ config.hover_mode }}"
         {% else %}
-        "hovermode" : "x unified"
+        "hovermode" : "false"
         {% endif %},
 
         "plot_bgcolor" : "rgba(0,0,0,0)",
