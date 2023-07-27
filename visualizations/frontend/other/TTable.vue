@@ -226,7 +226,7 @@
                 v-for="(column, cindex) in internalColumns"
                 :key="column.property"
                 :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-                class="align-top cellPadding"
+                class="flex flex-col justify-center cellPadding"
                 :class="generateCellClasses({ column, cindex, row, rindex })"
                 @click="
                   ($event) =>
@@ -388,7 +388,7 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "break-all",
+      default: "break-words",
     },
     layerColumnsToHide: {
       type: Array,
