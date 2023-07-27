@@ -502,7 +502,11 @@
                 {% else %}
                 "y" : "1.1"
                 {% endif %},
-
+                {% if config.legend_x_anchor %}
+                "xanchor" : "{{ config.legend_x_anchor }}"
+                {% else %}
+                "xanchor" : "right"
+                {% endif %},
                 {% if config.legend_orientation %}
                 "orientation" : "{{ config.legend_orientation }}"
                 {% else %}
