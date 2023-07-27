@@ -388,7 +388,7 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "break-all",
+      default: "break-words",
     },
     layerColumnsToHide: {
       type: Array,
