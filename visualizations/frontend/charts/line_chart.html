@@ -114,7 +114,7 @@
                     {% if config.font_family %}
                     "family" : "{{ config.title_font_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
                     {% if config.title_font_color %}
                     "color" : "{{ config.title_font_color }}"
@@ -132,7 +132,7 @@
                 {% if config.font_family %}
                  "family" : "{{ config.font_family }}"
                 {% else %}
-                "family": "Open Sans"
+                "family": "Roboto"
                 {% endif %},
 
                 {% if config.font_color %}
@@ -178,13 +178,13 @@
                     {% if config.tickfont_family %}
                     "family" : "{{ config.tickfont_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
 
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
-                    "color" : "#161F3D"
+                    "color" : "#A3A3A3"
                     {% endif %},
 
                     {% if config.tickfont_size %}
@@ -206,7 +206,7 @@
                         {% if config.font_family %}
                         "family" : "{{ config.font_family }}"
                         {% else %}
-                        "family": "Open Sans"
+                        "family": "Roboto"
                         {% endif %},
                         {% if config.font_color %}
                         "color" : "{{ config.font_color }}"
@@ -254,13 +254,13 @@
                     {% if config.tickfont_family %}
                     "family" : "{{ config.tickfont_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
 
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
-                    "color" : "#161F3D"
+                    "color" : "#A3A3A3"
                     {% endif %},
 
                     {% if config.tickfont_size %}
@@ -279,7 +279,7 @@
                         {% if config.font_family %}
                         "family" : "{{ config.font_family }}"
                         {% else %}
-                        "family": "Open Sans"
+                        "family": "Roboto"
                         {% endif %},
                         {% if config.font_color %}
                         "color" : "{{ config.font_color }}"
@@ -328,13 +328,13 @@
                     {% if config.tickfont_family %}
                     "family" : "{{ config.tickfont_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
 
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
-                    "color" : "#161F3D"
+                    "color" : "#A3A3A3"
                     {% endif %},
 
                     {% if config.tickfont_size %}
@@ -356,7 +356,7 @@
                         {% if config.font_family %}
                         "family" : "{{ config.font_family }}"
                         {% else %}
-                        "family": "Open Sans"
+                        "family": "Roboto"
                         {% endif %},
                         {% if config.font_color %}
                         "color" : "{{ config.font_color }}"
@@ -406,13 +406,13 @@
                     {% if config.tickfont_family %}
                     "family" : "{{ config.tickfont_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
 
                     {% if config.tickfont_color %}
                     "color" : "{{ config.tickfont_color }}"
                     {% else %}
-                    "color" : "#161F3D"
+                    "color" : "#A3A3A3"
                     {% endif %},
 
                     {% if config.tickfont_size %}
@@ -434,7 +434,7 @@
                         {% if config.font_family %}
                         "family" : "{{ config.font_family }}"
                         {% else %}
-                        "family": "Open Sans"
+                        "family": "Roboto"
                         {% endif %},
                         {% if config.font_color %}
                         "color" : "{{ config.font_color }}"
@@ -466,7 +466,7 @@
                     {% if config.hover_font_family %}
                     "family" : "{{ config.hover_font_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
                     {% if config.hover_font_color %}
                     "color" : "{{ config.hover_font_color }}"
@@ -495,14 +495,18 @@
                 {% if config.legend_x %}
                 "x" : "{{ config.legend_x }}"
                 {% else %}
-                "x" : "0.01"
+                "x" : "1"
                 {% endif %},
                 {% if config.legend_y %}
                 "y" : "{{ config.legend_y }}"
                 {% else %}
                 "y" : "1.1"
                 {% endif %},
-
+                {% if config.legend_x_anchor %}
+                "xanchor" : "{{ config.legend_x_anchor }}"
+                {% else %}
+                "xanchor" : "right"
+                {% endif %},
                 {% if config.legend_orientation %}
                 "orientation" : "{{ config.legend_orientation }}"
                 {% else %}
@@ -517,7 +521,7 @@
                     {% if config.legend_font_family %}
                     "family" : "{{ config.legend_font_family }}"
                     {% else %}
-                    "family": "Open Sans"
+                    "family": "Roboto"
                     {% endif %},
                     {% if config.legend_font_color %}
                     "color" : "{{ config.legend_font_color }}"
