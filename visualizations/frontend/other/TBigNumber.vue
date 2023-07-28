@@ -100,7 +100,7 @@ export default {
     },
     textColor: {
       type: String,
-      default: "#393842",
+      default: "inherit",
     },
     tValueColumn: {
       type: String,
@@ -140,7 +140,7 @@ export default {
     },
     numberTextColor: {
       type: String,
-      default: "#393842",
+      default: "inherit",
     },
     customClass: {
       type: String,

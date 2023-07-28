@@ -4,7 +4,7 @@
       <div
         v-for="tab in tabs"
         :key="tab"
-        class="cursor-pointer border-t-4"
+        class="pb-2 cursor-pointer border-t-4"
         :class="
           activeTab === tab.slot
             ? 'bg-white border-[#145DEB]'
@@ -12,9 +12,18 @@
         "
         @click="switchTab(tab)"
       >
-        <slot :name="['tab_' + tab.slot]" :tab="tab">
-          {{ tab.label }}
-        </slot>
+        <div
+          class="p-6 min-w-[240px] border-2 rounded-md border-transparent"
+          :class="
+            activeTab === tab.slot
+              ? 'text-[#1c1c21]'
+              : 'hover:border-[#d3d3d980] hover:bg-[#F2F1F4] hover:text-[#1c1c21] text-[#555463]'
+          "
+        >
+          <slot :name="['tab_' + tab.slot]" :tab="tab">
+            {{ tab.label }}
+          </slot>
+        </div>
       </div>
     </div>
     <div :key="activeTab">
