@@ -52,6 +52,7 @@
             <div v-else class="opacity-30">-</div>
           </div>
           <t-loading-spinner v-if="loading" position="relative" />
+          <slot name="right-side"></slot>
         </div>
       </span>
     </div>
