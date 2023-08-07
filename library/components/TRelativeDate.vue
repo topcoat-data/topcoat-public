@@ -1,0 +1,48 @@
+<template>
+  <div class="flex gap-1 items-center justify-start">
+    Updated {{ relativeDateTime }}
+  </div>
+</template>
+
+<script>
+var units = {
+  year: 24 * 60 * 60 * 1000 * 365,
+  month: (24 * 60 * 60 * 1000 * 365) / 12,
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
+  minute: 60 * 1000,
+  second: 1000,
+};
+
+var rtf = new Intl.RelativeTimeFormat("en", {
+  numeric: "auto",
+  style: "short",
+});
+
+var getRelativeTime = (d1, d2 = new Date()) => {
+  var elapsed = d1 - d2;
+  for (var u in units)
+    if (Math.abs(elapsed) > units[u] || u == "second")
+      return rtf.format(Math.round(elapsed / units[u]), u);
+};
+
+export default {
+  name: "TRelativeDate",
+  props: {
+    baseDateTime: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    relativeDateTime() {
+      if (!this.baseDateTime) {
+        return "";
+      }
+
+      const dateTime = new Date(this.baseDateTime);
+      return getRelativeTime(dateTime);
+    },
+  },
+};
+</script>
