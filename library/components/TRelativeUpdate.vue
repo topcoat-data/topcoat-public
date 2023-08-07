@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex gap-1 items-center justify-start">
     Updated {{ relativeDateTime }}
     <t-loading-spinner v-if="loading" position="relative" />
   </div>
