@@ -1,4 +1,3 @@
-<!-- migrated Aug 07. 2023 -->
 <template>
   <div
     class="relative flex t-date-picker flex items-center border rounded cursor-pointer"
