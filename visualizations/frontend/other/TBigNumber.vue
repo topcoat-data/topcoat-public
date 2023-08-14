@@ -52,6 +52,7 @@
             <div v-else class="opacity-30">-</div>
           </div>
           <t-loading-spinner v-if="loading" position="relative" />
+          <slot name="right-side"></slot>
         </div>
       </span>
     </div>
@@ -100,7 +101,7 @@ export default {
     },
     textColor: {
       type: String,
-      default: "#393842",
+      default: "inherit",
     },
     tValueColumn: {
       type: String,
@@ -140,7 +141,7 @@ export default {
     },
     numberTextColor: {
       type: String,
-      default: "#393842",
+      default: "inherit",
     },
     customClass: {
       type: String,

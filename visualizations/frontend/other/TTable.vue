@@ -103,7 +103,7 @@
           v-for="(column, index) in internalColumns"
           :key="column.header"
           :ref="'headerCell_' + index"
-          class="cellPadding border-b border-[#D3D3D9] focus:outline-none focus-visible:ring flex items-center leading-[15px] text-[12px] text-[#555463] font-semibold tracking-[0.12em] uppercase"
+          class="first:ml-3 cellPadding border-b border-[#D3D3D9] focus:outline-none focus-visible:ring flex items-center leading-[15px] text-[12px] text-[#555463] font-semibold tracking-[0.12em] uppercase"
           :class="generateHeaderClasses(column.property, index)"
           v-on="column.sort ? { click: () => updateSort(column) } : {}"
         >
@@ -226,7 +226,7 @@
                 v-for="(column, cindex) in internalColumns"
                 :key="column.property"
                 :ref="'rowCell_' + gindex + '_' + rindex + '_' + cindex"
-                class="align-top cellPadding"
+                class="flex flex-col justify-center cellPadding"
                 :class="generateCellClasses({ column, cindex, row, rindex })"
                 @click="
                   ($event) =>
@@ -388,7 +388,7 @@ export default {
     },
     cellClasses: {
       type: String,
-      default: "break-all",
+      default: "break-words",
     },
     layerColumnsToHide: {
       type: Array,
