@@ -45,13 +45,31 @@ export default {
       type: Object,
       default: {},
     },
+    absoluteDateFilter: {
+      type: Object,
+      default: {},
+      // { name: "end_date", format: "YYYY-MM-DD" }
+    },
   },
   data: () => ({
     showTooltip: false,
   }),
+  computed: {
+    endDateFilter() {
+      let filter = this.absoluteDateFilter;
+      let filterName = filter.name;
+      if (filterName && !this.getFilterState(filter.name)) {
+        let todayDate = window
+          .Moment()
+          .format(filter.format ? filter.format : "YYYY-MM-DD");
+        return `&${filterName}=${todayDate}`;
+      }
+      return "";
+    },
+  },
   methods: {
     downloadPdf() {
-      const url = this.page.url + window.location.search;
+      const url = this.page.url + window.location.search + this.endDateFilter;
       this.downloadPdfFile(url, this.options);
       this.trackExport("pdf");
     },
