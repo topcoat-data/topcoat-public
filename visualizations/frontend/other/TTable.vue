@@ -40,7 +40,7 @@
         />
         <TCsvExport
           v-if="enableCsvDownload"
-          :t-layer="layer"
+          :t-layer="csvLayer || layer"
           :additional-filters="additionalFilters"
           class="csvExportButton"
         />
@@ -296,6 +296,10 @@
 export default {
   name: "TTable",
   props: {
+    csvLayer: {
+      type: String,
+      default: "",
+    },
     isBorderless: {
       type: Boolean,
       default: false,
