@@ -1,3 +1,4 @@
+<!-- only used in PDF. Not migrated -->
 <template>
   <div>
     {{ text }}

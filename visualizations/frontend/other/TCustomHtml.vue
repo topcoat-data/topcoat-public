@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-08 -->
 <template>
   <div class="relative">
     <slot :rows="rows"> Empty custom HTML visualization </slot>

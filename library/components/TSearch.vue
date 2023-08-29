@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div id="searchContainer" class="searchContainer">
     <div id="search-icon" ref="searchIcon" class="searchIcon">&#128269;</div>

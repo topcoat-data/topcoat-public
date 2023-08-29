@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div class="relative flex w-full gap-2 p-5" style="font-family: 'Roboto'">
     <filter-variant-icon class="relative top-[5px]" :size="18" />

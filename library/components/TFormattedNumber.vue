@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-02 -->
 <template>
   <span>{{ formattedNumber }}</span>
 </template>

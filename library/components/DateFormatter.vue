@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <span>
     {{ formattedDate }}

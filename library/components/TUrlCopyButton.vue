@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div class="relative">
     <t-tooltip position="bottom" width="130px">
@@ -73,9 +74,9 @@ export default {
 </script>
 
 <style>
-/* 
+/*
  * Utility class to hide content visually while keeping it screen reader-accessible.
- * Source: https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html 
+ * Source: https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html
  */
 .visually-hidden:not(:focus):not(:active) {
   clip: rect(0 0 0 0);

@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <base-loading-spinner
     :style="{ position: position || 'absolute' }"

@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-07 -->
 <template>
   <t-dropdown
     :disable-handle-class="isExpanded"

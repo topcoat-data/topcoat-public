@@ -1,3 +1,4 @@
+<!-- migrated -->
 <template>
   <div>
     <div class="pagination-footer flex justify-between p-[12px] items-center">

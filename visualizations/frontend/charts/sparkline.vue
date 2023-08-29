@@ -1,3 +1,4 @@
+<!-- migrated 2023-08-08 -->
 <template>
     <div class="sparkline">
     </div>
@@ -163,15 +164,15 @@ export default {
             if (x > center_x && y < center_y) {
                 return 0;
             }
-            
+
             if (x < center_x && y < center_y) {
                 return 1;
             }
-            
+
             if (x <= center_x && y >= center_y) {
                 return 2;
             }
-            
+
             if (x >= center_x && y >= center_y) {
                 return 3;
             }
@@ -193,7 +194,7 @@ export default {
             const xColumn = this.dimensions[0];
             const yColumn = this.measures[0];
             const hasFetchedData = this.fixedData && this.fixedData.length ? false : true;
-            
+
             if (hasFetchedData) {
                 for (let i = 0; i < this.rows.length; i++) {
                     data.push({
@@ -216,7 +217,7 @@ export default {
             const yDomain = [minY,  maxY === 0 ? 1 : maxY];
 
             const xScale = hasFetchedData ? d3ScaleTime() : d3ScaleLinear();
-            
+
             xScale
                 .domain(xDomain)
                 .range([0, this._width]);
@@ -265,8 +266,8 @@ export default {
                 const tooltipPosition = this.tooltipPositioning.get(quadrant)(textLength, fontSize)(x, y);
                 this._tooltip
                     .attr("opacity", 1)
-                    .attr("transform", "translate(" 
-                    + tooltipPosition.x + "," 
+                    .attr("transform", "translate("
+                    + tooltipPosition.x + ","
                     + tooltipPosition.y + ")");
 
                 this._rect
