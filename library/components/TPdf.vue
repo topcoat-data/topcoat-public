@@ -45,6 +45,10 @@ export default {
       type: Object,
       default: {},
     },
+    timeout: {
+      type: Number,
+      default: 300,
+    },
   },
   data: () => ({
     showTooltip: false,
@@ -52,7 +56,7 @@ export default {
   methods: {
     downloadPdf() {
       const url = this.page.url + window.location.search;
-      this.downloadPdfFile(url, this.options);
+      this.downloadPdfFile(url, { pdf: this.options, timeout: this.timeout });
       this.trackExport("pdf");
     },
   },
