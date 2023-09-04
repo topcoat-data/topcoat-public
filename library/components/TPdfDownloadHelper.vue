@@ -21,11 +21,15 @@ export default {
       var $this = this;
       axios.interceptors.response.use(
         function (response) {
-          $this.responses += 1;
+          if (response.config.url.includes("/api/layers")) {
+            $this.responses += 1;
+          }
           return response;
         },
         function (error) {
-          $this.responses += 1;
+          if (error.config.url.includes("/api/layers")) {
+            $this.responses += 1;
+          }
           return Promise.reject(error);
         }
       );
