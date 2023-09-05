@@ -28,33 +28,42 @@
       </div>
     </div>
 
-    <div class="mt-3">
-      <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
-        <div class="flex items-center gap-2">
-          <t-tooltip position="right">
-            <span slot="trigger" :style="{ color: numberTextColor }">
-              <t-formatted-number
-                :value="value.value"
-                :truncation-limit="numberFormatLimit"
+    <div class="mt-3 flex gap-2">
+      <template v-if="isEditing">
+        <input v-model="editedValue" class="border border-[#B3B2BD] rounded px-[8px] py-[6px] text-sm text-[#555463] focus:outline-none" @input="validateInput" />
+        <button @click="saveEditedValue" class="text-sm text-[#145DEB] focus:outline-none -mx-14 bg-[#ffffff] my-1 px-2 py-[5px]">Save</button>
+      </template>
+      <template v-else>
+        <span class="font-normal leading-8" :class="fontSizes[bigNumberSize]">
+          <div class="flex items-center gap-2">
+            <t-tooltip position="right">
+              <span slot="trigger" :style="{ color: numberTextColor }">
+                <t-formatted-number
+                  :value="value.value"
+                  :truncation-limit="numberFormatLimit"
+                />
+                {{ valueText }}
+              </span>
+              <div v-if="value.value > numberFormatLimit" class="text-sm">
+                {{ value.rendered }}
+              </div>
+            </t-tooltip>
+            <div v-if="previous.value" class="opacity-80">
+              <arrow-up-icon v-if="value.value > previous.value" :size="18" />
+              <arrow-down-icon
+                v-else-if="value.value < previous.value"
+                :size="18"
               />
-              {{ valueText }}
-            </span>
-            <div v-if="value.value > numberFormatLimit" class="text-sm">
-              {{ value.rendered }}
+              <div v-else class="opacity-30">-</div>
             </div>
-          </t-tooltip>
-          <div v-if="previous.value" class="opacity-80">
-            <arrow-up-icon v-if="value.value > previous.value" :size="18" />
-            <arrow-down-icon
-              v-else-if="value.value < previous.value"
-              :size="18"
-            />
-            <div v-else class="opacity-30">-</div>
+            <t-loading-spinner v-if="loading" position="relative" />
+            <slot name="right-side"></slot>
           </div>
-          <t-loading-spinner v-if="loading" position="relative" />
-          <slot name="right-side"></slot>
-        </div>
-      </span>
+        </span>
+        <button v-if="isEditableProp" @click="startEditing" class="border border-[#B3B2BD] text-[#555463] bg-[#ffffff] px-[8px] my-1 rounded focus:outline-none">
+          <pencil-outline-icon size="14" />
+        </button>
+      </template>
     </div>
     <div v-if="previous.value" class="flex items-center gap-1 mt-3">
       <t-tooltip v-if="value.value != previous.value" position="right">
@@ -147,6 +156,10 @@ export default {
       type: String,
       default: "",
     },
+    isEditable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     is_filter: true,
@@ -156,6 +169,8 @@ export default {
       big: "lg:text-5xl md:text-4xl sm:text-3xl",
     },
     showTooltip: false,
+    isEditing: false,
+    editedValue: "",
   }),
   computed: {
     row() {
@@ -192,6 +207,9 @@ export default {
 
       return this.getColumnValue(column);
     },
+    isEditableProp() {
+      return this.isEditable && !this.isEditing;
+    },
   },
   methods: {
     getColumnValue(column) {
@@ -221,6 +239,27 @@ export default {
         value: 0,
         rendered: "--",
       };
+    },
+
+    validateInput() {
+      // Remove non-numeric characters from the input value
+      this.editedValue = this.editedValue.replace(/[^0-9.]/g, '');
+    },
+
+    startEditing() {
+      this.isEditing = true;
+      this.editedValue = this.value.value.toString(); // Initialize edited value with the current value
+    },
+    saveEditedValue() {
+      const newValue = parseFloat(this.editedValue);
+      if (!isNaN(newValue)) {
+        // Save the edited value
+        this.value.value = newValue;
+        this.isEditing = false;
+      } else {
+        // Handle invalid input
+        alert("Please enter a valid number.");
+      }
     },
   },
 };
