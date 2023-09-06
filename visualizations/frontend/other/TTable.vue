@@ -603,7 +603,7 @@ export default {
     this.fetchTotalRows();
 
     if (this.isPdf) {
-      this.internalRowsPerPage = 50;
+      this.internalRowsPerPage = 10000;
     } else {
       this.internalRowsPerPage =
         this.getFilterState("tableRowsPerPage") || this.rowsPerPage;
