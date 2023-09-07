@@ -50,6 +50,14 @@ export default {
       default: {},
       // { name: "end_date", format: "YYYY-MM-DD" }
     },
+    timeout: {
+      type: Number,
+      default: 300,
+    },
+    errorMessage: {
+      type: String,
+      default: "Failed to download PDF",
+    },
   },
   data: () => ({
     showTooltip: false,
@@ -70,7 +78,11 @@ export default {
   methods: {
     downloadPdf() {
       const url = this.page.url + window.location.search + this.endDateFilter;
-      this.downloadPdfFile(url, this.options);
+      this.downloadPdfFile(url, {
+        pdf: this.options,
+        timeout: this.timeout,
+        errorMessage: this.errorMessage,
+      });
       this.trackExport("pdf");
     },
   },
