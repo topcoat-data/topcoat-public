@@ -49,6 +49,10 @@ export default {
       type: Number,
       default: 300,
     },
+    errorMessage: {
+      type: String,
+      default: "Failed to download PDF",
+    },
   },
   data: () => ({
     showTooltip: false,
@@ -56,7 +60,11 @@ export default {
   methods: {
     downloadPdf() {
       const url = this.page.url + window.location.search;
-      this.downloadPdfFile(url, { pdf: this.options, timeout: this.timeout });
+      this.downloadPdfFile(url, {
+        pdf: this.options,
+        timeout: this.timeout,
+        errorMessage: this.errorMessage,
+      });
       this.trackExport("pdf");
     },
   },
