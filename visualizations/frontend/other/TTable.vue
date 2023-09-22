@@ -1572,8 +1572,6 @@ highlighting a row on hover etc. */
   display: flex;
   align-items: center;
   font-feature-settings: "tnum" on, "lnum" on;
-  padding-top: 15px;
-  padding-bottom: 15px;
   gap: 10px;
 }
 
@@ -1585,6 +1583,8 @@ highlighting a row on hover etc. */
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .tableControls {
   display: flex;
