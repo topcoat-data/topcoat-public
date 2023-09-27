@@ -83,20 +83,17 @@
                 Select a {{ itemValueLabel || selectedKey }}
               </span>
               <div v-if="tags[selectedKey] && tags[selectedKey].length">
-                <div
-                  v-for="value of expanded.includes(selectedKey)
-                    ? tags[selectedKey]
-                    : tags[selectedKey].slice(0, valueLimit)"
-                  :key="value"
-                  class="p-1 hover:bg-[#F9F8FA]"
-                >
-                  <div
-                    class="p-1 hover:bg-[#F9F8FA]"
-                    @click.stop="selectValue(value)"
-                  >
-                    {{ displayValue(value) }}
-                  </div>
-                </div>
+                <virtual-list
+                    :style="{
+                    height: listTagsHeight + 'px',
+                    'overflow-y': 'auto',
+                    }"
+                    :estimate-size="32"
+                    :extra-props="{ displayValue, selectValue }"
+                    :data-key="sourceKey"
+                    :data-sources="listTags"
+                    :data-component="tTagsItemComponentValue"
+                />
                 <div
                   v-if="
                     tags[selectedKey] && tags[selectedKey].length > valueLimit
@@ -113,19 +110,22 @@
 
             <!-- Show keys -->
             <div v-else class="flex flex-col gap-1">
-              <span
-                class="sticky top-0 left-0 w-full m-auto font-semibold text-left bg-white"
-              >
-                Select a key
-              </span>
-              <div
-                v-for="key in Object.keys(tags)"
-                :key="key"
-                class="p-1 hover:bg-[#F9F8FA]"
-                @click.stop="selectKey(key)"
-              >
-                {{ displayKey(key) }}
-              </div>
+                <span
+                    class="sticky top-0 left-0 w-full m-auto font-semibold text-left bg-white"
+                >
+                    Select a key
+                </span>
+                <virtual-list
+                    :style="{
+                        height: listTagsKeysHeight + 'px',
+                        'overflow-y': 'auto',
+                    }"
+                    :estimate-size="32"
+                    :extra-props="{ displayKey, selectKey }"
+                    :data-key="sourceKey"
+                    :data-sources="listTagsKeys"
+                    :data-component="tTagsItemComponentKey"
+                />
             </div>
           </div>
         </div>
@@ -152,6 +152,66 @@
 </template>
 
 <script>
+const TTagsItemComponentValue = window.Vue.component(
+  'TTagsItemComponentValue',
+  {
+    name: 'TTagsItemComponentValue',
+    props: {
+      index: {
+        type: Number,
+      },
+      source: {
+        type: Object,
+        default() {
+          return {};
+        },
+      },
+      displayValue: {
+        type: Function,
+      },
+      selectValue: {
+        type: Function,
+      },
+    },
+    template: `
+    <div
+      class="p-1 hover:bg-[#F9F8FA]"
+      @click.stop="selectValue(source.value)"
+      >
+        {{ displayValue(source.value) }}
+    </div>
+  `,
+  },
+);
+const TTagsItemComponentKey = window.Vue.component('TTagsItemComponentKey', {
+  name: 'TTagsItemComponentKey',
+  props: {
+    index: {
+      type: Number,
+    },
+    source: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    displayKey: {
+      type: Function,
+    },
+    selectKey: {
+      type: Function,
+    },
+  },
+  template: `
+    <div
+      class="p-1 hover:bg-[#F9F8FA]"
+      @click.stop="selectKey(source.value)"
+    >
+      {{ displayKey(source.value) }}
+    </div>
+  `,
+});
+
 export default {
   props: {
     label: {
@@ -205,9 +265,32 @@ export default {
     is_filter: true,
     showList: false,
     selectedKey: null,
+    tTagsItemComponentValue: TTagsItemComponentValue,
+    tTagsItemComponentKey: TTagsItemComponentKey,
     expanded: [], // When 'Show more' is clicked inside values.
   }),
   computed: {
+    listTagsKeys() {
+      return Object.keys(this.tags).map((key) => {
+        return {
+          index: key,
+          value: key,
+        };
+      });
+    },
+    listTagsKeysHeight() {
+      const tagsKeysItems = this.listTagsKeys;
+      return Math.min(tagsKeysItems.length * 30, 320);
+    },
+    listTags() {
+      return this.expanded.includes(this.selectedKey)
+        ? this.tags[this.selectedKey]
+        : this.tags[this.selectedKey].slice(0, this.valueLimit);
+    },
+    listTagsHeight() {
+      const tagsItems = this.listTags;
+      return Math.min(tagsItems.length * 30, 320);
+    },
     tags() {
       const tags = {};
       for (let row of this.rows) {
@@ -227,9 +310,9 @@ export default {
         }
 
         if (!tags[key.value]) {
-          tags[key.value] = [value.value];
+          tags[key.value] = [{ index: value.value, value: value.value }];
         } else {
-          tags[key.value].push(value.value);
+          tags[key.value].push({ index: value.value, value: value.value });
         }
       }
 
@@ -237,6 +320,9 @@ export default {
     },
   },
   methods: {
+    sourceKey(source) {
+      return source.index;
+    },
     onVisualizationInit() {
       const initial_value = this.getFilterValue("selected_items");
       let selected = [];
