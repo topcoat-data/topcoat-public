@@ -282,6 +282,7 @@ export default {
   },
   methods: {
     onVisualizationInit() {
+      const urlVersion = this.getUrlVersion;
       const initial_value = this.getFilterValue("selected_items");
 
       this.checked = [];
@@ -289,23 +290,43 @@ export default {
       if (initial_value) {
         let parsedInitialValue;
 
-        try {
-          parsedInitialValue = Array.isArray(initial_value)
-            ? [...initial_value ]
-            : isArrayString(initial_value) 
-              ? JSON.parse(initial_value) 
-              : [initial_value];
-        } catch (error) {
-          console.error(error);
-          console.error("Failed to parse TMultiSelector filters");
+        if (urlVersion === 0) {
+          // key = value
+          // key = value1 | value2
+          parsedInitialValue = initial_value.split("|");
+          this.setUrlVersion(1);
+          this.setFilterValue(
+            "selected_items",
+            [...parsedInitialValue],
+            this.defaultValue,
+        );
+        } else {
+          try {
+            parsedInitialValue = Array.isArray(initial_value)
+              ? [...initial_value ]
+              : isArrayString(initial_value)
+                ? JSON.parse(initial_value)
+                : [initial_value];
+          } catch (error) {
+            console.error(error);
+            console.error("Failed to parse TMultiSelector filters");
+          }
         }
 
         this.checked = parsedInitialValue;
       } else if (this.defaultValue) {
-        let value = this.defaultValue || [];
+        let value;
+
+        if (urlVersion === 0) {
+          value = this.defaultValue.split("|");
+          this.setUrlVersion(1);
+        } else {
+          value = this.defaultValue || [];
+        }
+
         this.checked = Array.isArray(value) ? value : [value];
         this.setFilterValue(
-          'selected_items',
+          "selected_items",
           [...this.checked],
           this.defaultValue,
         );
@@ -323,7 +344,7 @@ export default {
     reset() {
       this.checked = this.defaultValue || [];
       this.setFilterValue(
-        'selected_items',
+        "selected_items",
         [...this.checked],
         this.defaultValue,
       );
@@ -332,7 +353,7 @@ export default {
       if (value.length) {
         this.checked = value;
         this.setFilterValue(
-          'selected_items',
+          "selected_items",
           [...this.checked],
           this.defaultValue,
         );
