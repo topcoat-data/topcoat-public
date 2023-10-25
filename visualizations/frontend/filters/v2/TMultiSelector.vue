@@ -155,6 +155,10 @@ const ItemComponent = window.Vue.component("ItemComponent", {
 		`,
 });
 
+function isArrayString(str) {
+  return str.startsWith('[') && str.endsWith(']');
+}
+
 export default {
   components: {
     ItemComponent,
@@ -283,13 +287,27 @@ export default {
       this.checked = [];
 
       if (initial_value) {
-        this.checked = initial_value.split("|");
+        let parsedInitialValue;
+
+        try {
+          parsedInitialValue = Array.isArray(initial_value)
+            ? [...initial_value ]
+            : isArrayString(initial_value) 
+              ? JSON.parse(initial_value) 
+              : [initial_value];
+        } catch (error) {
+          console.error(error);
+          console.error("Failed to parse TMultiSelector filters");
+        }
+
+        this.checked = parsedInitialValue;
       } else if (this.defaultValue) {
-        this.checked = this.defaultValue.split("|");
+        let value = this.defaultValue || [];
+        this.checked = Array.isArray(value) ? value : [value];
         this.setFilterValue(
-          "selected_items",
+          'selected_items',
+          [...this.checked],
           this.defaultValue,
-          this.defaultValue
         );
       }
     },
@@ -303,27 +321,25 @@ export default {
       this.updateUrlParam();
     }, 750),
     reset() {
-      if (this.defaultValue) {
-        this.checked = this.defaultValue.split("|");
-      } else {
-        this.checked = [];
-      }
+      this.checked = this.defaultValue || [];
       this.setFilterValue(
-        "selected_items",
-        this.checked.join("|"),
-        this.defaultValue
+        'selected_items',
+        [...this.checked],
+        this.defaultValue,
       );
     },
     updateUrlParam(value) {
-      if (value) {
-        this.checked = [...value];
+      if (value.length) {
+        this.checked = value;
+        this.setFilterValue(
+          'selected_items',
+          [...this.checked],
+          this.defaultValue,
+        );
+      } else {
+        this.checked = [];
+        this.unsetFilterValue('selected_items');
       }
-
-      this.setFilterValue(
-        "selected_items",
-        this.checked.join("|"),
-        this.defaultValue
-      );
     },
     onDropdownOpen() {
       this.fetchLayerData();
