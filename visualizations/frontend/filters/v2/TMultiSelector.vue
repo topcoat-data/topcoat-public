@@ -155,6 +155,10 @@ const ItemComponent = window.Vue.component("ItemComponent", {
 		`,
 });
 
+function isArrayString(str) {
+  return str.startsWith('[') && str.endsWith(']');
+}
+
 export default {
   components: {
     ItemComponent,
@@ -278,19 +282,52 @@ export default {
   },
   methods: {
     onVisualizationInit() {
+      const urlVersion = this.getUrlVersion;
       const initial_value = this.getFilterValue("selected_items");
 
       this.checked = [];
 
       if (initial_value) {
-        this.checked = initial_value.split("|");
+        let parsedInitialValue;
+
+        if (urlVersion === 0) {
+          // url version 0:
+          // key = "value"
+          // key = "value1|value2"
+          parsedInitialValue = initial_value.split("|");
+          this.debouncedSetUrlVersion();
+          this.setFilterValue(
+            "selected_items",
+            [...parsedInitialValue],
+            this.defaultValue,
+          );
+        } else {
+          // url version 1:
+          // key = ["value"]
+          // key = ["value1", "value2"]
+          try {
+            parsedInitialValue = Array.isArray(initial_value)
+              ? [...initial_value ]
+              : isArrayString(initial_value)
+                ? JSON.parse(initial_value)
+                : [initial_value];
+          } catch (error) {
+            console.error(error);
+            console.error("Failed to parse TMultiSelector filters");
+          }
+        }
+
+        this.checked = parsedInitialValue;
       } else if (this.defaultValue) {
-        this.checked = this.defaultValue.split("|");
-        this.setFilterValue(
-          "selected_items",
-          this.defaultValue,
-          this.defaultValue
-        );
+        let value = this.defaultValue || [];
+
+        if (urlVersion === 0) {
+          value = this.defaultValue.split("|");
+          this.debouncedSetUrlVersion();
+        }
+
+        this.checked = Array.isArray(value) ? value : [value];
+        this.setSelectedItems();
       }
     },
     selectUnselect: _.debounce(function () {
@@ -302,28 +339,28 @@ export default {
       }
       this.updateUrlParam();
     }, 750),
+    debouncedSetUrlVersion: _.debounce(function () {
+        this.setUrlVersion(1);
+    }, 500),
     reset() {
-      if (this.defaultValue) {
-        this.checked = this.defaultValue.split("|");
-      } else {
-        this.checked = [];
-      }
-      this.setFilterValue(
-        "selected_items",
-        this.checked.join("|"),
-        this.defaultValue
-      );
-    },
-    updateUrlParam(value) {
-      if (value) {
-        this.checked = [...value];
+      let value = this.defaultValue || [];;
+      const urlVersion = this.getUrlVersion;
+
+      if (urlVersion === 0) {
+        value = this.defaultValue.split("|");
       }
 
-      this.setFilterValue(
-        "selected_items",
-        this.checked.join("|"),
-        this.defaultValue
-      );
+      this.checked = Array.isArray(value) ? value : [value];
+      this.setSelectedItems();
+    },
+    updateUrlParam(value) {
+      if (value && value.length) {
+        this.checked = value;
+        this.setSelectedItems();
+      } else {
+        this.checked = [];
+        this.unsetFilterValue('selected_items');
+      }
     },
     onDropdownOpen() {
       this.fetchLayerData();
@@ -334,6 +371,13 @@ export default {
     removeItem(id) {
       this.checked = this.checked.filter((c) => c !== id);
       this.updateUrlParam();
+    },
+    setSelectedItems() {
+      this.setFilterValue(
+        "selected_items",
+        [...this.checked],
+        this.defaultValue,
+      );
     },
     onFiltersUpdated() {
       this.onVisualizationInit();
