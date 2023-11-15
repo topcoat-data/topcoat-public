@@ -86,7 +86,7 @@
           <t-loading-spinner v-if="isExpanded && loading" position="relative" />
           <span
             v-else-if="checked.length < menu.length"
-            @click="selectUnselect"
+            @click="selectAll"
           >
             Select All
           </span>
@@ -333,15 +333,11 @@ export default {
         this.setSelectedItems();
       }
     },
-    selectUnselect: _.debounce(function () {
-      if (this.checked.length === this.menu.length) {
-        this.checked = [];
-      } else {
-        // Only select what is visible, search can affect this.
-        this.checked = this.menu.map((i) => i.value);
-      }
-      this.updateUrlParam();
-    }, 750),
+    selectAll: _.debounce(function () {
+      // Only select what is visible, search can affect this.
+      this.checked = this.checked.length === this.menu.length ? [] : this.menu.map((i) => i.value);
+      this.updateUrlParam(this.checked);
+    }, 350),
     debouncedSetUrlVersion: _.debounce(function () {
         this.setUrlVersion(1);
     }, 500),
