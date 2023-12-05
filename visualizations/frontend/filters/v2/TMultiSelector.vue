@@ -99,7 +99,7 @@
       <div class="px-[12px] pt-[4px] pb-[6px] w-full">
         <virtual-list
           :style="{
-            height: Math.min(menu.length * 30, 320) + 'px',
+            height: Math.min(menu.length * 30, listMaxHeight) + 'px',
             'overflow-y': 'auto',
           }"
           :estimate-size="32"
@@ -212,6 +212,10 @@ export default {
       type: Number,
       default: 5,
     },
+    listMaxHeight: {
+      type: Number,
+      default: 320,
+    }
   },
   data: () => ({
     checked: [],
