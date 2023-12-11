@@ -122,6 +122,8 @@ export default {
   },
   methods: {
     redirectToPage(e, page) {
+      this.unsetAllFilters();
+
       if (e.metaKey || e.ctrlKey) {
         window.open(page.url, "_blank");
       } else if (e.shiftKey) {
