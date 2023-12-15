@@ -2,10 +2,10 @@
   <button
     class="rounded cursor-pointer border-1 border-[#C3C2CB] text-[#555463] bg-white w-max p-1"
     style="height: fit-content"
-    :disabled="is_loading"
+    :disabled="is_loading || disabled"
     @click="download"
   >
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1" :class="{ disabled }">
       <t-loading-spinner v-if="is_loading" position="relative" />
       <download-outline-icon v-else :size="18" />
       {{ label }}
@@ -28,6 +28,10 @@ export default {
     additionalFilters: {
       type: Object,
       default: () => {},
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data: () => ({
@@ -73,3 +77,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+button:disabled,
+.disabled {
+  background-color: #f2f1f4;
+  border-color: transparent;
+  color: #b3b2bd;
+  cursor: default;
+}
+</style>
