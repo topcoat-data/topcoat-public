@@ -43,6 +43,7 @@
           :t-layer="layer"
           :additional-filters="additionalFilters"
           class="csvExportButton"
+          :disabled="totalRows === 0"
         />
         <TSearch
           v-if="canSearch"
